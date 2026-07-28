@@ -2002,7 +2002,7 @@ function render(){
   mkChart('c-entrate',{type:'line',data:{labels:keys.map(k=>MESI_SHORT[+k.slice(5)-1]+' '+k.slice(2,4)),datasets:[{data:keys.map(k=>byM[k]),borderColor:'#4f6fe0',backgroundColor:'rgba(79,111,224,.12)',fill:true,tension:.35,pointRadius:3,pointBackgroundColor:'#4f6fe0'}]},options:{...common,plugins:{legend:{display:false}},scales:{x:gridOpt,y:{...gridOpt,beginAtZero:true}}}});
 
   const cb=countBy(allRows.filter(r=>r[role]),role).slice(0,12);
-  mkChart('c-collab',{type:'bar',data:{labels:cb.map(x=>x[0]),datasets:[{data:cb.map(x=>x[1]),backgroundColor:'#7c56d9',borderRadius:6}]},options:{...common,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{...gridOpt,beginAtZero:true},y:gridOpt}}});
+  mkChart('c-collab',{type:'bar',data:{labels:cb.map(x=>x[0]),datasets:[{data:cb.map(x=>x[1]),backgroundColor:cb.map(x=>getCollabColor(role.toLowerCase(),x[0]).fg),borderRadius:6}]},options:{...common,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{...gridOpt,beginAtZero:true},y:gridOpt}}});
 
   /* rinnovi da gestire */
   const win=+document.getElementById('scad-window').value;
