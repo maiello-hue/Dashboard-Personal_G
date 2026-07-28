@@ -58,6 +58,8 @@ h1{font-size:22px;font-weight:500}
 .kpi-red{background:#fbebeb}.kpi-red .l,.kpi-red .v{color:#d23f3f}
 .kpi-orange{background:#faf1e2}.kpi-orange .l,.kpi-orange .v{color:#b5720f}
 .kpi-purple{background:#f1eefb}.kpi-purple .l,.kpi-purple .v{color:#7c56d9}
+.kpi-azzurro{background:#e0f4fb}.kpi-azzurro .l,.kpi-azzurro .v{color:#0a8aa8}
+.kpi-yellow{background:#fdf6d6}.kpi-yellow .l,.kpi-yellow .v{color:#a67f00}
 .fonte-section{border:1px solid var(--border);border-radius:10px;margin-top:10px;overflow:hidden}
 .fonte-section:first-child{margin-top:0}
 .fonte-section-head{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;cursor:pointer;background:var(--card2);font-size:14px;font-weight:500;transition:background .12s ease}
@@ -638,7 +640,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
       <div class="kpis" id="comp-kpis"></div>
       <div class="grid">
         <div class="card span12"><h3>Tutor</h3><div id="comp-tutor"></div></div>
-        <div class="card span12"><h3>Trainer / PT</h3><div id="comp-trainer"></div></div>
+        <div class="card span12"><h3>Trainer</h3><div id="comp-trainer"></div></div>
         <div class="card span12"><h3>Nutrizionista</h3><div id="comp-nutri"></div></div>
       </div>
     </div>
@@ -1040,7 +1042,7 @@ function euro(s){
   const n=parseFloat(String(s).replace(/[€\s.]/g,'').replace(',','.'));
   return isNaN(n)?0:n;
 }
-function fmtEuro(n){return '€ '+n.toLocaleString('it-IT',{minimumFractionDigits:0,maximumFractionDigits:0});}
+function fmtEuro(n){return '€ '+n.toLocaleString('it-IT',{minimumFractionDigits:0,maximumFractionDigits:0,useGrouping:true});}
 function pdate(s){
   if(!s) return null;
   let m=String(s).match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
@@ -1070,7 +1072,7 @@ function renSave(a){try{localStorage.setItem(REN_KEY,JSON.stringify(a));}catch(e
 function renSet(name,field,val){const a=renAll();a[name]=a[name]||{};a[name][field]=val;renSave(a);scheduleGithubSync();if(field==='st')render();}
 
 /* ---------- badge colorati ---------- */
-const STATO_LABELS={'ABBANDONATO':'Abbandono','NON RINNOVATO':'Non Rinnovo','CONGELATO':'Sospesa'};
+const STATO_LABELS={'ABBANDONATO':'ABBANDONO','NON RINNOVATO':'NON RINNOVO','CONGELATO':'SOSPESA'};
 function statoLabel(s){
   const k=(s||'').toUpperCase();
   return STATO_LABELS[k]||s||'—';
@@ -1138,9 +1140,9 @@ function pagBadge(s){
 /* ---------- colori dei tag (personalizzabili da Impostazioni) ---------- */
 const TAG_DEFS=[
  {cls:'b-inpercorso',label:'In percorso',group:'Stato cliente',bg:'#e1f5ee',fg:'#085041'},
- {cls:'b-congelato',label:'Sospesa',group:'Stato cliente',bg:'#e6f1fb',fg:'#0c447c'},
- {cls:'b-nonrinnovato',label:'Non Rinnovo',group:'Stato cliente',bg:'#efe9fb',fg:'#4a3aa7'},
- {cls:'b-abbandonato',label:'Abbandono',group:'Stato cliente',bg:'#fcebeb',fg:'#791f1f'},
+ {cls:'b-congelato',label:'SOSPESA',group:'Stato cliente',bg:'#e6f1fb',fg:'#0c447c'},
+ {cls:'b-nonrinnovato',label:'NON RINNOVO',group:'Stato cliente',bg:'#efe9fb',fg:'#4a3aa7'},
+ {cls:'b-abbandonato',label:'ABBANDONO',group:'Stato cliente',bg:'#fcebeb',fg:'#791f1f'},
  {cls:'b-sparita',label:'Sparita',group:'Stato cliente',bg:'#faeeda',fg:'#633806'},
  {cls:'b-altro',label:'Altro',group:'Stato cliente',bg:'#f1efe8',fg:'#444441'},
  {cls:'p-saldato',label:'Saldato',group:'Stato pagamento',bg:'#e1f5ee',fg:'#085041'},
@@ -1285,7 +1287,7 @@ function pickPopoverColor(hex){
 
 /* ---------- colori dei collaboratori (dinamici: ogni nome nell'elenco è colorabile) ---------- */
 const LEGACY_COLLAB={
-  tutor:{ANDREA:{bg:'#efe9fb',fg:'#4a3aa7'},GIULIA:{bg:'#eaf3de',fg:'#27500a'},MANUELA:{bg:'#faeeda',fg:'#633806'},MARGHERITA:{bg:'#fbe4ec',fg:'#9c1f56'},MARA:{bg:'#e6f1fb',fg:'#0c447c'}},
+  tutor:{ANDREA:{bg:'#fcebeb',fg:'#791f1f'},GIULIA:{bg:'#eaf3de',fg:'#27500a'},MANUELA:{bg:'#faeeda',fg:'#633806'},MARGHERITA:{bg:'#fbe4ec',fg:'#9c1f56'},MARA:{bg:'#e6f1fb',fg:'#0c447c'}},
   trainer:{FIORENZO:{bg:'#fdf1d6',fg:'#8a5a00'},MATTEO:{bg:'#dcedfa',fg:'#0f5c96'},FEDERICA:{bg:'#fcebeb',fg:'#791f1f'},GIANMIKI:{bg:'#e2e6ec',fg:'#37424f'},MARCO:{bg:'#fbe3d3',fg:'#8a3c0a'}},
   nutri:{NICOLE:{bg:'#fdf1d6',fg:'#8a5a00'},ALESSIA:{bg:'#fcebeb',fg:'#791f1f'},VANESSA:{bg:'#fbe4ec',fg:'#9c1f56'},SOFIA:{bg:'#eaf3de',fg:'#27500a'},MATILDE:{bg:'#e6f1fb',fg:'#0c447c'}},
   venditore:{PERSONAL_G:{bg:'#1c1c1a',fg:'#ffffff'}}
@@ -1323,7 +1325,7 @@ function resetCollabColor(role,name){
 const KNOWN_COLLAB={tutor:['Andrea','Giulia','Manuela','Margherita','Mara'],trainer:['Fiorenzo','Matteo','Federica','Gianmiki','Marco'],nutri:['Nicole','Alessia','Vanessa','Sofia','Matilde'],venditore:['Personal_G']};
 const LS_LISTS={tutor:'list_tutor_v1',trainer:'list_trainer_v1',nutri:'list_nutri_v1',venditore:'list_venditore_v1',metodi:'list_metodi_v1',percorsi:'list_percorsi_v1'};
 const LIST_FIELD={tutor:'TUTOR',trainer:'TRAINER',nutri:'NUTRI',metodi:'METODO PAGAMENTO',percorsi:'PERCORSO'};
-const LIST_LABELS={tutor:'Tutor',trainer:'Trainer / PT',nutri:'Nutrizionista',venditore:'Venditore',metodi:'Metodi di pagamento',percorsi:'Percorsi'};
+const LIST_LABELS={tutor:'Tutor',trainer:'Trainer',nutri:'Nutrizionista',venditore:'Venditore',metodi:'Metodi di pagamento',percorsi:'Percorsi'};
 let MANAGED_LISTS={tutor:[],trainer:[],nutri:[],venditore:[],metodi:[],percorsi:[]};
 function distinctRimb(field){
   return [...new Set(RIMB.map(r=>r[field]).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'it'));
@@ -1442,7 +1444,7 @@ function buildSettingsPanel(){
       ${renderManagedRows('percorsi')}
     </div>`
   ));
-  [['tutor','Tutor'],['trainer','Trainer / PT'],['nutri','Nutrizionista'],['venditore','Venditore']].forEach(([key,label])=>{
+  [['tutor','Tutor'],['trainer','Trainer'],['nutri','Nutrizionista'],['venditore','Venditore']].forEach(([key,label])=>{
     const n=MANAGED_LISTS[key].length;
     parts.push(section(key,label,n+' collaborator'+(n===1?'e':'i'),renderAddRow(key)+renderCollabRows(key)));
   });
@@ -1566,7 +1568,7 @@ function buildCompensi(){
       return `<div class="fonte-section">
         <div class="fonte-section-head" onclick="toggleCompensi('${jsEsc(key2)}')">
           <span>${esc(name)}</span>
-          <span class="count">€ ${nameTotal.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2})} · ${clientsAll.length} client${clientsAll.length===1?'e':'e'} <span class="fonte-caret">${open?'▾':'▸'}</span></span>
+          <span class="count">€ ${nameTotal.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2,useGrouping:true})} · ${clientsAll.length} client${clientsAll.length===1?'e':'e'} <span class="fonte-caret">${open?'▾':'▸'}</span></span>
         </div>
         <div class="fonte-section-body" style="display:${open?'block':'none'}">${rowsHtml}</div>
       </div>`;
@@ -1575,12 +1577,12 @@ function buildCompensi(){
     roleTotals[key]=roleTotal;
     grandTotal+=roleTotal;
   });
-  const fmtE=n=>'€ '+n.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const fmtE=n=>'€ '+n.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2,useGrouping:true});
   document.getElementById('comp-kpis').innerHTML=`
-    <div class="kpi kpi-blue"><div class="l">Tutor</div><div class="v">${fmtE(roleTotals.tutor)}</div></div>
-    <div class="kpi kpi-orange"><div class="l">Trainer / PT</div><div class="v">${fmtE(roleTotals.trainer)}</div></div>
-    <div class="kpi kpi-green"><div class="l">Nutrizionista</div><div class="v">${fmtE(roleTotals.nutri)}</div></div>
-    <div class="kpi kpi-purple"><div class="l">Totale compensi</div><div class="v">${fmtE(grandTotal)}</div></div>`;
+    <div class="kpi kpi-purple"><div class="l">Tutor</div><div class="v">${fmtE(roleTotals.tutor)}</div></div>
+    <div class="kpi kpi-azzurro"><div class="l">Trainer</div><div class="v">${fmtE(roleTotals.trainer)}</div></div>
+    <div class="kpi kpi-yellow"><div class="l">Nutrizionista</div><div class="v">${fmtE(roleTotals.nutri)}</div></div>
+    <div class="kpi"><div class="l">Totale compensi</div><div class="v">${fmtE(grandTotal)}</div></div>`;
 }
 const SELECT_FIELDS={'STATO CLIENTE':false,'STATO PAGAMENTO':false,'TIPO INCASSO':false,'PERCORSO':true,'METODO PAGAMENTO':true,'TUTOR':true,'TRAINER':true,'NUTRI':true};
 function selectFieldHtml(f,l,idPrefix,value,options,allowCustom,labelMap){
@@ -1869,7 +1871,7 @@ function render(){
   document.getElementById('k-spar-d').textContent=brk(sparA);
   document.getElementById('k-scad').textContent=scad30;
 
-  const fmtEuro2=n=>'€ '+n.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const fmtEuro2=n=>'€ '+n.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2,useGrouping:true});
   const tipo=r=>(r['TIPO INCASSO']||'').toLowerCase();
   const isRinT=r=>tipo(r).includes('rinnovo'), isRicT=r=>tipo(r).includes('ricorrente');
   const isAltT=r=>!isRinT(r)&&!isRicT(r)&&euro(r['INCASSO'])>0;
@@ -2101,7 +2103,7 @@ function apriListaClienti(key){
   document.getElementById('kpi-list-title').textContent=(KPI_LABELS[key]||'')+' ('+rows.length+')';
   if(INC_KPI_KEYS.has(key)){
     document.getElementById('kpi-list-body').innerHTML=rows.length?rows.map(r=>{
-      const imp=euro(r['INCASSO']).toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2});
+      const imp=euro(r['INCASSO']).toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2,useGrouping:true});
       return `<div class="kpi-list-row">
         <span style="flex:1;min-width:160px">${esc(r['CLIENTE'])}</span>
         <span class="count" style="min-width:110px;text-align:right;font-weight:700;color:var(--text)">€ ${imp}</span>
