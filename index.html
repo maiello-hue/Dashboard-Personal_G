@@ -526,7 +526,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
           <div class="sub" style="margin-bottom:10px">Percentuali calcolate sul totale delle clienti assegnate a ciascun collaboratore (Tutor, Trainer, Nutrizionista).</div>
           <table class="rate-table">
             <thead>
-              <tr><th>Collaboratore</th><th>Clienti</th><th>Abbandono</th><th>Non rinnovo</th><th>Totale</th></tr>
+              <tr><th>Collaboratore</th><th>Clienti</th><th>Abbandono</th><th>Non rinnovo</th><th>Totale</th><th>% Abbandono totale</th></tr>
             </thead>
             <tbody id="collab-abbandono-table-body"></tbody>
           </table>
@@ -1893,13 +1893,15 @@ function render(){
     });
   });
   collabRateRows.sort((a,b)=>a.field===b.field?a.name.localeCompare(b.name,'it'):a.field.localeCompare(b.field));
+  const numCell=(n,key)=>`<td style="text-align:right;cursor:pointer" onclick="apriListaClienti('${key}')">${n}</td>`;
   document.getElementById('collab-abbandono-table-body').innerHTML=collabRateRows.length?collabRateRows.map(r=>`<tr class="rate-tr">
       <td><div class="rate-row-label">${collabBadgeFn[r.field](r.name)}</div></td>
       <td style="text-align:right">${r.tot}</td>
-      ${cell(r.abbRate,r.abbN,r.tot,r.keyAbb)}
-      ${cell(r.nonrinRate,r.nonrinN,r.tot,r.keyNonrin)}
+      ${numCell(r.abbN,r.keyAbb)}
+      ${numCell(r.nonrinN,r.keyNonrin)}
+      ${numCell(r.totN,r.keyTot)}
       ${cell(r.totRate,r.totN,r.tot,r.keyTot)}
-    </tr>`).join(''):'<tr><td colspan="5" class="sub">Nessun collaboratore con clienti assegnate.</td></tr>';
+    </tr>`).join(''):'<tr><td colspan="6" class="sub">Nessun collaboratore con clienti assegnate.</td></tr>';
   document.getElementById('k-tot').textContent=allRows.length;
   document.getElementById('k-tot-d').textContent=brk(allRows);
   document.getElementById('k-att').textContent=att;
