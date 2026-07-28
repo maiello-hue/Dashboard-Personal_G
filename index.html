@@ -1028,10 +1028,22 @@ function euro(s){
 function fmtEuro(n){return '€ '+n.toLocaleString('it-IT',{minimumFractionDigits:0,maximumFractionDigits:0});}
 function pdate(s){
   if(!s) return null;
-  const m=String(s).match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  let m=String(s).match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+  if(m) return new Date(+m[1],+m[2]-1,+m[3]);
+  m=String(s).match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
   return m?new Date(+m[3],+m[2]-1,+m[1]):null;
 }
 function fdate(d){return d?d.toLocaleDateString('it-IT'):'—';}
+function itToIso(it){
+  if(!it) return '';
+  const m=String(it).match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  return m?`${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`:'';
+}
+function isoToIt(iso){
+  if(!iso) return '';
+  const m=String(iso).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  return m?`${m[3]}/${m[2]}/${m[1]}`:iso;
+}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 function jsEsc(s){return esc(String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'"));}
 
@@ -1431,7 +1443,7 @@ function distinct(field){
   return [...new Set(DATA.map(r=>r[field]).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'it'));
 }
 const EDIT_FIELDS=[
-  ['STATO CLIENTE','Stato'],['PERCORSO','Percorso'],['INIZIO PERCORSO','Inizio (gg/mm/aaaa)'],['FINE PERCORSO','Fine (gg/mm/aaaa)'],
+  ['STATO CLIENTE','Stato'],['PERCORSO','Percorso'],['INIZIO PERCORSO','Inizio'],['FINE PERCORSO','Fine'],
   ['IMPORTO','Importo'],['METODO PAGAMENTO','Metodo pag.'],['STATO PAGAMENTO','Stato pag.'],['TIPO INCASSO','Tipo incasso'],['INCASSO','Incasso'],
   ['TUTOR','Tutor'],['TRAINER','Trainer'],['NUTRI','Nutri'],['FONTE','Fonte']
 ];
@@ -1550,9 +1562,32 @@ function buildCompensi(){
     <div class="kpi kpi-green"><div class="l">Nutrizionista</div><div class="v">${fmtE(roleTotals.nutri)}</div></div>
     <div class="kpi kpi-purple"><div class="l">Totale compensi</div><div class="v">${fmtE(grandTotal)}</div></div>`;
 }
+const SELECT_FIELDS={'STATO CLIENTE':false,'STATO PAGAMENTO':false,'PERCORSO':true,'METODO PAGAMENTO':true,'TUTOR':true,'TRAINER':true,'NUTRI':true};
+function selectFieldHtml(f,l,idPrefix,value,options,allowCustom){
+  const idKey=`${idPrefix}-${f.replace(/ /g,'_')}`;
+  const has=value&&options.includes(value);
+  const isCustom=!!(value&&!has);
+  const blankOpt=`<option value=""${!value?' selected':''}>—</option>`;
+  const opts=options.map(o=>`<option value="${esc(o)}"${value===o?' selected':''}>${esc(o)}</option>`).join('');
+  const customOpt=allowCustom?`<option value="__custom__"${isCustom?' selected':''}>+ Aggiungi nuovo…</option>`:'';
+  const customInput=allowCustom?`<input type="text" id="${idKey}__custom" placeholder="Nuovo valore..." value="${isCustom?esc(value):''}" style="margin-top:6px;${isCustom?'':'display:none'}">`:'';
+  return `<label>${l}<select id="${idKey}" onchange="handleCustomSelectChange(this)">${blankOpt}${opts}${customOpt}</select>${customInput}</label>`;
+}
+function handleCustomSelectChange(sel){
+  const customEl=document.getElementById(sel.id+'__custom');
+  if(!customEl) return;
+  if(sel.value==='__custom__'){ customEl.style.display='block'; customEl.focus(); }
+  else customEl.style.display='none';
+}
 function editFieldHtml(f,l,idPrefix,value){
   if(f==='FONTE'){
     return `<label>${l}<select id="${idPrefix}-FONTE"><option value=""${!value?' selected':''}>—</option>${FONTE_OPTIONS.map(o=>`<option value="${o}"${value===o?' selected':''}>${o}</option>`).join('')}</select></label>`;
+  }
+  if(f==='INIZIO PERCORSO'||f==='FINE PERCORSO'){
+    return `<label>${l}<input type="date" id="${idPrefix}-${f.replace(/ /g,'_')}" value="${itToIso(value)}"></label>`;
+  }
+  if(f in SELECT_FIELDS){
+    return selectFieldHtml(f,l,idPrefix,value,acSourceValues(f),SELECT_FIELDS[f]);
   }
   return `<label>${l}<input id="${idPrefix}-${f.replace(/ /g,'_')}" data-ac-field="${esc(f)}" autocomplete="off" value="${esc(value||'')}" oninput="showFieldAutocomplete(this)" onfocus="showFieldAutocomplete(this)" onclick="showFieldAutocomplete(this)" onblur="scheduleCloseFieldAutocomplete()"></label>`;
 }
@@ -1641,12 +1676,24 @@ function toggleAddCliente(force){
       EDIT_FIELDS.map(([f,l])=>editFieldHtml(f,l,'new','')).join('');
   }
 }
+function readEditFieldValue(idPrefix,f){
+  const idKey=idPrefix+'-'+f.replace(/ /g,'_');
+  const el=document.getElementById(idKey);
+  if(!el) return '';
+  let v=(el.value||'').trim();
+  if(v==='__custom__'){
+    const customEl=document.getElementById(idKey+'__custom');
+    v=customEl?customEl.value.trim():'';
+  }
+  if((f==='INIZIO PERCORSO'||f==='FINE PERCORSO')&&v) v=isoToIt(v);
+  return v;
+}
 function salvaNuovaCliente(){
   const nome=document.getElementById('new-CLIENTE').value.trim();
   if(!nome){ alert('Il nome della cliente è obbligatorio.'); return; }
   if(DATA.some(r=>r['CLIENTE'].trim().toLowerCase()===nome.toLowerCase())){ alert('Esiste già una cliente con questo nome.'); return; }
   const rec={CLIENTE:nome};
-  EDIT_FIELDS.forEach(([f])=>{ rec[f]=document.getElementById('new-'+f.replace(/ /g,'_')).value.trim(); });
+  EDIT_FIELDS.forEach(([f])=>{ rec[f]=readEditFieldValue('new',f); });
   DATA.push(rec);
   saveClienti();
   toggleAddCliente(false);
@@ -2033,7 +2080,7 @@ function chiudiModificaCliente(){
 function salvaClienteModal(){
   const r=DATA.find(x=>x['CLIENTE']===editingClienteName);
   if(!r) return;
-  EDIT_FIELDS.forEach(([f])=>{ r[f]=document.getElementById('editm-'+f.replace(/ /g,'_')).value.trim(); });
+  EDIT_FIELDS.forEach(([f])=>{ r[f]=readEditFieldValue('editm',f); });
   saveClienti();
   chiudiModificaCliente();
   buildFilters(); render();
