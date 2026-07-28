@@ -1858,8 +1858,6 @@ function render(){
     return `<td class="rate-cell" onclick="apriListaClienti('${key}')">
       <div class="rate-cell-inner">
         <span class="rate-pill" style="background:${c.bg};color:${c.fg}">${fmtPct(rate)}</span>
-        <div class="rate-bar-track"><div class="rate-bar-fill" style="width:${barWidth(rate)}%;background:${c.fg}"></div></div>
-        <span class="rate-sub">${n}/${tot}</span>
       </div>
     </td>`;
   };
