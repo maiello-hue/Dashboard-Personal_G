@@ -34,6 +34,8 @@ h1{font-size:22px;font-weight:500}
 @keyframes navBgFlash{0%{background:#f3d9e2}100%{background:var(--card2)}}
 .nav-divider{height:1px;background:var(--border);margin:10px 6px}
 .content{flex:1;min-width:0}
+.mobile-tabbar{display:none}
+.mobile-more-sheet{display:none}
 .topbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px}
 .btn{background:var(--text);color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:400;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:opacity .15s ease}
 .btn:hover{opacity:.88}
@@ -242,11 +244,11 @@ h3 .ico,.sub .ico{color:var(--muted)}
   .nav-item{flex-direction:row;white-space:nowrap;width:auto}
 }
 @media(max-width:600px){
-  body{padding:10px}
-  .app-shell{gap:10px}
-  .sidebar{border-radius:12px;padding:8px}
-  .nav-item{padding:10px 12px;gap:8px;font-size:13px}
-  .topbar{margin-bottom:14px}
+  body{padding:10px;padding-bottom:0}
+  .app-shell{gap:0}
+  .sidebar{display:none}
+  .content{padding-bottom:calc(78px + env(safe-area-inset-bottom))}
+  .topbar{margin-bottom:14px;position:sticky;top:0;background:var(--bg);z-index:80;padding:4px 0 8px;margin-left:-10px;margin-right:-10px;padding-left:10px;padding-right:10px}
   h1{font-size:19px}
   .grid{gap:10px}
   .card{padding:12px;border-radius:10px}
@@ -258,9 +260,6 @@ h3 .ico,.sub .ico{color:var(--muted)}
   .filters{gap:6px}
   .filters input,.filters select{flex:1 1 100%;min-width:0}
   .editbar{grid-template-columns:1fr}
-  .modal-overlay{padding:8px}
-  .modal-card{padding:14px;border-radius:12px;max-height:92vh}
-  .modal-card h3{font-size:15px}
   .editbar-actions{flex-wrap:wrap}
   .editbar-actions .btn{flex:1 1 auto;justify-content:center}
   table{font-size:12px}
@@ -275,6 +274,46 @@ h3 .ico,.sub .ico{color:var(--muted)}
   .roletabs{gap:6px}
   .roletabs button{padding:7px 12px;font-size:12px}
   .scad-head{flex-wrap:wrap;gap:8px}
+
+  .mobile-tabbar{
+    display:flex;position:fixed;left:0;right:0;bottom:0;z-index:900;
+    background:var(--card);border-top:1px solid var(--border);
+    padding:6px 2px calc(6px + env(safe-area-inset-bottom));
+    box-shadow:0 -2px 14px rgba(0,0,0,.08);
+  }
+  .mobile-tabbar button{
+    flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+    background:none;border:none;color:var(--muted2);font-size:10px;font-weight:500;
+    padding:6px 2px;border-radius:12px;cursor:pointer
+  }
+  .mobile-tabbar button .ic{font-size:19px;line-height:1}
+  .mobile-tabbar button.on{color:var(--accent)}
+  .mobile-more-sheet{
+    position:fixed;inset:0;background:rgba(15,15,14,.5);z-index:950;
+    align-items:flex-end;justify-content:center
+  }
+  .mobile-more-sheet.open{display:flex}
+  .mobile-more-card{
+    background:var(--card);width:100%;border-radius:18px 18px 0 0;
+    padding:8px 10px calc(16px + env(safe-area-inset-bottom));
+    max-height:70vh;overflow-y:auto
+  }
+  .mobile-more-card .handle{width:36px;height:4px;background:var(--border-strong);border-radius:2px;margin:6px auto 12px}
+  .mobile-more-card button{
+    display:flex;align-items:center;gap:14px;width:100%;text-align:left;
+    padding:14px 10px;border:none;background:none;color:var(--text);
+    font-size:15px;font-weight:400;border-radius:10px;cursor:pointer
+  }
+  .mobile-more-card button .ic{width:20px;flex-shrink:0;color:var(--muted2);font-size:16px}
+  .mobile-more-card button.on{background:var(--card2);color:var(--accent);font-weight:500}
+  .mobile-more-card button.on .ic{color:var(--accent)}
+
+  .modal-overlay{align-items:flex-end;padding:0}
+  .modal-card{
+    border-radius:18px 18px 0 0;max-height:90vh;width:100%;
+    padding:16px 16px calc(16px + env(safe-area-inset-bottom))
+  }
+  .modal-card h3{font-size:15px}
 }
 </style>
 </head>
@@ -317,6 +356,51 @@ h3 .ico,.sub .ico{color:var(--muted)}
       Impostazioni
     </button>
   </aside>
+
+  <nav class="mobile-tabbar">
+    <button id="mnav-dashboard" onclick="showPage('dashboard')">
+      <span class="ic"><i class="fa-solid fa-house"></i></span>
+      <span>Home</span>
+    </button>
+    <button id="mnav-clienti" onclick="showPage('clienti')">
+      <span class="ic"><i class="fa-solid fa-users"></i></span>
+      <span>Clienti</span>
+    </button>
+    <button id="mnav-analisi" onclick="showPage('analisi')">
+      <span class="ic"><i class="fa-solid fa-chart-column"></i></span>
+      <span>Analisi</span>
+    </button>
+    <button id="mnav-compensi" onclick="showPage('compensi')">
+      <span class="ic"><i class="fa-solid fa-hand-holding-dollar"></i></span>
+      <span>Compensi</span>
+    </button>
+    <button id="mnav-more" onclick="toggleMobileMore()">
+      <span class="ic"><i class="fa-solid fa-ellipsis"></i></span>
+      <span>Altro</span>
+    </button>
+  </nav>
+
+  <div class="mobile-more-sheet" id="mobile-more-sheet" onclick="if(event.target===this) toggleMobileMore(false)">
+    <div class="mobile-more-card">
+      <div class="handle"></div>
+      <button id="msheet-incassi" onclick="showPage('incassi')">
+        <span class="ic"><i class="fa-solid fa-sack-dollar"></i></span>
+        Incassi
+      </button>
+      <button id="msheet-rinnovi" onclick="showPage('rinnovi')">
+        <span class="ic"><i class="fa-solid fa-clock"></i></span>
+        Gestione scadenze
+      </button>
+      <button id="msheet-rimborsi" onclick="showPage('rimborsi')">
+        <span class="ic"><i class="fa-solid fa-rotate-left"></i></span>
+        Rimborsi
+      </button>
+      <button id="msheet-impostazioni" onclick="showPage('impostazioni')">
+        <span class="ic"><i class="fa-solid fa-gear"></i></span>
+        Impostazioni
+      </button>
+    </div>
+  </div>
 
   <div class="content">
     <div class="topbar">
@@ -658,6 +742,20 @@ function showPage(p){
   document.getElementById('page-compensi').style.display=(p==='compensi')?'block':'none';
   document.getElementById('page-impostazioni').style.display=(p==='impostazioni')?'block':'none';
   if(p==='impostazioni') fillGhForm();
+  const MOBILE_PRIMARY=['dashboard','clienti','analisi','compensi'];
+  const MOBILE_MORE=['incassi','rinnovi','rimborsi','impostazioni'];
+  MOBILE_PRIMARY.forEach(x=>{ const el=document.getElementById('mnav-'+x); if(el) el.classList.toggle('on',x===p); });
+  const moreBtn=document.getElementById('mnav-more');
+  if(moreBtn) moreBtn.classList.toggle('on',MOBILE_MORE.includes(p));
+  MOBILE_MORE.forEach(x=>{ const el=document.getElementById('msheet-'+x); if(el) el.classList.toggle('on',x===p); });
+  toggleMobileMore(false);
+  window.scrollTo(0,0);
+}
+function toggleMobileMore(show){
+  const el=document.getElementById('mobile-more-sheet');
+  if(!el) return;
+  const next=show!==undefined?show:!el.classList.contains('open');
+  el.classList.toggle('open',next);
 }
 
 /* ---------- persistenza locale ---------- */
