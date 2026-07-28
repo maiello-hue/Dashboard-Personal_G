@@ -1199,6 +1199,16 @@ function contrastColor(hex){
   const lum=(0.299*r+0.587*g+0.114*b)/255;
   return lum>0.55?'#33322d':'#ffffff';
 }
+function mixHex(hex1,hex2,t){
+  const p=hex=>{const h=hex.replace('#','');return {r:parseInt(h.substr(0,2),16),g:parseInt(h.substr(2,2),16),b:parseInt(h.substr(4,2),16)};};
+  const c1=p(hex1), c2=p(hex2);
+  const mix=(a,b)=>Math.round(a+(b-a)*t);
+  return '#'+[mix(c1.r,c2.r),mix(c1.g,c2.g),mix(c1.b,c2.b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+function chartTagColor(role,name){
+  const c=getCollabColor(role,name);
+  return mixHex(c.bg,c.fg,0.55);
+}
 function hslToHex(h,s,l){
   s/=100; l/=100;
   const k=n=>(n+h/30)%12;
@@ -1964,7 +1974,7 @@ function render(){
     {label:'Totale',data:collabSorted.map(r=>+r.totRate.toFixed(1)),backgroundColor:'#7c56d9',borderRadius:6}
   ]},options:{...common,scales:{x:gridOpt,y:{...gridOpt,beginAtZero:true,ticks:{...gridOpt.ticks,callback:v=>v+'%'}}},plugins:{...common.plugins,tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.formattedValue+'%'}}}}});
   const abbCompRows=collabSorted.filter(r=>r.field===abbCompRole);
-  mkChart('c-abbandono-comp',{type:'doughnut',data:{labels:abbCompRows.map(r=>r.name),datasets:[{data:abbCompRows.map(r=>r.totN),backgroundColor:abbCompRows.map(r=>getCollabColor(r.field.toLowerCase(),r.name).bg),borderColor:abbCompRows.map(r=>getCollabColor(r.field.toLowerCase(),r.name).fg),borderWidth:2}]},options:{...common,cutout:'62%'}});
+  mkChart('c-abbandono-comp',{type:'doughnut',data:{labels:abbCompRows.map(r=>r.name),datasets:[{data:abbCompRows.map(r=>r.totN),backgroundColor:abbCompRows.map(r=>chartTagColor(r.field.toLowerCase(),r.name)),borderColor:abbCompRows.map(r=>getCollabColor(r.field.toLowerCase(),r.name).fg),borderWidth:2}]},options:{...common,cutout:'62%'}});
 
   const st=countBy(allRows,'STATO CLIENTE');
   mkChart('c-stato',{type:'doughnut',data:{labels:st.map(x=>statoLabel(x[0])),datasets:[{data:st.map(x=>x[1]),backgroundColor:st.map(x=>({'IN PERCORSO':'#1f9d63','CONGELATO':'#2f7fd1','NON RINNOVATO':'#767c8a','ABBANDONATO':'#d23f3f','SPARITA':'#b5720f'}[x[0]]||'#7c56d9')),borderWidth:0}]},options:{...common,cutout:'62%'}});
@@ -2002,7 +2012,7 @@ function render(){
   mkChart('c-entrate',{type:'line',data:{labels:keys.map(k=>MESI_SHORT[+k.slice(5)-1]+' '+k.slice(2,4)),datasets:[{data:keys.map(k=>byM[k]),borderColor:'#4f6fe0',backgroundColor:'rgba(79,111,224,.12)',fill:true,tension:.35,pointRadius:3,pointBackgroundColor:'#4f6fe0'}]},options:{...common,plugins:{legend:{display:false}},scales:{x:gridOpt,y:{...gridOpt,beginAtZero:true}}}});
 
   const cb=countBy(allRows.filter(r=>r[role]),role).slice(0,12);
-  mkChart('c-collab',{type:'bar',data:{labels:cb.map(x=>x[0]),datasets:[{data:cb.map(x=>x[1]),backgroundColor:cb.map(x=>getCollabColor(role.toLowerCase(),x[0]).bg),borderColor:cb.map(x=>getCollabColor(role.toLowerCase(),x[0]).fg),borderWidth:1.5,borderRadius:6}]},options:{...common,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{...gridOpt,beginAtZero:true},y:gridOpt}}});
+  mkChart('c-collab',{type:'bar',data:{labels:cb.map(x=>x[0]),datasets:[{data:cb.map(x=>x[1]),backgroundColor:cb.map(x=>chartTagColor(role.toLowerCase(),x[0])),borderColor:cb.map(x=>getCollabColor(role.toLowerCase(),x[0]).fg),borderWidth:1.5,borderRadius:6}]},options:{...common,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{...gridOpt,beginAtZero:true},y:gridOpt}}});
 
   /* rinnovi da gestire */
   const win=+document.getElementById('scad-window').value;
