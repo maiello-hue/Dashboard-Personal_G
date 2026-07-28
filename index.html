@@ -521,6 +521,16 @@ h3 .ico,.sub .ico{color:var(--muted)}
             <tbody id="abbandono-table-body"></tbody>
           </table>
         </div>
+        <div class="card span12">
+          <h3>Tasso di abbandono per collaboratore</h3>
+          <div class="sub" style="margin-bottom:10px">Percentuali calcolate sul totale delle clienti assegnate a ciascun collaboratore (Tutor, Trainer, Nutrizionista).</div>
+          <table class="rate-table">
+            <thead>
+              <tr><th>Collaboratore</th><th>Clienti</th><th>Abbandono</th><th>Non rinnovo</th><th>Totale</th></tr>
+            </thead>
+            <tbody id="collab-abbandono-table-body"></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -1857,6 +1867,39 @@ function render(){
       ${cell(r.pRate,r.pN,r.pTot,r.pKey)}
       ${cell(r.gRate,r.gN,r.gTot,r.gKey)}
     </tr>`).join('');
+
+  const collabBadgeFn={TUTOR:tutBadge,TRAINER:trainBadge,NUTRI:nutriBadge};
+  const collabRoleLabel={TUTOR:'Tutor',TRAINER:'Trainer',NUTRI:'Nutrizionista'};
+  const isAbb=r=>(r['STATO CLIENTE']||'').toUpperCase().startsWith('ABBANDONAT');
+  const isNonrin=r=>(r['STATO CLIENTE']||'').toUpperCase().startsWith('NON RINNOVATO');
+  const collabRateRows=[];
+  ['TUTOR','TRAINER','NUTRI'].forEach(field=>{
+    distinct(field).forEach(name=>{
+      const assigned=allRows.filter(r=>r[field]===name);
+      if(!assigned.length) return;
+      const abbRows=assigned.filter(isAbb), nonrinRows=assigned.filter(isNonrin);
+      const totRows=abbRows.concat(nonrinRows);
+      const keyAbb='collabAbb|'+field+'|'+name, keyNonrin='collabNonrin|'+field+'|'+name, keyTot='collabTot|'+field+'|'+name;
+      KPI_LISTS[keyAbb]=abbRows; KPI_LISTS[keyNonrin]=nonrinRows; KPI_LISTS[keyTot]=totRows;
+      KPI_LABELS[keyAbb]=name+' · Abbandono ('+collabRoleLabel[field]+')';
+      KPI_LABELS[keyNonrin]=name+' · Non rinnovo ('+collabRoleLabel[field]+')';
+      KPI_LABELS[keyTot]=name+' · Totale ('+collabRoleLabel[field]+')';
+      collabRateRows.push({
+        field,name,tot:assigned.length,
+        abbRate:pct(abbRows.length,assigned.length),abbN:abbRows.length,keyAbb,
+        nonrinRate:pct(nonrinRows.length,assigned.length),nonrinN:nonrinRows.length,keyNonrin,
+        totRate:pct(totRows.length,assigned.length),totN:totRows.length,keyTot
+      });
+    });
+  });
+  collabRateRows.sort((a,b)=>a.field===b.field?a.name.localeCompare(b.name,'it'):a.field.localeCompare(b.field));
+  document.getElementById('collab-abbandono-table-body').innerHTML=collabRateRows.length?collabRateRows.map(r=>`<tr class="rate-tr">
+      <td><div class="rate-row-label">${collabBadgeFn[r.field](r.name)}</div></td>
+      <td style="text-align:right">${r.tot}</td>
+      ${cell(r.abbRate,r.abbN,r.tot,r.keyAbb)}
+      ${cell(r.nonrinRate,r.nonrinN,r.tot,r.keyNonrin)}
+      ${cell(r.totRate,r.totN,r.tot,r.keyTot)}
+    </tr>`).join(''):'<tr><td colspan="5" class="sub">Nessun collaboratore con clienti assegnate.</td></tr>';
   document.getElementById('k-tot').textContent=allRows.length;
   document.getElementById('k-tot-d').textContent=brk(allRows);
   document.getElementById('k-att').textContent=att;
