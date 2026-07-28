@@ -1070,10 +1070,15 @@ function renSave(a){try{localStorage.setItem(REN_KEY,JSON.stringify(a));}catch(e
 function renSet(name,field,val){const a=renAll();a[name]=a[name]||{};a[name][field]=val;renSave(a);scheduleGithubSync();if(field==='st')render();}
 
 /* ---------- badge colorati ---------- */
+const STATO_LABELS={'ABBANDONATO':'Abbandono','NON RINNOVATO':'Non Rinnovo','CONGELATO':'Sospesa'};
+function statoLabel(s){
+  const k=(s||'').toUpperCase();
+  return STATO_LABELS[k]||s||'—';
+}
 function statoBadge(s){
   const k=(s||'').toUpperCase();
   const cls=k==='IN PERCORSO'?'b-inpercorso':k==='CONGELATO'?'b-congelato':k==='NON RINNOVATO'?'b-nonrinnovato':k==='ABBANDONATO'?'b-abbandonato':k==='SPARITA'?'b-sparita':'b-altro';
-  return `<span class="badge ${cls}">${s||'—'}</span>`;
+  return `<span class="badge ${cls}">${statoLabel(s)}</span>`;
 }
 function percBadge(s){
   if(!s) return '—';
@@ -1133,9 +1138,9 @@ function pagBadge(s){
 /* ---------- colori dei tag (personalizzabili da Impostazioni) ---------- */
 const TAG_DEFS=[
  {cls:'b-inpercorso',label:'In percorso',group:'Stato cliente',bg:'#e1f5ee',fg:'#085041'},
- {cls:'b-congelato',label:'Congelato',group:'Stato cliente',bg:'#e6f1fb',fg:'#0c447c'},
- {cls:'b-nonrinnovato',label:'Non rinnovato',group:'Stato cliente',bg:'#efe9fb',fg:'#4a3aa7'},
- {cls:'b-abbandonato',label:'Abbandonato',group:'Stato cliente',bg:'#fcebeb',fg:'#791f1f'},
+ {cls:'b-congelato',label:'Sospesa',group:'Stato cliente',bg:'#e6f1fb',fg:'#0c447c'},
+ {cls:'b-nonrinnovato',label:'Non Rinnovo',group:'Stato cliente',bg:'#efe9fb',fg:'#4a3aa7'},
+ {cls:'b-abbandonato',label:'Abbandono',group:'Stato cliente',bg:'#fcebeb',fg:'#791f1f'},
  {cls:'b-sparita',label:'Sparita',group:'Stato cliente',bg:'#faeeda',fg:'#633806'},
  {cls:'b-altro',label:'Altro',group:'Stato cliente',bg:'#f1efe8',fg:'#444441'},
  {cls:'p-saldato',label:'Saldato',group:'Stato pagamento',bg:'#e1f5ee',fg:'#085041'},
@@ -1448,10 +1453,10 @@ function buildSettingsPanel(){
 }
 
 /* ---------- filtri clienti ---------- */
-function fillSelect(id,label,values){
+function fillSelect(id,label,values,labelMap){
   const sel=document.getElementById(id);
   const prev=sel.value;
-  sel.innerHTML=`<option value="">${label}: tutti</option>`+values.map(v=>`<option>${v}</option>`).join('');
+  sel.innerHTML=`<option value="">${label}: tutti</option>`+values.map(v=>`<option value="${esc(v)}">${esc((labelMap&&labelMap[v])||v)}</option>`).join('');
   if([...sel.options].some(o=>o.value===prev)) sel.value=prev;
 }
 function distinct(field){
@@ -1578,12 +1583,12 @@ function buildCompensi(){
     <div class="kpi kpi-purple"><div class="l">Totale compensi</div><div class="v">${fmtE(grandTotal)}</div></div>`;
 }
 const SELECT_FIELDS={'STATO CLIENTE':false,'STATO PAGAMENTO':false,'TIPO INCASSO':false,'PERCORSO':true,'METODO PAGAMENTO':true,'TUTOR':true,'TRAINER':true,'NUTRI':true};
-function selectFieldHtml(f,l,idPrefix,value,options,allowCustom){
+function selectFieldHtml(f,l,idPrefix,value,options,allowCustom,labelMap){
   const idKey=`${idPrefix}-${f.replace(/ /g,'_')}`;
   const has=value&&options.includes(value);
   const isCustom=!!(value&&!has);
   const blankOpt=`<option value=""${!value?' selected':''}>—</option>`;
-  const opts=options.map(o=>`<option value="${esc(o)}"${value===o?' selected':''}>${esc(o)}</option>`).join('');
+  const opts=options.map(o=>`<option value="${esc(o)}"${value===o?' selected':''}>${esc((labelMap&&labelMap[o])||o)}</option>`).join('');
   const customOpt=allowCustom?`<option value="__custom__"${isCustom?' selected':''}>+ Aggiungi nuovo…</option>`:'';
   const customInput=allowCustom?`<input type="text" id="${idKey}__custom" placeholder="Nuovo valore..." value="${isCustom?esc(value):''}" style="margin-top:6px;${isCustom?'':'display:none'}">`:'';
   return `<label>${l}<select id="${idKey}" onchange="handleCustomSelectChange(this)">${blankOpt}${opts}${customOpt}</select>${customInput}</label>`;
@@ -1602,7 +1607,10 @@ function editFieldHtml(f,l,idPrefix,value){
     return `<label>${l}<input type="date" id="${idPrefix}-${f.replace(/ /g,'_')}" value="${itToIso(value)}"></label>`;
   }
   if(f in SELECT_FIELDS){
-    return selectFieldHtml(f,l,idPrefix,value,acSourceValues(f),SELECT_FIELDS[f]);
+    return selectFieldHtml(f,l,idPrefix,value,acSourceValues(f),SELECT_FIELDS[f],f==='STATO CLIENTE'?STATO_LABELS:null);
+  }
+  if(f==='IMPORTO'||f==='INCASSO'){
+    return `<label>${l}<input id="${idPrefix}-${f.replace(/ /g,'_')}" autocomplete="off" value="${esc(value||'')}"></label>`;
   }
   return `<label>${l}<input id="${idPrefix}-${f.replace(/ /g,'_')}" data-ac-field="${esc(f)}" autocomplete="off" value="${esc(value||'')}" oninput="showFieldAutocomplete(this)" onfocus="showFieldAutocomplete(this)" onclick="showFieldAutocomplete(this)" onblur="scheduleCloseFieldAutocomplete()"></label>`;
 }
@@ -1653,7 +1661,7 @@ function pickFieldAutocomplete(val){
   closeFieldAutocomplete();
 }
 function buildFilters(){
-  fillSelect('f-stato','Stato',distinct('STATO CLIENTE'));
+  fillSelect('f-stato','Stato',distinct('STATO CLIENTE'),STATO_LABELS);
   fillSelect('f-percorso','Percorso',distinct('PERCORSO'));
   fillSelect('f-tutor','Tutor',distinct('TUTOR'));
   fillSelect('f-trainer','Trainer',distinct('TRAINER'));
@@ -1889,7 +1897,7 @@ function render(){
   mkChart('c-abbandono-comp',{type:'doughnut',data:{labels:['Premium','Gnocca'],datasets:[{data:[totPremiumA.length,totGnoccaA.length],backgroundColor:['#4f6fe0','#7c56d9'],borderWidth:0}]},options:{...common,cutout:'62%'}});
 
   const st=countBy(allRows,'STATO CLIENTE');
-  mkChart('c-stato',{type:'doughnut',data:{labels:st.map(x=>x[0]),datasets:[{data:st.map(x=>x[1]),backgroundColor:st.map(x=>({'IN PERCORSO':'#1f9d63','CONGELATO':'#2f7fd1','NON RINNOVATO':'#767c8a','ABBANDONATO':'#d23f3f','SPARITA':'#b5720f'}[x[0]]||'#7c56d9')),borderWidth:0}]},options:{...common,cutout:'62%'}});
+  mkChart('c-stato',{type:'doughnut',data:{labels:st.map(x=>statoLabel(x[0])),datasets:[{data:st.map(x=>x[1]),backgroundColor:st.map(x=>({'IN PERCORSO':'#1f9d63','CONGELATO':'#2f7fd1','NON RINNOVATO':'#767c8a','ABBANDONATO':'#d23f3f','SPARITA':'#b5720f'}[x[0]]||'#7c56d9')),borderWidth:0}]},options:{...common,cutout:'62%'}});
 
   const pc=countBy(allRows,'PERCORSO');
   mkChart('c-percorso',{type:'bar',data:{labels:pc.map(x=>x[0]),datasets:[{data:pc.map(x=>x[1]),backgroundColor:PALETTE,borderRadius:6}]},options:{...common,plugins:{legend:{display:false}},scales:{x:gridOpt,y:{...gridOpt,beginAtZero:true}}}});
