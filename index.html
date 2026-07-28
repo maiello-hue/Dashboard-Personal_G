@@ -237,9 +237,44 @@ h3 .ico,.sub .ico{color:var(--muted)}
 #error{display:none;background:rgba(210,63,63,.08);border:1px solid var(--red);border-radius:12px;padding:20px;margin:20px 0;color:var(--red)}
 @media(max-width:900px){
   .app-shell{flex-direction:column}
-  .sidebar{width:100%;position:static;display:flex;flex-direction:row;overflow-x:auto;gap:4px;padding:10px}
+  .sidebar{width:100%;position:static;display:flex;flex-direction:row;overflow-x:auto;gap:4px;padding:10px;-webkit-overflow-scrolling:touch}
   .nav-label{display:none}
   .nav-item{flex-direction:row;white-space:nowrap;width:auto}
+}
+@media(max-width:600px){
+  body{padding:10px}
+  .app-shell{gap:10px}
+  .sidebar{border-radius:12px;padding:8px}
+  .nav-item{padding:10px 12px;gap:8px;font-size:13px}
+  .topbar{margin-bottom:14px}
+  h1{font-size:19px}
+  .grid{gap:10px}
+  .card{padding:12px;border-radius:10px}
+  .kpis{grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}
+  .kpi{padding:12px}
+  .kpi .v{font-size:20px}
+  .incrow{grid-template-columns:repeat(2,1fr);gap:8px}
+  .chartbox{height:210px}
+  .filters{gap:6px}
+  .filters input,.filters select{flex:1 1 100%;min-width:0}
+  .editbar{grid-template-columns:1fr}
+  .modal-overlay{padding:8px}
+  .modal-card{padding:14px;border-radius:12px;max-height:92vh}
+  .modal-card h3{font-size:15px}
+  .editbar-actions{flex-wrap:wrap}
+  .editbar-actions .btn{flex:1 1 auto;justify-content:center}
+  table{font-size:12px}
+  th,td{padding:8px 6px}
+  .rate-table{display:block;overflow-x:auto}
+  .fonte-section-body{padding:6px 10px 10px}
+  .fonte-client-row{flex-wrap:wrap;gap:6px}
+  .color-popover,.ac-dropdown{max-width:calc(100vw - 20px)}
+  .icon-btn{width:32px;height:32px}
+  .color-swatch-trigger{width:36px;height:32px}
+  .comp-rate-input{width:56px}
+  .roletabs{gap:6px}
+  .roletabs button{padding:7px 12px;font-size:12px}
+  .scad-head{flex-wrap:wrap;gap:8px}
 }
 </style>
 </head>
@@ -1438,9 +1473,10 @@ function showFieldAutocomplete(input){
   acTarget=input;
   el.innerHTML=matches.length?matches.map(v=>`<div class="ac-option" onmousedown="event.preventDefault();pickFieldAutocomplete('${jsEsc(v)}')">${esc(v)}</div>`).join(''):'<div class="ac-empty">Nessun suggerimento</div>';
   const rect=input.getBoundingClientRect();
-  el.style.left=rect.left+'px';
+  const ddWidth=Math.max(rect.width,140);
+  el.style.left=Math.min(rect.left,window.innerWidth-ddWidth-10)+'px';
   el.style.top=(rect.bottom+4)+'px';
-  el.style.width=Math.max(rect.width,140)+'px';
+  el.style.width=ddWidth+'px';
   el.classList.add('open');
 }
 function pickFieldAutocomplete(val){
