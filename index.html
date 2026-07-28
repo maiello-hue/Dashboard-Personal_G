@@ -196,13 +196,14 @@ h3 .ico,.sub .ico{color:var(--muted)}
 .comp-rate-input:focus{border-color:var(--muted2)}
 .comp-rate-input.overridden{border-color:var(--accent);color:var(--accent);font-weight:600}
 .rate-table{width:100%;border-collapse:separate;border-spacing:0}
-.rate-table th{text-align:right;padding:0 10px 10px;color:var(--muted);font-weight:500;font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+.rate-table th{text-align:center;padding:0 10px 10px;color:var(--muted);font-weight:500;font-size:12px;text-transform:uppercase;letter-spacing:.4px}
 .rate-table th:first-child{text-align:left}
 .rate-row-label{display:flex;align-items:center;gap:8px;padding:12px 10px;font-size:13px;color:var(--text)}
 .rate-row-label.tot{font-weight:600}
+.rate-group-row td{background:var(--card2);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);padding:7px 10px}
 .rate-cell{padding:10px 6px;cursor:pointer;transition:background .12s ease;border-radius:8px}
 .rate-cell:hover{background:var(--card2)}
-.rate-cell-inner{display:flex;flex-direction:column;align-items:flex-end;gap:5px;min-width:90px}
+.rate-cell-inner{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:90px}
 .rate-pill{display:inline-block;padding:3px 11px;border-radius:999px;font-size:14px;font-weight:600}
 .rate-bar-track{width:90px;height:5px;border-radius:3px;background:var(--border);overflow:hidden}
 .rate-bar-fill{height:100%;border-radius:3px;transition:width .2s ease}
@@ -1892,16 +1893,22 @@ function render(){
       });
     });
   });
-  collabRateRows.sort((a,b)=>a.field===b.field?a.name.localeCompare(b.name,'it'):a.field.localeCompare(b.field));
-  const numCell=(n,key)=>`<td style="text-align:right;cursor:pointer" onclick="apriListaClienti('${key}')">${n}</td>`;
-  document.getElementById('collab-abbandono-table-body').innerHTML=collabRateRows.length?collabRateRows.map(r=>`<tr class="rate-tr">
+  const numCell=(n,key)=>`<td style="text-align:center;cursor:pointer" onclick="apriListaClienti('${key}')">${n}</td>`;
+  const rowHtml=r=>`<tr class="rate-tr">
       <td><div class="rate-row-label">${collabBadgeFn[r.field](r.name)}</div></td>
-      <td style="text-align:right">${r.tot}</td>
+      <td style="text-align:center">${r.tot}</td>
       ${numCell(r.abbN,r.keyAbb)}
       ${numCell(r.nonrinN,r.keyNonrin)}
       ${numCell(r.totN,r.keyTot)}
       ${cell(r.totRate,r.totN,r.tot,r.keyTot)}
-    </tr>`).join(''):'<tr><td colspan="6" class="sub">Nessun collaboratore con clienti assegnate.</td></tr>';
+    </tr>`;
+  let collabTableHtml='';
+  ['TUTOR','TRAINER','NUTRI'].forEach(field=>{
+    const groupRows=collabRateRows.filter(r=>r.field===field).sort((a,b)=>a.name.localeCompare(b.name,'it'));
+    if(!groupRows.length) return;
+    collabTableHtml+=`<tr class="rate-group-row"><td colspan="6">${collabRoleLabel[field]}</td></tr>`+groupRows.map(rowHtml).join('');
+  });
+  document.getElementById('collab-abbandono-table-body').innerHTML=collabTableHtml||'<tr><td colspan="6" class="sub">Nessun collaboratore con clienti assegnate.</td></tr>';
   document.getElementById('k-tot').textContent=allRows.length;
   document.getElementById('k-tot-d').textContent=brk(allRows);
   document.getElementById('k-att').textContent=att;
