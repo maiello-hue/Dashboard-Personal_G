@@ -1577,7 +1577,7 @@ function buildCompensi(){
     <div class="kpi kpi-green"><div class="l">Nutrizionista</div><div class="v">${fmtE(roleTotals.nutri)}</div></div>
     <div class="kpi kpi-purple"><div class="l">Totale compensi</div><div class="v">${fmtE(grandTotal)}</div></div>`;
 }
-const SELECT_FIELDS={'STATO CLIENTE':false,'STATO PAGAMENTO':false,'PERCORSO':true,'METODO PAGAMENTO':true,'TUTOR':true,'TRAINER':true,'NUTRI':true};
+const SELECT_FIELDS={'STATO CLIENTE':false,'STATO PAGAMENTO':false,'TIPO INCASSO':false,'PERCORSO':true,'METODO PAGAMENTO':true,'TUTOR':true,'TRAINER':true,'NUTRI':true};
 function selectFieldHtml(f,l,idPrefix,value,options,allowCustom){
   const idKey=`${idPrefix}-${f.replace(/ /g,'_')}`;
   const has=value&&options.includes(value);
