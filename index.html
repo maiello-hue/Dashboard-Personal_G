@@ -1211,8 +1211,17 @@ function vividColorFor(str){
   for(let i=0;i<str.length;i++){ hash=str.charCodeAt(i)+((hash<<5)-hash); hash=hash|0; }
   return VIVID_PALETTE[Math.abs(hash)%VIVID_PALETTE.length];
 }
+const COLOR_NAME_HEX={rosso:'#d23f3f',verde:'#1f9d63',giallo:'#d4a017',arancio:'#eb6834',azzurro:'#2f9bd6',blu:'#2f56c7',lilla:'#7c56d9',grigioblu:'#5b6b8c',nero:'#1c1c1a'};
+const COLLAB_CHART_COLOR_NAMES={
+  MARA:'lilla',GIULIA:'verde',ANDREA:'rosso',MARGHERITA:'azzurro',MANUELA:'giallo',
+  FEDERICA:'rosso',FIORENZO:'giallo',MARCO:'arancio',MATTEO:'azzurro',GIANMIKI:'grigioblu','NICCOLÒ':'blu','PERSONAL_G':'nero',
+  VANESSA:'lilla',ALESSIA:'rosso',NICOLE:'giallo',SOFIA:'verde',MATILDE:'azzurro'
+};
 function chartTagColor(role,name){
-  return vividColorFor(role+':'+(name||'').trim().toUpperCase());
+  const key=(name||'').trim().toUpperCase();
+  const colorName=COLLAB_CHART_COLOR_NAMES[key];
+  if(colorName) return COLOR_NAME_HEX[colorName];
+  return vividColorFor(role+':'+key);
 }
 function hslToHex(h,s,l){
   s/=100; l/=100;
