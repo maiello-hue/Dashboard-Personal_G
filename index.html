@@ -511,7 +511,16 @@ h3 .ico,.sub .ico{color:var(--muted)}
 
       <div id="analisi-tab-abbandono" class="grid" style="display:none">
         <div class="card span6"><h3>Confronto tassi (%)</h3><div class="chartbox"><canvas id="c-abbandono-rate"></canvas></div></div>
-        <div class="card span6"><h3>Composizione abbandoni</h3><div class="chartbox"><canvas id="c-abbandono-comp"></canvas></div></div>
+        <div class="card span6">
+          <h3>Composizione abbandoni
+            <span class="roletabs">
+              <button id="arc-TUTOR" class="on" onclick="setAbbCompRole('TUTOR')">Tutor</button>
+              <button id="arc-TRAINER" onclick="setAbbCompRole('TRAINER')">Trainer</button>
+              <button id="arc-NUTRI" onclick="setAbbCompRole('NUTRI')">Nutri</button>
+            </span>
+          </h3>
+          <div class="chartbox"><canvas id="c-abbandono-comp"></canvas></div>
+        </div>
         <div class="card span12">
           <h3>Tasso di abbandono</h3>
           <div class="sub" style="margin-bottom:10px">Percentuali sul totale di ciascuna categoria, calcolate separatamente per Premium e Gnocca.</div>
@@ -747,7 +756,7 @@ const LUG26_NUOVI_CLIENTI = [{"CLIENTE":"Giulia Donato","STATO CLIENTE":"IN PERC
 const LS_CLIENTI='global_clienti_v1', LS_RIMBORSI='global_rimborsi_v1';
 const MESI=['GENNAIO','FEBBRAIO','MARZO','APRILE','MAGGIO','GIUGNO','LUGLIO','AGOSTO','SETTEMBRE','OTTOBRE','NOVEMBRE','DICEMBRE'];
 const MESI_SHORT=['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
-let DATA=[], RIMB=[], charts={}, role='TUTOR', sortKey='INIZIO PERCORSO', sortDir=-1, expanded=new Set();
+let DATA=[], RIMB=[], charts={}, role='TUTOR', abbCompRole='TUTOR', sortKey='INIZIO PERCORSO', sortDir=-1, expanded=new Set();
 let KPI_LISTS={};
 let catFilter='all';
 /* Le clienti con percorso misto "N mesi + M Gnocca" sono Premium per i primi
@@ -1808,6 +1817,12 @@ function setRole(r){
   flashBlackBtn(document.getElementById('rt-'+r));
   render();
 }
+function setAbbCompRole(r){
+  abbCompRole=r;
+  ['TUTOR','TRAINER','NUTRI'].forEach(x=>document.getElementById('arc-'+x).classList.toggle('on',x===r));
+  flashBlackBtn(document.getElementById('arc-'+r));
+  render();
+}
 let analisiTab='stato';
 function setAnalisiTab(t){
   analisiTab=t;
@@ -1948,7 +1963,8 @@ function render(){
     {label:'Non rinnovo',data:collabSorted.map(r=>+r.nonrinRate.toFixed(1)),backgroundColor:'#b5720f',borderRadius:6},
     {label:'Totale',data:collabSorted.map(r=>+r.totRate.toFixed(1)),backgroundColor:'#7c56d9',borderRadius:6}
   ]},options:{...common,scales:{x:gridOpt,y:{...gridOpt,beginAtZero:true,ticks:{...gridOpt.ticks,callback:v=>v+'%'}}},plugins:{...common.plugins,tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.formattedValue+'%'}}}}});
-  mkChart('c-abbandono-comp',{type:'doughnut',data:{labels:collabSorted.map(r=>r.name),datasets:[{data:collabSorted.map(r=>r.totN),backgroundColor:collabSorted.map(r=>getCollabColor(r.field.toLowerCase(),r.name).fg),borderWidth:0}]},options:{...common,cutout:'62%'}});
+  const abbCompRows=collabSorted.filter(r=>r.field===abbCompRole);
+  mkChart('c-abbandono-comp',{type:'doughnut',data:{labels:abbCompRows.map(r=>r.name),datasets:[{data:abbCompRows.map(r=>r.totN),backgroundColor:abbCompRows.map(r=>getCollabColor(r.field.toLowerCase(),r.name).fg),borderWidth:0}]},options:{...common,cutout:'62%'}});
 
   const st=countBy(allRows,'STATO CLIENTE');
   mkChart('c-stato',{type:'doughnut',data:{labels:st.map(x=>statoLabel(x[0])),datasets:[{data:st.map(x=>x[1]),backgroundColor:st.map(x=>({'IN PERCORSO':'#1f9d63','CONGELATO':'#2f7fd1','NON RINNOVATO':'#767c8a','ABBANDONATO':'#d23f3f','SPARITA':'#b5720f'}[x[0]]||'#7c56d9')),borderWidth:0}]},options:{...common,cutout:'62%'}});
