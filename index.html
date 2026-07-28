@@ -1942,11 +1942,13 @@ function render(){
 
   const common={plugins:{legend:{labels:{color:'#63625c',font:{size:11},boxWidth:12}}},maintainAspectRatio:false};
   const gridOpt={grid:{color:'#e4e3dd'},ticks:{color:'#63625c',font:{size:11}}};
-  mkChart('c-abbandono-rate',{type:'bar',data:{labels:computed.map(r=>r.label),datasets:[
-    {label:'Premium',data:computed.map(r=>+r.pRate.toFixed(1)),backgroundColor:'#4f6fe0',borderRadius:6},
-    {label:'Gnocca',data:computed.map(r=>+r.gRate.toFixed(1)),backgroundColor:'#7c56d9',borderRadius:6}
+  const collabSorted=['TUTOR','TRAINER','NUTRI'].flatMap(field=>collabRateRows.filter(r=>r.field===field).sort((a,b)=>a.name.localeCompare(b.name,'it')));
+  mkChart('c-abbandono-rate',{type:'bar',data:{labels:collabSorted.map(r=>r.name),datasets:[
+    {label:'Abbandono',data:collabSorted.map(r=>+r.abbRate.toFixed(1)),backgroundColor:'#d23f3f',borderRadius:6},
+    {label:'Non rinnovo',data:collabSorted.map(r=>+r.nonrinRate.toFixed(1)),backgroundColor:'#b5720f',borderRadius:6},
+    {label:'Totale',data:collabSorted.map(r=>+r.totRate.toFixed(1)),backgroundColor:'#7c56d9',borderRadius:6}
   ]},options:{...common,scales:{x:gridOpt,y:{...gridOpt,beginAtZero:true,ticks:{...gridOpt.ticks,callback:v=>v+'%'}}},plugins:{...common.plugins,tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.formattedValue+'%'}}}}});
-  mkChart('c-abbandono-comp',{type:'doughnut',data:{labels:['Premium','Gnocca'],datasets:[{data:[totPremiumA.length,totGnoccaA.length],backgroundColor:['#4f6fe0','#7c56d9'],borderWidth:0}]},options:{...common,cutout:'62%'}});
+  mkChart('c-abbandono-comp',{type:'doughnut',data:{labels:collabSorted.map(r=>r.name),datasets:[{data:collabSorted.map(r=>r.totN),backgroundColor:collabSorted.map(r=>getCollabColor(r.field.toLowerCase(),r.name).fg),borderWidth:0}]},options:{...common,cutout:'62%'}});
 
   const st=countBy(allRows,'STATO CLIENTE');
   mkChart('c-stato',{type:'doughnut',data:{labels:st.map(x=>statoLabel(x[0])),datasets:[{data:st.map(x=>x[1]),backgroundColor:st.map(x=>({'IN PERCORSO':'#1f9d63','CONGELATO':'#2f7fd1','NON RINNOVATO':'#767c8a','ABBANDONATO':'#d23f3f','SPARITA':'#b5720f'}[x[0]]||'#7c56d9')),borderWidth:0}]},options:{...common,cutout:'62%'}});
