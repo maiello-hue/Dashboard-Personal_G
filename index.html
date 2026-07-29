@@ -174,8 +174,8 @@ tr.main:hover{background:var(--card2);cursor:pointer}
 .progress i{display:block;height:100%;border-radius:3px}
 .exp td{background:var(--card2);color:var(--muted);font-size:12px;white-space:normal;position:sticky;left:0;max-width:calc(100vw - 320px)}
 .exp b{color:var(--text)}
-.detail-row{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center;padding:13px 18px;background:var(--card);border:1px solid var(--border);border-radius:14px}
-.detail-item{display:flex;align-items:center;gap:7px;font-size:13.5px;color:var(--text)}
+.detail-row{display:flex;flex-wrap:wrap;gap:14px 32px;align-items:center;padding:15px 20px;background:var(--card);border:1px solid var(--border);border-radius:14px}
+.detail-item{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--text)}
 .di-ic{flex-shrink:0;display:flex;align-items:center}
 .di-ic svg{width:15px;height:15px;stroke:var(--muted);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .detail-item .di-l{color:var(--muted);font-size:11px;margin-right:2px}
@@ -252,11 +252,10 @@ h3 .ico,.sub .ico{color:var(--muted)}
 .icon-btn.danger:hover{background:#fadada}
 .icon-btn.primary{background:var(--text);color:#fff;border-color:var(--text)}
 .icon-btn.primary:hover{opacity:.88;background:var(--text)}
-.pill-btn{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 15px;flex-shrink:0;border:1px solid var(--border-strong);background:var(--card);color:var(--text);border-radius:999px;font-size:12.5px;font-weight:500;cursor:pointer;white-space:nowrap;transition:background .15s ease}
+.pill-btn{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 16px;flex-shrink:0;border:1px solid var(--border-strong);background:var(--card);color:var(--text);border-radius:999px;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;transition:background .15s ease,color .15s ease,border-color .15s ease}
 .pill-btn .ico{margin-right:0}
 .pill-btn:hover{background:var(--card2)}
-.pill-btn.danger{background:var(--card);color:#791f1f;border-color:#f3d9d9}
-.pill-btn.danger:hover{background:#fcebeb}
+.pill-btn.danger:hover{background:#fcebeb;color:#791f1f;border-color:#f3d9d9}
 .modal-overlay{position:fixed;inset:0;background:rgba(15,15,14,.5);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px}
 .modal-card{background:var(--card);border-radius:14px;padding:22px 24px;max-width:680px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.3)}
 .modal-card h3{font-size:15px;margin-bottom:14px}
@@ -2632,13 +2631,13 @@ function renderTable(rows){
     const finTxt=fin?`${fdate(fin)}${scad?' <span class="danger">'+ic('warn')+'</span>':''}${renBadge}`:'—';
     const finLabel=fin?fdate(fin):'MAI';
     const detailInner=`
-        <span class="detail-item">${DI.fonte}<span class="di-l">Fonte</span> ${esc(r['FONTE']||'—')}</span>
-        <span class="detail-item">${DI.coin}${esc(r['IMPORTO']||'—')}</span>
-        <span class="detail-item">${DI.card}${esc(r['METODO PAGAMENTO']||'—')}</span>
-        <span class="detail-item">${DI.check}${esc(r['STATO PAGAMENTO']||'—')}</span>
-        <span class="detail-item">${DI.contract}<span class="di-l">Contratto</span> ${esc(r['CONTRATTO']||'—')}</span>
-        <span class="detail-item">${DI.checkbox}<span class="di-l">Check</span> ${esc(r['CHECK']||'—')}</span>
-        <span class="detail-item">${DI.star}<span class="di-l">Risultato</span> ${esc(r['RISULTATO']||'—')}</span>
+        <span class="detail-item" title="Fonte">${DI.fonte}${esc(r['FONTE']||'—')}</span>
+        <span class="detail-item" title="Importo">${DI.coin}${esc(r['IMPORTO']||'—')}</span>
+        <span class="detail-item" title="Metodo di pagamento">${DI.card}${esc(r['METODO PAGAMENTO']||'—')}</span>
+        <span class="detail-item" title="Stato pagamento">${DI.check}${esc(r['STATO PAGAMENTO']||'—')}</span>
+        <span class="detail-item" title="Contratto">${DI.contract}${esc(r['CONTRATTO']||'—')}</span>
+        <span class="detail-item" title="Check">${DI.checkbox}${esc(r['CHECK']||'—')}</span>
+        <span class="detail-item" title="Risultato">${DI.star}${esc(r['RISULTATO']||'—')}</span>
         <span class="row-icon-actions" onclick="event.stopPropagation()">
           <button class="pill-btn" title="Modifica" onclick="apriModificaCliente('${jsEsc(r['CLIENTE'])}')">${ic('edit')}Modifica</button>
           <button class="pill-btn danger" title="Elimina cliente" onclick="eliminaCliente('${jsEsc(r['CLIENTE'])}')">${ic('trash')}Elimina</button>
