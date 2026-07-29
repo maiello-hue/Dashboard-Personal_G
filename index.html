@@ -748,25 +748,25 @@ h3 .ico,.sub .ico{color:var(--muted)}
       <div id="check-list"></div>
 
       <h3 style="margin:22px 0 6px">Tasso di performance per collaboratore</h3>
-      <div class="sub" style="margin-bottom:10px">Percentuale di clienti con Check e Risultato a "Sì", calcolata sul totale delle clienti assegnate a ciascun collaboratore, divisa per categoria. I venditori non sono inclusi.</div>
+      <div class="sub" style="margin-bottom:10px">Per ciascun collaboratore: clienti assegnate, quante hanno un check inserito, quante hanno un miglioramento (Risultato = Sì) e la percentuale di miglioramento sul totale delle clienti. Divisa per categoria, i venditori non sono inclusi.</div>
       <div class="card span12" style="margin-bottom:14px">
         <h3>Tutor</h3>
         <table class="rate-table">
-          <thead><tr><th>Collaboratore</th><th>Clienti</th><th>Check</th><th>Risultato</th></tr></thead>
+          <thead><tr><th>Collaboratore</th><th>Clienti</th><th>Check inserito</th><th>Miglioramenti</th><th>% Miglioramento (sul totale)</th></tr></thead>
           <tbody id="perf-tutor-table-body"></tbody>
         </table>
       </div>
       <div class="card span12" style="margin-bottom:14px">
         <h3>Trainer</h3>
         <table class="rate-table">
-          <thead><tr><th>Collaboratore</th><th>Clienti</th><th>Check</th><th>Risultato</th></tr></thead>
+          <thead><tr><th>Collaboratore</th><th>Clienti</th><th>Check inserito</th><th>Miglioramenti</th><th>% Miglioramento (sul totale)</th></tr></thead>
           <tbody id="perf-trainer-table-body"></tbody>
         </table>
       </div>
       <div class="card span12">
         <h3>Nutrizioniste</h3>
         <table class="rate-table">
-          <thead><tr><th>Collaboratore</th><th>Clienti</th><th>Check</th><th>Risultato</th></tr></thead>
+          <thead><tr><th>Collaboratore</th><th>Clienti</th><th>Check inserito</th><th>Miglioramenti</th><th>% Miglioramento (sul totale)</th></tr></thead>
           <tbody id="perf-nutri-table-body"></tbody>
         </table>
       </div>
@@ -2168,17 +2168,20 @@ function buildCheckPage(){
   el.innerHTML=sectionHtml('Premium',premiumRows)+sectionHtml('Gnocca',gnoccaRows);
   buildPerfCollabTable();
 }
-/* Tasso di performance per collaboratore: % di clienti con Check="Sì" e con
-   Risultato="Sì" sul totale delle clienti assegnate, diviso per categoria
-   (Tutor/Trainer/Nutrizioniste; i venditori non entrano in questo calcolo). */
+/* Tasso di performance per collaboratore, diviso per categoria (Tutor/Trainer/
+   Nutrizioniste; i venditori non entrano in questo calcolo). Per ciascun
+   collaboratore: clienti assegnate, quante hanno un check inserito (CHECK
+   valorizzato, Sì o No), quante hanno un miglioramento (RISULTATO="Sì") e la
+   percentuale di miglioramento calcolata sul totale delle clienti assegnate. */
 function buildPerfCollabTable(){
   const pct=(n,d)=>d?(n/d*100):0;
-  const fmtPct=n=>n.toLocaleString('it-IT',{minimumFractionDigits:1,maximumFractionDigits:1})+'%';
-  const perfColor=p=>p>=80?{bg:'#eaf7ef',fg:'#1f9d63'}:p>=50?{bg:'#faf1e2',fg:'#b5720f'}:{bg:'#fbebeb',fg:'#d23f3f'};
-  const cell=rate=>{
+  const fmtPct=n=>Math.round(n)+'%';
+  const perfColor=p=>p>=40?{bg:'#eaf7ef',fg:'#1f9d63'}:p>=25?{bg:'#faf1e2',fg:'#b5720f'}:{bg:'#fbebeb',fg:'#d23f3f'};
+  const pctCell=rate=>{
     const c=perfColor(rate);
     return `<td class="rate-cell"><div class="rate-cell-inner"><span class="rate-pill" style="background:${c.bg};color:${c.fg}">${fmtPct(rate)}</span></div></td>`;
   };
+  const numCell=n=>`<td style="text-align:center">${n}</td>`;
   const collabBadgeFn={TUTOR:tutBadge,TRAINER:trainBadge,NUTRI:nutriBadge};
   const elId={TUTOR:'perf-tutor-table-body',TRAINER:'perf-trainer-table-body',NUTRI:'perf-nutri-table-body'};
   ['TUTOR','TRAINER','NUTRI'].forEach(field=>{
@@ -2188,18 +2191,19 @@ function buildPerfCollabTable(){
     distinct(field).forEach(name=>{
       const assigned=DATA.filter(r=>(r[field]||'').trim()===name);
       if(!assigned.length) return;
-      const checkSi=assigned.filter(r=>(r['CHECK']||'').trim().toUpperCase()==='SI').length;
-      const risSi=assigned.filter(r=>(r['RISULTATO']||'').trim().toUpperCase()==='SI').length;
-      const checkRate=pct(checkSi,assigned.length), risRate=pct(risSi,assigned.length);
-      rows.push({name,tot:assigned.length,checkRate,risRate});
+      const checkInserito=assigned.filter(r=>(r['CHECK']||'').trim()!=='').length;
+      const miglioramenti=assigned.filter(r=>(r['RISULTATO']||'').trim().toUpperCase()==='SI').length;
+      const migRate=pct(miglioramenti,assigned.length);
+      rows.push({name,tot:assigned.length,checkInserito,miglioramenti,migRate});
     });
     rows.sort((a,b)=>a.name.localeCompare(b.name,'it'));
     el.innerHTML=rows.map(r=>`<tr class="rate-tr">
         <td><div class="rate-row-label">${collabBadgeFn[field](r.name)}</div></td>
-        <td style="text-align:center">${r.tot}</td>
-        ${cell(r.checkRate)}
-        ${cell(r.risRate)}
-      </tr>`).join('')||'<tr><td colspan="4" class="sub">Nessun collaboratore con clienti assegnate.</td></tr>';
+        ${numCell(r.tot)}
+        ${numCell(r.checkInserito)}
+        ${numCell(r.miglioramenti)}
+        ${pctCell(r.migRate)}
+      </tr>`).join('')||'<tr><td colspan="5" class="sub">Nessun collaboratore con clienti assegnate.</td></tr>';
   });
 }
 const SELECT_FIELDS={'STATO CLIENTE':false,'STATO PAGAMENTO':false,'TIPO INCASSO':false,'PERCORSO':true,'METODO PAGAMENTO':true,'TUTOR':true,'TRAINER':true,'NUTRI':true,'VENDITORE':true};
