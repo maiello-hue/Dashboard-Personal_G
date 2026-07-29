@@ -742,16 +742,32 @@ h3 .ico,.sub .ico{color:var(--muted)}
 
     <div id="page-check" style="display:none">
       <div class="sub" style="margin-bottom:14px">Elenco di tutte le clienti, divise per Premium e Gnocca. Per ciascuna, segna se il check è stato effettuato e se il risultato è stato raggiunto.</div>
+      <div class="filters">
+        <input type="text" id="check-search" placeholder="Cerca cliente…" oninput="buildCheckPage()">
+      </div>
       <div id="check-list"></div>
 
       <h3 style="margin:22px 0 6px">Tasso di performance per collaboratore</h3>
-      <div class="sub" style="margin-bottom:10px">Percentuale di clienti con Check e Risultato a "Sì", calcolata sul totale delle clienti assegnate a ciascun collaboratore. I venditori non sono inclusi.</div>
-      <div class="card span12">
+      <div class="sub" style="margin-bottom:10px">Percentuale di clienti con Check e Risultato a "Sì", calcolata sul totale delle clienti assegnate a ciascun collaboratore, divisa per categoria. I venditori non sono inclusi.</div>
+      <div class="card span12" style="margin-bottom:14px">
+        <h3>Tutor</h3>
         <table class="rate-table">
-          <thead>
-            <tr><th>Collaboratore</th><th>Clienti</th><th>Check</th><th>Risultato</th><th>Performance</th></tr>
-          </thead>
-          <tbody id="perf-collab-table-body"></tbody>
+          <thead><tr><th>Collaboratore</th><th>Clienti</th><th>Check</th><th>Risultato</th></tr></thead>
+          <tbody id="perf-tutor-table-body"></tbody>
+        </table>
+      </div>
+      <div class="card span12" style="margin-bottom:14px">
+        <h3>Trainer</h3>
+        <table class="rate-table">
+          <thead><tr><th>Collaboratore</th><th>Clienti</th><th>Check</th><th>Risultato</th></tr></thead>
+          <tbody id="perf-trainer-table-body"></tbody>
+        </table>
+      </div>
+      <div class="card span12">
+        <h3>Nutrizioniste</h3>
+        <table class="rate-table">
+          <thead><tr><th>Collaboratore</th><th>Clienti</th><th>Check</th><th>Risultato</th></tr></thead>
+          <tbody id="perf-nutri-table-body"></tbody>
         </table>
       </div>
     </div>
@@ -2124,11 +2140,13 @@ function checkToggleGroupHtml(cliente,field,label,currentVal){
 function buildCheckPage(){
   const el=document.getElementById('check-list');
   if(!el) return;
+  const q=(document.getElementById('check-search')?.value||'').trim().toLowerCase();
+  const matches=r=>!q||(r['CLIENTE']||'').toLowerCase().includes(q);
   const byName=(a,b)=>(a['CLIENTE']||'').localeCompare(b['CLIENTE']||'','it');
-  const premiumRows=DATA.filter(r=>!isGnocca(r)).sort(byName);
-  const gnoccaRows=DATA.filter(isGnocca).sort(byName);
+  const premiumRows=DATA.filter(r=>!isGnocca(r)&&matches(r)).sort(byName);
+  const gnoccaRows=DATA.filter(r=>isGnocca(r)&&matches(r)).sort(byName);
   const sectionHtml=(title,rows)=>{
-    const open=checkSectionsExpanded.has(title);
+    const open=q?true:checkSectionsExpanded.has(title);
     const rowsHtml=rows.map(r=>{
       const cliente=r['CLIENTE'];
       return `<div class="fonte-client-row">
@@ -2138,7 +2156,7 @@ function buildCheckPage(){
           ${checkToggleGroupHtml(cliente,'RISULTATO','Risultato',r['RISULTATO'])}
         </span>
       </div>`;
-    }).join('')||'<div class="sub">Nessuna cliente in questa categoria.</div>';
+    }).join('')||`<div class="sub">${q?'Nessuna cliente trovata.':'Nessuna cliente in questa categoria.'}</div>`;
     return `<div class="fonte-section">
       <div class="fonte-section-head" onclick="toggleCheckSection('${title}')">
         <span>${title}</span>
@@ -2151,11 +2169,9 @@ function buildCheckPage(){
   buildPerfCollabTable();
 }
 /* Tasso di performance per collaboratore: % di clienti con Check="Sì" e con
-   Risultato="Sì" sul totale delle clienti assegnate, per Tutor/Trainer/Nutri
-   (i venditori non entrano in questo calcolo). */
+   Risultato="Sì" sul totale delle clienti assegnate, diviso per categoria
+   (Tutor/Trainer/Nutrizioniste; i venditori non entrano in questo calcolo). */
 function buildPerfCollabTable(){
-  const el=document.getElementById('perf-collab-table-body');
-  if(!el) return;
   const pct=(n,d)=>d?(n/d*100):0;
   const fmtPct=n=>n.toLocaleString('it-IT',{minimumFractionDigits:1,maximumFractionDigits:1})+'%';
   const perfColor=p=>p>=80?{bg:'#eaf7ef',fg:'#1f9d63'}:p>=50?{bg:'#faf1e2',fg:'#b5720f'}:{bg:'#fbebeb',fg:'#d23f3f'};
@@ -2164,26 +2180,27 @@ function buildPerfCollabTable(){
     return `<td class="rate-cell"><div class="rate-cell-inner"><span class="rate-pill" style="background:${c.bg};color:${c.fg}">${fmtPct(rate)}</span></div></td>`;
   };
   const collabBadgeFn={TUTOR:tutBadge,TRAINER:trainBadge,NUTRI:nutriBadge};
-  const rows=[];
+  const elId={TUTOR:'perf-tutor-table-body',TRAINER:'perf-trainer-table-body',NUTRI:'perf-nutri-table-body'};
   ['TUTOR','TRAINER','NUTRI'].forEach(field=>{
+    const el=document.getElementById(elId[field]);
+    if(!el) return;
+    const rows=[];
     distinct(field).forEach(name=>{
       const assigned=DATA.filter(r=>(r[field]||'').trim()===name);
       if(!assigned.length) return;
       const checkSi=assigned.filter(r=>(r['CHECK']||'').trim().toUpperCase()==='SI').length;
       const risSi=assigned.filter(r=>(r['RISULTATO']||'').trim().toUpperCase()==='SI').length;
       const checkRate=pct(checkSi,assigned.length), risRate=pct(risSi,assigned.length);
-      const perfRate=(checkRate+risRate)/2;
-      rows.push({field,name,tot:assigned.length,checkRate,risRate,perfRate});
+      rows.push({name,tot:assigned.length,checkRate,risRate});
     });
+    rows.sort((a,b)=>a.name.localeCompare(b.name,'it'));
+    el.innerHTML=rows.map(r=>`<tr class="rate-tr">
+        <td><div class="rate-row-label">${collabBadgeFn[field](r.name)}</div></td>
+        <td style="text-align:center">${r.tot}</td>
+        ${cell(r.checkRate)}
+        ${cell(r.risRate)}
+      </tr>`).join('')||'<tr><td colspan="4" class="sub">Nessun collaboratore con clienti assegnate.</td></tr>';
   });
-  rows.sort((a,b)=>b.perfRate-a.perfRate);
-  el.innerHTML=rows.map(r=>`<tr class="rate-tr">
-      <td><div class="rate-row-label">${collabBadgeFn[r.field](r.name)}</div></td>
-      <td style="text-align:center">${r.tot}</td>
-      ${cell(r.checkRate)}
-      ${cell(r.risRate)}
-      ${cell(r.perfRate)}
-    </tr>`).join('')||'<tr><td colspan="5" class="sub">Nessun collaboratore con clienti assegnate.</td></tr>';
 }
 const SELECT_FIELDS={'STATO CLIENTE':false,'STATO PAGAMENTO':false,'TIPO INCASSO':false,'PERCORSO':true,'METODO PAGAMENTO':true,'TUTOR':true,'TRAINER':true,'NUTRI':true,'VENDITORE':true};
 function selectFieldHtml(f,l,idPrefix,value,options,allowCustom,labelMap){
