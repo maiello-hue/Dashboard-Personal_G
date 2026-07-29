@@ -1422,6 +1422,24 @@ function resetCollabColor(role,name){
   buildSettingsPanel();
   render();
 }
+/* Migrazione una tantum: Margherita, Andrea, Manuela e Mara hanno ricevuto un
+   nuovo colore di default (rispettivamente quello di Matilde, Federica, Fiorenzo
+   e Vanessa). Se su questo dispositivo era già salvato un colore personalizzato
+   per uno di questi nomi, va rimosso una volta sola così il nuovo default si
+   vede subito, senza impedire una nuova personalizzazione futura dall'utente.
+   Eseguita solo se non già applicata (flag in localStorage), quindi è sicura
+   da richiamare ad ogni avvio. */
+const TUTOR_COLOR_RESET_FLAG='tutor_color_reset_v1_done';
+function applyTutorColorResetOnce(){
+  try{
+    if(localStorage.getItem(TUTOR_COLOR_RESET_FLAG)) return;
+    ['MARGHERITA','ANDREA','MANUELA','MARA'].forEach(k=>{
+      if(COLLAB_COLORS.tutor && COLLAB_COLORS.tutor[k]) delete COLLAB_COLORS.tutor[k];
+    });
+    saveCollabColors();
+    localStorage.setItem(TUTOR_COLOR_RESET_FLAG,'1');
+  }catch(e){}
+}
 
 /* ---------- elenchi personalizzabili: collaboratori, metodi di pagamento, percorsi ---------- */
 const KNOWN_COLLAB={tutor:['Andrea','Giulia','Manuela','Margherita','Mara'],trainer:['Fiorenzo','Matteo','Federica','Gianmiki','Marco'],nutri:['Nicole','Alessia','Vanessa','Sofia','Matilde'],venditore:['Personal_G']};
@@ -2495,6 +2513,7 @@ function toggleRExp(id){
 /* ---------- avvio ---------- */
 loadTagColors();
 loadCollabColors();
+applyTutorColorResetOnce();
 loadCompOverrides();
 initData();
 applyLug26Import();
