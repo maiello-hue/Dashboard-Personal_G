@@ -2474,7 +2474,7 @@ const DI={
 const COLS=[
   ['CLIENTE','Cliente'],['STATO CLIENTE','Stato'],['PERCORSO','Percorso'],
   ['INIZIO PERCORSO','Inizio'],['FINE PERCORSO','Fine'],['_PROG','Avanzamento'],
-  ['TUTOR','Tutor'],['TRAINER','Trainer'],['NUTRI','Nutri']
+  ['VENDITORE','Venditore'],['TUTOR','Tutor'],['TRAINER','Trainer'],['NUTRI','Nutri']
 ];
 function sortBy(k){
   if(sortKey===k) sortDir*=-1; else {sortKey=k;sortDir=1;}
@@ -2546,7 +2546,6 @@ function renderTable(rows){
         <span class="detail-item">${DI.check}${esc(r['STATO PAGAMENTO']||'—')}</span>
         <span class="detail-item">${DI.contract}<span class="di-l">Contratto</span> ${esc(r['CONTRATTO']||'—')}</span>
         <span class="detail-item">${DI.checkbox}<span class="di-l">Check</span> ${esc(r['CHECK']||'—')}</span>
-        <span class="detail-item">${DI.split}<span class="di-l">Venditore</span> ${esc(r['VENDITORE']||'—')}</span>
         <span class="detail-item">${DI.star}<span class="di-l">Risultato</span> ${esc(r['RISULTATO']||'—')}</span>
         <span class="row-icon-actions" onclick="event.stopPropagation()">
           <button class="icon-btn" title="Modifica" onclick="apriModificaCliente('${jsEsc(r['CLIENTE'])}')">${ic('edit')}</button>
@@ -2559,8 +2558,9 @@ function renderTable(rows){
     const main=`<tr class="main" onclick="toggleExp(${i})">
       <td data-label="Cliente">${r['CLIENTE']}</td><td data-label="Stato">${statoBadge(r['STATO CLIENTE'])}</td><td data-label="Percorso">${percBadge(r['PERCORSO'])}</td>
       <td data-label="Inizio">${fdate(ini)}</td><td data-label="Fine">${finTxt}</td><td data-label="Avanzamento">${prog}</td>
+      <td data-label="Venditore">${vendBadge(r['VENDITORE'])}</td>
       <td data-label="Tutor">${tutBadge(r['TUTOR'])}</td><td data-label="Trainer">${trainBadge(r['TRAINER'])}</td><td data-label="Nutri">${nutriBadge(r['NUTRI'])}</td></tr>`;
-    const exp=expanded.has(r['CLIENTE'])?`<tr class="exp"><td colspan="9"><div class="detail-row">${detailInner}</div></td></tr>`:'';
+    const exp=expanded.has(r['CLIENTE'])?`<tr class="exp"><td colspan="10"><div class="detail-row">${detailInner}</div></td></tr>`:'';
     return main+exp;
   };
   const mobileCardHtml=({r,i,pctVal,pctCls,finLabel,scad,renBadge,detailInner})=>{
@@ -2593,10 +2593,10 @@ function renderTable(rows){
     const groups=groupStoricoByMonth(rowsCalc);
     document.getElementById('tbody').innerHTML=groups.map(g=>{
       const isOpen=storicoGroupsExpanded.has(g.key);
-      const header=`<tr class="rate-group-row storico-group-row" onclick="toggleStoricoGroup('${jsEsc(g.key)}')"><td colspan="9"><span class="storico-group-arrow">${isOpen?'▾':'▸'}</span> ${esc(g.label)} <span class="count">(${g.items.length})</span></td></tr>`;
+      const header=`<tr class="rate-group-row storico-group-row" onclick="toggleStoricoGroup('${jsEsc(g.key)}')"><td colspan="10"><span class="storico-group-arrow">${isOpen?'▾':'▸'}</span> ${esc(g.label)} <span class="count">(${g.items.length})</span></td></tr>`;
       const body=isOpen?g.items.map(desktopRowHtml).join(''):'';
       return header+body;
-    }).join('')||'<tr><td colspan="9" class="sub">Nessuna cliente in Storico.</td></tr>';
+    }).join('')||'<tr><td colspan="10" class="sub">Nessuna cliente in Storico.</td></tr>';
     if(ccList) ccList.innerHTML=groups.map(g=>{
       const isOpen=storicoGroupsExpanded.has(g.key);
       const header=`<div class="storico-group-header" onclick="toggleStoricoGroup('${jsEsc(g.key)}')"><span class="storico-group-arrow">${isOpen?'⌄':'›'}</span><span class="storico-group-label">${esc(g.label)}</span><span class="count">${g.items.length}</span></div>`;
