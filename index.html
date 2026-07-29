@@ -200,6 +200,9 @@ h3 .ico,.sub .ico{color:var(--muted)}
 .editbar label{display:flex;flex-direction:column;gap:3px;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
 .editbar input{background:var(--card);border:1px solid var(--border-strong);color:var(--text);border-radius:8px;padding:8px 10px;font-size:12px;outline:none}
 .editbar input:focus{border-color:var(--muted2)}
+.editbar-2col{grid-template-columns:repeat(2,1fr);gap:20px 28px;align-items:start}
+.editbar-2col label{font-size:13px;color:var(--muted);text-transform:none;letter-spacing:normal;font-weight:400;gap:6px}
+.editbar-2col input,.editbar-2col select{font-size:14px;padding:11px 14px;border-radius:10px;border:1px solid var(--border-strong)}
 .editbar-actions{display:flex;gap:8px;margin-top:10px}
 .color-swatch-trigger{width:34px;height:28px;border:1px solid var(--border-strong);border-radius:6px;cursor:pointer;padding:0;flex-shrink:0}
 .color-swatch-trigger:hover{filter:brightness(0.97)}
@@ -252,6 +255,8 @@ h3 .ico,.sub .ico{color:var(--muted)}
 .modal-overlay{position:fixed;inset:0;background:rgba(15,15,14,.5);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px}
 .modal-card{background:var(--card);border-radius:14px;padding:22px 24px;max-width:680px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.3)}
 .modal-card h3{font-size:15px;margin-bottom:14px}
+.modal-card-lg{max-width:760px;border-radius:20px;padding:30px 34px}
+.modal-card-lg h3{font-size:20px;font-weight:600;margin-bottom:22px}
 .incrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
 .incbox{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px;cursor:pointer;transition:filter .1s,box-shadow .1s}
 .incbox:hover{filter:brightness(.97);box-shadow:0 2px 8px rgba(0,0,0,.06)}
@@ -759,9 +764,9 @@ h3 .ico,.sub .ico{color:var(--muted)}
 </div>
 
 <div class="modal-overlay" id="edit-cliente-modal" onclick="if(event.target===this) chiudiModificaCliente()">
-  <div class="modal-card">
+  <div class="modal-card modal-card-lg">
     <h3><span class="ico"><svg viewBox="0 0 16 16"><path d="M9.8 3.2l3 3-7.3 7.3H2.5v-3z"/></svg></span>Modifica cliente — <span id="edit-cliente-name"></span></h3>
-    <div class="editbar" id="edit-cliente-fields"></div>
+    <div class="editbar editbar-2col" id="edit-cliente-fields"></div>
     <div class="editbar-actions">
       <button class="btn" onclick="salvaClienteModal()"><span class="ico"><svg viewBox="0 0 16 16"><path d="M3 3h7.5l2.5 2.5V13H3z"/><path d="M5 3v3h5V3"/><path d="M5.3 9H10.7V13H5.3z"/></svg></span>Salva</button>
       <button class="btn ghost" onclick="chiudiModificaCliente()">Chiudi</button>
