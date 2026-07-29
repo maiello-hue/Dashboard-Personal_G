@@ -768,9 +768,15 @@ let catFilter='all';
    ai fini delle statistiche, pur mantenendo il tag percorso testuale originale
    (non vengono rinominate). */
 const GNOCCA_PERCORSI_ESPLICITI=['PROMO ESTATE','FIGO 6','FIGO 12'];
+/* Clienti importate dal foglio Google "GNOCCA": vengono sempre conteggiate come
+   Gnocca ai fini delle statistiche (indipendentemente dal testo del percorso,
+   che resta quello originale del foglio, es. "12 MESI"), perché appartengono
+   a quella sezione. L'elenco nomi è derivato automaticamente da
+   GNOCCA_SHEET_NUOVI_CLIENTI qui sotto. */
 function isGnocca(r){
   const perc=r['PERCORSO']||'';
   if(GNOCCA_PERCORSI_ESPLICITI.includes(perc.toUpperCase())) return true;
+  if(typeof GNOCCA_SHEET_CLIENTI_NOMI!=='undefined' && GNOCCA_SHEET_CLIENTI_NOMI.includes((r['CLIENTE']||'').trim().toUpperCase())) return true;
   if(!/gnocca/i.test(perc)) return false;
   const m=perc.match(/(\d+)\s*mes[ei]/i);
   const premiumMonths=m?parseInt(m[1],10):0;
@@ -908,6 +914,7 @@ async function syncFromGithub(showStatus){
       applyAllData(remote);
       applyLug26Import();
       applyPromoEstateImport();
+      applyGnoccaSheetImport();
       applyFonteMap();
       buildFilters(); buildRimbFilters(); render(); renderRimborsi();
       setGhStatus(ic('check')+'Sincronizzato alle '+new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}));
@@ -1052,6 +1059,26 @@ function applyPromoEstateImport(){
   });
   if(r.added>0||updated>0){ saveClienti(); buildFilters(); render(); }
   return {...r,updated};
+}
+/* Import del foglio Google "GNOCCA": aggiunge le clienti del foglio non ancora presenti
+   sulla dashboard (escluse quelle con percorso "REFERRAL", che al momento dell'import
+   non risultavano presenti in questo foglio). Le clienti già esistenti vengono
+   riconosciute per nome e saltate, senza mai duplicarle o sovrascriverle.
+   Idempotente: rieseguibile ad ogni avvio, sia in locale che dopo una sincronizzazione GitHub. */
+const GNOCCA_SHEET_NUOVI_CLIENTI=[
+  {"CLIENTE":"Jessica Casile","STATO CLIENTE":"IN PERCORSO","PERCORSO":"12 MESI","INIZIO PERCORSO":"30/10/2025","FINE PERCORSO":"30/10/2026","IMPORTO":"€ 588,00","METODO PAGAMENTO":"PagoDIL","STATO PAGAMENTO":"SALDATO","TIPO INCASSO":"","N° FATTURA":"","INCASSO":"","RIMBORSO":"","TUTOR":"","TRAINER":"","NUTRI":"","PAGANTE":"SI","€ TUTOR":"","€ TRAINER":"","€ NUTRI":"","CONTRATTO":"","CHECK":"","RISULTATO":""},
+  {"CLIENTE":"Patricia Ramos","STATO CLIENTE":"IN PERCORSO","PERCORSO":"12 MESI","INIZIO PERCORSO":"17/12/2025","FINE PERCORSO":"17/12/2026","IMPORTO":"€ 588,00","METODO PAGAMENTO":"PagoDIL","STATO PAGAMENTO":"SALDATO","TIPO INCASSO":"","N° FATTURA":"","INCASSO":"","RIMBORSO":"","TUTOR":"Personal_G","TRAINER":"","NUTRI":"","PAGANTE":"SI","€ TUTOR":"","€ TRAINER":"","€ NUTRI":"","CONTRATTO":"","CHECK":"","RISULTATO":""},
+  {"CLIENTE":"Lucrezia Selene Stabile","STATO CLIENTE":"IN PERCORSO","PERCORSO":"12 MESI","INIZIO PERCORSO":"19/01/2026","FINE PERCORSO":"19/01/2027","IMPORTO":"€ 588,00","METODO PAGAMENTO":"PagoDIL","STATO PAGAMENTO":"SALDATO","TIPO INCASSO":"","N° FATTURA":"","INCASSO":"","RIMBORSO":"","TUTOR":"Mara","TRAINER":"","NUTRI":"","PAGANTE":"SI","€ TUTOR":"","€ TRAINER":"","€ NUTRI":"","CONTRATTO":"","CHECK":"","RISULTATO":""},
+  {"CLIENTE":"Francesca Romanelli","STATO CLIENTE":"IN PERCORSO","PERCORSO":"12 MESI","INIZIO PERCORSO":"25/01/2026","FINE PERCORSO":"25/01/2027","IMPORTO":"€ 768,00","METODO PAGAMENTO":"PagoDIL","STATO PAGAMENTO":"SALDATO","TIPO INCASSO":"","N° FATTURA":"","INCASSO":"","RIMBORSO":"","TUTOR":"Margherita","TRAINER":"","NUTRI":"Sofia","PAGANTE":"SI","€ TUTOR":"","€ TRAINER":"","€ NUTRI":"","CONTRATTO":"","CHECK":"","RISULTATO":""},
+  {"CLIENTE":"Chiara Pintus","STATO CLIENTE":"IN PERCORSO","PERCORSO":"12 MESI","INIZIO PERCORSO":"27/02/2026","FINE PERCORSO":"27/02/2027","IMPORTO":"€ 816,00","METODO PAGAMENTO":"PagoDIL","STATO PAGAMENTO":"SALDATO","TIPO INCASSO":"","N° FATTURA":"","INCASSO":"","RIMBORSO":"","TUTOR":"Duccio","TRAINER":"","NUTRI":"Vanessa","PAGANTE":"SI","€ TUTOR":"","€ TRAINER":"","€ NUTRI":"","CONTRATTO":"","CHECK":"","RISULTATO":""},
+  {"CLIENTE":"Paula Andreea Petras","STATO CLIENTE":"IN PERCORSO","PERCORSO":"12 MESI","INIZIO PERCORSO":"16/06/2026","FINE PERCORSO":"16/06/2027","IMPORTO":"€ 990,00","METODO PAGAMENTO":"Bonifico","STATO PAGAMENTO":"SALDATO","TIPO INCASSO":"","N° FATTURA":"","INCASSO":"","RIMBORSO":"","TUTOR":"Martina","TRAINER":"","NUTRI":"Matilde","PAGANTE":"SI","€ TUTOR":"","€ TRAINER":"","€ NUTRI":"","CONTRATTO":"","CHECK":"","RISULTATO":""},
+  {"CLIENTE":"Celine Hervo","STATO CLIENTE":"IN PERCORSO","PERCORSO":"8 mesi","INIZIO PERCORSO":"15/07/2026","FINE PERCORSO":"15/07/2027","IMPORTO":"€ 768,00","METODO PAGAMENTO":"PagoDIL","STATO PAGAMENTO":"SALDATO","TIPO INCASSO":"","N° FATTURA":"","INCASSO":"","RIMBORSO":"","TUTOR":"Mara","TRAINER":"","NUTRI":"Sofia","PAGANTE":"SI","€ TUTOR":"","€ TRAINER":"","€ NUTRI":"","CONTRATTO":"","CHECK":"","RISULTATO":""}
+];
+const GNOCCA_SHEET_CLIENTI_NOMI=GNOCCA_SHEET_NUOVI_CLIENTI.map(r=>r['CLIENTE'].trim().toUpperCase());
+function applyGnoccaSheetImport(){
+  const r=mergeNuoviClienti(GNOCCA_SHEET_NUOVI_CLIENTI);
+  if(r.added>0){ saveClienti(); buildFilters(); render(); }
+  return r;
 }
 /* Fonte cliente: valorizzata a incrocio con la colonna FONTE del foglio Google (luglio 2026).
    Compila SOLO r['FONTE'] quando è vuota — non sovrascrive mai un valore già presente,
@@ -2472,6 +2499,7 @@ loadCompOverrides();
 initData();
 applyLug26Import();
 applyPromoEstateImport();
+applyGnoccaSheetImport();
 applyFonteMap();
 loadManagedLists();
 buildFilters();
