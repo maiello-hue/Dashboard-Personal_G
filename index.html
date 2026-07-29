@@ -60,6 +60,7 @@ h1{font-size:22px;font-weight:500}
 .kpi-purple{background:#f1eefb}.kpi-purple .l,.kpi-purple .v{color:#7c56d9}
 .kpi-azzurro{background:#e0f4fb}.kpi-azzurro .l,.kpi-azzurro .v{color:#0a8aa8}
 .kpi-yellow{background:#fdf6d6}.kpi-yellow .l,.kpi-yellow .v{color:#a67f00}
+.kpi-gray{background:#e2e6ec}.kpi-gray .l,.kpi-gray .v{color:#37424f}
 .fonte-section{border:1px solid var(--border);border-radius:10px;margin-top:10px;overflow:hidden}
 .fonte-section:first-child{margin-top:0}
 .fonte-section-head{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;cursor:pointer;background:var(--card2);font-size:14px;font-weight:500;transition:background .12s ease}
@@ -106,6 +107,7 @@ h1{font-size:22px;font-weight:500}
 .b-nonrinnovato{background:var(--tag-b-nonrinnovato-bg,#efe9fb);color:var(--tag-b-nonrinnovato-fg,#4a3aa7)}
 .b-abbandonato{background:var(--tag-b-abbandonato-bg,#fcebeb);color:var(--tag-b-abbandonato-fg,#791f1f)}
 .b-sparita{background:var(--tag-b-sparita-bg,#faeeda);color:var(--tag-b-sparita-fg,#633806)}
+.b-maiiniziato{background:var(--tag-b-maiiniziato-bg,#e2e6ec);color:var(--tag-b-maiiniziato-fg,#37424f)}
 .b-altro{background:var(--tag-b-altro-bg,#f1efe8);color:var(--tag-b-altro-fg,#444441)}
 .p-saldato{background:var(--tag-p-saldato-bg,#e1f5ee);color:var(--tag-p-saldato-fg,#085041)}
 .p-dasaldare{background:var(--tag-p-dasaldare-bg,#faeeda);color:var(--tag-p-dasaldare-fg,#633806)}
@@ -460,6 +462,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
         <div class="kpi kpi-red" onclick="apriListaClienti('abb')"><div class="l">Abbandonate</div><div class="v" id="k-abb">–</div><div class="d" id="k-abb-d"></div></div>
         <div class="kpi kpi-orange" onclick="apriListaClienti('spar')"><div class="l">Sparite</div><div class="v" id="k-spar">–</div><div class="d" id="k-spar-d"></div></div>
         <div class="kpi kpi-purple" onclick="apriListaClienti('nonrin')"><div class="l">Non rinnovo</div><div class="v" id="k-nonrin">–</div><div class="d" id="k-nonrin-d"></div></div>
+        <div class="kpi kpi-gray" onclick="apriListaClienti('mai')"><div class="l">Mai iniziato</div><div class="v" id="k-mai">–</div><div class="d" id="k-mai-d"></div></div>
         <div class="kpi" onclick="apriListaClienti('scad')"><div class="l">In scadenza 30gg</div><div class="v" id="k-scad">–</div><div class="d" id="k-scad-d">fine percorso entro 30 giorni</div></div>
       </div>
     </div>
@@ -1167,7 +1170,7 @@ function statoLabel(s){
 }
 function statoBadge(s){
   const k=(s||'').toUpperCase();
-  const cls=k==='IN PERCORSO'?'b-inpercorso':k==='CONGELATO'?'b-congelato':k==='NON RINNOVATO'?'b-nonrinnovato':k==='ABBANDONATO'?'b-abbandonato':k==='SPARITA'?'b-sparita':'b-altro';
+  const cls=k==='IN PERCORSO'?'b-inpercorso':k==='CONGELATO'?'b-congelato':k==='NON RINNOVATO'?'b-nonrinnovato':k==='ABBANDONATO'?'b-abbandonato':k==='SPARITA'?'b-sparita':k==='MAI INIZIATO'?'b-maiiniziato':'b-altro';
   return `<span class="badge ${cls}">${statoLabel(s)}</span>`;
 }
 function percBadge(s){
@@ -1232,6 +1235,7 @@ const TAG_DEFS=[
  {cls:'b-nonrinnovato',label:'NON RINNOVO',group:'Stato cliente',bg:'#efe9fb',fg:'#4a3aa7'},
  {cls:'b-abbandonato',label:'ABBANDONO',group:'Stato cliente',bg:'#fcebeb',fg:'#791f1f'},
  {cls:'b-sparita',label:'Sparita',group:'Stato cliente',bg:'#faeeda',fg:'#633806'},
+ {cls:'b-maiiniziato',label:'Mai iniziato',group:'Stato cliente',bg:'#e2e6ec',fg:'#37424f'},
  {cls:'b-altro',label:'Altro',group:'Stato cliente',bg:'#f1efe8',fg:'#444441'},
  {cls:'p-saldato',label:'Saldato',group:'Stato pagamento',bg:'#e1f5ee',fg:'#085041'},
  {cls:'p-dasaldare',label:'Da saldare',group:'Stato pagamento',bg:'#faeeda',fg:'#633806'},
@@ -1953,7 +1957,7 @@ function render(){
   const fSt=s=>allRows.filter(r=>(r['STATO CLIENTE']||'').toUpperCase().startsWith(s));
   const brk=arr=>{const g=arr.filter(isGnocca).length;return `${arr.length-g} premium · ${g} gnocca`;};
   const attA=fSt('IN PERCORSO'), congA=fSt('CONGELATO').concat(fSt('SOSPES')),
-        nonrinA=fSt('NON RINNOVATO'), abbA=fSt('ABBANDONAT'), sparA=fSt('SPARIT');
+        nonrinA=fSt('NON RINNOVATO'), abbA=fSt('ABBANDONAT'), sparA=fSt('SPARIT'), maiA=fSt('MAI INIZIATO');
   const att=attA.length;
   const scadA=allRows.filter(r=>{const d=pdate(r['FINE PERCORSO']);return d&&d>=now&&d<=in30&&r['STATO CLIENTE']==='IN PERCORSO';});
   const scad30=scadA.length, brkScad=brk(scadA);
@@ -1961,7 +1965,7 @@ function render(){
   const abbPremiumA=abbA.filter(r=>!isGnocca(r)), abbGnoccaA=abbA.filter(isGnocca);
   const nonrinPremiumA=nonrinA.filter(r=>!isGnocca(r)), nonrinGnoccaA=nonrinA.filter(isGnocca);
   const totPremiumA=abbPremiumA.concat(nonrinPremiumA), totGnoccaA=abbGnoccaA.concat(nonrinGnoccaA);
-  KPI_LISTS={tot:allRows,att:attA,cong:congA,abb:abbA,spar:sparA,nonrin:nonrinA,scad:scadA,
+  KPI_LISTS={tot:allRows,att:attA,cong:congA,abb:abbA,spar:sparA,nonrin:nonrinA,mai:maiA,scad:scadA,
     abbPremium:abbPremiumA,abbGnocca:abbGnoccaA,nonrinPremium:nonrinPremiumA,nonrinGnocca:nonrinGnoccaA,
     abbTotPremium:totPremiumA,abbTotGnocca:totGnoccaA};
   const pct=(n,d)=>d?(n/d*100):0;
@@ -2045,6 +2049,8 @@ function render(){
   document.getElementById('k-abb-d').textContent=brk(abbA);
   document.getElementById('k-spar').textContent=sparA.length;
   document.getElementById('k-spar-d').textContent=brk(sparA);
+  document.getElementById('k-mai').textContent=maiA.length;
+  document.getElementById('k-mai-d').textContent=brk(maiA);
   document.getElementById('k-scad').textContent=scad30;
 
   const fmtEuro2=n=>'€ '+n.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2,useGrouping:true});
@@ -2278,7 +2284,7 @@ function toggleExp(i){
   expanded.has(name)?expanded.delete(name):expanded.add(name);
   render();
 }
-const KPI_LABELS={tot:'Clienti totali',att:'In percorso',cong:'Congelate',abb:'Abbandonate',spar:'Sparite',nonrin:'Non rinnovo',scad:'In scadenza 30gg',incRin:'Rinnovo percorsi',incRic:'Ricorrenti',incAlt:'Nuovo cliente',incTot:'Totale incassato',abbPremium:'Abbandono Premium',abbGnocca:'Abbandono Gnocca',nonrinPremium:'Non rinnovo Premium',nonrinGnocca:'Non rinnovo Gnocca',abbTotPremium:'Abbandono totale Premium',abbTotGnocca:'Abbandono totale Gnocca'};
+const KPI_LABELS={tot:'Clienti totali',att:'In percorso',cong:'Congelate',abb:'Abbandonate',spar:'Sparite',nonrin:'Non rinnovo',mai:'Mai iniziato',scad:'In scadenza 30gg',incRin:'Rinnovo percorsi',incRic:'Ricorrenti',incAlt:'Nuovo cliente',incTot:'Totale incassato',abbPremium:'Abbandono Premium',abbGnocca:'Abbandono Gnocca',nonrinPremium:'Non rinnovo Premium',nonrinGnocca:'Non rinnovo Gnocca',abbTotPremium:'Abbandono totale Premium',abbTotGnocca:'Abbandono totale Gnocca'};
 const INC_KPI_KEYS=new Set(['incRin','incRic','incAlt','incTot']);
 function apriListaClienti(key){
   const rows=[...(KPI_LISTS[key]||[])].sort((a,b)=>a['CLIENTE'].localeCompare(b['CLIENTE'],'it'));
