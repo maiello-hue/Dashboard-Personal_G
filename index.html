@@ -1611,6 +1611,16 @@ function removeManagedItem(key,val){
   buildFilters();
   buildSettingsPanel();
 }
+/* L'elenco venditori era stato popolato la prima volta anche da nomi presenti nei
+   rimborsi storici (es. "Gennaro", "Martina") che non sono venditori attuali. Li
+   togliamo una sola volta dall'elenco gestito: se non sono più presenti (perché già
+   rimossi a mano da Impostazioni) questa funzione non fa nulla. */
+function removeVenditoriNonValidiOnce(){
+  ['GENNARO','MARTINA'].forEach(n=>{
+    const match=(MANAGED_LISTS.venditore||[]).find(v=>v.trim().toUpperCase()===n);
+    if(match) removeManagedItem('venditore',match);
+  });
+}
 
 /* ---------- pannello impostazioni unificato: colori + elenchi ---------- */
 function buildSettingsPanel(){
@@ -2884,6 +2894,7 @@ applyGnoccaSheetImport();
 applyMeseFlussoMigrationOnce();
 applyFonteMap();
 loadManagedLists();
+removeVenditoriNonValidiOnce();
 buildFilters();
 buildRimbFilters();
 render();
