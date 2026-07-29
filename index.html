@@ -121,6 +121,8 @@ h1{font-size:22px;font-weight:500}
 .pc-promo{background:var(--tag-pc-promo-bg,#fcebeb);color:var(--tag-pc-promo-fg,#791f1f)}
 .pc-g6{background:var(--tag-pc-g6-bg,#f1efe8);color:var(--tag-pc-g6-fg,#5f5e5a)}
 .pc-g12{background:var(--tag-pc-g12-bg,#f1efe8);color:var(--tag-pc-g12-fg,#5f5e5a)}
+.pc-gnocca12{background:var(--tag-pc-gnocca12-bg,#efe9fb);color:var(--tag-pc-gnocca12-fg,#4a3aa7)}
+.pc-gnocca6{background:var(--tag-pc-gnocca6-bg,#d9c8f5);color:var(--tag-pc-gnocca6-fg,#3d1f7a)}
 .pc-all{background:var(--tag-pc-all-bg,#eaf3de);color:var(--tag-pc-all-fg,#27500a)}
 .pc-gfl{background:var(--tag-pc-gfl-bg,#f1efe8);color:var(--tag-pc-gfl-fg,#5f5e5a)}
 .tr-aranscuro{background:#fdf1d6;color:#8a5a00}
@@ -1136,8 +1138,8 @@ function percBadge(s){
   let cls='p-neutro';
   if(k.includes('6 MESI + 6')||(k.includes('6 MESI')&&k.includes('GNOCCA'))) cls='pc-mix';
   else if(k.includes('GNOCCA FOR LIFE')) cls='pc-gfl';
-  else if(k.includes('GNOCCA 12')) cls='pc-g12';
-  else if(k.includes('GNOCCA 6')) cls='pc-g6';
+  else if(k.includes('GNOCCA 12')) cls='pc-gnocca12';
+  else if(k.includes('GNOCCA 6')) cls='pc-gnocca6';
   else if(k.includes('ALL LIFE LONG')) cls='pc-all';
   else if(k.includes('PROMO ESTATE')) cls='pc-promo';
   else if(k.includes('24 MESI')) cls='pc-6';
@@ -1201,8 +1203,8 @@ const TAG_DEFS=[
  {cls:'p-neutro',label:'Neutro',group:'Stato pagamento',bg:'#f1efe8',fg:'#5f5e5a'},
  {cls:'pc-mix',label:'6 mesi + 6 Gnocca',group:'Percorso',bg:'#fbe3d3',fg:'#8a3c0a'},
  {cls:'pc-gfl',label:'Gnocca For Life',group:'Percorso',bg:'#f1efe8',fg:'#5f5e5a'},
- {cls:'pc-g12',label:'Gnocca 12',group:'Percorso',bg:'#f1efe8',fg:'#5f5e5a'},
- {cls:'pc-g6',label:'Gnocca 6',group:'Percorso',bg:'#f1efe8',fg:'#5f5e5a'},
+ {cls:'pc-gnocca12',label:'Gnocca 12',group:'Percorso',bg:'#efe9fb',fg:'#4a3aa7'},
+ {cls:'pc-gnocca6',label:'Gnocca 6',group:'Percorso',bg:'#d9c8f5',fg:'#3d1f7a'},
  {cls:'pc-all',label:'All Life Long',group:'Percorso',bg:'#eaf3de',fg:'#27500a'},
  {cls:'pc-promo',label:'Promo Estate',group:'Percorso',bg:'#fcebeb',fg:'#791f1f'},
  {cls:'pc-6',label:'24 mesi',group:'Percorso',bg:'#c2185b',fg:'#ffffff'},
