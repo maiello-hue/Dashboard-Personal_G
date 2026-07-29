@@ -61,8 +61,7 @@ h1{font-size:22px;font-weight:500}
 .kpi-azzurro{background:#e0f4fb}.kpi-azzurro .l,.kpi-azzurro .v{color:#0a8aa8}
 .kpi-yellow{background:#fdf6d6}.kpi-yellow .l,.kpi-yellow .v{color:#a67f00}
 .kpi-gray{background:#e2e6ec}.kpi-gray .l,.kpi-gray .v{color:#37424f}
-.mese-sel-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:12px;color:var(--muted)}
-.mese-sel-row select{background:var(--card);border:1px solid var(--border-strong);color:var(--text);border-radius:8px;padding:4px 10px;font-size:12.5px}
+.mese-sel-row{display:flex;align-items:center;gap:8px;margin-bottom:12px}
 .fonte-section{border:1px solid var(--border);border-radius:10px;margin-top:10px;overflow:hidden}
 .fonte-section:first-child{margin-top:0}
 .fonte-section-head{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;cursor:pointer;background:var(--card2);font-size:14px;font-weight:500;transition:background .12s ease}
@@ -482,9 +481,8 @@ h3 .ico,.sub .ico{color:var(--muted)}
     </div>
 
     <div id="page-dashboard" style="display:none">
-      <div class="mese-sel-row">
-        <label for="dash-mese-select">Mese abbandoni/non rinnovo/tassi</label>
-        <select id="dash-mese-select" onchange="setDashMese(this.value)"></select>
+      <div class="mese-sel-row filters">
+        <select id="dash-mese-select" aria-label="Mese abbandoni, non rinnovo e tassi" onchange="setDashMese(this.value)"></select>
       </div>
       <div class="kpis">
         <div class="kpi" onclick="apriListaClienti('tot')"><div class="l">Clienti totali</div><div class="v" id="k-tot">–</div><div class="d" id="k-tot-d"></div></div>
@@ -499,9 +497,8 @@ h3 .ico,.sub .ico{color:var(--muted)}
     </div>
 
     <div id="page-incassi" style="display:none">
-      <div class="mese-sel-row">
-        <label for="inc-mese-select">Mese incassi</label>
-        <select id="inc-mese-select" onchange="setDashMese(this.value)"></select>
+      <div class="mese-sel-row filters">
+        <select id="inc-mese-select" aria-label="Mese incassi" onchange="setDashMese(this.value)"></select>
       </div>
       <div class="grid">
         <div class="card span12">
