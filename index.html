@@ -222,6 +222,14 @@ h3 .ico,.sub .ico{color:var(--muted)}
 .rate-row-label{display:flex;align-items:center;gap:8px;padding:12px 10px;font-size:13px;color:var(--text)}
 .rate-row-label.tot{font-weight:600}
 .rate-group-row td{background:var(--card2);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);padding:7px 10px}
+.storico-group-row{cursor:pointer}
+.storico-group-row:hover td{background:var(--surface-2, var(--card2))}
+.storico-group-row .storico-group-arrow{display:inline-block;width:14px;color:var(--muted)}
+.storico-group-header{display:flex;align-items:center;gap:8px;background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:10px 14px;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);cursor:pointer;margin-bottom:10px}
+.storico-group-header:hover{background:var(--surface-2, var(--card2))}
+.storico-group-header .storico-group-arrow{width:14px;flex-shrink:0}
+.storico-group-header .storico-group-label{flex:1}
+.storico-group-header .count{background:var(--text);color:#fff;border-radius:999px;font-size:10px;font-weight:600;padding:2px 8px}
 .rate-cell{padding:10px 6px;cursor:pointer;transition:background .12s ease;border-radius:8px}
 .rate-cell:hover{background:var(--card2)}
 .rate-cell-inner{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:90px}
@@ -2278,6 +2286,28 @@ function initials(name){
   if(parts.length===1) return parts[0].slice(0,2).toUpperCase();
   return (parts[0][0]+parts[1][0]).toUpperCase();
 }
+const MESI_CAP=MESI.map(m=>m.charAt(0)+m.slice(1).toLowerCase());
+let storicoGroupsExpanded=new Set();
+function toggleStoricoGroup(key){
+  storicoGroupsExpanded.has(key)?storicoGroupsExpanded.delete(key):storicoGroupsExpanded.add(key);
+  render();
+}
+function groupStoricoByMonth(rowsCalc){
+  const groups={};
+  rowsCalc.forEach(item=>{
+    const fin=item.fin;
+    const key=fin?(fin.getFullYear()+'-'+String(fin.getMonth()+1).padStart(2,'0')):'_nodata';
+    if(!groups[key]) groups[key]={key,fin,items:[]};
+    groups[key].items.push(item);
+  });
+  const arr=Object.values(groups);
+  arr.sort((a,b)=>{
+    if(a.key==='_nodata') return 1;
+    if(b.key==='_nodata') return -1;
+    return b.fin-a.fin;
+  });
+  return arr.map(g=>({key:g.key,label:g.key==='_nodata'?'Senza data fine percorso':(MESI_CAP[g.fin.getMonth()]+' '+g.fin.getFullYear()),items:g.items}));
+}
 function renderTable(rows){
   document.getElementById('thead').innerHTML=COLS.map(([k,l])=>`<th onclick="sortBy('${k}')">${l}${sortKey===k?(sortDir>0?' ▲':' ▼'):''}</th>`).join('');
   const sorted=[...rows].sort((a,b)=>{
@@ -2319,16 +2349,15 @@ function renderTable(rows){
         </span>`;
     return {r,i,ini,fin,prog,pctVal,pctCls,finTxt,finLabel,scad,renBadge,detailInner};
   });
-  document.getElementById('tbody').innerHTML=rowsCalc.map(({r,i,ini,prog,finTxt,detailInner})=>{
+  const desktopRowHtml=({r,i,ini,prog,finTxt,detailInner})=>{
     const main=`<tr class="main" onclick="toggleExp(${i})">
       <td data-label="Cliente">${r['CLIENTE']}</td><td data-label="Stato">${statoBadge(r['STATO CLIENTE'])}</td><td data-label="Percorso">${percBadge(r['PERCORSO'])}</td>
       <td data-label="Inizio">${fdate(ini)}</td><td data-label="Fine">${finTxt}</td><td data-label="Avanzamento">${prog}</td>
       <td data-label="Tutor">${tutBadge(r['TUTOR'])}</td><td data-label="Trainer">${trainBadge(r['TRAINER'])}</td><td data-label="Nutri">${nutriBadge(r['NUTRI'])}</td></tr>`;
     const exp=expanded.has(r['CLIENTE'])?`<tr class="exp"><td colspan="9"><div class="detail-row">${detailInner}</div></td></tr>`:'';
     return main+exp;
-  }).join('');
-  const ccList=document.getElementById('cc-list');
-  if(ccList) ccList.innerHTML=rowsCalc.map(({r,i,pctVal,pctCls,finLabel,scad,renBadge,detailInner})=>{
+  };
+  const mobileCardHtml=({r,i,pctVal,pctCls,finLabel,scad,renBadge,detailInner})=>{
     const av=paletteColorFor('CLIENTE:'+r['CLIENTE']);
     const open=expanded.has(r['CLIENTE']);
     return `<div class="cc-card">
@@ -2350,7 +2379,28 @@ function renderTable(rows){
       </div>
       ${open?`<div class="cc-exp"><div class="detail-row">${detailInner}</div></div>`:''}
     </div>`;
-  }).join('');
+  };
+  const ccList=document.getElementById('cc-list');
+  if(catFilter==='storico'){
+    /* Storico raggruppato per mese di fine percorso: ogni gruppo parte chiuso,
+       l'elenco delle clienti compare solo al clic sull'intestazione del mese. */
+    const groups=groupStoricoByMonth(rowsCalc);
+    document.getElementById('tbody').innerHTML=groups.map(g=>{
+      const isOpen=storicoGroupsExpanded.has(g.key);
+      const header=`<tr class="rate-group-row storico-group-row" onclick="toggleStoricoGroup('${jsEsc(g.key)}')"><td colspan="9"><span class="storico-group-arrow">${isOpen?'▾':'▸'}</span> ${esc(g.label)} <span class="count">(${g.items.length})</span></td></tr>`;
+      const body=isOpen?g.items.map(desktopRowHtml).join(''):'';
+      return header+body;
+    }).join('')||'<tr><td colspan="9" class="sub">Nessuna cliente in Storico.</td></tr>';
+    if(ccList) ccList.innerHTML=groups.map(g=>{
+      const isOpen=storicoGroupsExpanded.has(g.key);
+      const header=`<div class="storico-group-header" onclick="toggleStoricoGroup('${jsEsc(g.key)}')"><span class="storico-group-arrow">${isOpen?'⌄':'›'}</span><span class="storico-group-label">${esc(g.label)}</span><span class="count">${g.items.length}</span></div>`;
+      const body=isOpen?g.items.map(mobileCardHtml).join(''):'';
+      return header+body;
+    }).join('')||'<div class="sub">Nessuna cliente in Storico.</div>';
+  } else {
+    document.getElementById('tbody').innerHTML=rowsCalc.map(desktopRowHtml).join('');
+    if(ccList) ccList.innerHTML=rowsCalc.map(mobileCardHtml).join('');
+  }
   window._sorted=sorted;
 }
 function toggleExp(i){
