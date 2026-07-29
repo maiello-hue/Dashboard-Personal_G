@@ -1001,6 +1001,7 @@ async function syncFromGithub(showStatus){
       applyLug26Import();
       applyPromoEstateImport();
       applyGnoccaSheetImport();
+      applyMeseFlussoMigrationOnce();
       applyFonteMap();
       buildFilters(); buildRimbFilters(); render(); renderRimborsi();
       setGhStatus(ic('check')+'Sincronizzato alle '+new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}));
@@ -1165,6 +1166,20 @@ function applyGnoccaSheetImport(){
   const r=mergeNuoviClienti(GNOCCA_SHEET_NUOVI_CLIENTI);
   if(r.added>0){ saveClienti(); buildFilters(); render(); }
   return r;
+}
+/* Le card "flusso mensile" (Abbandonate, Non rinnovo, Incassi) filtrano su DATA
+   ARCHIVIAZIONE/DATA INCASSO, valorizzate solo dal momento in cui è stata introdotta
+   questa funzione. Le clienti/incassi già presenti PRIMA di questa modifica non hanno
+   questi campi e sparirebbero dal mese corrente pur essendo realmente di questo mese:
+   qui li recuperiamo una sola volta (idempotente: se il campo è già valorizzato non lo
+   tocca più), assegnandoli al mese in cui viene eseguita questa migrazione. */
+function applyMeseFlussoMigrationOnce(){
+  let changed=false;
+  DATA.forEach(r=>{
+    if(isArchiviata(r)&&!r['DATA ARCHIVIAZIONE']){ r['DATA ARCHIVIAZIONE']=todayIt(); changed=true; }
+    if(euro(r['INCASSO'])>0&&!r['DATA INCASSO']){ r['DATA INCASSO']=todayIt(); changed=true; }
+  });
+  if(changed) saveClienti();
 }
 /* Fonte cliente: valorizzata a incrocio con la colonna FONTE del foglio Google (luglio 2026).
    Compila SOLO r['FONTE'] quando è vuota — non sovrascrive mai un valore già presente,
@@ -2758,6 +2773,7 @@ initData();
 applyLug26Import();
 applyPromoEstateImport();
 applyGnoccaSheetImport();
+applyMeseFlussoMigrationOnce();
 applyFonteMap();
 loadManagedLists();
 buildFilters();
