@@ -608,9 +608,20 @@ h3 .ico,.sub .ico{color:var(--muted)}
       </div>
 
       <div id="analisi-tab-performance" class="grid" style="display:none">
+        <div class="card span6"><h3>Confronto tassi (%)</h3><div class="chartbox"><canvas id="c-perf-rate"></canvas></div></div>
+        <div class="card span6">
+          <h3>Composizione miglioramenti
+            <span class="roletabs">
+              <button id="pcr-TUTOR" class="on" onclick="setPerfCompRole('TUTOR')">Tutor</button>
+              <button id="pcr-TRAINER" onclick="setPerfCompRole('TRAINER')">Trainer</button>
+              <button id="pcr-NUTRI" onclick="setPerfCompRole('NUTRI')">Nutri</button>
+            </span>
+          </h3>
+          <div class="chartbox"><canvas id="c-perf-comp"></canvas></div>
+        </div>
         <div class="card span12">
           <h3>Tasso di performance per collaboratore</h3>
-          <div class="sub" style="margin-bottom:10px">Per ciascun collaboratore: clienti assegnate, quante hanno un check inserito, quante hanno un miglioramento (Risultato = Sì) e la percentuale di miglioramento sul totale delle clienti. Divisa per categoria, i venditori non sono inclusi.</div>
+          <div class="sub" style="margin-bottom:10px">Calcolato solo sulle clienti con stato "In percorso". Per ciascun collaboratore: clienti assegnate, quante hanno un check inserito, quante hanno un miglioramento (Risultato = Sì) e la percentuale di miglioramento sul totale delle clienti. Divisa per categoria, i venditori non sono inclusi.</div>
         </div>
         <div class="card span12">
           <h3>Tutor</h3>
@@ -770,7 +781,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
     </div>
 
     <div id="page-check" style="display:none">
-      <div class="sub" style="margin-bottom:14px">Elenco di tutte le clienti, divise per Premium e Gnocca. Per ciascuna, segna se il check è stato effettuato e se il risultato è stato raggiunto.</div>
+      <div class="sub" style="margin-bottom:14px">Elenco delle clienti con stato "In percorso", divise per Premium e Gnocca. Per ciascuna, segna se il check è stato effettuato e se il risultato è stato raggiunto.</div>
       <div class="filters">
         <input type="text" id="check-search" placeholder="Cerca cliente…" oninput="buildCheckPage()">
       </div>
@@ -2150,14 +2161,15 @@ function checkToggleGroupHtml(cliente,field,label,currentVal){
     <button class="check-toggle-btn${v==='NO'?' on off':''}" onclick="setCheckField('${jsEsc(cliente)}','${field}','NO')">No</button>
   </span>`;
 }
+function isInPercorso(r){ return (r['STATO CLIENTE']||'').trim().toUpperCase()==='IN PERCORSO'; }
 function buildCheckPage(){
   const el=document.getElementById('check-list');
   if(!el) return;
   const q=(document.getElementById('check-search')?.value||'').trim().toLowerCase();
   const matches=r=>!q||(r['CLIENTE']||'').toLowerCase().includes(q);
   const byName=(a,b)=>(a['CLIENTE']||'').localeCompare(b['CLIENTE']||'','it');
-  const premiumRows=DATA.filter(r=>!isGnocca(r)&&matches(r)).sort(byName);
-  const gnoccaRows=DATA.filter(r=>isGnocca(r)&&matches(r)).sort(byName);
+  const premiumRows=DATA.filter(r=>isInPercorso(r)&&!isGnocca(r)&&matches(r)).sort(byName);
+  const gnoccaRows=DATA.filter(r=>isInPercorso(r)&&isGnocca(r)&&matches(r)).sort(byName);
   const sectionHtml=(title,rows)=>{
     const open=q?true:checkSectionsExpanded.has(title);
     const rowsHtml=rows.map(r=>{
@@ -2188,6 +2200,14 @@ function buildCheckPage(){
    collaboratore: clienti assegnate, quante hanno un check inserito (CHECK
    valorizzato, Sì o No), quante hanno un miglioramento (RISULTATO="Sì") e la
    percentuale di miglioramento calcolata sul totale delle clienti assegnate. */
+let perfCompRole='TUTOR';
+function setPerfCompRole(r){
+  perfCompRole=r;
+  ['TUTOR','TRAINER','NUTRI'].forEach(x=>{ const el=document.getElementById('pcr-'+x); if(el) el.classList.toggle('on',x===r); });
+  const btn=document.getElementById('pcr-'+r);
+  if(btn) flashBlackBtn(btn);
+  buildPerfCollabTable();
+}
 function buildPerfCollabTable(){
   const pct=(n,d)=>d?(n/d*100):0;
   const fmtPct=n=>Math.round(n)+'%';
@@ -2199,19 +2219,21 @@ function buildPerfCollabTable(){
   const numCell=n=>`<td style="text-align:center">${n}</td>`;
   const collabBadgeFn={TUTOR:tutBadge,TRAINER:trainBadge,NUTRI:nutriBadge};
   const elId={TUTOR:'perf-tutor-table-body',TRAINER:'perf-trainer-table-body',NUTRI:'perf-nutri-table-body'};
+  const allRows=[];
   ['TUTOR','TRAINER','NUTRI'].forEach(field=>{
-    const el=document.getElementById(elId[field]);
-    if(!el) return;
-    const rows=[];
     distinct(field).forEach(name=>{
-      const assigned=DATA.filter(r=>(r[field]||'').trim()===name&&!isCheckExcluded(r));
+      const assigned=DATA.filter(r=>(r[field]||'').trim()===name&&isInPercorso(r)&&!isCheckExcluded(r));
       if(!assigned.length) return;
       const checkInserito=assigned.filter(r=>(r['CHECK']||'').trim()!=='').length;
       const miglioramenti=assigned.filter(r=>(r['RISULTATO']||'').trim().toUpperCase()==='SI').length;
-      const migRate=pct(miglioramenti,assigned.length);
-      rows.push({name,tot:assigned.length,checkInserito,miglioramenti,migRate});
+      const checkRate=pct(checkInserito,assigned.length), migRate=pct(miglioramenti,assigned.length);
+      allRows.push({field,name,tot:assigned.length,checkInserito,checkRate,miglioramenti,migRate});
     });
-    rows.sort((a,b)=>a.name.localeCompare(b.name,'it'));
+  });
+  ['TUTOR','TRAINER','NUTRI'].forEach(field=>{
+    const el=document.getElementById(elId[field]);
+    if(!el) return;
+    const rows=allRows.filter(r=>r.field===field).sort((a,b)=>a.name.localeCompare(b.name,'it'));
     el.innerHTML=rows.map(r=>`<tr class="rate-tr">
         <td><div class="rate-row-label">${collabBadgeFn[field](r.name)}</div></td>
         ${numCell(r.tot)}
@@ -2220,6 +2242,18 @@ function buildPerfCollabTable(){
         ${pctCell(r.migRate)}
       </tr>`).join('')||'<tr><td colspan="5" class="sub">Nessun collaboratore con clienti assegnate.</td></tr>';
   });
+  /* grafici interattivi (Chart.js): confronto % check inserito / % miglioramento
+     per collaboratore, e composizione dei miglioramenti per categoria scelta. */
+  if(typeof Chart==='undefined'||!document.getElementById('c-perf-rate')) return;
+  const common={plugins:{legend:{labels:{color:'#63625c',font:{size:11},boxWidth:12}}},maintainAspectRatio:false};
+  const gridOpt={grid:{color:'#e4e3dd'},ticks:{color:'#63625c',font:{size:11}}};
+  const sorted=['TUTOR','TRAINER','NUTRI'].flatMap(field=>allRows.filter(r=>r.field===field).sort((a,b)=>a.name.localeCompare(b.name,'it')));
+  mkChart('c-perf-rate',{type:'bar',data:{labels:sorted.map(r=>r.name),datasets:[
+    {label:'% Check inserito',data:sorted.map(r=>+r.checkRate.toFixed(1)),backgroundColor:'#4f6fe0',borderRadius:6},
+    {label:'% Miglioramento',data:sorted.map(r=>+r.migRate.toFixed(1)),backgroundColor:'#1f9d63',borderRadius:6}
+  ]},options:{...common,scales:{x:gridOpt,y:{...gridOpt,beginAtZero:true,ticks:{...gridOpt.ticks,callback:v=>v+'%'}}},plugins:{...common.plugins,tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.formattedValue+'%'}}}}});
+  const compRows=allRows.filter(r=>r.field===perfCompRole);
+  mkChart('c-perf-comp',{type:'doughnut',data:{labels:compRows.map(r=>r.name),datasets:[{data:compRows.map(r=>r.miglioramenti),backgroundColor:compRows.map(r=>chartTagColor(perfCompRole.toLowerCase(),r.name)),borderWidth:0}]},options:{...common,cutout:'62%'}});
 }
 const SELECT_FIELDS={'STATO CLIENTE':false,'STATO PAGAMENTO':false,'TIPO INCASSO':false,'PERCORSO':true,'METODO PAGAMENTO':true,'TUTOR':true,'TRAINER':true,'NUTRI':true,'VENDITORE':true};
 function selectFieldHtml(f,l,idPrefix,value,options,allowCustom,labelMap){
