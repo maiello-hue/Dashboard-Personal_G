@@ -2056,7 +2056,7 @@ function buildProvvigioni(){
   }).join('');
   elList.innerHTML=sectionsHtml||'<div class="sub">Nessun venditore in elenco.</div>';
   elKpis.innerHTML=nameList.map((name,i)=>{
-    const cls=['kpi-purple','kpi-azzurro','kpi-yellow'][i%3];
+    const cls='kpi-green';
     const assigned=DATA.filter(r=>(r['VENDITORE']||'').trim()===name);
     const clientiMese=assigned.filter(r=>inMese(r,'INIZIO PERCORSO',meseSel));
     const tot=clientiMese.reduce((s,r)=>{
