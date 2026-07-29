@@ -655,7 +655,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
         <button id="cat-storico" onclick="setCategoria('storico')">Storico <span class="count" id="storico-count"></span></button>
       </div>
       <div class="filters">
-        <input type="text" id="f-search" placeholder="Cerca cliente…" oninput="render()">
+        <input type="text" id="f-search" placeholder="Cerca cliente…" oninput="debouncedRender()">
         <div class="msf" id="msf-stato"><button type="button" class="msf-btn" onclick="toggleMsf('stato')">Stato<span class="msf-count" id="msf-stato-count"></span></button><div class="msf-menu" id="msf-stato-menu"></div></div>
         <div class="msf" id="msf-percorso"><button type="button" class="msf-btn" onclick="toggleMsf('percorso')">Percorso<span class="msf-count" id="msf-percorso-count"></span></button><div class="msf-menu" id="msf-percorso-menu"></div></div>
         <div class="msf" id="msf-tutor"><button type="button" class="msf-btn" onclick="toggleMsf('tutor')">Tutor<span class="msf-count" id="msf-tutor-count"></span></button><div class="msf-menu" id="msf-tutor-menu"></div></div>
@@ -730,7 +730,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
         </div>
       </div>
       <div class="filters">
-        <input type="text" id="rf-search" placeholder="Cerca cliente…" oninput="renderRimborsi()">
+        <input type="text" id="rf-search" placeholder="Cerca cliente…" oninput="debouncedRenderRimborsi()">
         <select id="rf-mese" onchange="renderRimborsi()"></select>
         <select id="rf-stato" onchange="renderRimborsi()"></select>
         <select id="rf-vend" onchange="renderRimborsi()"></select>
@@ -783,7 +783,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
     <div id="page-check" style="display:none">
       <div class="sub" style="margin-bottom:14px">Elenco delle clienti con stato "In percorso", divise per Premium e Gnocca. Per ciascuna, segna se il check è stato effettuato e se il risultato è stato raggiunto.</div>
       <div class="filters">
-        <input type="text" id="check-search" placeholder="Cerca cliente…" oninput="buildCheckPage()">
+        <input type="text" id="check-search" placeholder="Cerca cliente…" oninput="debouncedBuildCheckPage()">
       </div>
       <div id="check-list"></div>
     </div>
@@ -1038,7 +1038,8 @@ async function ghFetchSha(){
   }catch(e){}
   return null;
 }
-async function ghPutFile(obj,message,_retried){
+async function ghPutFile(obj,message,_attempt){
+  const attempt=_attempt||0;
   const s=ghSettings();
   const sha=await ghFetchSha();
   GH_SHA=sha;
@@ -1049,7 +1050,13 @@ async function ghPutFile(obj,message,_retried){
   });
   if(!res.ok){
     const t=await res.text();
-    if(!_retried && (res.status===422||res.status===409)) return ghPutFile(obj,message,true);
+    /* 409/422 = un altro dispositivo ha scritto nel frattempo (sha non più valido):
+       riprova fino a 2 volte, ripescando ogni volta lo sha più recente, con una
+       piccola pausa per lasciare "assestare" eventuali scritture concorrenti. */
+    if(attempt<2 && (res.status===422||res.status===409)){
+      await new Promise(r=>setTimeout(r,300*(attempt+1)));
+      return ghPutFile(obj,message,attempt+1);
+    }
     throw new Error('scrittura GitHub fallita ('+res.status+'): '+t.slice(0,180));
   }
   const j=await res.json();
@@ -1408,6 +1415,16 @@ function isoToIt(iso){
 }
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 function jsEsc(s){return esc(String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'"));}
+/* Rimanda l'esecuzione di fn finché l'utente smette di digitare per "wait" ms:
+   evita di ricalcolare grafici/tabelle a ogni singolo tasto premuto nelle
+   barre di ricerca, che altrimenti rallentano la dashboard mentre si scrive. */
+function debounce(fn,wait){
+  let t=null;
+  return function(...args){ clearTimeout(t); t=setTimeout(()=>fn.apply(this,args),wait); };
+}
+const debouncedRender=debounce(()=>render(),220);
+const debouncedRenderRimborsi=debounce(()=>renderRimborsi(),220);
+const debouncedBuildCheckPage=debounce(()=>buildCheckPage(),220);
 
 /* ---------- gestione rinnovi (salvati nel browser) ---------- */
 const REN_KEY='global_rinnovi';
