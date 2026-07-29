@@ -548,6 +548,10 @@ h3 .ico,.sub .ico{color:var(--muted)}
 
     <div id="page-clienti" style="display:none">
       <div class="roletabs" style="margin-bottom:10px">
+        <button id="view-attive" class="on" onclick="setClientiView('attive')">Attive</button>
+        <button id="view-storico" onclick="setClientiView('storico')">Storico <span class="count" id="storico-count"></span></button>
+      </div>
+      <div class="roletabs" style="margin-bottom:10px">
         <button id="cat-all" class="on" onclick="setCategoria('all')">Tutte</button>
         <button id="cat-premium" onclick="setCategoria('premium')">Premium</button>
         <button id="cat-gnocca" onclick="setCategoria('gnocca')">Gnocca</button>
@@ -761,6 +765,21 @@ const MESI_SHORT=['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','N
 let DATA=[], RIMB=[], charts={}, role='TUTOR', abbCompRole='TUTOR', sortKey='INIZIO PERCORSO', sortDir=-1, expanded=new Set();
 let KPI_LISTS={};
 let catFilter='all';
+/* Vista Clienti: "attive" nasconde dall'elenco principale le clienti Abbandono/Non
+   rinnovo (restano comunque nei dati e in tutte le statistiche/grafici, che
+   lavorano sempre su DATA per intero); "storico" mostra solo quelle archiviate.
+   Serve per la pulizia mensile dell'elenco senza perdere lo storico. */
+let clientiView='attive';
+function isArchiviata(r){
+  const s=(r['STATO CLIENTE']||'').toUpperCase();
+  return s.startsWith('ABBANDONAT')||s.startsWith('NON RINNOVATO');
+}
+function setClientiView(v){
+  clientiView=v;
+  ['view-attive','view-storico'].forEach(id=>document.getElementById(id).classList.toggle('on',id==='view-'+v));
+  flashBlackBtn(document.getElementById('view-'+v));
+  render();
+}
 /* Le clienti con percorso misto "N mesi + M Gnocca" sono Premium per i primi
    N mesi dalla data d'ingresso, poi passano automaticamente in Gnocca dal
    mese N+1 in poi. I percorsi senza "Gnocca" restano sempre Premium. */
@@ -1805,7 +1824,8 @@ function filtered(){
     (!fs||r['STATO CLIENTE']===fs)&&(!fp||r['PERCORSO']===fp)&&
     (!ft||r['TUTOR']===ft)&&(!ftr||r['TRAINER']===ftr)&&(!fn||r['NUTRI']===fn)&&
     (!fm||r['METODO PAGAMENTO']===fm)&&(!fpg||r['STATO PAGAMENTO']===fpg)&&
-    (catFilter==='all'||(catFilter==='gnocca'?isGnocca(r):!isGnocca(r))));
+    (catFilter==='all'||(catFilter==='gnocca'?isGnocca(r):!isGnocca(r)))&&
+    (clientiView==='attive'?!isArchiviata(r):isArchiviata(r)));
 }
 
 /* ---------- nuova cliente ---------- */
@@ -2127,6 +2147,9 @@ function render(){
       <input class="ren-note" placeholder="nota…" value="${esc(note)}" onchange="renSet('${jsEsc(name)}','note',this.value)">
     </div>`;
   }).join(''):'<div class="sub">'+(hide&&gestiti?ic('check')+'Tutti i rinnovi in scadenza sono stati gestiti':ic('check')+'Nessun percorso in scadenza nel periodo selezionato')+'</div>';
+
+  const storicoCountEl=document.getElementById('storico-count');
+  if(storicoCountEl) storicoCountEl.textContent='('+allRows.filter(isArchiviata).length+')';
 
   renderTable(rows);
 }
