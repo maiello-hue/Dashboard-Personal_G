@@ -762,8 +762,12 @@ let catFilter='all';
 /* Le clienti con percorso misto "N mesi + M Gnocca" sono Premium per i primi
    N mesi dalla data d'ingresso, poi passano automaticamente in Gnocca dal
    mese N+1 in poi. I percorsi senza "Gnocca" restano sempre Premium. */
+/* La "PROMO ESTATE" viene sempre conteggiata come Gnocca ai fini delle statistiche,
+   pur mantenendo il tag percorso testuale "PROMO ESTATE" (non viene rinominato). */
+const GNOCCA_PERCORSI_ESPLICITI=['PROMO ESTATE'];
 function isGnocca(r){
   const perc=r['PERCORSO']||'';
+  if(GNOCCA_PERCORSI_ESPLICITI.includes(perc.toUpperCase())) return true;
   if(!/gnocca/i.test(perc)) return false;
   const m=perc.match(/(\d+)\s*mes[ei]/i);
   const premiumMonths=m?parseInt(m[1],10):0;
@@ -900,6 +904,7 @@ async function syncFromGithub(showStatus){
     } else {
       applyAllData(remote);
       applyLug26Import();
+      applyPromoEstateImport();
       applyFonteMap();
       buildFilters(); buildRimbFilters(); render(); renderRimborsi();
       setGhStatus(ic('check')+'Sincronizzato alle '+new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}));
@@ -1021,6 +1026,29 @@ function applyLug26Import(){
   const r=mergeNuoviClienti(LUG26_NUOVI_CLIENTI);
   if(r.added>0){ saveClienti(); buildFilters(); render(); }
   return r;
+}
+/* Import "Promo estate" (foglio Google): aggiunge le clienti nuove e aggiorna quelle
+   già esistenti che sono tornate con questo pacchetto (senza mai duplicarle).
+   Idempotente: rieseguibile ad ogni avvio, sia in locale che dopo una sincronizzazione GitHub. */
+const PROMO_ESTATE_NUOVI_CLIENTI=[
+  {"CLIENTE":"Giulia Macelloni","STATO CLIENTE":"IN PERCORSO","PERCORSO":"PROMO ESTATE","INIZIO PERCORSO":"02/07/2026","FINE PERCORSO":"02/10/2026","IMPORTO":"€ 97,00","METODO PAGAMENTO":"Bonifico","STATO PAGAMENTO":"SALDATO","TIPO INCASSO":"","N° FATTURA":"968","INCASSO":"","RIMBORSO":"","TUTOR":"","TRAINER":"","NUTRI":"","PAGANTE":"SI","€ TUTOR":"","€ TRAINER":"","€ NUTRI":"","CONTRATTO":"","CHECK":"","RISULTATO":""},
+  {"CLIENTE":"Catia Pareschi","STATO CLIENTE":"IN PERCORSO","PERCORSO":"PROMO ESTATE","INIZIO PERCORSO":"02/07/2026","FINE PERCORSO":"02/10/2026","IMPORTO":"€ 97,00","METODO PAGAMENTO":"Bonifico","STATO PAGAMENTO":"SALDATO","TIPO INCASSO":"","N° FATTURA":"973","INCASSO":"","RIMBORSO":"","TUTOR":"","TRAINER":"","NUTRI":"","PAGANTE":"SI","€ TUTOR":"","€ TRAINER":"","€ NUTRI":"","CONTRATTO":"","CHECK":"","RISULTATO":""},
+  {"CLIENTE":"Fabiola Germanà Gulino","STATO CLIENTE":"IN PERCORSO","PERCORSO":"PROMO ESTATE","INIZIO PERCORSO":"15/07/2026","FINE PERCORSO":"15/10/2026","IMPORTO":"€ 97,00","METODO PAGAMENTO":"Bonifico","STATO PAGAMENTO":"SALDATO","TIPO INCASSO":"","N° FATTURA":"1039","INCASSO":"","RIMBORSO":"","TUTOR":"","TRAINER":"","NUTRI":"","PAGANTE":"SI","€ TUTOR":"","€ TRAINER":"","€ NUTRI":"","CONTRATTO":"","CHECK":"","RISULTATO":""},
+  {"CLIENTE":"Matilde Gelli","STATO CLIENTE":"IN PERCORSO","PERCORSO":"PROMO ESTATE","INIZIO PERCORSO":"20/07/2026","FINE PERCORSO":"20/10/2026","IMPORTO":"€ 97,00","METODO PAGAMENTO":"PayPal","STATO PAGAMENTO":"SALDATO","TIPO INCASSO":"","N° FATTURA":"1048","INCASSO":"","RIMBORSO":"","TUTOR":"","TRAINER":"","NUTRI":"","PAGANTE":"SI","€ TUTOR":"","€ TRAINER":"","€ NUTRI":"","CONTRATTO":"","CHECK":"","RISULTATO":""}
+];
+const PROMO_ESTATE_AGGIORNAMENTI=[
+  {nome:"Marcella Fiumarelli",campi:{"STATO CLIENTE":"IN PERCORSO","PERCORSO":"PROMO ESTATE","INIZIO PERCORSO":"10/07/2026","FINE PERCORSO":"10/10/2026","IMPORTO":"€ 97,00","METODO PAGAMENTO":"Bonifico","STATO PAGAMENTO":"SALDATO","N° FATTURA":"1004","TUTOR":"","TRAINER":"","NUTRI":"","PAGANTE":"SI","€ TUTOR":"","€ TRAINER":"","€ NUTRI":"","CONTRATTO":"","CHECK":"","RISULTATO":""}},
+  {nome:"Alessia Gambardella",campi:{"STATO CLIENTE":"IN PERCORSO","PERCORSO":"PROMO ESTATE","INIZIO PERCORSO":"24/07/2026","FINE PERCORSO":"24/10/2026","IMPORTO":"€ 97,00","METODO PAGAMENTO":"Bonifico","STATO PAGAMENTO":"SALDATO","N° FATTURA":"1073","TUTOR":"","TRAINER":"","NUTRI":"","PAGANTE":"SI","€ TUTOR":"","€ TRAINER":"","€ NUTRI":"","CONTRATTO":"","CHECK":"","RISULTATO":""}}
+];
+function applyPromoEstateImport(){
+  const r=mergeNuoviClienti(PROMO_ESTATE_NUOVI_CLIENTI);
+  let updated=0;
+  PROMO_ESTATE_AGGIORNAMENTI.forEach(({nome,campi})=>{
+    const rec=DATA.find(x=>(x['CLIENTE']||'').trim().toLowerCase()===nome.trim().toLowerCase());
+    if(rec && rec['PERCORSO']!=='PROMO ESTATE'){ Object.assign(rec,campi); updated++; }
+  });
+  if(r.added>0||updated>0){ saveClienti(); buildFilters(); render(); }
+  return {...r,updated};
 }
 /* Fonte cliente: valorizzata a incrocio con la colonna FONTE del foglio Google (luglio 2026).
    Compila SOLO r['FONTE'] quando è vuota — non sovrascrive mai un valore già presente,
@@ -2440,6 +2468,7 @@ loadCollabColors();
 loadCompOverrides();
 initData();
 applyLug26Import();
+applyPromoEstateImport();
 applyFonteMap();
 loadManagedLists();
 buildFilters();
