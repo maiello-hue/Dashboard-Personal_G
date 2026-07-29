@@ -77,6 +77,12 @@ h1{font-size:22px;font-weight:500}
 .fonte-client-row{display:flex;justify-content:space-between;align-items:center;padding:7px 2px;border-bottom:1px solid var(--border);font-size:13px}
 .fonte-client-row:last-child{border-bottom:none}
 .fonte-total{display:flex;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:2px solid var(--border-strong);font-weight:600;font-size:13px}
+.check-toggle-group{display:inline-flex;align-items:center;gap:4px}
+.check-toggle-label{font-size:11px;color:var(--muted);margin-right:2px;white-space:nowrap}
+.check-toggle-btn{border:1px solid var(--border-strong);background:var(--card);color:var(--muted);font-size:11.5px;font-weight:500;padding:3px 10px;border-radius:999px;cursor:pointer;white-space:nowrap;transition:background .12s ease,color .12s ease,border-color .12s ease}
+.check-toggle-btn:hover{background:var(--card2)}
+.check-toggle-btn.on{background:#eaf7ef;color:#1f9d63;border-color:#bfe8cf}
+.check-toggle-btn.on.off{background:#fbebeb;color:#d23f3f;border-color:#f3d9d9}
 .filters{background:transparent;border:none;padding:0;display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;align-items:center}
 .filters input,.filters select{background:var(--card);border:1px solid var(--border-strong);color:var(--text);border-radius:999px;padding:5px 12px;font-size:12px;line-height:1.3;outline:none;transition:border-color .15s ease,background .2s ease;box-sizing:border-box}
 .filters input:focus,.filters select:focus{border-color:var(--muted2)}
@@ -176,9 +182,10 @@ tr.main:hover{background:var(--card2);cursor:pointer}
 .exp b{color:var(--text)}
 .detail-row{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;padding:9px 13px;background:var(--card2);border:1px solid var(--border);border-radius:12px}
 .detail-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
-.di-ic{flex-shrink:0;display:flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--card)}
+.di-ic{flex-shrink:0;display:inline-flex;align-items:center;justify-content:center}
 .di-ic svg{width:11px;height:11px;stroke:var(--muted2);fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
 .di-ic i{font-size:11px;color:var(--muted2)}
+.di-ic-lg svg{width:15px;height:15px;stroke-width:1.3}
 .detail-item .di-l{color:var(--muted);font-size:11px;margin-right:2px}
 .ico{display:inline-flex;align-items:center;justify-content:center;vertical-align:-3px;margin-right:6px}
 .ico svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
@@ -428,6 +435,10 @@ h3 .ico,.sub .ico{color:var(--muted)}
       <span class="ic"><i class="fa-solid fa-hand-holding-dollar"></i></span>
       Compensi
     </button>
+    <button class="nav-item" id="nav-check" onclick="showPage('check')">
+      <span class="ic"><i class="fa-solid fa-clipboard-check"></i></span>
+      Check
+    </button>
     <div class="nav-divider"></div>
     <button class="nav-item" id="nav-impostazioni" onclick="showPage('impostazioni')">
       <span class="ic"><i class="fa-solid fa-gear"></i></span>
@@ -472,6 +483,10 @@ h3 .ico,.sub .ico{color:var(--muted)}
       <button id="msheet-rimborsi" onclick="showPage('rimborsi')">
         <span class="ic"><i class="fa-solid fa-rotate-left"></i></span>
         Rimborsi
+      </button>
+      <button id="msheet-check" onclick="showPage('check')">
+        <span class="ic"><i class="fa-solid fa-clipboard-check"></i></span>
+        Check
       </button>
       <button id="msheet-impostazioni" onclick="showPage('impostazioni')">
         <span class="ic"><i class="fa-solid fa-gear"></i></span>
@@ -725,6 +740,11 @@ h3 .ico,.sub .ico{color:var(--muted)}
       <div class="card span12" id="prov-venditori"></div>
     </div>
 
+    <div id="page-check" style="display:none">
+      <div class="sub" style="margin-bottom:14px">Elenco di tutte le clienti, divise per Premium e Gnocca. Per ciascuna, segna se il check è stato effettuato e se il risultato è stato raggiunto.</div>
+      <div id="check-list"></div>
+    </div>
+
     <div id="page-impostazioni" style="display:none">
       <div class="card" style="max-width:640px">
         <h3><span class="ico"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.1"/><path d="M13.3 9.2a5 5 0 0 0 0-2.4l1.3-1-1.2-2.1-1.6.5a5 5 0 0 0-2-1.2L9.5 1.5H6.5l-.3 1.5a5 5 0 0 0-2 1.2l-1.6-.5-1.2 2.1 1.3 1a5 5 0 0 0 0 2.4l-1.3 1 1.2 2.1 1.6-.5a5 5 0 0 0 2 1.2l.3 1.5h3l.3-1.5a5 5 0 0 0 2-1.2l1.6.5 1.2-2.1z"/></svg></span>Sincronizzazione con GitHub</h3>
@@ -905,7 +925,7 @@ let currentPage='dashboard';
 /* ---------- navigazione pagine ---------- */
 function showPage(p){
   currentPage=p;
-  ['dashboard','clienti','incassi','analisi','rinnovi','rimborsi','compensi','impostazioni'].forEach(x=>document.getElementById('nav-'+x).classList.toggle('on',x===p));
+  ['dashboard','clienti','incassi','analisi','rinnovi','rimborsi','compensi','check','impostazioni'].forEach(x=>document.getElementById('nav-'+x).classList.toggle('on',x===p));
   const navEl=document.getElementById('nav-'+p);
   if(navEl){navEl.classList.remove('flash'); void navEl.offsetWidth; navEl.classList.add('flash'); setTimeout(()=>navEl.classList.remove('flash'),450);}
   document.getElementById('page-dashboard').style.display=(p==='dashboard')?'block':'none';
@@ -915,10 +935,11 @@ function showPage(p){
   document.getElementById('page-rinnovi').style.display=(p==='rinnovi')?'block':'none';
   document.getElementById('page-rimborsi').style.display=(p==='rimborsi')?'block':'none';
   document.getElementById('page-compensi').style.display=(p==='compensi')?'block':'none';
+  document.getElementById('page-check').style.display=(p==='check')?'block':'none';
   document.getElementById('page-impostazioni').style.display=(p==='impostazioni')?'block':'none';
   if(p==='impostazioni') fillGhForm();
   const MOBILE_PRIMARY=['dashboard','clienti','analisi','compensi'];
-  const MOBILE_MORE=['incassi','rinnovi','rimborsi','impostazioni'];
+  const MOBILE_MORE=['incassi','rinnovi','rimborsi','check','impostazioni'];
   MOBILE_PRIMARY.forEach(x=>{ const el=document.getElementById('mnav-'+x); if(el) el.classList.toggle('on',x===p); });
   const moreBtn=document.getElementById('mnav-more');
   if(moreBtn) moreBtn.classList.toggle('on',MOBILE_MORE.includes(p));
@@ -2068,6 +2089,55 @@ function buildProvvigioni(){
     return `<div class="kpi ${cls}"><div class="l">${esc(name)}</div><div class="v">${fmtE(tot)}</div></div>`;
   }).join('')+`<div class="kpi"><div class="l">Totale provvigioni</div><div class="v">${fmtE(grandTotal)}</div></div>`;
 }
+/* ---------- pagina Check: elenco clienti con check/risultato sì-no, per Premium/Gnocca ---------- */
+let checkSectionsExpanded=new Set(['Premium','Gnocca']);
+function toggleCheckSection(name){
+  checkSectionsExpanded.has(name)?checkSectionsExpanded.delete(name):checkSectionsExpanded.add(name);
+  buildCheckPage();
+}
+function setCheckField(cliente,field,value){
+  const r=DATA.find(x=>x['CLIENTE']===cliente);
+  if(!r) return;
+  r[field]=value;
+  saveClienti();
+  buildCheckPage();
+}
+function checkToggleGroupHtml(cliente,field,label,currentVal){
+  const v=(currentVal||'').trim().toUpperCase();
+  return `<span class="check-toggle-group">
+    <span class="check-toggle-label">${label}</span>
+    <button class="check-toggle-btn${v==='SI'?' on':''}" onclick="setCheckField('${jsEsc(cliente)}','${field}','SI')">Sì</button>
+    <button class="check-toggle-btn${v==='NO'?' on off':''}" onclick="setCheckField('${jsEsc(cliente)}','${field}','NO')">No</button>
+  </span>`;
+}
+function buildCheckPage(){
+  const el=document.getElementById('check-list');
+  if(!el) return;
+  const byName=(a,b)=>(a['CLIENTE']||'').localeCompare(b['CLIENTE']||'','it');
+  const premiumRows=DATA.filter(r=>!isGnocca(r)).sort(byName);
+  const gnoccaRows=DATA.filter(isGnocca).sort(byName);
+  const sectionHtml=(title,rows)=>{
+    const open=checkSectionsExpanded.has(title);
+    const rowsHtml=rows.map(r=>{
+      const cliente=r['CLIENTE'];
+      return `<div class="fonte-client-row">
+        <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0">${esc(cliente)}</span>
+        <span style="display:flex;align-items:center;gap:14px;flex-shrink:0;flex-wrap:wrap">
+          ${checkToggleGroupHtml(cliente,'CHECK','Check',r['CHECK'])}
+          ${checkToggleGroupHtml(cliente,'RISULTATO','Risultato',r['RISULTATO'])}
+        </span>
+      </div>`;
+    }).join('')||'<div class="sub">Nessuna cliente in questa categoria.</div>';
+    return `<div class="fonte-section">
+      <div class="fonte-section-head" onclick="toggleCheckSection('${title}')">
+        <span>${title}</span>
+        <span class="count">${rows.length} client${rows.length===1?'e':'e'} <span class="fonte-caret">${open?'▾':'▸'}</span></span>
+      </div>
+      <div class="fonte-section-body" style="display:${open?'block':'none'}">${rowsHtml}</div>
+    </div>`;
+  };
+  el.innerHTML=sectionHtml('Premium',premiumRows)+sectionHtml('Gnocca',gnoccaRows);
+}
 const SELECT_FIELDS={'STATO CLIENTE':false,'STATO PAGAMENTO':false,'TIPO INCASSO':false,'PERCORSO':true,'METODO PAGAMENTO':true,'TUTOR':true,'TRAINER':true,'NUTRI':true,'VENDITORE':true};
 function selectFieldHtml(f,l,idPrefix,value,options,allowCustom,labelMap){
   const idKey=`${idPrefix}-${f.replace(/ /g,'_')}`;
@@ -2487,6 +2557,7 @@ function render(){
   buildFonteReport(allRows);
   buildCompensi();
   buildProvvigioni();
+  buildCheckPage();
 
   const byM={};
   allRows.forEach(r=>{const d=pdate(r['INIZIO PERCORSO']);if(d){const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');byM[k]=(byM[k]||0)+1;}});
@@ -2550,6 +2621,7 @@ function ic(name){ return `<span class="ico"><svg viewBox="0 0 16 16">${ICO_PATH
 
 /* ---------- tabella clienti ---------- */
 const DI_SVG=(p)=>`<span class="di-ic"><svg viewBox="0 0 16 16">${p}</svg></span>`;
+const DI_SVG_LG=(p)=>`<span class="di-ic di-ic-lg"><svg viewBox="0 0 16 16">${p}</svg></span>`;
 const DI_FA=(cls)=>`<span class="di-ic"><i class="fa-solid ${cls}"></i></span>`;
 const DI={
   coin: DI_FA('fa-coins'),
@@ -2558,9 +2630,9 @@ const DI={
   user: DI_SVG('<circle cx="8" cy="5.6" r="2.3"/><path d="M3.3 13c.5-2.6 2.3-4 4.7-4s4.2 1.4 4.7 4"/>'),
   doc: DI_SVG('<path d="M4.5 2h4.5l2.5 2.5V14h-7z"/><path d="M9 2v2.5h2.5"/><path d="M6 8.5h4M6 10.8h4"/>'),
   refund: DI_SVG('<path d="M3.5 8A4.5 4.5 0 1 0 6.2 3.9"/><path d="M3.5 5V8H6.5"/>'),
-  contract: DI_SVG('<path d="M5.8 3.4h2.9l1.7 1.7v6.9H5.8z"/><path d="M8.7 3.4v1.7h1.7"/><path d="M7 8.4h2.6M7 9.9h2.6"/>'),
-  checkbox: DI_SVG('<rect x="4.6" y="4.6" width="6.8" height="6.8" rx="1.8"/><path d="M6.2 8.1l1.2 1.2 2.2-2.5"/>'),
-  star: DI_SVG('<path d="M8 5v1.4M8 9.6V11M5.7 5.7l1 1M9.3 9.3l1 1M10.3 5.7l-1 1M6.7 9.3l-1 1" stroke-linecap="round"/><circle cx="8" cy="8" r="1.5"/>'),
+  contract: DI_SVG_LG('<path d="M4.8 2.2h4l2.3 2.3v9.3H4.8z"/><path d="M8.8 2.2v2.3h2.3"/><path d="M6.2 8.3h3.6M6.2 10.4h3.6"/>'),
+  checkbox: DI_SVG_LG('<rect x="3.3" y="3.3" width="9.4" height="9.4" rx="2.4"/><path d="M5.5 8.1l1.6 1.6 3.1-3.5"/>'),
+  star: DI_SVG_LG('<path d="M2.3 8.3h2.9M10.8 8.3h2.9M8 2.3v2.9M8 10.8v2.9" stroke-linecap="round"/><path d="M4.3 4.3l2 2M9.7 9.7l2 2M11.7 4.3l-2 2M6.3 9.7l-2 2" stroke-linecap="round"/><circle cx="8" cy="8" r="2.3"/>'),
   split: DI_SVG('<circle cx="6" cy="8" r="4"/><circle cx="10" cy="8" r="4"/>'),
   fonte: DI_SVG('<path d="M2.5 3.2h5.1l5.9 5.9-5.1 5.1-5.9-5.9z"/><circle cx="5.4" cy="6.1" r="1"/>'),
   dumbbell: DI_SVG('<rect x="0.7" y="6.6" width="1.6" height="2.8" rx="0.5"/><rect x="2.3" y="5.6" width="1.6" height="4.8" rx="0.5"/><rect x="12.1" y="5.6" width="1.6" height="4.8" rx="0.5"/><rect x="13.7" y="6.6" width="1.6" height="2.8" rx="0.5"/><path d="M3.9 8h8.2"/>')
