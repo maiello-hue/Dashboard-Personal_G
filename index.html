@@ -2202,10 +2202,8 @@ function render(){
   document.getElementById('k-cong-d').textContent=brk(congA);
   document.getElementById('k-nonrin').textContent=nonrinA.length;
   document.getElementById('k-nonrin-d').textContent=brk(nonrinA);
-  document.getElementById('k-nonrin-l').textContent='Non rinnovo ('+meseLbl+')';
   document.getElementById('k-abb').textContent=abbA.length;
   document.getElementById('k-abb-d').textContent=brk(abbA);
-  document.getElementById('k-abb-l').textContent='Abbandonate ('+meseLbl+')';
   document.getElementById('k-spar').textContent=sparA.length;
   document.getElementById('k-spar-d').textContent=brk(sparA);
   document.getElementById('k-mai').textContent=maiA.length;
@@ -2229,7 +2227,6 @@ function render(){
   setInc('i-rin',isRinT,'clienti con tag rinnovo');
   setInc('i-ric',isRicT,'clienti con tag ricorrente');
   setInc('i-alt',isAltT,'nuovi clienti');
-  document.getElementById('i-tot-l').textContent='Totale incassato ('+meseLbl+')';
   const incTotRows=allRows.filter(incMese);
   document.getElementById('i-tot').textContent=fmtEuro2(incTotRows.reduce((s,r)=>s+euro(r['INCASSO']),0));
   document.getElementById('i-tot-d').textContent=incTotRows.length+' incassi registrati';
