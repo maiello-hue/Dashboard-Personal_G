@@ -743,6 +743,17 @@ h3 .ico,.sub .ico{color:var(--muted)}
     <div id="page-check" style="display:none">
       <div class="sub" style="margin-bottom:14px">Elenco di tutte le clienti, divise per Premium e Gnocca. Per ciascuna, segna se il check è stato effettuato e se il risultato è stato raggiunto.</div>
       <div id="check-list"></div>
+
+      <h3 style="margin:22px 0 6px">Tasso di performance per collaboratore</h3>
+      <div class="sub" style="margin-bottom:10px">Percentuale di clienti con Check e Risultato a "Sì", calcolata sul totale delle clienti assegnate a ciascun collaboratore. I venditori non sono inclusi.</div>
+      <div class="card span12">
+        <table class="rate-table">
+          <thead>
+            <tr><th>Collaboratore</th><th>Clienti</th><th>Check</th><th>Risultato</th><th>Performance</th></tr>
+          </thead>
+          <tbody id="perf-collab-table-body"></tbody>
+        </table>
+      </div>
     </div>
 
     <div id="page-impostazioni" style="display:none">
@@ -2137,6 +2148,42 @@ function buildCheckPage(){
     </div>`;
   };
   el.innerHTML=sectionHtml('Premium',premiumRows)+sectionHtml('Gnocca',gnoccaRows);
+  buildPerfCollabTable();
+}
+/* Tasso di performance per collaboratore: % di clienti con Check="Sì" e con
+   Risultato="Sì" sul totale delle clienti assegnate, per Tutor/Trainer/Nutri
+   (i venditori non entrano in questo calcolo). */
+function buildPerfCollabTable(){
+  const el=document.getElementById('perf-collab-table-body');
+  if(!el) return;
+  const pct=(n,d)=>d?(n/d*100):0;
+  const fmtPct=n=>n.toLocaleString('it-IT',{minimumFractionDigits:1,maximumFractionDigits:1})+'%';
+  const perfColor=p=>p>=80?{bg:'#eaf7ef',fg:'#1f9d63'}:p>=50?{bg:'#faf1e2',fg:'#b5720f'}:{bg:'#fbebeb',fg:'#d23f3f'};
+  const cell=rate=>{
+    const c=perfColor(rate);
+    return `<td class="rate-cell"><div class="rate-cell-inner"><span class="rate-pill" style="background:${c.bg};color:${c.fg}">${fmtPct(rate)}</span></div></td>`;
+  };
+  const collabBadgeFn={TUTOR:tutBadge,TRAINER:trainBadge,NUTRI:nutriBadge};
+  const rows=[];
+  ['TUTOR','TRAINER','NUTRI'].forEach(field=>{
+    distinct(field).forEach(name=>{
+      const assigned=DATA.filter(r=>(r[field]||'').trim()===name);
+      if(!assigned.length) return;
+      const checkSi=assigned.filter(r=>(r['CHECK']||'').trim().toUpperCase()==='SI').length;
+      const risSi=assigned.filter(r=>(r['RISULTATO']||'').trim().toUpperCase()==='SI').length;
+      const checkRate=pct(checkSi,assigned.length), risRate=pct(risSi,assigned.length);
+      const perfRate=(checkRate+risRate)/2;
+      rows.push({field,name,tot:assigned.length,checkRate,risRate,perfRate});
+    });
+  });
+  rows.sort((a,b)=>b.perfRate-a.perfRate);
+  el.innerHTML=rows.map(r=>`<tr class="rate-tr">
+      <td><div class="rate-row-label">${collabBadgeFn[r.field](r.name)}</div></td>
+      <td style="text-align:center">${r.tot}</td>
+      ${cell(r.checkRate)}
+      ${cell(r.risRate)}
+      ${cell(r.perfRate)}
+    </tr>`).join('')||'<tr><td colspan="5" class="sub">Nessun collaboratore con clienti assegnate.</td></tr>';
 }
 const SELECT_FIELDS={'STATO CLIENTE':false,'STATO PAGAMENTO':false,'TIPO INCASSO':false,'PERCORSO':true,'METODO PAGAMENTO':true,'TUTOR':true,'TRAINER':true,'NUTRI':true,'VENDITORE':true};
 function selectFieldHtml(f,l,idPrefix,value,options,allowCustom,labelMap){
