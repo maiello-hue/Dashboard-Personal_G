@@ -1959,13 +1959,17 @@ function render(){
   const attA=fSt('IN PERCORSO'), congA=fSt('CONGELATO').concat(fSt('SOSPES')),
         nonrinA=fSt('NON RINNOVATO'), abbA=fSt('ABBANDONAT'), sparA=fSt('SPARIT'), maiA=fSt('MAI INIZIATO');
   const att=attA.length;
+  /* "Clienti totali" esclude le Abbandonate e le Non rinnovate: rappresenta il
+     parco clienti attuale (attive + congelate + sparite + mai iniziato), non
+     lo storico completo. */
+  const totA=allRows.filter(r=>!isArchiviata(r));
   const scadA=allRows.filter(r=>{const d=pdate(r['FINE PERCORSO']);return d&&d>=now&&d<=in30&&r['STATO CLIENTE']==='IN PERCORSO';});
   const scad30=scadA.length, brkScad=brk(scadA);
   const premiumRows=allRows.filter(r=>!isGnocca(r)), gnoccaRows=allRows.filter(isGnocca);
   const abbPremiumA=abbA.filter(r=>!isGnocca(r)), abbGnoccaA=abbA.filter(isGnocca);
   const nonrinPremiumA=nonrinA.filter(r=>!isGnocca(r)), nonrinGnoccaA=nonrinA.filter(isGnocca);
   const totPremiumA=abbPremiumA.concat(nonrinPremiumA), totGnoccaA=abbGnoccaA.concat(nonrinGnoccaA);
-  KPI_LISTS={tot:allRows,att:attA,cong:congA,abb:abbA,spar:sparA,nonrin:nonrinA,mai:maiA,scad:scadA,
+  KPI_LISTS={tot:totA,att:attA,cong:congA,abb:abbA,spar:sparA,nonrin:nonrinA,mai:maiA,scad:scadA,
     abbPremium:abbPremiumA,abbGnocca:abbGnoccaA,nonrinPremium:nonrinPremiumA,nonrinGnocca:nonrinGnoccaA,
     abbTotPremium:totPremiumA,abbTotGnocca:totGnoccaA};
   const pct=(n,d)=>d?(n/d*100):0;
@@ -2037,8 +2041,8 @@ function render(){
     collabTableHtml+=`<tr class="rate-group-row"><td colspan="6">${collabRoleLabel[field]}</td></tr>`+groupRows.map(rowHtml).join('');
   });
   document.getElementById('collab-abbandono-table-body').innerHTML=collabTableHtml||'<tr><td colspan="6" class="sub">Nessun collaboratore con clienti assegnate.</td></tr>';
-  document.getElementById('k-tot').textContent=allRows.length;
-  document.getElementById('k-tot-d').textContent=brk(allRows);
+  document.getElementById('k-tot').textContent=totA.length;
+  document.getElementById('k-tot-d').textContent=brk(totA);
   document.getElementById('k-att').textContent=att;
   document.getElementById('k-att-d').textContent=brk(attA);
   document.getElementById('k-cong').textContent=congA.length;
