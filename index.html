@@ -2129,6 +2129,14 @@ function setCheckField(cliente,field,value){
   saveClienti();
   buildCheckPage();
 }
+function isCheckExcluded(r){ return (r['CHECK_ESCLUSA']||'').trim().toUpperCase()==='SI'; }
+function toggleCheckExclude(cliente){
+  const r=DATA.find(x=>x['CLIENTE']===cliente);
+  if(!r) return;
+  r['CHECK_ESCLUSA']=isCheckExcluded(r)?'':'SI';
+  saveClienti();
+  buildCheckPage();
+}
 function checkToggleGroupHtml(cliente,field,label,currentVal){
   const v=(currentVal||'').trim().toUpperCase();
   return `<span class="check-toggle-group">
@@ -2149,10 +2157,12 @@ function buildCheckPage(){
     const open=q?true:checkSectionsExpanded.has(title);
     const rowsHtml=rows.map(r=>{
       const cliente=r['CLIENTE'];
-      return `<div class="fonte-client-row">
-        <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0">${esc(cliente)}</span>
+      const excluded=isCheckExcluded(r);
+      return `<div class="fonte-client-row"${excluded?' style="opacity:.5"':''}>
+        <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0">${esc(cliente)}${excluded?' <span class="sub" style="margin:0">(esclusa dal conteggio)</span>':''}</span>
         <span style="display:flex;align-items:center;gap:14px;flex-shrink:0;flex-wrap:wrap">
           ${checkToggleGroupHtml(cliente,'CHECK','Check',r['CHECK'])}
+          <button class="icon-btn" title="${excluded?'Includi nel conteggio':'Nascondi dal conteggio'}" onclick="toggleCheckExclude('${jsEsc(cliente)}')">${ic(excluded?'eye-off':'eye')}</button>
           ${checkToggleGroupHtml(cliente,'RISULTATO','Risultato',r['RISULTATO'])}
         </span>
       </div>`;
@@ -2189,7 +2199,7 @@ function buildPerfCollabTable(){
     if(!el) return;
     const rows=[];
     distinct(field).forEach(name=>{
-      const assigned=DATA.filter(r=>(r[field]||'').trim()===name);
+      const assigned=DATA.filter(r=>(r[field]||'').trim()===name&&!isCheckExcluded(r));
       if(!assigned.length) return;
       const checkInserito=assigned.filter(r=>(r['CHECK']||'').trim()!=='').length;
       const miglioramenti=assigned.filter(r=>(r['RISULTATO']||'').trim().toUpperCase()==='SI').length;
@@ -2683,7 +2693,9 @@ const ICO_PATHS={
   gear:'<circle cx="8" cy="8" r="2.1"/><path d="M13.3 9.2a5 5 0 0 0 0-2.4l1.3-1-1.2-2.1-1.6.5a5 5 0 0 0-2-1.2L9.5 1.5H6.5l-.3 1.5a5 5 0 0 0-2 1.2l-1.6-.5-1.2 2.1 1.3 1a5 5 0 0 0 0 2.4l-1.3 1 1.2 2.1 1.6-.5a5 5 0 0 0 2 1.2l.3 1.5h3l.3-1.5a5 5 0 0 0 2-1.2l1.6.5 1.2-2.1z"/>',
   link:'<path d="M6.5 9.5l3-3"/><path d="M7 4.6l.5-.5a2.6 2.6 0 0 1 3.7 3.7l-.5.5"/><path d="M9 11.4l-.5.5a2.6 2.6 0 0 1-3.7-3.7l.5-.5"/>',
   undo:'<path d="M4 8h6a3.2 3.2 0 1 1 0 6.4H8.5"/><path d="M6.6 5.2 4 8l2.6 2.8"/>',
-  x:'<path d="M4.2 4.2l7.6 7.6M11.8 4.2l-7.6 7.6"/>'
+  x:'<path d="M4.2 4.2l7.6 7.6M11.8 4.2l-7.6 7.6"/>',
+  eye:'<path d="M1.3 8S4 3.5 8 3.5 14.7 8 14.7 8 12 12.5 8 12.5 1.3 8 1.3 8z"/><circle cx="8" cy="8" r="2.2"/>',
+  'eye-off':'<path d="M4.1 4.6C2.5 5.7 1.3 8 1.3 8s2.7 4.5 6.7 4.5c1.1 0 2.1-.3 3-.8M11 4.4c1.9 1 3.7 3.6 3.7 3.6s-.6 1.1-1.7 2.3"/><path d="M6.3 6.4a2.2 2.2 0 0 0 3.1 3.1"/><path d="M2.3 2.6l11.4 11.4"/>'
 };
 function ic(name){ return `<span class="ico"><svg viewBox="0 0 16 16">${ICO_PATHS[name]||''}</svg></span>`; }
 
