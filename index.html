@@ -2556,9 +2556,9 @@ const DI={
   user: DI_SVG('<circle cx="8" cy="5.6" r="2.3"/><path d="M3.3 13c.5-2.6 2.3-4 4.7-4s4.2 1.4 4.7 4"/>'),
   doc: DI_SVG('<path d="M4.5 2h4.5l2.5 2.5V14h-7z"/><path d="M9 2v2.5h2.5"/><path d="M6 8.5h4M6 10.8h4"/>'),
   refund: DI_SVG('<path d="M3.5 8A4.5 4.5 0 1 0 6.2 3.9"/><path d="M3.5 5V8H6.5"/>'),
-  contract: DI_SVG('<path d="M4.8 2.2h4l2.3 2.3v9.3H4.8z"/><path d="M8.8 2.2v2.3h2.3"/><path d="M6.2 8.3h3.6M6.2 10.4h3.6"/>'),
-  checkbox: DI_SVG('<rect x="3.3" y="3.3" width="9.4" height="9.4" rx="2.4"/><path d="M5.5 8.1l1.6 1.6 3.1-3.5"/>'),
-  star: DI_SVG('<path d="M2.3 8.3h2.9M10.8 8.3h2.9M8 2.3v2.9M8 10.8v2.9" stroke-linecap="round"/><path d="M4.3 4.3l2 2M9.7 9.7l2 2M11.7 4.3l-2 2M6.3 9.7l-2 2" stroke-linecap="round"/><circle cx="8" cy="8" r="2.3"/>'),
+  contract: DI_SVG('<path d="M5.8 3.4h2.9l1.7 1.7v6.9H5.8z"/><path d="M8.7 3.4v1.7h1.7"/><path d="M7 8.4h2.6M7 9.9h2.6"/>'),
+  checkbox: DI_SVG('<rect x="4.6" y="4.6" width="6.8" height="6.8" rx="1.8"/><path d="M6.2 8.1l1.2 1.2 2.2-2.5"/>'),
+  star: DI_SVG('<path d="M8 5v1.4M8 9.6V11M5.7 5.7l1 1M9.3 9.3l1 1M10.3 5.7l-1 1M6.7 9.3l-1 1" stroke-linecap="round"/><circle cx="8" cy="8" r="1.5"/>'),
   split: DI_SVG('<circle cx="6" cy="8" r="4"/><circle cx="10" cy="8" r="4"/>'),
   fonte: DI_SVG('<path d="M2.5 3.2h5.1l5.9 5.9-5.1 5.1-5.9-5.9z"/><circle cx="5.4" cy="6.1" r="1"/>'),
   dumbbell: DI_SVG('<rect x="0.7" y="6.6" width="1.6" height="2.8" rx="0.5"/><rect x="2.3" y="5.6" width="1.6" height="4.8" rx="0.5"/><rect x="12.1" y="5.6" width="1.6" height="4.8" rx="0.5"/><rect x="13.7" y="6.6" width="1.6" height="2.8" rx="0.5"/><path d="M3.9 8h8.2"/>')
@@ -2633,7 +2633,7 @@ function renderTable(rows){
     const finLabel=fin?fdate(fin):'MAI';
     const detailInner=`
         <span class="detail-item" title="Fonte">${DI.fonte}${esc(r['FONTE']||'—')}</span>
-        <span class="detail-item" title="Importo">${DI.coin}${esc(r['IMPORTO']||'—')}</span>
+        <span class="detail-item" title="Importo">${esc(r['IMPORTO']||'—')}</span>
         <span class="detail-item" title="Metodo di pagamento">${DI.card}${esc(r['METODO PAGAMENTO']||'—')}</span>
         <span class="detail-item" title="Stato pagamento">${DI.check}${esc(r['STATO PAGAMENTO']||'—')}</span>
         <span class="detail-item" title="Contratto">${DI.contract}${esc(r['CONTRATTO']||'—')}</span>
