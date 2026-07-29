@@ -61,6 +61,8 @@ h1{font-size:22px;font-weight:500}
 .kpi-azzurro{background:#e0f4fb}.kpi-azzurro .l,.kpi-azzurro .v{color:#0a8aa8}
 .kpi-yellow{background:#fdf6d6}.kpi-yellow .l,.kpi-yellow .v{color:#a67f00}
 .kpi-gray{background:#e2e6ec}.kpi-gray .l,.kpi-gray .v{color:#37424f}
+.mese-sel-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:12px;color:var(--muted)}
+.mese-sel-row select{background:var(--card);border:1px solid var(--border-strong);color:var(--text);border-radius:8px;padding:4px 10px;font-size:12.5px}
 .fonte-section{border:1px solid var(--border);border-radius:10px;margin-top:10px;overflow:hidden}
 .fonte-section:first-child{margin-top:0}
 .fonte-section-head{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;cursor:pointer;background:var(--card2);font-size:14px;font-weight:500;transition:background .12s ease}
@@ -480,26 +482,34 @@ h3 .ico,.sub .ico{color:var(--muted)}
     </div>
 
     <div id="page-dashboard" style="display:none">
+      <div class="mese-sel-row">
+        <label for="dash-mese-select">Mese abbandoni/non rinnovo/tassi</label>
+        <select id="dash-mese-select" onchange="setDashMese(this.value)"></select>
+      </div>
       <div class="kpis">
         <div class="kpi" onclick="apriListaClienti('tot')"><div class="l">Clienti totali</div><div class="v" id="k-tot">–</div><div class="d" id="k-tot-d"></div></div>
         <div class="kpi kpi-green" onclick="apriListaClienti('att')"><div class="l">In percorso</div><div class="v" id="k-att">–</div><div class="d" id="k-att-d"></div></div>
         <div class="kpi kpi-blue" onclick="apriListaClienti('cong')"><div class="l">Congelate</div><div class="v" id="k-cong">–</div><div class="d" id="k-cong-d"></div></div>
-        <div class="kpi kpi-red" onclick="apriListaClienti('abb')"><div class="l">Abbandonate</div><div class="v" id="k-abb">–</div><div class="d" id="k-abb-d"></div></div>
+        <div class="kpi kpi-red" onclick="apriListaClienti('abb')"><div class="l" id="k-abb-l">Abbandonate</div><div class="v" id="k-abb">–</div><div class="d" id="k-abb-d"></div></div>
         <div class="kpi kpi-orange" onclick="apriListaClienti('spar')"><div class="l">Sparite</div><div class="v" id="k-spar">–</div><div class="d" id="k-spar-d"></div></div>
-        <div class="kpi kpi-purple" onclick="apriListaClienti('nonrin')"><div class="l">Non rinnovo</div><div class="v" id="k-nonrin">–</div><div class="d" id="k-nonrin-d"></div></div>
+        <div class="kpi kpi-purple" onclick="apriListaClienti('nonrin')"><div class="l" id="k-nonrin-l">Non rinnovo</div><div class="v" id="k-nonrin">–</div><div class="d" id="k-nonrin-d"></div></div>
         <div class="kpi kpi-gray" onclick="apriListaClienti('mai')"><div class="l">Mai iniziato</div><div class="v" id="k-mai">–</div><div class="d" id="k-mai-d"></div></div>
         <div class="kpi" onclick="apriListaClienti('scad')"><div class="l">In scadenza 30gg</div><div class="v" id="k-scad">–</div><div class="d" id="k-scad-d">fine percorso entro 30 giorni</div></div>
       </div>
     </div>
 
     <div id="page-incassi" style="display:none">
+      <div class="mese-sel-row">
+        <label for="inc-mese-select">Mese incassi</label>
+        <select id="inc-mese-select" onchange="setDashMese(this.value)"></select>
+      </div>
       <div class="grid">
         <div class="card span12">
           <div class="incrow">
             <div class="incbox inc-green" onclick="apriListaClienti('incRin')"><div class="l">Rinnovo percorsi</div><div class="v" style="color:var(--green)" id="i-rin">–</div><div class="d" id="i-rin-d"></div></div>
             <div class="incbox inc-blue" onclick="apriListaClienti('incRic')"><div class="l">Ricorrenti</div><div class="v" style="color:var(--blue)" id="i-ric">–</div><div class="d" id="i-ric-d"></div></div>
             <div class="incbox inc-orange" onclick="apriListaClienti('incAlt')"><div class="l">Nuovo cliente</div><div class="v" style="color:var(--orange)" id="i-alt">–</div><div class="d" id="i-alt-d"></div></div>
-            <div class="incbox inc-purple" onclick="apriListaClienti('incTot')"><div class="l">Totale incassato</div><div class="v" style="color:var(--purple)" id="i-tot">–</div><div class="d" id="i-tot-d"></div></div>
+            <div class="incbox inc-purple" onclick="apriListaClienti('incTot')"><div class="l" id="i-tot-l">Totale incassato</div><div class="v" style="color:var(--purple)" id="i-tot">–</div><div class="d" id="i-tot-d"></div></div>
           </div>
         </div>
         <div class="card span12"><h3>Nuove entrate per mese</h3><div class="chartbox"><canvas id="c-entrate"></canvas></div></div>
@@ -795,6 +805,44 @@ let KPI_LISTS={};
    solo le clienti Abbandono/Non rinnovo. Serve per la pulizia mensile dell'elenco
    senza perdere lo storico. */
 let catFilter='all';
+/* dashMese: mese selezionato per le card "flusso mensile" (Abbandonate, Non rinnovo,
+   Tassi abbandono, Incassi). null = automatico (mese corrente): non viene salvato da
+   nessuna parte, quindi ogni volta che si apre la dashboard in un mese nuovo i numeri
+   ripartono da zero da soli, senza bisogno di "azzerare" nulla a mano. Le clienti/i
+   pagamenti restano comunque tutti in DATA per sempre: si può sempre rivedere un mese
+   passato scegliendolo dal menu a tendina. */
+let dashMese=null;
+function mesekey(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); }
+function mesekeyLabel(k){
+  if(k==='_nodata') return 'Non specificato';
+  const [y,m]=k.split('-');
+  return MESI_CAP[+m-1]+' '+y;
+}
+function effectiveMese(){ return dashMese||mesekey(new Date()); }
+function inMese(r,field,meseSel){
+  const d=pdate(r[field]);
+  return !!d && mesekey(d)===meseSel;
+}
+function buildMeseOptions(){
+  const sel=effectiveMese();
+  const keys=new Set([mesekey(new Date())]);
+  DATA.forEach(r=>{
+    ['DATA ARCHIVIAZIONE','DATA INCASSO'].forEach(f=>{
+      const d=pdate(r[f]);
+      if(d) keys.add(mesekey(d));
+    });
+  });
+  const opts=[...keys].sort().reverse().map(k=>`<option value="${k}"${k===sel?' selected':''}>${mesekeyLabel(k)}</option>`).join('');
+  ['dash-mese-select','inc-mese-select'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.innerHTML=opts;
+  });
+}
+function setDashMese(v){
+  dashMese=v||null;
+  buildMeseOptions();
+  render();
+}
 function isArchiviata(r){
   const s=(r['STATO CLIENTE']||'').toUpperCase();
   return s.startsWith('ABBANDONAT')||s.startsWith('NON RINNOVATO');
@@ -1167,6 +1215,7 @@ function pdate(s){
   return m?new Date(+m[3],+m[2]-1,+m[1]):null;
 }
 function fdate(d){return d?d.toLocaleDateString('it-IT'):'—';}
+function todayIt(){ const d=new Date(); return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear(); }
 function itToIso(it){
   if(!it) return '';
   const m=String(it).match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
@@ -1932,6 +1981,8 @@ function salvaNuovaCliente(){
   if(DATA.some(r=>r['CLIENTE'].trim().toLowerCase()===nome.toLowerCase())){ alert('Esiste già una cliente con questo nome.'); return; }
   const rec={CLIENTE:nome};
   EDIT_FIELDS.forEach(([f])=>{ rec[f]=readEditFieldValue('new',f); });
+  if(isArchiviata(rec)) rec['DATA ARCHIVIAZIONE']=todayIt();
+  if(euro(rec['INCASSO'])>0) rec['DATA INCASSO']=todayIt();
   DATA.push(rec);
   saveClienti();
   toggleAddCliente(false);
@@ -2031,11 +2082,20 @@ function render(){
   const rows=filtered();  /* usato solo per la tabella "Elenco clienti", che deve rispettare i filtri attivi */
   const now=new Date();
   const in30=new Date(now.getTime()+30*864e5);
+  buildMeseOptions();
+  const meseSel=effectiveMese();
+  const meseLbl=mesekeyLabel(meseSel);
 
   const fSt=s=>allRows.filter(r=>(r['STATO CLIENTE']||'').toUpperCase().startsWith(s));
   const brk=arr=>{const g=arr.filter(isGnocca).length;return `${arr.length-g} premium · ${g} gnocca`;};
   const attA=fSt('IN PERCORSO'), congA=fSt('CONGELATO').concat(fSt('SOSPES')),
-        nonrinA=fSt('NON RINNOVATO'), abbA=fSt('ABBANDONAT'), sparA=fSt('SPARIT'), maiA=fSt('MAI INIZIATO');
+        nonrinAAll=fSt('NON RINNOVATO'), abbAAll=fSt('ABBANDONAT'), sparA=fSt('SPARIT'), maiA=fSt('MAI INIZIATO');
+  /* Abbandonate/Non rinnovo (card, tassi) rappresentano il flusso DEL MESE selezionato
+     (di default il mese corrente): si basano su DATA ARCHIVIAZIONE, valorizzata in automatico
+     solo quando si cambia manualmente lo Stato Cliente. Le clienti restano comunque per
+     sempre in DATA/Storico: qui si filtra solo la vista, non i dati. */
+  const nonrinA=nonrinAAll.filter(r=>inMese(r,'DATA ARCHIVIAZIONE',meseSel));
+  const abbA=abbAAll.filter(r=>inMese(r,'DATA ARCHIVIAZIONE',meseSel));
   const att=attA.length;
   /* "Clienti totali" esclude le Abbandonate e le Non rinnovate: rappresenta il
      parco clienti attuale (attive + congelate + sparite + mai iniziato), non
@@ -2081,8 +2141,8 @@ function render(){
 
   const collabBadgeFn={TUTOR:tutBadge,TRAINER:trainBadge,NUTRI:nutriBadge};
   const collabRoleLabel={TUTOR:'Tutor',TRAINER:'Trainer',NUTRI:'Nutrizionista'};
-  const isAbb=r=>(r['STATO CLIENTE']||'').toUpperCase().startsWith('ABBANDONAT');
-  const isNonrin=r=>(r['STATO CLIENTE']||'').toUpperCase().startsWith('NON RINNOVATO');
+  const isAbb=r=>(r['STATO CLIENTE']||'').toUpperCase().startsWith('ABBANDONAT')&&inMese(r,'DATA ARCHIVIAZIONE',meseSel);
+  const isNonrin=r=>(r['STATO CLIENTE']||'').toUpperCase().startsWith('NON RINNOVATO')&&inMese(r,'DATA ARCHIVIAZIONE',meseSel);
   const collabRateRows=[];
   ['TUTOR','TRAINER','NUTRI'].forEach(field=>{
     distinct(field).forEach(name=>{
@@ -2127,8 +2187,10 @@ function render(){
   document.getElementById('k-cong-d').textContent=brk(congA);
   document.getElementById('k-nonrin').textContent=nonrinA.length;
   document.getElementById('k-nonrin-d').textContent=brk(nonrinA);
+  document.getElementById('k-nonrin-l').textContent='Non rinnovo ('+meseLbl+')';
   document.getElementById('k-abb').textContent=abbA.length;
   document.getElementById('k-abb-d').textContent=brk(abbA);
+  document.getElementById('k-abb-l').textContent='Abbandonate ('+meseLbl+')';
   document.getElementById('k-spar').textContent=sparA.length;
   document.getElementById('k-spar-d').textContent=brk(sparA);
   document.getElementById('k-mai').textContent=maiA.length;
@@ -2139,20 +2201,27 @@ function render(){
   const tipo=r=>(r['TIPO INCASSO']||'').toLowerCase();
   const isRinT=r=>tipo(r).includes('rinnovo'), isRicT=r=>tipo(r).includes('ricorrente');
   const isAltT=r=>!isRinT(r)&&!isRicT(r)&&euro(r['INCASSO'])>0;
+  /* Gli incassi mostrati sono SOLO quelli del mese selezionato (di default il mese
+     corrente): si basano su DATA INCASSO, valorizzata in automatico quando inserisci/
+     modifichi manualmente l'importo in Incasso. Gli incassi restano comunque per
+     sempre in DATA: si può sempre rivedere un mese passato dal menu a tendina. */
+  const incMese=r=>euro(r['INCASSO'])>0&&inMese(r,'DATA INCASSO',meseSel);
   const setInc=(id,f,label)=>{
-    const rs=allRows.filter(f);
+    const rs=allRows.filter(r=>incMese(r)&&f(r));
     document.getElementById(id).textContent=fmtEuro2(rs.reduce((s,r)=>s+euro(r['INCASSO']),0));
     document.getElementById(id+'-d').textContent=rs.length+' '+label;
   };
   setInc('i-rin',isRinT,'clienti con tag rinnovo');
   setInc('i-ric',isRicT,'clienti con tag ricorrente');
   setInc('i-alt',isAltT,'nuovi clienti');
-  document.getElementById('i-tot').textContent=fmtEuro2(allRows.reduce((s,r)=>s+euro(r['INCASSO']),0));
-  document.getElementById('i-tot-d').textContent=allRows.filter(r=>euro(r['INCASSO'])>0).length+' incassi registrati';
-  KPI_LISTS.incRin=allRows.filter(isRinT);
-  KPI_LISTS.incRic=allRows.filter(isRicT);
-  KPI_LISTS.incAlt=allRows.filter(isAltT);
-  KPI_LISTS.incTot=allRows.filter(r=>euro(r['INCASSO'])>0);
+  document.getElementById('i-tot-l').textContent='Totale incassato ('+meseLbl+')';
+  const incTotRows=allRows.filter(incMese);
+  document.getElementById('i-tot').textContent=fmtEuro2(incTotRows.reduce((s,r)=>s+euro(r['INCASSO']),0));
+  document.getElementById('i-tot-d').textContent=incTotRows.length+' incassi registrati';
+  KPI_LISTS.incRin=allRows.filter(r=>incMese(r)&&isRinT(r));
+  KPI_LISTS.incRic=allRows.filter(r=>incMese(r)&&isRicT(r));
+  KPI_LISTS.incAlt=allRows.filter(r=>incMese(r)&&isAltT(r));
+  KPI_LISTS.incTot=incTotRows;
 
   const common={plugins:{legend:{labels:{color:'#63625c',font:{size:11},boxWidth:12}}},maintainAspectRatio:false};
   const gridOpt={grid:{color:'#e4e3dd'},ticks:{color:'#63625c',font:{size:11}}};
@@ -2293,20 +2362,24 @@ function toggleStoricoGroup(key){
   render();
 }
 function groupStoricoByMonth(rowsCalc){
+  /* raggruppa per il mese in cui la cliente è stata effettivamente spostata in Abbandono/Non
+     rinnovo (campo DATA ARCHIVIAZIONE, valorizzato in automatico solo al cambio manuale dello
+     stato). Le clienti archiviate prima dell'introduzione di questo campo non hanno questa data
+     e finiscono nel gruppo "Non specificato". */
   const groups={};
   rowsCalc.forEach(item=>{
-    const fin=item.fin;
-    const key=fin?(fin.getFullYear()+'-'+String(fin.getMonth()+1).padStart(2,'0')):'_nodata';
-    if(!groups[key]) groups[key]={key,fin,items:[]};
+    const arch=item.arch;
+    const key=arch?(arch.getFullYear()+'-'+String(arch.getMonth()+1).padStart(2,'0')):'_nodata';
+    if(!groups[key]) groups[key]={key,arch,items:[]};
     groups[key].items.push(item);
   });
   const arr=Object.values(groups);
   arr.sort((a,b)=>{
     if(a.key==='_nodata') return 1;
     if(b.key==='_nodata') return -1;
-    return b.fin-a.fin;
+    return b.arch-a.arch;
   });
-  return arr.map(g=>({key:g.key,label:g.key==='_nodata'?'Senza data fine percorso':(MESI_CAP[g.fin.getMonth()]+' '+g.fin.getFullYear()),items:g.items}));
+  return arr.map(g=>({key:g.key,label:g.key==='_nodata'?'Non specificato':(MESI_CAP[g.arch.getMonth()]+' '+g.arch.getFullYear()),items:g.items}));
 }
 function renderTable(rows){
   document.getElementById('thead').innerHTML=COLS.map(([k,l])=>`<th onclick="sortBy('${k}')">${l}${sortKey===k?(sortDir>0?' ▲':' ▼'):''}</th>`).join('');
@@ -2347,7 +2420,8 @@ function renderTable(rows){
           <button class="icon-btn" title="Modifica" onclick="apriModificaCliente('${jsEsc(r['CLIENTE'])}')">${ic('edit')}</button>
           <button class="icon-btn danger" title="Elimina cliente" onclick="eliminaCliente('${jsEsc(r['CLIENTE'])}')">${ic('trash')}</button>
         </span>`;
-    return {r,i,ini,fin,prog,pctVal,pctCls,finTxt,finLabel,scad,renBadge,detailInner};
+    const arch=pdate(r['DATA ARCHIVIAZIONE']);
+    return {r,i,ini,fin,arch,prog,pctVal,pctCls,finTxt,finLabel,scad,renBadge,detailInner};
   });
   const desktopRowHtml=({r,i,ini,prog,finTxt,detailInner})=>{
     const main=`<tr class="main" onclick="toggleExp(${i})">
@@ -2453,7 +2527,28 @@ function chiudiModificaCliente(){
 function salvaClienteModal(){
   const r=DATA.find(x=>x['CLIENTE']===editingClienteName);
   if(!r) return;
+  const eraArchiviata=isArchiviata(r);
+  const incassoPrima=euro(r['INCASSO']);
   EDIT_FIELDS.forEach(([f])=>{ r[f]=readEditFieldValue('editm',f); });
+  const oraArchiviata=isArchiviata(r);
+  if(oraArchiviata&&!eraArchiviata){
+    /* la cliente è appena passata manualmente ad Abbandono/Non rinnovo: registriamo
+       la data di oggi come "data archiviazione" per raggruppare correttamente lo Storico per mese.
+       Non è un'archiviazione automatica basata su scadenze: scatta solo quando l'utente cambia lo stato a mano. */
+    r['DATA ARCHIVIAZIONE']=todayIt();
+  } else if(!oraArchiviata&&eraArchiviata){
+    /* riattivata: la data archiviazione precedente non ha più senso */
+    delete r['DATA ARCHIVIAZIONE'];
+  }
+  const incassoDopo=euro(r['INCASSO']);
+  if(incassoDopo>0&&incassoDopo!==incassoPrima){
+    /* l'importo incassato è stato appena inserito/modificato a mano: registriamo la
+       data di oggi come "data incasso", cosi l'incasso conta nel mese in cui è stato
+       davvero registrato (non nel mese di inizio percorso). */
+    r['DATA INCASSO']=todayIt();
+  } else if(incassoDopo<=0){
+    delete r['DATA INCASSO'];
+  }
   saveClienti();
   chiudiModificaCliente();
   buildFilters(); render();
