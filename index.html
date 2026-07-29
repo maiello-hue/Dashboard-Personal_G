@@ -544,6 +544,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
         <button id="an-tab-stato" class="on" onclick="setAnalisiTab('stato')">Stato clienti</button>
         <button id="an-tab-fonte" onclick="setAnalisiTab('fonte')">Fonte</button>
         <button id="an-tab-abbandono" onclick="setAnalisiTab('abbandono')">Tassi abbandono</button>
+        <button id="an-tab-performance" onclick="setAnalisiTab('performance')">Tasso performance</button>
       </div>
 
       <div id="analisi-tab-stato" class="grid">
@@ -602,6 +603,34 @@ h3 .ico,.sub .ico{color:var(--muted)}
               <tr><th>Collaboratore</th><th>Clienti</th><th>Abbandono</th><th>Non rinnovo</th><th>Totale</th><th>% Abbandono totale</th></tr>
             </thead>
             <tbody id="collab-abbandono-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="analisi-tab-performance" class="grid" style="display:none">
+        <div class="card span12">
+          <h3>Tasso di performance per collaboratore</h3>
+          <div class="sub" style="margin-bottom:10px">Per ciascun collaboratore: clienti assegnate, quante hanno un check inserito, quante hanno un miglioramento (Risultato = Sì) e la percentuale di miglioramento sul totale delle clienti. Divisa per categoria, i venditori non sono inclusi.</div>
+        </div>
+        <div class="card span12">
+          <h3>Tutor</h3>
+          <table class="rate-table">
+            <thead><tr><th>Collaboratore</th><th>Clienti</th><th>Check inserito</th><th>Miglioramenti</th><th>% Miglioramento (sul totale)</th></tr></thead>
+            <tbody id="perf-tutor-table-body"></tbody>
+          </table>
+        </div>
+        <div class="card span12">
+          <h3>Trainer</h3>
+          <table class="rate-table">
+            <thead><tr><th>Collaboratore</th><th>Clienti</th><th>Check inserito</th><th>Miglioramenti</th><th>% Miglioramento (sul totale)</th></tr></thead>
+            <tbody id="perf-trainer-table-body"></tbody>
+          </table>
+        </div>
+        <div class="card span12">
+          <h3>Nutrizioniste</h3>
+          <table class="rate-table">
+            <thead><tr><th>Collaboratore</th><th>Clienti</th><th>Check inserito</th><th>Miglioramenti</th><th>% Miglioramento (sul totale)</th></tr></thead>
+            <tbody id="perf-nutri-table-body"></tbody>
           </table>
         </div>
       </div>
@@ -746,30 +775,6 @@ h3 .ico,.sub .ico{color:var(--muted)}
         <input type="text" id="check-search" placeholder="Cerca cliente…" oninput="buildCheckPage()">
       </div>
       <div id="check-list"></div>
-
-      <h3 style="margin:22px 0 6px">Tasso di performance per collaboratore</h3>
-      <div class="sub" style="margin-bottom:10px">Per ciascun collaboratore: clienti assegnate, quante hanno un check inserito, quante hanno un miglioramento (Risultato = Sì) e la percentuale di miglioramento sul totale delle clienti. Divisa per categoria, i venditori non sono inclusi.</div>
-      <div class="card span12" style="margin-bottom:14px">
-        <h3>Tutor</h3>
-        <table class="rate-table">
-          <thead><tr><th>Collaboratore</th><th>Clienti</th><th>Check inserito</th><th>Miglioramenti</th><th>% Miglioramento (sul totale)</th></tr></thead>
-          <tbody id="perf-tutor-table-body"></tbody>
-        </table>
-      </div>
-      <div class="card span12" style="margin-bottom:14px">
-        <h3>Trainer</h3>
-        <table class="rate-table">
-          <thead><tr><th>Collaboratore</th><th>Clienti</th><th>Check inserito</th><th>Miglioramenti</th><th>% Miglioramento (sul totale)</th></tr></thead>
-          <tbody id="perf-trainer-table-body"></tbody>
-        </table>
-      </div>
-      <div class="card span12">
-        <h3>Nutrizioniste</h3>
-        <table class="rate-table">
-          <thead><tr><th>Collaboratore</th><th>Clienti</th><th>Check inserito</th><th>Miglioramenti</th><th>% Miglioramento (sul totale)</th></tr></thead>
-          <tbody id="perf-nutri-table-body"></tbody>
-        </table>
-      </div>
     </div>
 
     <div id="page-impostazioni" style="display:none">
@@ -2161,8 +2166,8 @@ function buildCheckPage(){
       return `<div class="fonte-client-row"${excluded?' style="opacity:.5"':''}>
         <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0">${esc(cliente)}${excluded?' <span class="sub" style="margin:0">(esclusa dal conteggio)</span>':''}</span>
         <span style="display:flex;align-items:center;gap:14px;flex-shrink:0;flex-wrap:wrap">
-          ${checkToggleGroupHtml(cliente,'CHECK','Check',r['CHECK'])}
           <button class="icon-btn" title="${excluded?'Includi nel conteggio':'Nascondi dal conteggio'}" onclick="toggleCheckExclude('${jsEsc(cliente)}')">${ic(excluded?'eye-off':'eye')}</button>
+          ${checkToggleGroupHtml(cliente,'CHECK','Check',r['CHECK'])}
           ${checkToggleGroupHtml(cliente,'RISULTATO','Risultato',r['RISULTATO'])}
         </span>
       </div>`;
@@ -2444,7 +2449,7 @@ function setAbbCompRole(r){
 let analisiTab='stato';
 function setAnalisiTab(t){
   analisiTab=t;
-  ['stato','fonte','abbandono'].forEach(x=>{
+  ['stato','fonte','abbandono','performance'].forEach(x=>{
     document.getElementById('an-tab-'+x).classList.toggle('on',x===t);
     document.getElementById('analisi-tab-'+x).style.display=(x===t?'grid':'none');
   });
