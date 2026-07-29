@@ -178,6 +178,7 @@ tr.main:hover{background:var(--card2);cursor:pointer}
 .detail-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
 .di-ic{flex-shrink:0;display:flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--card)}
 .di-ic svg{width:11px;height:11px;stroke:var(--muted2);fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.di-ic i{font-size:11px;color:var(--muted2)}
 .detail-item .di-l{color:var(--muted);font-size:11px;margin-right:2px}
 .ico{display:inline-flex;align-items:center;justify-content:center;vertical-align:-3px;margin-right:6px}
 .ico svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
@@ -2549,9 +2550,10 @@ function ic(name){ return `<span class="ico"><svg viewBox="0 0 16 16">${ICO_PATH
 
 /* ---------- tabella clienti ---------- */
 const DI_SVG=(p)=>`<span class="di-ic"><svg viewBox="0 0 16 16">${p}</svg></span>`;
+const DI_FA=(cls)=>`<span class="di-ic"><i class="fa-solid ${cls}"></i></span>`;
 const DI={
-  coin: DI_SVG('<circle cx="8" cy="8" r="5.4"/><path d="M8 5.3v1M8 9.7v1M6.4 6.6c.2-.5.8-.8 1.6-.8s1.4.3 1.4.8c0 1.1-2.7.6-2.7 1.7 0 .5.7.8 1.4.8s1.3-.3 1.6-.8"/>'),
-  card: DI_SVG('<rect x="2.2" y="4.3" width="11.6" height="8.4" rx="2"/><path d="M2.2 6.9h11.6"/>'),
+  coin: DI_FA('fa-coins'),
+  card: DI_FA('fa-credit-card'),
   check: DI_SVG('<path d="M3.3 8.3l3 3 6.4-6.9"/>'),
   user: DI_SVG('<circle cx="8" cy="5.6" r="2.3"/><path d="M3.3 13c.5-2.6 2.3-4 4.7-4s4.2 1.4 4.7 4"/>'),
   doc: DI_SVG('<path d="M4.5 2h4.5l2.5 2.5V14h-7z"/><path d="M9 2v2.5h2.5"/><path d="M6 8.5h4M6 10.8h4"/>'),
@@ -2633,7 +2635,7 @@ function renderTable(rows){
     const finLabel=fin?fdate(fin):'MAI';
     const detailInner=`
         <span class="detail-item" title="Fonte">${DI.fonte}${esc(r['FONTE']||'—')}</span>
-        <span class="detail-item" title="Importo">${esc(r['IMPORTO']||'—')}</span>
+        <span class="detail-item" title="Importo">${DI.coin}${esc(r['IMPORTO']||'—')}</span>
         <span class="detail-item" title="Metodo di pagamento">${DI.card}${esc(r['METODO PAGAMENTO']||'—')}</span>
         <span class="detail-item" title="Stato pagamento">${DI.check}${esc(r['STATO PAGAMENTO']||'—')}</span>
         <span class="detail-item" title="Contratto">${DI.contract}${esc(r['CONTRATTO']||'—')}</span>
