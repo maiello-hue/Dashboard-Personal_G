@@ -764,9 +764,10 @@ let catFilter='all';
 /* Le clienti con percorso misto "N mesi + M Gnocca" sono Premium per i primi
    N mesi dalla data d'ingresso, poi passano automaticamente in Gnocca dal
    mese N+1 in poi. I percorsi senza "Gnocca" restano sempre Premium. */
-/* La "PROMO ESTATE" viene sempre conteggiata come Gnocca ai fini delle statistiche,
-   pur mantenendo il tag percorso testuale "PROMO ESTATE" (non viene rinominato). */
-const GNOCCA_PERCORSI_ESPLICITI=['PROMO ESTATE'];
+/* La "PROMO ESTATE", "FIGO 6" e "FIGO 12" vengono sempre conteggiate come Gnocca
+   ai fini delle statistiche, pur mantenendo il tag percorso testuale originale
+   (non vengono rinominate). */
+const GNOCCA_PERCORSI_ESPLICITI=['PROMO ESTATE','FIGO 6','FIGO 12'];
 function isGnocca(r){
   const perc=r['PERCORSO']||'';
   if(GNOCCA_PERCORSI_ESPLICITI.includes(perc.toUpperCase())) return true;
@@ -1361,7 +1362,7 @@ function pickPopoverColor(hex){
 
 /* ---------- colori dei collaboratori (dinamici: ogni nome nell'elenco è colorabile) ---------- */
 const LEGACY_COLLAB={
-  tutor:{ANDREA:{bg:'#fcebeb',fg:'#791f1f'},GIULIA:{bg:'#eaf3de',fg:'#27500a'},MANUELA:{bg:'#faeeda',fg:'#633806'},MARGHERITA:{bg:'#fbe4ec',fg:'#9c1f56'},MARA:{bg:'#e6f1fb',fg:'#0c447c'}},
+  tutor:{ANDREA:{bg:'#fcebeb',fg:'#791f1f'},GIULIA:{bg:'#eaf3de',fg:'#27500a'},MANUELA:{bg:'#fdf1d6',fg:'#8a5a00'},MARGHERITA:{bg:'#e6f1fb',fg:'#0c447c'},MARA:{bg:'#fbe4ec',fg:'#9c1f56'}},
   trainer:{FIORENZO:{bg:'#fdf1d6',fg:'#8a5a00'},MATTEO:{bg:'#dcedfa',fg:'#0f5c96'},FEDERICA:{bg:'#fcebeb',fg:'#791f1f'},GIANMIKI:{bg:'#e2e6ec',fg:'#37424f'},MARCO:{bg:'#fbe3d3',fg:'#8a3c0a'}},
   nutri:{NICOLE:{bg:'#fdf1d6',fg:'#8a5a00'},ALESSIA:{bg:'#fcebeb',fg:'#791f1f'},VANESSA:{bg:'#fbe4ec',fg:'#9c1f56'},SOFIA:{bg:'#eaf3de',fg:'#27500a'},MATILDE:{bg:'#e6f1fb',fg:'#0c447c'}},
   venditore:{PERSONAL_G:{bg:'#1c1c1a',fg:'#ffffff'}}
