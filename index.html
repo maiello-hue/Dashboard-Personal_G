@@ -701,6 +701,17 @@ h3 .ico,.sub .ico{color:var(--muted)}
         <div class="card span12"><h3>Trainer</h3><div id="comp-trainer"></div></div>
         <div class="card span12"><h3>Nutrizionista</h3><div id="comp-nutri"></div></div>
       </div>
+
+      <h3 style="margin:22px 0 6px">Provvigioni venditori</h3>
+      <div class="sub" style="margin-bottom:10px">
+        Provvigione calcolata sulle clienti entrate nel mese scelto (data inizio percorso), in base all'incasso registrato: € 1.850,82 → € 180 · € 1.668 → € 120 · € 1.428 → € 100 · € 680 → € 60.
+        Se l'incasso di una cliente non corrisponde a nessuno di questi importi la provvigione resta a € 0 e va inserita a mano sulla sua riga.
+      </div>
+      <div class="mese-sel-row filters">
+        <select id="prov-mese-select" aria-label="Mese provvigioni venditori" onchange="setDashMese(this.value)"></select>
+      </div>
+      <div class="kpis" id="prov-kpis"></div>
+      <div class="card span12" id="prov-venditori"></div>
     </div>
 
     <div id="page-impostazioni" style="display:none">
@@ -830,7 +841,7 @@ function buildMeseOptions(){
     });
   });
   const opts=[...keys].sort().reverse().map(k=>`<option value="${k}"${k===sel?' selected':''}>${mesekeyLabel(k)}</option>`).join('');
-  ['dash-mese-select','inc-mese-select'].forEach(id=>{
+  ['dash-mese-select','inc-mese-select','prov-mese-select'].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.innerHTML=opts;
   });
@@ -1296,6 +1307,11 @@ function nutriBadge(s){
   const c=getCollabColor('nutri',s);
   return `<span class="badge" style="background:${c.bg};color:${c.fg}">${esc(s)}</span>`;
 }
+function vendBadge(s){
+  if(!s) return '—';
+  const c=getCollabColor('venditore',s);
+  return `<span class="badge" style="background:${c.bg};color:${c.fg}">${esc(s)}</span>`;
+}
 function rimbBadge(s){
   if(!s) return '—';
   const k=s.toUpperCase();
@@ -1492,7 +1508,7 @@ const LEGACY_COLLAB={
   tutor:{ANDREA:{bg:'#fcebeb',fg:'#791f1f'},GIULIA:{bg:'#eaf3de',fg:'#27500a'},MANUELA:{bg:'#fdf1d6',fg:'#8a5a00'},MARGHERITA:{bg:'#e6f1fb',fg:'#0c447c'},MARA:{bg:'#fbe4ec',fg:'#9c1f56'}},
   trainer:{FIORENZO:{bg:'#fdf1d6',fg:'#8a5a00'},MATTEO:{bg:'#dcedfa',fg:'#0f5c96'},FEDERICA:{bg:'#fcebeb',fg:'#791f1f'},GIANMIKI:{bg:'#e2e6ec',fg:'#37424f'},MARCO:{bg:'#fbe3d3',fg:'#8a3c0a'}},
   nutri:{NICOLE:{bg:'#fdf1d6',fg:'#8a5a00'},ALESSIA:{bg:'#fcebeb',fg:'#791f1f'},VANESSA:{bg:'#fbe4ec',fg:'#9c1f56'},SOFIA:{bg:'#eaf3de',fg:'#27500a'},MATILDE:{bg:'#e6f1fb',fg:'#0c447c'}},
-  venditore:{PERSONAL_G:{bg:'#1c1c1a',fg:'#ffffff'}}
+  venditore:{PERSONAL_G:{bg:'#1c1c1a',fg:'#ffffff'},SALVATORE:{bg:'#dcedfa',fg:'#0f5c96'},PEPPE:{bg:'#eaf3de',fg:'#27500a'}}
 };
 const LS_COLLAB_COLORS='collab_colors_v1';
 let COLLAB_COLORS={tutor:{},trainer:{},nutri:{},venditore:{}};
@@ -1542,9 +1558,9 @@ function applyTutorColorResetOnce(){
 }
 
 /* ---------- elenchi personalizzabili: collaboratori, metodi di pagamento, percorsi ---------- */
-const KNOWN_COLLAB={tutor:['Andrea','Giulia','Manuela','Margherita','Mara'],trainer:['Fiorenzo','Matteo','Federica','Gianmiki','Marco'],nutri:['Nicole','Alessia','Vanessa','Sofia','Matilde'],venditore:['Personal_G']};
+const KNOWN_COLLAB={tutor:['Andrea','Giulia','Manuela','Margherita','Mara'],trainer:['Fiorenzo','Matteo','Federica','Gianmiki','Marco'],nutri:['Nicole','Alessia','Vanessa','Sofia','Matilde'],venditore:['Personal_G','Salvatore','Peppe']};
 const LS_LISTS={tutor:'list_tutor_v1',trainer:'list_trainer_v1',nutri:'list_nutri_v1',venditore:'list_venditore_v1',metodi:'list_metodi_v1',percorsi:'list_percorsi_v1'};
-const LIST_FIELD={tutor:'TUTOR',trainer:'TRAINER',nutri:'NUTRI',metodi:'METODO PAGAMENTO',percorsi:'PERCORSO'};
+const LIST_FIELD={tutor:'TUTOR',trainer:'TRAINER',nutri:'NUTRI',venditore:'VENDITORE',metodi:'METODO PAGAMENTO',percorsi:'PERCORSO'};
 const LIST_LABELS={tutor:'Tutor',trainer:'Trainer',nutri:'Nutrizionista',venditore:'Venditore',metodi:'Metodi di pagamento',percorsi:'Percorsi'};
 let MANAGED_LISTS={tutor:[],trainer:[],nutri:[],venditore:[],metodi:[],percorsi:[]};
 function distinctRimb(field){
@@ -1559,7 +1575,7 @@ function loadManagedLists(){
     }else{
       const set=new Set();
       (KNOWN_COLLAB[key]||[]).forEach(n=>set.add(n));
-      if(key==='venditore') distinctRimb('venditore').forEach(n=>set.add(n));
+      if(key==='venditore'){ distinctRimb('venditore').forEach(n=>set.add(n)); distinct('VENDITORE').forEach(n=>set.add(n)); }
       else distinct(LIST_FIELD[key]).forEach(n=>set.add(n));
       MANAGED_LISTS[key]=[...set].sort((a,b)=>a.localeCompare(b,'it'));
       saveManagedList(key);
@@ -1568,7 +1584,7 @@ function loadManagedLists(){
 }
 function saveManagedList(key){ try{ localStorage.setItem(LS_LISTS[key],JSON.stringify(MANAGED_LISTS[key])); }catch(e){} }
 function datalistValues(f){
-  const byField={'TUTOR':'tutor','TRAINER':'trainer','NUTRI':'nutri','PERCORSO':'percorsi','METODO PAGAMENTO':'metodi'};
+  const byField={'TUTOR':'tutor','TRAINER':'trainer','NUTRI':'nutri','PERCORSO':'percorsi','METODO PAGAMENTO':'metodi','VENDITORE':'venditore'};
   const key=byField[f];
   return key?MANAGED_LISTS[key].slice().sort((a,b)=>a.localeCompare(b,'it')):distinct(f);
 }
@@ -1737,7 +1753,7 @@ function distinct(field){
 const EDIT_FIELDS=[
   ['STATO CLIENTE','Stato'],['PERCORSO','Percorso'],['INIZIO PERCORSO','Inizio'],['FINE PERCORSO','Fine'],
   ['IMPORTO','Importo'],['METODO PAGAMENTO','Metodo pag.'],['STATO PAGAMENTO','Stato pag.'],['TIPO INCASSO','Tipo incasso'],['INCASSO','Incasso'],
-  ['TUTOR','Tutor'],['TRAINER','Trainer'],['NUTRI','Nutri'],['FONTE','Fonte']
+  ['TUTOR','Tutor'],['TRAINER','Trainer'],['NUTRI','Nutri'],['VENDITORE','Venditore'],['FONTE','Fonte']
 ];
 const FONTE_OPTIONS=['ADV','ORGANICO','INSTAGRAM','REFERRAL'];
 const FONTE_KEYS=['ADV','ORGANICO','INSTAGRAM','REFERRAL'];
@@ -1854,7 +1870,102 @@ function buildCompensi(){
     <div class="kpi kpi-yellow"><div class="l">Nutrizionista</div><div class="v">${fmtE(roleTotals.nutri)}</div></div>
     <div class="kpi"><div class="l">Totale compensi</div><div class="v">${fmtE(grandTotal)}</div></div>`;
 }
-const SELECT_FIELDS={'STATO CLIENTE':false,'STATO PAGAMENTO':false,'TIPO INCASSO':false,'PERCORSO':true,'METODO PAGAMENTO':true,'TUTOR':true,'TRAINER':true,'NUTRI':true};
+/* ---------- provvigioni venditori ---------- */
+/* Tabella a scaglioni fissi: l'incasso della cliente deve corrispondere (con una
+   piccola tolleranza per arrotondamenti) a uno di questi importi esatti per generare
+   la provvigione automatica. Importi diversi restano a €0 e vanno inseriti a mano
+   (stesso meccanismo di override usato per i compensi di tutor/trainer/nutri). */
+const PROV_TIERS=[[1850.82,180],[1668,120],[1428,100],[680,60]];
+function provvigioneAuto(incassoVal){
+  if(!(incassoVal>0)) return 0;
+  const hit=PROV_TIERS.find(([amt])=>Math.abs(amt-incassoVal)<0.01);
+  return hit?hit[1]:0;
+}
+let provvigioniExpanded=new Set();
+const LS_PROV_OVERRIDES='prov_overrides_v1';
+let PROV_OVERRIDES={};
+function loadProvOverrides(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(LS_PROV_OVERRIDES));
+    if(saved&&typeof saved==='object') PROV_OVERRIDES=saved;
+  }catch(e){}
+}
+function saveProvOverrides(){ try{ localStorage.setItem(LS_PROV_OVERRIDES,JSON.stringify(PROV_OVERRIDES)); }catch(e){} }
+function setProvOverride(cliente,value){
+  const v=parseFloat((value||'').toString().replace(',','.'));
+  if(value===''||isNaN(v)) delete PROV_OVERRIDES[cliente];
+  else PROV_OVERRIDES[cliente]=v;
+  saveProvOverrides();
+  buildProvvigioni();
+}
+function resetProvOverride(cliente){
+  delete PROV_OVERRIDES[cliente];
+  saveProvOverrides();
+  buildProvvigioni();
+}
+function toggleProvvigioni(name){
+  provvigioniExpanded.has(name)?provvigioniExpanded.delete(name):provvigioniExpanded.add(name);
+  buildProvvigioni();
+}
+function buildProvvigioni(){
+  const elKpis=document.getElementById('prov-kpis'), elList=document.getElementById('prov-venditori');
+  if(!elKpis||!elList) return;
+  const meseSel=effectiveMese();
+  const fmtE=n=>'€ '+n.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2,useGrouping:true});
+  /* elenco venditori sempre visibile (Personal_G, Salvatore, Peppe + eventuali altri
+     aggiunti da Impostazioni), anche se in questo mese non hanno ancora clienti. */
+  const names=new Set(MANAGED_LISTS.venditore||[]);
+  DATA.forEach(r=>{ const v=(r['VENDITORE']||'').trim(); if(v) names.add(v); });
+  const nameList=[...names].sort((a,b)=>a.localeCompare(b,'it'));
+  let grandTotal=0;
+  const sectionsHtml=nameList.map(name=>{
+    const assigned=DATA.filter(r=>(r['VENDITORE']||'').trim()===name);
+    const clientiMese=assigned.filter(r=>inMese(r,'INIZIO PERCORSO',meseSel))
+      .sort((a,b)=>(pdate(a['INIZIO PERCORSO'])||0)-(pdate(b['INIZIO PERCORSO'])||0));
+    let nameTotal=0;
+    const rowsHtml=clientiMese.map(r=>{
+      const cliente=r['CLIENTE'];
+      const incassoVal=euro(r['INCASSO']);
+      const auto=provvigioneAuto(incassoVal);
+      const hasOverride=Object.prototype.hasOwnProperty.call(PROV_OVERRIDES,cliente);
+      const finalRate=hasOverride?PROV_OVERRIDES[cliente]:auto;
+      nameTotal+=finalRate;
+      return `<div class="fonte-client-row">
+        <span style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;overflow:hidden">
+          <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(cliente)}</span>
+          <span class="sub" style="margin:0;flex-shrink:0">incasso ${incassoVal>0?fmtE(incassoVal):'—'}</span>
+        </span>
+        <span style="flex-shrink:0;display:flex;align-items:center;gap:6px">
+          <span style="font-size:12px;color:var(--muted2)">€</span>
+          <input type="number" step="0.5" class="comp-rate-input${hasOverride?' overridden':''}" value="${finalRate}" title="${auto>0?'Calcolata automaticamente, modificabile':'Nessuno scaglione corrispondente: inserire importo manuale'}" onchange="setProvOverride('${jsEsc(cliente)}',this.value)">
+          ${hasOverride?`<button class="icon-btn" title="Ripristina automatico" onclick="resetProvOverride('${jsEsc(cliente)}')">${ic('undo')}</button>`:''}
+        </span>
+      </div>`;
+    }).join('');
+    grandTotal+=nameTotal;
+    const open=provvigioniExpanded.has(name);
+    return `<div class="fonte-section">
+      <div class="fonte-section-head" onclick="toggleProvvigioni('${jsEsc(name)}')">
+        <span>${vendBadge(name)}</span>
+        <span class="count">${fmtE(nameTotal)} · ${clientiMese.length} client${clientiMese.length===1?'e':'e'} <span class="fonte-caret">${open?'▾':'▸'}</span></span>
+      </div>
+      <div class="fonte-section-body" style="display:${open?'block':'none'}">${rowsHtml||'<div class="sub">Nessuna cliente entrata in questo mese.</div>'}</div>
+    </div>`;
+  }).join('');
+  elList.innerHTML=sectionsHtml||'<div class="sub">Nessun venditore in elenco.</div>';
+  elKpis.innerHTML=nameList.map((name,i)=>{
+    const cls=['kpi-purple','kpi-azzurro','kpi-yellow'][i%3];
+    const assigned=DATA.filter(r=>(r['VENDITORE']||'').trim()===name);
+    const clientiMese=assigned.filter(r=>inMese(r,'INIZIO PERCORSO',meseSel));
+    const tot=clientiMese.reduce((s,r)=>{
+      const cliente=r['CLIENTE'];
+      const hasOverride=Object.prototype.hasOwnProperty.call(PROV_OVERRIDES,cliente);
+      return s+(hasOverride?PROV_OVERRIDES[cliente]:provvigioneAuto(euro(r['INCASSO'])));
+    },0);
+    return `<div class="kpi ${cls}"><div class="l">${esc(name)}</div><div class="v">${fmtE(tot)}</div></div>`;
+  }).join('')+`<div class="kpi"><div class="l">Totale provvigioni</div><div class="v">${fmtE(grandTotal)}</div></div>`;
+}
+const SELECT_FIELDS={'STATO CLIENTE':false,'STATO PAGAMENTO':false,'TIPO INCASSO':false,'PERCORSO':true,'METODO PAGAMENTO':true,'TUTOR':true,'TRAINER':true,'NUTRI':true,'VENDITORE':true};
 function selectFieldHtml(f,l,idPrefix,value,options,allowCustom,labelMap){
   const idKey=`${idPrefix}-${f.replace(/ /g,'_')}`;
   const has=value&&options.includes(value);
@@ -2272,6 +2383,7 @@ function render(){
 
   buildFonteReport(allRows);
   buildCompensi();
+  buildProvvigioni();
 
   const byM={};
   allRows.forEach(r=>{const d=pdate(r['INIZIO PERCORSO']);if(d){const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');byM[k]=(byM[k]||0)+1;}});
@@ -2424,6 +2536,7 @@ function renderTable(rows){
         <span class="detail-item">${DI.check}${esc(r['STATO PAGAMENTO']||'—')}</span>
         <span class="detail-item">${DI.contract}<span class="di-l">Contratto</span> ${esc(r['CONTRATTO']||'—')}</span>
         <span class="detail-item">${DI.checkbox}<span class="di-l">Check</span> ${esc(r['CHECK']||'—')}</span>
+        <span class="detail-item">${DI.split}<span class="di-l">Venditore</span> ${esc(r['VENDITORE']||'—')}</span>
         <span class="detail-item">${DI.star}<span class="di-l">Risultato</span> ${esc(r['RISULTATO']||'—')}</span>
         <span class="row-icon-actions" onclick="event.stopPropagation()">
           <button class="icon-btn" title="Modifica" onclick="apriModificaCliente('${jsEsc(r['CLIENTE'])}')">${ic('edit')}</button>
@@ -2763,6 +2876,7 @@ loadTagColors();
 loadCollabColors();
 applyTutorColorResetOnce();
 loadCompOverrides();
+loadProvOverrides();
 initData();
 applyLug26Import();
 applyPromoEstateImport();
