@@ -209,6 +209,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
 .scad-item{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
 .scad-item:last-child{border:none}
 .scad-item .scad-date{font-weight:400}
+.scad-right{display:flex;align-items:center;gap:10px}
 .ren-sel{border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:12px;font-weight:600;outline:none;cursor:pointer}
 .ren-note{background:var(--card2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:4px 8px;font-size:12px;width:180px;outline:none}
 .rs-da{background:rgba(181,114,15,.15);color:var(--orange);border-color:rgba(181,114,15,.4)}
@@ -426,6 +427,11 @@ h3 .ico,.sub .ico{color:var(--muted)}
   .scad-head>span:first-child{flex:1 1 auto;min-width:0;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .scad-head>select{flex:0 0 auto}
   .scad-head>label{flex:1 1 100% !important;margin-top:2px}
+  /* .scad-item (righe "Rinnovi da gestire"): su mobile il nome va a capo su
+     riga propria e subito sotto, sulla riga successiva, restano insieme data
+     + i due pulsanti icona + la freccia di espansione. */
+  .scad-item>span:first-child{flex:1 1 100% !important;min-width:0 !important}
+  .scad-right{flex:1 1 100% !important;margin-top:4px}
 
   .mobile-tabbar{
     /* sostituita dal menu a tendina (hamburger + drawer): resta nascosta */
@@ -2949,10 +2955,12 @@ function render(){
       </div>`:'';
       return `<div class="scad-item" onclick="toggleScadExpand('${jsEsc(name)}')" style="cursor:pointer">
         <span style="flex:1;min-width:200px">${esc(name)} ${statoBadge(r['STATO CLIENTE'])} · ${esc(r['PERCORSO']||'—')}</span>
-        <span class="scad-date ${gg<0?'danger':''}">${fdate(d)} · ${ggLabel}</span>
-        <button class="icon-btn" title="Rinnova abbonamento" onclick="event.stopPropagation();apriRinnovaAbbonamento('${jsEsc(name)}')">${ic('sync')}</button>
-        <button class="icon-btn" title="Posticipa abbonamento" onclick="event.stopPropagation();apriPosticipaAbbonamento('${jsEsc(name)}')">${ic('clock')}</button>
-        <span class="storico-group-arrow">${rowOpen?'⌄':'›'}</span>
+        <div class="scad-right">
+          <span class="scad-date ${gg<0?'danger':''}">${fdate(d)} · ${ggLabel}</span>
+          <button class="icon-btn" title="Rinnova abbonamento" onclick="event.stopPropagation();apriRinnovaAbbonamento('${jsEsc(name)}')">${ic('sync')}</button>
+          <button class="icon-btn" title="Posticipa abbonamento" onclick="event.stopPropagation();apriPosticipaAbbonamento('${jsEsc(name)}')">${ic('clock')}</button>
+          <span class="storico-group-arrow">${rowOpen?'⌄':'›'}</span>
+        </div>
         ${collabPanel}
       </div>`;
     }).join(''):'';
