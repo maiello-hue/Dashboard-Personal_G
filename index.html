@@ -3316,6 +3316,7 @@ function apriRinnovaAbbonamento(nome){
   const oggi=new Date().toISOString().slice(0,10);
   document.getElementById('rinnova-fields').innerHTML=
     `<label>Data del rinnovo<input type="date" id="rinnova-DATA" value="${oggi}"></label>`+
+    editFieldHtml('PERCORSO','Tipo di percorso','rinnova',r['PERCORSO']||'')+
     editFieldHtml('IMPORTO','Importo','rinnova',r['IMPORTO']||'')+
     editFieldHtml('METODO PAGAMENTO','Metodo di pagamento','rinnova',r['METODO PAGAMENTO']||'')+
     editFieldHtml('INCASSO','Incasso','rinnova','');
@@ -3330,9 +3331,11 @@ function salvaRinnovaAbbonamento(){
   if(!r) return;
   const dataIso=document.getElementById('rinnova-DATA').value;
   if(!dataIso){ alert('Inserisci la data del rinnovo.'); return; }
+  const percorso=readEditFieldValue('rinnova','PERCORSO');
   const importo=readEditFieldValue('rinnova','IMPORTO');
   const metodo=readEditFieldValue('rinnova','METODO PAGAMENTO');
   const incasso=readEditFieldValue('rinnova','INCASSO');
+  r['PERCORSO']=percorso;
   r['IMPORTO']=importo;
   r['METODO PAGAMENTO']=metodo;
   r['INCASSO']=incasso;
