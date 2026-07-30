@@ -2926,10 +2926,22 @@ function render(){
       const d=pdate(r['FINE PERCORSO']), gg=Math.ceil((d-now)/864e5);
       const name=r['CLIENTE'];
       const ggLabel=gg<0?`scaduta da ${-gg} gg`:gg===0?'scade oggi':`${gg} gg`;
-      return `<div class="scad-item">
+      const rowOpen=scadExpanded.has(name);
+      const idPrefix='scad'+name.replace(/[^a-zA-Z0-9]/g,'');
+      const collabPanel=rowOpen?`<div class="editbar" style="flex:1 1 100%;margin-top:10px" onclick="event.stopPropagation()">
+        ${editFieldHtml('TUTOR','Tutor',idPrefix,r['TUTOR']||'')}
+        ${editFieldHtml('TRAINER','Trainer',idPrefix,r['TRAINER']||'')}
+        ${editFieldHtml('NUTRI','Nutrizionista',idPrefix,r['NUTRI']||'')}
+        <div class="editbar-actions" style="grid-column:1/-1">
+          <button class="btn" onclick="salvaScadCollab('${jsEsc(name)}','${idPrefix}')"><span class="ico"><svg viewBox="0 0 16 16"><path d="M3 3h7.5l2.5 2.5V13H3z"/><path d="M5 3v3h5V3"/><path d="M5.3 9H10.7V13H5.3z"/></svg></span>Salva</button>
+        </div>
+      </div>`:'';
+      return `<div class="scad-item" onclick="toggleScadExpand('${jsEsc(name)}')" style="cursor:pointer">
         <span style="flex:1;min-width:200px">${esc(name)} ${statoBadge(r['STATO CLIENTE'])} · ${esc(r['PERCORSO']||'—')} · Tutor: ${esc(r['TUTOR']||'—')}</span>
         <span class="${gg<=15?'danger':'warn'}">${fdate(d)} · ${ggLabel}</span>
-        <button class="pill-btn" onclick="apriRinnovaAbbonamento('${jsEsc(name)}')">${ic('sync')}Rinnova abbonamento</button>
+        <button class="pill-btn" onclick="event.stopPropagation();apriRinnovaAbbonamento('${jsEsc(name)}')">${ic('sync')}Rinnova abbonamento</button>
+        <span class="storico-group-arrow">${rowOpen?'⌄':'›'}</span>
+        ${collabPanel}
       </div>`;
     }).join(''):'';
     return header+body;
@@ -3008,6 +3020,24 @@ function toggleStoricoGroup(key){
 let scadGroupsCollapsed=new Set();
 function toggleScadGroup(key){
   scadGroupsCollapsed.has(key)?scadGroupsCollapsed.delete(key):scadGroupsCollapsed.add(key);
+  render();
+}
+/* Riga nascosta per Tutor/Trainer/Nutrizionista in "Rinnovi da gestire": si apre
+   al clic sulla riga della cliente, senza dover aprire la finestra "Modifica
+   cliente" per intero solo per cambiare il collaboratore assegnato. */
+let scadExpanded=new Set();
+function toggleScadExpand(name){
+  scadExpanded.has(name)?scadExpanded.delete(name):scadExpanded.add(name);
+  render();
+}
+function salvaScadCollab(nome,idPrefix){
+  const r=DATA.find(x=>x['CLIENTE']===nome);
+  if(!r) return;
+  r['TUTOR']=readEditFieldValue(idPrefix,'TUTOR');
+  r['TRAINER']=readEditFieldValue(idPrefix,'TRAINER');
+  r['NUTRI']=readEditFieldValue(idPrefix,'NUTRI');
+  saveClienti();
+  buildFilters();
   render();
 }
 /* Raggruppa i "Rinnovi da gestire" per mese di Fine percorso (stesso mese che
