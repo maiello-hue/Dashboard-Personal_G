@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Dashboard Clienti - Personal_G</title>
 <!-- PWA: rende la dashboard installabile su telefono/desktop (icona propria,
      apertura a schermo intero, funzionamento offline di base). -->
@@ -45,6 +45,11 @@ h1{font-size:22px;font-weight:500}
 .content{flex:1;min-width:0}
 .mobile-tabbar{display:none}
 .mobile-more-sheet{display:none}
+.hamburger-btn{display:none;background:none;border:none;color:var(--text);font-size:19px;cursor:pointer;padding:8px 10px;border-radius:8px;flex-shrink:0}
+.hamburger-btn:hover{background:var(--card2)}
+.sidebar-close-btn{display:none;position:absolute;top:12px;right:12px;background:var(--card2);border:none;color:var(--muted);width:30px;height:30px;border-radius:50%;font-size:15px;cursor:pointer;align-items:center;justify-content:center}
+.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(15,15,14,.5);z-index:999;opacity:0;transition:opacity .25s ease}
+.sidebar-backdrop.open{display:block;opacity:1}
 .topbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px}
 .btn{background:var(--text);color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:400;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:opacity .15s ease}
 .btn:hover{opacity:.88}
@@ -299,16 +304,25 @@ h3 .ico,.sub .ico{color:var(--muted)}
 #loader{text-align:center;padding:60px;color:var(--muted)}
 #error{display:none;background:rgba(210,63,63,.08);border:1px solid var(--red);border-radius:12px;padding:20px;margin:20px 0;color:var(--red)}
 @media(max-width:900px){
-  .app-shell{flex-direction:column}
-  .sidebar{width:100%;position:static;display:flex;flex-direction:row;overflow-x:auto;gap:4px;padding:10px;-webkit-overflow-scrolling:touch}
-  .nav-label{display:none}
-  .nav-item{flex-direction:row;white-space:nowrap;width:auto}
+  /* Menu a tendina: la sidebar diventa un pannello a scomparsa (drawer) a
+     tutta altezza, agganciato a sinistra, aperto/chiuso con l'hamburger nella
+     topbar — al posto della vecchia barra orizzontale scorrevole. */
+  .hamburger-btn{display:inline-flex;align-items:center;justify-content:center}
+  .sidebar-close-btn{display:flex}
+  .app-shell{gap:0}
+  .sidebar{
+    position:fixed;top:0;left:0;width:82%;max-width:300px;height:100vh;height:100dvh;
+    border-radius:0 18px 18px 0;box-shadow:0 0 40px rgba(0,0,0,.25);
+    transform:translateX(-100%);transition:transform .28s ease;
+    z-index:1000;overflow-y:auto;padding-top:56px;
+  }
+  .sidebar.open{transform:translateX(0)}
+  .content{width:100%}
 }
 @media(max-width:600px){
   body{padding:10px;padding-bottom:0}
   .app-shell{gap:0}
-  .sidebar{display:none}
-  .content{padding-bottom:calc(78px + env(safe-area-inset-bottom))}
+  .content{padding-bottom:16px}
   .topbar{margin-bottom:14px;position:sticky;top:0;background:var(--bg);z-index:80;padding:4px 0 8px;margin-left:-10px;margin-right:-10px;padding-left:10px;padding-right:10px}
   h1{font-size:19px}
   .grid{gap:10px}
@@ -327,17 +341,38 @@ h3 .ico,.sub .ico{color:var(--muted)}
   th,td{padding:8px 6px}
   .rate-table{display:block;overflow-x:auto}
   .fonte-section-body{padding:6px 10px 10px}
-  .fonte-client-row{flex-wrap:wrap;gap:6px}
+  /* Le righe fonte-client-row (Check, Compensi, Provvigioni, Impostazioni) hanno
+     un nome a sinistra (che si comprime) e dei controlli a destra (a larghezza
+     fissa): senza questa regola il nome viene schiacciato quasi a zero invece di
+     andare a capo, perché il figlio con min-width:0 cede sempre spazio a quello
+     con flex-shrink:0. Forziamo entrambi i figli su riga propria, a piena
+     larghezza, con !important per vincere sugli stili inline generati da JS. */
+  .fonte-client-row{flex-wrap:wrap;row-gap:8px}
+  .fonte-client-row>*:first-child{flex:1 1 100% !important;min-width:0 !important}
+  .fonte-client-row>*:last-child{flex:1 1 100% !important;justify-content:flex-start !important;margin-top:2px}
+  .check-toggle-btn{padding:5px 12px;font-size:12px}
+  .check-toggle-label{font-size:11.5px}
+  /* .exp (riga "Piano bonifici" nella tabella Rimborsi) usa su desktop un
+     max-width calcolato sottraendo la larghezza della sidebar: su mobile la
+     sidebar non c'è, quindi quel calcolo lascerebbe pochissimi pixel al testo.
+     Lo neutralizziamo e lasciamo che vada semplicemente a capo. */
+  .exp td{max-width:none;position:static;white-space:normal}
   .color-popover,.ac-dropdown{max-width:calc(100vw - 20px)}
+  /* Su iPhone Safari zooma automaticamente la pagina quando si tocca un campo
+     con font-size sotto i 16px: tutti gli input/select qui erano a 12-14px.
+     Forziamo 16px (con !important, per vincere sulle regole più specifiche
+     come .editbar-2col input) solo su mobile, per evitare lo zoom indesiderato. */
+  input,select,textarea{font-size:16px !important}
   .icon-btn{width:32px;height:32px}
   .color-swatch-trigger{width:36px;height:32px}
-  .comp-rate-input{width:56px}
+  .comp-rate-input{width:68px;padding:6px 6px}
   .roletabs{gap:6px}
   .roletabs button{padding:7px 12px;font-size:12px}
   .scad-head{flex-wrap:wrap;gap:8px}
 
   .mobile-tabbar{
-    display:flex;position:fixed;left:0;right:0;bottom:0;z-index:900;
+    /* sostituita dal menu a tendina (hamburger + drawer): resta nascosta */
+    display:none;position:fixed;left:0;right:0;bottom:0;z-index:900;
     background:var(--card);border-top:1px solid var(--border);
     padding:6px 2px calc(6px + env(safe-area-inset-bottom));
     box-shadow:0 -2px 14px rgba(0,0,0,.08);
@@ -414,7 +449,9 @@ h3 .ico,.sub .ico{color:var(--muted)}
 <body>
 
 <div class="app-shell">
-  <aside class="sidebar">
+  <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleMobileSidebar(false)"></div>
+  <aside class="sidebar" id="app-sidebar">
+    <button type="button" class="sidebar-close-btn" onclick="toggleMobileSidebar(false)" aria-label="Chiudi menu"><i class="fa-solid fa-xmark"></i></button>
     <div class="nav-label">Navigazione</div>
     <button class="nav-item on" id="nav-dashboard" onclick="showPage('dashboard')">
       <span class="ic"><i class="fa-solid fa-house"></i></span>
@@ -507,6 +544,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
   <div class="content">
     <div class="topbar">
       <div style="display:flex;align-items:center;gap:14px">
+        <button type="button" class="hamburger-btn" onclick="toggleMobileSidebar()" aria-label="Apri menu"><i class="fa-solid fa-bars"></i></button>
         <img id="logo-pg" src="data:image/jpeg;base64,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" alt="Personal_G" style="width:52px;height:52px;border-radius:12px;object-fit:cover">
         <div>
           <h1>Dashboard Clienti - Personal_G</h1>
@@ -997,6 +1035,7 @@ function showPage(p){
   if(moreBtn) moreBtn.classList.toggle('on',MOBILE_MORE.includes(p));
   MOBILE_MORE.forEach(x=>{ const el=document.getElementById('msheet-'+x); if(el) el.classList.toggle('on',x===p); });
   toggleMobileMore(false);
+  toggleMobileSidebar(false);
   window.scrollTo(0,0);
 }
 function toggleMobileMore(show){
@@ -1004,6 +1043,18 @@ function toggleMobileMore(show){
   if(!el) return;
   const next=show!==undefined?show:!el.classList.contains('open');
   el.classList.toggle('open',next);
+}
+/* Menu a tendina mobile: apre/chiude il pannello di navigazione (la stessa
+   sidebar usata su desktop, riposizionata via CSS come drawer a scomparsa)
+   e il relativo sfondo scuro. Si chiude da sola ad ogni cambio pagina. */
+function toggleMobileSidebar(show){
+  const sb=document.getElementById('app-sidebar');
+  const bd=document.getElementById('sidebar-backdrop');
+  if(!sb) return;
+  const next=show!==undefined?show:!sb.classList.contains('open');
+  sb.classList.toggle('open',next);
+  if(bd) bd.classList.toggle('open',next);
+  document.body.style.overflow=next?'hidden':'';
 }
 
 /* ---------- persistenza locale ---------- */
