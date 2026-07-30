@@ -410,7 +410,21 @@ h3 .ico,.sub .ico{color:var(--muted)}
   .comp-rate-input{width:68px;padding:6px 6px}
   .roletabs{gap:6px}
   .roletabs button{padding:7px 12px;font-size:12px}
+  /* Titoli h3 con contatore/select a destra ("Rinnovi da gestire",
+     "Promemoria rate da rimborsare"): su desktop icona+titolo e i controlli
+     stanno affiancati (space-between), ma su schermi stretti si schiacciano
+     a vicenda e il titolo va a capo su più righe. Forziamo i controlli
+     (.scad-head, ultimo figlio) su una riga propria sotto al titolo, così il
+     titolo resta su un'unica riga a piena larghezza. */
+  .card h3{flex-wrap:wrap;row-gap:6px}
+  .card h3>.scad-head{flex:1 1 100% !important}
   .scad-head{flex-wrap:wrap;gap:8px}
+  /* Dentro .scad-head: contatore e select restano sulla stessa riga (il
+     contatore si accorcia se serve, il select resta a destra), mentre il
+     checkbox "nascondi ..." va a capo sotto. */
+  .scad-head>span:first-child{flex:1 1 auto;min-width:0;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .scad-head>select{flex:0 0 auto}
+  .scad-head>label{flex:1 1 100% !important;margin-top:2px}
 
   .mobile-tabbar{
     /* sostituita dal menu a tendina (hamburger + drawer): resta nascosta */
