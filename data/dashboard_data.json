@@ -221,15 +221,15 @@
   {
    "CLIENTE": "Tania Orselli",
    "STATO CLIENTE": "IN PERCORSO",
-   "PERCORSO": "12 mesi",
-   "INIZIO PERCORSO": "27/02/2025",
-   "FINE PERCORSO": "27/02/2026",
-   "IMPORTO": "€ 1.698,00",
+   "PERCORSO": "6 mesi + 6 Gnocca",
+   "INIZIO PERCORSO": "30/07/2026",
+   "FINE PERCORSO": "30/07/2027",
+   "IMPORTO": "€ 1154",
    "METODO PAGAMENTO": "Scalapay",
    "STATO PAGAMENTO": "",
-   "TIPO INCASSO": "",
+   "TIPO INCASSO": "Rinnovo",
    "N° FATTURA": "",
-   "INCASSO": "",
+   "INCASSO": "388",
    "RIMBORSO": "",
    "TUTOR": "Margherita",
    "TRAINER": "Matteo",
@@ -241,7 +241,8 @@
    "CONTRATTO": "SI",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "FONTE": "INSTAGRAM"
+   "FONTE": "INSTAGRAM",
+   "DATA INCASSO": "30/07/2026"
   },
   {
    "CLIENTE": "Alessia Gambardella",
@@ -24142,7 +24143,10 @@
   },
   "Giulia Bruzzone": {
    "st": "rin"
+  },
+  "Tania Orselli": {
+   "st": "rin"
   }
  },
- "updatedAt": "2026-07-30T20:47:53.921Z"
+ "updatedAt": "2026-07-30T20:49:21.173Z"
 }
