@@ -449,7 +449,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
   .cc-actions{display:flex;flex-direction:column;align-items:center;gap:8px;flex-shrink:0;padding-top:2px}
   .cc-btn{
     width:34px;height:34px;border-radius:50%;border:none;
-    background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0
+    background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0
   }
   .cc-btn .ico{margin-right:0}
   .cc-btn .ico svg{stroke:#fff}
@@ -2962,11 +2962,10 @@ function renderTable(rows){
     return main+exp;
   };
   const mobileCardHtml=({r,i,pctVal,pctCls,finLabel,scad,renBadge,detailInner})=>{
-    const av=paletteColorFor('CLIENTE:'+r['CLIENTE']);
     const open=expanded.has(r['CLIENTE']);
     return `<div class="cc-card">
       <div class="cc-row" onclick="toggleExp(${i})">
-        <div class="cc-avatar" style="background:${av.bg};color:${av.fg}">${esc(initials(r['CLIENTE']))}</div>
+        <div class="cc-avatar" style="background:#000;color:#fff">${esc(initials(r['CLIENTE']))}</div>
         <div class="cc-main">
           <div class="cc-name">${esc(r['CLIENTE'])}</div>
           <div class="cc-badges">${statoBadge(r['STATO CLIENTE'])}${pctVal!==null?`<span class="cc-pill ${pctCls}">${ic('sync')}${pctVal}%</span>`:''}</div>
