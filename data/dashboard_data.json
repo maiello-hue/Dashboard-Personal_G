@@ -9983,7 +9983,7 @@
    "€ TRAINER": "€ 17,00",
    "€ NUTRI": "€ 12,00",
    "CONTRATTO": "",
-   "CHECK": "",
+   "CHECK": "SI",
    "RISULTATO": "",
    "FONTE": "ADV"
   },
@@ -24150,5 +24150,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-07-30T20:50:26.164Z"
+ "updatedAt": "2026-07-30T20:51:56.066Z"
 }
