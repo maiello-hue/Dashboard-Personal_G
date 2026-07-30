@@ -1010,7 +1010,7 @@ function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2
    dispositivo, non vengono mai inviate altrove se non a GitHub.
    ============================================================ */
 const GH_KEY='gh_settings_v1', GH_PATH='data/dashboard_data.json';
-let GH_SHA=null, GH_SYNC_TIMER=null, GH_BUSY=false;
+let GH_SHA=null, GH_SYNC_TIMER=null, GH_BUSY=false, GH_LAST_UPDATED_AT=null;
 
 function ghSettings(){try{return JSON.parse(localStorage.getItem(GH_KEY)||'null');}catch(e){return null;}}
 function ghSaveSettings(s){localStorage.setItem(GH_KEY,JSON.stringify(s));}
@@ -1084,8 +1084,15 @@ async function syncFromGithub(showStatus){
     if(showStatus) setGhStatus(ic('sync')+'Sincronizzazione…');
     const remote=await ghGetFile();
     if(remote===null){
-      await ghPutFile(collectAllData(),'Inizializza dati dashboard');
+      const payload=collectAllData();
+      await ghPutFile(payload,'Inizializza dati dashboard');
+      GH_LAST_UPDATED_AT=payload.updatedAt;
       setGhStatus(ic('check')+'Repository inizializzata su GitHub');
+    } else if(remote.updatedAt&&remote.updatedAt===GH_LAST_UPDATED_AT){
+      /* Nessuna modifica rispetto all'ultima volta: evita di ricostruire tabelle
+         e grafici (operazione pesante) quando non c'è nulla di nuovo da mostrare —
+         succede spesso, dato che il controllo automatico gira ogni 2 minuti. */
+      if(showStatus) setGhStatus(ic('check')+'Già aggiornato ('+new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})+')');
     } else {
       applyAllData(remote);
       applyLug26Import();
@@ -1095,6 +1102,7 @@ async function syncFromGithub(showStatus){
       applyVenditoreLug26Import();
       applyFonteMap();
       buildFilters(); buildRimbFilters(); render(); renderRimborsi();
+      GH_LAST_UPDATED_AT=remote.updatedAt||null;
       setGhStatus(ic('check')+'Sincronizzato alle '+new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}));
     }
   }catch(e){
@@ -1109,7 +1117,9 @@ function scheduleGithubSync(){
     GH_BUSY=true;
     try{
       setGhStatus(ic('sync')+'Salvataggio su GitHub…');
-      await ghPutFile(collectAllData(),'Aggiornamento dati dashboard');
+      const payload=collectAllData();
+      await ghPutFile(payload,'Aggiornamento dati dashboard');
+      GH_LAST_UPDATED_AT=payload.updatedAt;
       setGhStatus(ic('check')+'Sincronizzato alle '+new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}));
     }catch(e){
       setGhStatus(ic('warn')+e.message,true);
@@ -2429,8 +2439,20 @@ function eliminaCliente(nome){
 /* ---------- render ---------- */
 const PALETTE=['#4f6fe0','#1f9d63','#b5720f','#d23f3f','#2f7fd1','#7c56d9','#d1568c','#a1780a','#0d7d72','#767c8a'];
 function mkChart(id,cfg){
-  if(charts[id]) charts[id].destroy();
-  charts[id]=new Chart(document.getElementById(id),cfg);
+  const canvas=document.getElementById(id);
+  if(!canvas) return;
+  const existing=charts[id];
+  /* Se il grafico esiste già ed è dello stesso tipo, aggiorna solo i dati invece
+     di distruggerlo e ricrearlo da zero: molto più veloce, dato che render()
+     ridisegna tutti i grafici a ogni singola modifica (anche piccola) dei dati. */
+  if(existing&&existing.config&&existing.config.type===cfg.type){
+    existing.data=cfg.data;
+    if(cfg.options) existing.options=cfg.options;
+    existing.update('none');
+    return;
+  }
+  if(existing) existing.destroy();
+  charts[id]=new Chart(canvas,cfg);
 }
 function countBy(rows,field){
   const m={};
