@@ -1099,8 +1099,10 @@ let currentPage='dashboard';
    erano cambiati mentre l'utente era altrove, la pagina che si sta per
    mostrare risulta comunque sempre aggiornata. */
 const RENDER_ON_ENTER=new Set(['clienti','analisi','incassi','rinnovi','compensi','check']);
+const LAST_PAGE_KEY='last_page_v1';
 function showPage(p){
   currentPage=p;
+  try{localStorage.setItem(LAST_PAGE_KEY,p);}catch(e){}
   if(RENDER_ON_ENTER.has(p)) render();
   ['dashboard','clienti','incassi','analisi','rinnovi','rimborsi','compensi','check','impostazioni'].forEach(x=>document.getElementById('nav-'+x).classList.toggle('on',x===p));
   const navEl=document.getElementById('nav-'+p);
@@ -3558,7 +3560,9 @@ buildRimbFilters();
 render();
 renderRimborsi();
 buildSettingsPanel();
-showPage('dashboard');
+const VALID_PAGES=['dashboard','clienti','incassi','analisi','rinnovi','rimborsi','compensi','check','impostazioni'];
+let savedPage=null; try{savedPage=localStorage.getItem(LAST_PAGE_KEY);}catch(e){}
+showPage(VALID_PAGES.includes(savedPage)?savedPage:'dashboard');
 if(ghConfigured()){ setGhStatus(ic('sync')+'Connessione a GitHub…'); syncFromGithub(true); }
 else { setGhStatus('Non connesso a GitHub — dati solo su questo dispositivo'); }
 setInterval(()=>syncFromGithub(false), 2*60*1000);
