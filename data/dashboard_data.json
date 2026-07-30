@@ -242,7 +242,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "INSTAGRAM",
-   "DATA INCASSO": "30/07/2026"
+   "DATA INCASSO": "30/07/2026",
+   "VENDITORE": ""
   },
   {
    "CLIENTE": "Alessia Gambardella",
@@ -24148,5 +24149,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-07-30T20:49:21.173Z"
+ "updatedAt": "2026-07-30T20:50:15.570Z"
 }
