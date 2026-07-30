@@ -2940,7 +2940,7 @@ function render(){
   document.getElementById('k-scad-d').textContent=brkScad+' · '+daCont+' da contattare';
   if(hide) sc=sc.filter(r=>!['rin','no'].includes(stOf(r)));
   document.getElementById('scadenze').innerHTML=sc.length?groupScadenzeByMonth(sc).map(g=>{
-    const isOpen=!scadGroupsCollapsed.has(g.key);
+    const isOpen=scadGroupsOpen.has(g.key);
     const header=`<div class="storico-group-header" onclick="toggleScadGroup('${jsEsc(g.key)}')"><span class="storico-group-arrow">${isOpen?'⌄':'›'}</span><span class="storico-group-label">${esc(g.label)}</span><span class="count">${g.items.length}</span></div>`;
     const body=isOpen?g.items.map(r=>{
       const d=pdate(r['FINE PERCORSO']), gg=Math.ceil((d-now)/864e5);
@@ -3037,9 +3037,9 @@ function toggleStoricoGroup(key){
   storicoGroupsExpanded.has(key)?storicoGroupsExpanded.delete(key):storicoGroupsExpanded.add(key);
   render();
 }
-let scadGroupsCollapsed=new Set();
+let scadGroupsOpen=new Set();
 function toggleScadGroup(key){
-  scadGroupsCollapsed.has(key)?scadGroupsCollapsed.delete(key):scadGroupsCollapsed.add(key);
+  scadGroupsOpen.has(key)?scadGroupsOpen.delete(key):scadGroupsOpen.add(key);
   render();
 }
 /* Riga nascosta per Tutor/Trainer/Nutrizionista in "Rinnovi da gestire": si apre
@@ -3081,9 +3081,8 @@ function salvaPosticipaAbbonamento(){
   render();
 }
 /* Raggruppa i "Rinnovi da gestire" per mese di Fine percorso (stesso mese che
-   compare nella colonna data di ogni riga). Ogni gruppo parte aperto: a
-   differenza dello Storico qui si tratta di scadenze ancora da gestire, quindi
-   ha senso vederle subito senza dover aprire ogni mese a mano. */
+   compare nella colonna data di ogni riga). Ogni gruppo parte chiuso, come
+   nello Storico: è l'utente a scegliere quali mesi aprire. */
 function groupScadenzeByMonth(rows){
   const groups={};
   rows.forEach(r=>{
