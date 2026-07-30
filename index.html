@@ -2924,15 +2924,12 @@ function render(){
     const header=`<div class="storico-group-header" onclick="toggleScadGroup('${jsEsc(g.key)}')"><span class="storico-group-arrow">${isOpen?'⌄':'›'}</span><span class="storico-group-label">${esc(g.label)}</span><span class="count">${g.items.length}</span></div>`;
     const body=isOpen?g.items.map(r=>{
       const d=pdate(r['FINE PERCORSO']), gg=Math.ceil((d-now)/864e5);
-      const name=r['CLIENTE'], st2=stOf(r), note=(ren[name]&&ren[name].note)||'';
-      const opts=Object.entries(REN_STATI).map(([k,[l]])=>`<option value="${k}"${k===st2?' selected':''}>${l}</option>`).join('');
+      const name=r['CLIENTE'];
       const ggLabel=gg<0?`scaduta da ${-gg} gg`:gg===0?'scade oggi':`${gg} gg`;
       return `<div class="scad-item">
         <span style="flex:1;min-width:200px">${esc(name)} ${statoBadge(r['STATO CLIENTE'])} · ${esc(r['PERCORSO']||'—')} · Tutor: ${esc(r['TUTOR']||'—')}</span>
         <span class="${gg<=15?'danger':'warn'}">${fdate(d)} · ${ggLabel}</span>
         <button class="pill-btn" onclick="apriRinnovaAbbonamento('${jsEsc(name)}')">${ic('sync')}Rinnova abbonamento</button>
-        <select class="ren-sel ${REN_STATI[st2][1]}" onchange="renSet('${jsEsc(name)}','st',this.value)">${opts}</select>
-        <input class="ren-note" placeholder="nota…" value="${esc(note)}" onchange="renSet('${jsEsc(name)}','note',this.value)">
       </div>`;
     }).join(''):'';
     return header+body;
