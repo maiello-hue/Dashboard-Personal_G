@@ -2500,7 +2500,18 @@ function salvaNuovaCliente(){
   DATA.push(rec);
   saveClienti();
   toggleAddCliente(false);
-  buildFilters(); render();
+  /* Senza questo reset la nuova cliente poteva restare invisibile: se era attivo
+     un filtro (Stato/Percorso/Tutor/...) che lei non soddisfa, o se l'elenco era
+     ordinato per Inizio percorso (lei magari non ne ha ancora uno e finiva in
+     fondo a centinaia di righe), sembrava non essere stata salvata. Azzeriamo i
+     filtri, torniamo su "Tutte" e cerchiamo subito il suo nome: così compare da
+     sola in cima all'elenco, a prova che è stata salvata. */
+  Object.keys(msFilters).forEach(k=>msFilters[k].clear());
+  buildFilters();
+  catFilter='all';
+  ['cat-all','cat-premium','cat-gnocca','cat-storico'].forEach(id=>document.getElementById(id).classList.toggle('on',id==='cat-all'));
+  document.getElementById('f-search').value=nome;
+  render();
 }
 function eliminaCliente(nome){
   if(!confirm('Eliminare definitivamente "'+nome+'"? L\'operazione non è reversibile.')) return;
