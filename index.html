@@ -222,11 +222,22 @@ h3 .ico,.sub .ico{color:var(--muted)}
 .scad-head label{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:4px;cursor:pointer}
 .editbar{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin-top:10px;align-items:end}
 .editbar label{display:flex;flex-direction:column;gap:3px;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
-.editbar input{background:var(--card);border:1px solid var(--border-strong);color:var(--text);border-radius:8px;padding:8px 10px;font-size:12px;outline:none}
-.editbar input:focus{border-color:var(--muted2)}
+.editbar input,.editbar select{background:var(--card);border:1px solid var(--border-strong);color:var(--text);border-radius:8px;padding:8px 10px;font-size:12px;outline:none;box-sizing:border-box}
+.editbar input:focus,.editbar select:focus{border-color:var(--muted2)}
+/* I <select> dentro .editbar (Modifica/Nuova cliente, Rinnova/Posticipa
+   abbonamento, ecc.) di default avrebbero l'aspetto nativo del browser
+   (grigio, dimensioni diverse dagli input): li uniformiamo qui a stessa
+   dimensione/colore/bordo degli input, con la stessa freccina custom già
+   usata nei filtri in alto. */
+.editbar select{
+  cursor:pointer;-webkit-appearance:none;-moz-appearance:none;appearance:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'><path d='M2.5 4.5 6 8l3.5-3.5' fill='none' stroke='%2363625c' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-repeat:no-repeat;background-position:right 10px center;background-size:9px;padding-right:26px;
+}
 .editbar-2col{grid-template-columns:repeat(2,1fr);gap:20px 28px;align-items:start}
 .editbar-2col label{font-size:13px;color:var(--muted);text-transform:none;letter-spacing:normal;font-weight:400;gap:6px}
 .editbar-2col input,.editbar-2col select{font-size:14px;padding:11px 14px;border-radius:10px;border:1px solid var(--border-strong)}
+.editbar-2col select{padding-right:30px}
 .editbar-actions{display:flex;gap:8px;margin-top:10px}
 .color-swatch-trigger{width:34px;height:28px;border:1px solid var(--border-strong);border-radius:6px;cursor:pointer;padding:0;flex-shrink:0}
 .color-swatch-trigger:hover{filter:brightness(0.97)}
