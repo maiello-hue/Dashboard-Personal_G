@@ -1695,7 +1695,7 @@
    "€ NUTRI": "€ 12,00",
    "CONTRATTO": "",
    "CHECK": "SI",
-   "RISULTATO": ""
+   "RISULTATO": "SI"
   },
   {
    "CLIENTE": "Erika Passamonti",
@@ -24150,5 +24150,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-07-30T20:53:37.631Z"
+ "updatedAt": "2026-07-30T20:53:40.001Z"
 }
