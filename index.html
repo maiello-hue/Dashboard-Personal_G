@@ -1069,8 +1069,16 @@ function flashBlackBtn(el){
 let currentPage='dashboard';
 
 /* ---------- navigazione pagine ---------- */
+/* Pagine il cui contenuto pesante (grafici Chart.js, tabelle su tutte le
+   clienti/collaboratori) viene ricalcolato dentro render() SOLO quando sono
+   effettivamente quella attiva (vedi commento dentro render()): ad ogni
+   cambio pagina rilanciamo quindi render() così, se nel frattempo i dati
+   erano cambiati mentre l'utente era altrove, la pagina che si sta per
+   mostrare risulta comunque sempre aggiornata. */
+const RENDER_ON_ENTER=new Set(['clienti','analisi','incassi','rinnovi','compensi','check']);
 function showPage(p){
   currentPage=p;
+  if(RENDER_ON_ENTER.has(p)) render();
   ['dashboard','clienti','incassi','analisi','rinnovi','rimborsi','compensi','check','impostazioni'].forEach(x=>document.getElementById('nav-'+x).classList.toggle('on',x===p));
   const navEl=document.getElementById('nav-'+p);
   if(navEl){navEl.classList.remove('flash'); void navEl.offsetWidth; navEl.classList.add('flash'); setTimeout(()=>navEl.classList.remove('flash'),450);}
@@ -2734,7 +2742,18 @@ function render(){
   const collabRoleLabel={TUTOR:'Tutor',TRAINER:'Trainer',NUTRI:'Nutrizionista'};
   const isAbb=r=>(r['STATO CLIENTE']||'').toUpperCase().startsWith('ABBANDONAT')&&inMese(r,'DATA ARCHIVIAZIONE',meseSel);
   const isNonrin=r=>(r['STATO CLIENTE']||'').toUpperCase().startsWith('NON RINNOVATO')&&inMese(r,'DATA ARCHIVIAZIONE',meseSel);
-  const collabRateRows=[];
+  /* Le sezioni qui sotto marcate "solo pagina X" ricalcolano tabelle/grafici
+     piuttosto pesanti (cicli su tutti i collaboratori × tutte le clienti,
+     costruzione di HTML per grafici Chart.js) che servono SOLO quando quella
+     pagina è effettivamente visibile. render() viene richiamata ad ogni minima
+     modifica (aggiunta/eliminazione cliente, filtro, ecc.) da QUALSIASI pagina:
+     ricalcolarle sempre, anche mentre invisibili, era il motivo principale della
+     lentezza percepita specialmente con centinaia di clienti. Vengono comunque
+     sempre ricalcolate al bisogno: showPage() richiama render() ogni volta che si
+     naviga su una di queste pagine, quindi restano sempre corrette e aggiornate
+     nel momento in cui l'utente le guarda davvero. */
+  let collabRateRows=[];
+  if(currentPage==='analisi'){
   ['TUTOR','TRAINER','NUTRI'].forEach(field=>{
     distinct(field).forEach(name=>{
       const assigned=allRows.filter(r=>r[field]===name);
@@ -2770,6 +2789,7 @@ function render(){
     collabTableHtml+=`<tr class="rate-group-row"><td colspan="6">${collabRoleLabel[field]}</td></tr>`+groupRows.map(rowHtml).join('');
   });
   document.getElementById('collab-abbandono-table-body').innerHTML=collabTableHtml||'<tr><td colspan="6" class="sub">Nessun collaboratore con clienti assegnate.</td></tr>';
+  }
   document.getElementById('k-tot').textContent=totA.length;
   document.getElementById('k-tot-d').textContent=brk(totA);
   document.getElementById('k-att').textContent=att;
@@ -2813,6 +2833,7 @@ function render(){
 
   const common={plugins:{legend:{labels:{color:'#63625c',font:{size:11},boxWidth:12}}},maintainAspectRatio:false};
   const gridOpt={grid:{color:'#e4e3dd'},ticks:{color:'#63625c',font:{size:11}}};
+  if(currentPage==='analisi'){
   const collabSorted=['TUTOR','TRAINER','NUTRI'].flatMap(field=>collabRateRows.filter(r=>r.field===field).sort((a,b)=>a.name.localeCompare(b.name,'it')));
   mkChart('c-abbandono-rate',{type:'bar',data:{labels:collabSorted.map(r=>r.name),datasets:[
     {label:'Abbandono',data:collabSorted.map(r=>+r.abbRate.toFixed(1)),backgroundColor:'#d23f3f',borderRadius:6},
@@ -2850,17 +2871,26 @@ function render(){
     options:{...common,scales:{x:gridOpt,y:{...gridOpt,beginAtZero:true}}}});
 
   buildFonteReport(allRows);
-  buildCompensi();
-  buildProvvigioni();
-  buildCheckPage();
+  }
+  if(currentPage==='compensi'){
+    buildCompensi();
+    buildProvvigioni();
+  }
+  if(currentPage==='check'||currentPage==='analisi'){
+    buildCheckPage();
+  }
 
+  if(currentPage==='incassi'){
   const byM={};
   allRows.forEach(r=>{const d=pdate(r['INIZIO PERCORSO']);if(d){const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');byM[k]=(byM[k]||0)+1;}});
   const keys=Object.keys(byM).sort();
   mkChart('c-entrate',{type:'line',data:{labels:keys.map(k=>MESI_SHORT[+k.slice(5)-1]+' '+k.slice(2,4)),datasets:[{data:keys.map(k=>byM[k]),borderColor:'#4f6fe0',backgroundColor:'rgba(79,111,224,.12)',fill:true,tension:.35,pointRadius:3,pointBackgroundColor:'#4f6fe0'}]},options:{...common,plugins:{legend:{display:false}},scales:{x:gridOpt,y:{...gridOpt,beginAtZero:true}}}});
+  }
 
+  if(currentPage==='analisi'){
   const cb=countBy(allRows.filter(r=>r[role]),role).slice(0,12);
   mkChart('c-collab',{type:'bar',data:{labels:cb.map(x=>x[0]),datasets:[{data:cb.map(x=>x[1]),backgroundColor:cb.map(x=>chartTagColor(role.toLowerCase(),x[0])),borderRadius:6}]},options:{...common,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{...gridOpt,beginAtZero:true},y:gridOpt}}});
+  }
 
   /* rinnovi da gestire */
   const win=+document.getElementById('scad-window').value;
@@ -2889,7 +2919,7 @@ function render(){
   const storicoCountEl=document.getElementById('storico-count');
   if(storicoCountEl) storicoCountEl.textContent='('+allRows.filter(isArchiviata).length+')';
 
-  renderTable(rows);
+  if(currentPage==='clienti') renderTable(rows);
 }
 
 /* ---------- icone minimal condivise (bottoni, intestazioni, messaggi di stato) ---------- */
@@ -3051,25 +3081,34 @@ function renderTable(rows){
     </div>`;
   };
   const ccList=document.getElementById('cc-list');
+  /* Sotto i 600px la CSS mostra solo .cc-list (schede mobile) e nasconde la
+     tabella desktop (.tablewrap-clienti), e viceversa sopra i 600px: sono
+     sempre e solo alternative, mai visibili insieme. Costruire comunque
+     entrambe le versioni ad ogni singola modifica (anche solo aggiungere o
+     eliminare UNA cliente, con centinaia di righe in elenco) raddoppiava
+     inutilmente il lavoro più pesante di questa pagina. Costruiamo solo
+     quella davvero visibile; l'altra si aggiorna comunque al prossimo giro
+     utile (cambio pagina o resize, vedi listener più sotto). */
+  const isMobileView=window.matchMedia('(max-width:600px)').matches;
   if(catFilter==='storico'){
     /* Storico raggruppato per mese di fine percorso: ogni gruppo parte chiuso,
        l'elenco delle clienti compare solo al clic sull'intestazione del mese. */
     const groups=groupStoricoByMonth(rowsCalc);
-    document.getElementById('tbody').innerHTML=groups.map(g=>{
+    if(!isMobileView) document.getElementById('tbody').innerHTML=groups.map(g=>{
       const isOpen=storicoGroupsExpanded.has(g.key);
       const header=`<tr class="rate-group-row storico-group-row" onclick="toggleStoricoGroup('${jsEsc(g.key)}')"><td colspan="10"><span class="storico-group-arrow">${isOpen?'▾':'▸'}</span> ${esc(g.label)} <span class="count">(${g.items.length})</span></td></tr>`;
       const body=isOpen?g.items.map(desktopRowHtml).join(''):'';
       return header+body;
     }).join('')||'<tr><td colspan="10" class="sub">Nessuna cliente in Storico.</td></tr>';
-    if(ccList) ccList.innerHTML=groups.map(g=>{
+    if(isMobileView&&ccList) ccList.innerHTML=groups.map(g=>{
       const isOpen=storicoGroupsExpanded.has(g.key);
       const header=`<div class="storico-group-header" onclick="toggleStoricoGroup('${jsEsc(g.key)}')"><span class="storico-group-arrow">${isOpen?'⌄':'›'}</span><span class="storico-group-label">${esc(g.label)}</span><span class="count">${g.items.length}</span></div>`;
       const body=isOpen?g.items.map(mobileCardHtml).join(''):'';
       return header+body;
     }).join('')||'<div class="sub">Nessuna cliente in Storico.</div>';
   } else {
-    document.getElementById('tbody').innerHTML=rowsCalc.map(desktopRowHtml).join('');
-    if(ccList) ccList.innerHTML=rowsCalc.map(mobileCardHtml).join('');
+    if(!isMobileView) document.getElementById('tbody').innerHTML=rowsCalc.map(desktopRowHtml).join('');
+    if(isMobileView&&ccList) ccList.innerHTML=rowsCalc.map(mobileCardHtml).join('');
   }
   window._sorted=sorted;
 }
@@ -3377,6 +3416,17 @@ showPage('dashboard');
 if(ghConfigured()){ setGhStatus(ic('sync')+'Connessione a GitHub…'); syncFromGithub(true); }
 else { setGhStatus('Non connesso a GitHub — dati solo su questo dispositivo'); }
 setInterval(()=>syncFromGithub(false), 2*60*1000);
+
+/* renderTable() ora costruisce solo la versione (tabella desktop o schede
+   mobile) effettivamente visibile in base alla larghezza dello schermo: se si
+   attraversa la soglia dei 600px (es. si ruota il telefono o si ridimensiona
+   la finestra) rigeneriamo l'elenco clienti così la versione appena diventata
+   visibile non resta vuota o non aggiornata. */
+let LAST_MOBILE_VIEW=window.matchMedia('(max-width:600px)').matches;
+window.addEventListener('resize',()=>{
+  const nowMobile=window.matchMedia('(max-width:600px)').matches;
+  if(nowMobile!==LAST_MOBILE_VIEW){ LAST_MOBILE_VIEW=nowMobile; debouncedRender(); }
+});
 
 /* Registra il service worker per rendere la dashboard installabile (PWA):
    niente di più, i dati continuano a passare da GitHub esattamente come prima. */
