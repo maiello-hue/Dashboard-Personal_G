@@ -8691,8 +8691,8 @@
    "CLIENTE": "Arianna Tanzini",
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "6 mesi + 6 Gnocca",
-   "INIZIO PERCORSO": "22/01/2026",
-   "FINE PERCORSO": "22/07/2026",
+   "INIZIO PERCORSO": "30/07/2026",
+   "FINE PERCORSO": "30/07/2027",
    "IMPORTO": "1164",
    "METODO PAGAMENTO": "Scalapay",
    "STATO PAGAMENTO": "SALDATO",
@@ -24140,5 +24140,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-07-30T20:47:06.708Z"
+ "updatedAt": "2026-07-30T20:47:24.674Z"
 }
