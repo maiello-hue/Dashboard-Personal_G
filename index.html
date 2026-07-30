@@ -2335,9 +2335,12 @@ function buildPerfCollabTable(){
   const numCell=n=>`<td style="text-align:center">${n}</td>`;
   const collabBadgeFn={TUTOR:tutBadge,TRAINER:trainBadge,NUTRI:nutriBadge};
   const elId={TUTOR:'perf-tutor-table-body',TRAINER:'perf-trainer-table-body',NUTRI:'perf-nutri-table-body'};
+  const normName=s=>(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+  const PERF_TUTOR_EXCLUDE=new Set(['duccio','personalg','martina']);
   const allRows=[];
   ['TUTOR','TRAINER','NUTRI'].forEach(field=>{
     distinct(field).forEach(name=>{
+      if(field==='TUTOR'&&PERF_TUTOR_EXCLUDE.has(normName(name))) return;
       const assigned=DATA.filter(r=>(r[field]||'').trim()===name&&isInPercorso(r)&&!isCheckExcluded(r));
       if(!assigned.length) return;
       const checkInserito=assigned.filter(r=>(r['CHECK']||'').trim()!=='').length;
