@@ -3051,7 +3051,6 @@ function apriPosticipaAbbonamento(nome){
   posticipoClienteName=nome;
   document.getElementById('posticipa-cliente-name').textContent=nome;
   document.getElementById('posticipa-fields').innerHTML=
-    editFieldHtml('INIZIO PERCORSO','Nuovo inizio percorso','posticipa',r['INIZIO PERCORSO']||'')+
     editFieldHtml('FINE PERCORSO','Nuova fine percorso','posticipa',r['FINE PERCORSO']||'');
   document.getElementById('posticipa-modal').style.display='flex';
 }
@@ -3062,10 +3061,8 @@ function chiudiPosticipaAbbonamento(){
 function salvaPosticipaAbbonamento(){
   const r=DATA.find(x=>x['CLIENTE']===posticipoClienteName);
   if(!r) return;
-  const nuovoInizio=readEditFieldValue('posticipa','INIZIO PERCORSO');
   const nuovaFine=readEditFieldValue('posticipa','FINE PERCORSO');
-  if(!nuovaFine){ alert('Inserisci almeno la nuova data di fine percorso.'); return; }
-  if(nuovoInizio) r['INIZIO PERCORSO']=nuovoInizio;
+  if(!nuovaFine){ alert('Inserisci la nuova data di fine percorso.'); return; }
   r['FINE PERCORSO']=nuovaFine;
   saveClienti();
   chiudiPosticipaAbbonamento();
