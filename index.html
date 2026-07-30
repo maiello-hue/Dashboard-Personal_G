@@ -978,6 +978,17 @@ h3 .ico,.sub .ico{color:var(--muted)}
   </div>
 </div>
 
+<div class="modal-overlay" id="posticipa-modal" onclick="if(event.target===this) chiudiPosticipaAbbonamento()">
+  <div class="modal-card">
+    <h3><span class="ico"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M8 4.5V8l2.5 1.5"/></svg></span>Posticipa abbonamento — <span id="posticipa-cliente-name"></span></h3>
+    <div class="editbar" id="posticipa-fields"></div>
+    <div class="editbar-actions">
+      <button class="btn" onclick="salvaPosticipaAbbonamento()"><span class="ico"><svg viewBox="0 0 16 16"><path d="M3 3h7.5l2.5 2.5V13H3z"/><path d="M5 3v3h5V3"/><path d="M5.3 9H10.7V13H5.3z"/></svg></span>Salva</button>
+      <button class="btn ghost" onclick="chiudiPosticipaAbbonamento()">Chiudi</button>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ============================================================
    DASHBOARD INDIPENDENTE — dati salvati sul dispositivo (localStorage)
@@ -2927,19 +2938,17 @@ function render(){
       const name=r['CLIENTE'];
       const ggLabel=gg<0?`scaduta da ${-gg} gg`:gg===0?'scade oggi':`${gg} gg`;
       const rowOpen=scadExpanded.has(name);
-      const idPrefix='scad'+name.replace(/[^a-zA-Z0-9]/g,'');
-      const collabPanel=rowOpen?`<div class="editbar" style="flex:1 1 100%;margin-top:10px" onclick="event.stopPropagation()">
-        ${editFieldHtml('TUTOR','Tutor',idPrefix,r['TUTOR']||'')}
-        ${editFieldHtml('TRAINER','Trainer',idPrefix,r['TRAINER']||'')}
-        ${editFieldHtml('NUTRI','Nutrizionista',idPrefix,r['NUTRI']||'')}
-        <div class="editbar-actions" style="grid-column:1/-1">
-          <button class="btn" onclick="salvaScadCollab('${jsEsc(name)}','${idPrefix}')"><span class="ico"><svg viewBox="0 0 16 16"><path d="M3 3h7.5l2.5 2.5V13H3z"/><path d="M5 3v3h5V3"/><path d="M5.3 9H10.7V13H5.3z"/></svg></span>Salva</button>
-        </div>
+      const collabInfo=(ic2,l,v)=>`<span style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted)" title="${l}">${ic2}${esc(v||'—')}</span>`;
+      const collabPanel=rowOpen?`<div style="flex:1 1 100%;margin-top:10px;display:flex;gap:18px;flex-wrap:wrap" onclick="event.stopPropagation()">
+        ${collabInfo(DI.user,'Tutor',r['TUTOR'])}
+        ${collabInfo(DI.dumbbell,'Trainer',r['TRAINER'])}
+        ${collabInfo(DI.nutri,'Nutrizionista',r['NUTRI'])}
       </div>`:'';
       return `<div class="scad-item" onclick="toggleScadExpand('${jsEsc(name)}')" style="cursor:pointer">
-        <span style="flex:1;min-width:200px">${esc(name)} ${statoBadge(r['STATO CLIENTE'])} · ${esc(r['PERCORSO']||'—')} · Tutor: ${esc(r['TUTOR']||'—')}</span>
+        <span style="flex:1;min-width:200px">${esc(name)} ${statoBadge(r['STATO CLIENTE'])} · ${esc(r['PERCORSO']||'—')}</span>
         <span class="${gg<=15?'danger':'warn'}">${fdate(d)} · ${ggLabel}</span>
         <button class="pill-btn" onclick="event.stopPropagation();apriRinnovaAbbonamento('${jsEsc(name)}')">${ic('sync')}Rinnova abbonamento</button>
+        <button class="pill-btn" onclick="event.stopPropagation();apriPosticipaAbbonamento('${jsEsc(name)}')">${ic('clock')}Posticipa abbonamento</button>
         <span class="storico-group-arrow">${rowOpen?'⌄':'›'}</span>
         ${collabPanel}
       </div>`;
@@ -3030,13 +3039,36 @@ function toggleScadExpand(name){
   scadExpanded.has(name)?scadExpanded.delete(name):scadExpanded.add(name);
   render();
 }
-function salvaScadCollab(nome,idPrefix){
+/* Posticipa abbonamento: apribile dalla riga di una scadenza in "Rinnovi da
+   gestire", per spostare in avanti Inizio/Fine percorso senza dover aprire la
+   scheda cliente completa. A differenza di "Rinnova abbonamento" (che registra
+   un pagamento) qui si cambiano direttamente le date del percorso: la cliente
+   uscirà o resterà nell'elenco scadenze in base alla nuova Fine percorso. */
+let posticipoClienteName=null;
+function apriPosticipaAbbonamento(nome){
   const r=DATA.find(x=>x['CLIENTE']===nome);
   if(!r) return;
-  r['TUTOR']=readEditFieldValue(idPrefix,'TUTOR');
-  r['TRAINER']=readEditFieldValue(idPrefix,'TRAINER');
-  r['NUTRI']=readEditFieldValue(idPrefix,'NUTRI');
+  posticipoClienteName=nome;
+  document.getElementById('posticipa-cliente-name').textContent=nome;
+  document.getElementById('posticipa-fields').innerHTML=
+    editFieldHtml('INIZIO PERCORSO','Nuovo inizio percorso','posticipa',r['INIZIO PERCORSO']||'')+
+    editFieldHtml('FINE PERCORSO','Nuova fine percorso','posticipa',r['FINE PERCORSO']||'');
+  document.getElementById('posticipa-modal').style.display='flex';
+}
+function chiudiPosticipaAbbonamento(){
+  document.getElementById('posticipa-modal').style.display='none';
+  posticipoClienteName=null;
+}
+function salvaPosticipaAbbonamento(){
+  const r=DATA.find(x=>x['CLIENTE']===posticipoClienteName);
+  if(!r) return;
+  const nuovoInizio=readEditFieldValue('posticipa','INIZIO PERCORSO');
+  const nuovaFine=readEditFieldValue('posticipa','FINE PERCORSO');
+  if(!nuovaFine){ alert('Inserisci almeno la nuova data di fine percorso.'); return; }
+  if(nuovoInizio) r['INIZIO PERCORSO']=nuovoInizio;
+  r['FINE PERCORSO']=nuovaFine;
   saveClienti();
+  chiudiPosticipaAbbonamento();
   buildFilters();
   render();
 }
