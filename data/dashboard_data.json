@@ -8690,7 +8690,7 @@
   {
    "CLIENTE": "Arianna Tanzini",
    "STATO CLIENTE": "IN PERCORSO",
-   "PERCORSO": "6 mesi",
+   "PERCORSO": "6 mesi + 6 Gnocca",
    "INIZIO PERCORSO": "22/01/2026",
    "FINE PERCORSO": "22/07/2026",
    "IMPORTO": "1164",
@@ -8698,7 +8698,7 @@
    "STATO PAGAMENTO": "SALDATO",
    "TIPO INCASSO": "Rinnovo",
    "N° FATTURA": "",
-   "INCASSO": "",
+   "INCASSO": "1164",
    "RIMBORSO": "",
    "TUTOR": "Margherita",
    "TRAINER": "Marco",
@@ -8709,7 +8709,8 @@
    "€ NUTRI": "€ 12,00",
    "CONTRATTO": "SI",
    "CHECK": "",
-   "RISULTATO": ""
+   "RISULTATO": "",
+   "DATA INCASSO": "30/07/2026"
   },
   {
    "CLIENTE": "Brigida Russo",
@@ -24139,5 +24140,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-07-30T20:30:55.171Z"
+ "updatedAt": "2026-07-30T20:47:06.708Z"
 }
