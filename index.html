@@ -2908,7 +2908,11 @@ function render(){
   const hide=document.getElementById('scad-hide').checked;
   const inWin=new Date(now.getTime()+win*864e5);
   const ren=renAll();
-  let sc=allRows.filter(r=>{const d=pdate(r['FINE PERCORSO']);return d&&d>=now&&d<=inWin&&['IN PERCORSO','CONGELATO','SPARITA'].includes(r['STATO CLIENTE']);})
+  /* Includiamo anche le clienti già scadute (Fine percorso nel passato), non solo
+     quelle in arrivo entro la finestra scelta: finché lo Stato cliente resta
+     "In percorso/Congelato/Sparita" (cioè nessuno ha ancora aggiornato manualmente
+     lo stato) è una scadenza ancora da gestire, ed è anzi la più urgente. */
+  let sc=allRows.filter(r=>{const d=pdate(r['FINE PERCORSO']);return d&&d<=inWin&&['IN PERCORSO','CONGELATO','SPARITA'].includes(r['STATO CLIENTE']);})
     .sort((a,b)=>pdate(a['FINE PERCORSO'])-pdate(b['FINE PERCORSO']));
   const stOf=r=>(ren[r['CLIENTE']]&&ren[r['CLIENTE']].st)||'da';
   const daCont=sc.filter(r=>stOf(r)==='da').length, gestiti=sc.filter(r=>['rin','no'].includes(stOf(r))).length;
@@ -2922,9 +2926,10 @@ function render(){
       const d=pdate(r['FINE PERCORSO']), gg=Math.ceil((d-now)/864e5);
       const name=r['CLIENTE'], st2=stOf(r), note=(ren[name]&&ren[name].note)||'';
       const opts=Object.entries(REN_STATI).map(([k,[l]])=>`<option value="${k}"${k===st2?' selected':''}>${l}</option>`).join('');
+      const ggLabel=gg<0?`scaduta da ${-gg} gg`:gg===0?'scade oggi':`${gg} gg`;
       return `<div class="scad-item">
         <span style="flex:1;min-width:200px">${esc(name)} ${statoBadge(r['STATO CLIENTE'])} · ${esc(r['PERCORSO']||'—')} · Tutor: ${esc(r['TUTOR']||'—')}</span>
-        <span class="${gg<=15?'danger':'warn'}">${fdate(d)} · ${gg} gg</span>
+        <span class="${gg<=15?'danger':'warn'}">${fdate(d)} · ${ggLabel}</span>
         <button class="pill-btn" onclick="apriRinnovaAbbonamento('${jsEsc(name)}')">${ic('sync')}Rinnova abbonamento</button>
         <select class="ren-sel ${REN_STATI[st2][1]}" onchange="renSet('${jsEsc(name)}','st',this.value)">${opts}</select>
         <input class="ren-note" placeholder="nota…" value="${esc(note)}" onchange="renSet('${jsEsc(name)}','note',this.value)">
