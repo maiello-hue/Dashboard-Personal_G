@@ -967,6 +967,17 @@ h3 .ico,.sub .ico{color:var(--muted)}
   </div>
 </div>
 
+<div class="modal-overlay" id="rinnova-modal" onclick="if(event.target===this) chiudiRinnovaAbbonamento()">
+  <div class="modal-card">
+    <h3><span class="ico"><svg viewBox="0 0 16 16"><path d="M3.3 8A4.7 4.7 0 0 1 12 5.7"/><path d="M12 2.8v3h-3"/><path d="M12.7 8A4.7 4.7 0 0 1 4 10.3"/><path d="M4 13.2v-3h3"/></svg></span>Rinnova abbonamento — <span id="rinnova-cliente-name"></span></h3>
+    <div class="editbar" id="rinnova-fields"></div>
+    <div class="editbar-actions">
+      <button class="btn" onclick="salvaRinnovaAbbonamento()"><span class="ico"><svg viewBox="0 0 16 16"><path d="M3 3h7.5l2.5 2.5V13H3z"/><path d="M5 3v3h5V3"/><path d="M5.3 9H10.7V13H5.3z"/></svg></span>Salva rinnovo</button>
+      <button class="btn ghost" onclick="chiudiRinnovaAbbonamento()">Chiudi</button>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ============================================================
    DASHBOARD INDIPENDENTE — dati salvati sul dispositivo (localStorage)
@@ -2904,16 +2915,22 @@ function render(){
   document.getElementById('ren-summary').textContent=sc.length?`${sc.length} in scadenza · ${daCont} da contattare · ${gestiti} gestiti`:'';
   document.getElementById('k-scad-d').textContent=brkScad+' · '+daCont+' da contattare';
   if(hide) sc=sc.filter(r=>!['rin','no'].includes(stOf(r)));
-  document.getElementById('scadenze').innerHTML=sc.length?sc.map(r=>{
-    const d=pdate(r['FINE PERCORSO']), gg=Math.ceil((d-now)/864e5);
-    const name=r['CLIENTE'], st2=stOf(r), note=(ren[name]&&ren[name].note)||'';
-    const opts=Object.entries(REN_STATI).map(([k,[l]])=>`<option value="${k}"${k===st2?' selected':''}>${l}</option>`).join('');
-    return `<div class="scad-item">
-      <span style="flex:1;min-width:200px">${esc(name)} ${statoBadge(r['STATO CLIENTE'])} · ${esc(r['PERCORSO']||'—')} · Tutor: ${esc(r['TUTOR']||'—')}</span>
-      <span class="${gg<=15?'danger':'warn'}">${fdate(d)} · ${gg} gg</span>
-      <select class="ren-sel ${REN_STATI[st2][1]}" onchange="renSet('${jsEsc(name)}','st',this.value)">${opts}</select>
-      <input class="ren-note" placeholder="nota…" value="${esc(note)}" onchange="renSet('${jsEsc(name)}','note',this.value)">
-    </div>`;
+  document.getElementById('scadenze').innerHTML=sc.length?groupScadenzeByMonth(sc).map(g=>{
+    const isOpen=!scadGroupsCollapsed.has(g.key);
+    const header=`<div class="storico-group-header" onclick="toggleScadGroup('${jsEsc(g.key)}')"><span class="storico-group-arrow">${isOpen?'⌄':'›'}</span><span class="storico-group-label">${esc(g.label)}</span><span class="count">${g.items.length}</span></div>`;
+    const body=isOpen?g.items.map(r=>{
+      const d=pdate(r['FINE PERCORSO']), gg=Math.ceil((d-now)/864e5);
+      const name=r['CLIENTE'], st2=stOf(r), note=(ren[name]&&ren[name].note)||'';
+      const opts=Object.entries(REN_STATI).map(([k,[l]])=>`<option value="${k}"${k===st2?' selected':''}>${l}</option>`).join('');
+      return `<div class="scad-item">
+        <span style="flex:1;min-width:200px">${esc(name)} ${statoBadge(r['STATO CLIENTE'])} · ${esc(r['PERCORSO']||'—')} · Tutor: ${esc(r['TUTOR']||'—')}</span>
+        <span class="${gg<=15?'danger':'warn'}">${fdate(d)} · ${gg} gg</span>
+        <button class="pill-btn" onclick="apriRinnovaAbbonamento('${jsEsc(name)}')">${ic('sync')}Rinnova abbonamento</button>
+        <select class="ren-sel ${REN_STATI[st2][1]}" onchange="renSet('${jsEsc(name)}','st',this.value)">${opts}</select>
+        <input class="ren-note" placeholder="nota…" value="${esc(note)}" onchange="renSet('${jsEsc(name)}','note',this.value)">
+      </div>`;
+    }).join(''):'';
+    return header+body;
   }).join(''):'<div class="sub">'+(hide&&gestiti?ic('check')+'Tutti i rinnovi in scadenza sono stati gestiti':ic('check')+'Nessun percorso in scadenza nel periodo selezionato')+'</div>';
 
   const storicoCountEl=document.getElementById('storico-count');
@@ -2985,6 +3002,29 @@ let storicoGroupsExpanded=new Set();
 function toggleStoricoGroup(key){
   storicoGroupsExpanded.has(key)?storicoGroupsExpanded.delete(key):storicoGroupsExpanded.add(key);
   render();
+}
+let scadGroupsCollapsed=new Set();
+function toggleScadGroup(key){
+  scadGroupsCollapsed.has(key)?scadGroupsCollapsed.delete(key):scadGroupsCollapsed.add(key);
+  render();
+}
+/* Raggruppa i "Rinnovi da gestire" per mese di Fine percorso (stesso mese che
+   compare nella colonna data di ogni riga). Ogni gruppo parte aperto: a
+   differenza dello Storico qui si tratta di scadenze ancora da gestire, quindi
+   ha senso vederle subito senza dover aprire ogni mese a mano. */
+function groupScadenzeByMonth(rows){
+  const groups={};
+  rows.forEach(r=>{
+    const d=pdate(r['FINE PERCORSO']);
+    const key=d?(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')):'_nodata';
+    if(!groups[key]) groups[key]={key,d,items:[]};
+    groups[key].items.push(r);
+  });
+  return Object.values(groups).sort((a,b)=>{
+    if(a.key==='_nodata') return 1;
+    if(b.key==='_nodata') return -1;
+    return a.d-b.d;
+  }).map(g=>({key:g.key,label:g.key==='_nodata'?'Senza data':(MESI_CAP[g.d.getMonth()]+' '+g.d.getFullYear()),items:g.items}));
 }
 function groupStoricoByMonth(rowsCalc){
   /* raggruppa per il mese in cui la cliente è stata effettivamente spostata in Abbandono/Non
@@ -3187,6 +3227,50 @@ function salvaClienteModal(){
   saveClienti();
   chiudiModificaCliente();
   buildFilters(); render();
+}
+
+/* Rinnova abbonamento: apribile dalla riga di una scadenza in "Rinnovi da
+   gestire". Registra il nuovo pagamento (data, importo, metodo, incasso) sulla
+   cliente — con Tipo incasso impostato automaticamente su "Rinnovo", così
+   l'importo compare subito nella card "Rinnovo percorsi" della pagina Incassi
+   del mese giusto — e marca in automatico la scadenza come "Rinnovata"
+   nell'elenco, così sparisce dai rinnovi ancora da gestire. */
+let renewingClienteName=null;
+function apriRinnovaAbbonamento(nome){
+  const r=DATA.find(x=>x['CLIENTE']===nome);
+  if(!r) return;
+  renewingClienteName=nome;
+  document.getElementById('rinnova-cliente-name').textContent=nome;
+  const oggi=new Date().toISOString().slice(0,10);
+  document.getElementById('rinnova-fields').innerHTML=
+    `<label>Data del rinnovo<input type="date" id="rinnova-DATA" value="${oggi}"></label>`+
+    editFieldHtml('IMPORTO','Importo','rinnova',r['IMPORTO']||'')+
+    editFieldHtml('METODO PAGAMENTO','Metodo di pagamento','rinnova',r['METODO PAGAMENTO']||'')+
+    editFieldHtml('INCASSO','Incasso','rinnova','');
+  document.getElementById('rinnova-modal').style.display='flex';
+}
+function chiudiRinnovaAbbonamento(){
+  document.getElementById('rinnova-modal').style.display='none';
+  renewingClienteName=null;
+}
+function salvaRinnovaAbbonamento(){
+  const r=DATA.find(x=>x['CLIENTE']===renewingClienteName);
+  if(!r) return;
+  const dataIso=document.getElementById('rinnova-DATA').value;
+  if(!dataIso){ alert('Inserisci la data del rinnovo.'); return; }
+  const importo=readEditFieldValue('rinnova','IMPORTO');
+  const metodo=readEditFieldValue('rinnova','METODO PAGAMENTO');
+  const incasso=readEditFieldValue('rinnova','INCASSO');
+  r['IMPORTO']=importo;
+  r['METODO PAGAMENTO']=metodo;
+  r['INCASSO']=incasso;
+  r['TIPO INCASSO']='Rinnovo';
+  if(euro(incasso)>0) r['DATA INCASSO']=isoToIt(dataIso); else delete r['DATA INCASSO'];
+  saveClienti();
+  buildFilters();
+  const nome=renewingClienteName;
+  chiudiRinnovaAbbonamento();
+  renSet(nome,'st','rin');
 }
 
 /* ================= RIMBORSI ================= */
