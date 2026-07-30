@@ -2867,7 +2867,8 @@ const DI={
   star: DI_SVG_LG('<path d="M2.3 8.3h2.9M10.8 8.3h2.9M8 2.3v2.9M8 10.8v2.9" stroke-linecap="round"/><path d="M4.3 4.3l2 2M9.7 9.7l2 2M11.7 4.3l-2 2M6.3 9.7l-2 2" stroke-linecap="round"/><circle cx="8" cy="8" r="2.3"/>'),
   split: DI_SVG('<circle cx="6" cy="8" r="4"/><circle cx="10" cy="8" r="4"/>'),
   fonte: DI_SVG('<path d="M2.5 3.2h5.1l5.9 5.9-5.1 5.1-5.9-5.9z"/><circle cx="5.4" cy="6.1" r="1"/>'),
-  dumbbell: DI_SVG('<rect x="0.7" y="6.6" width="1.6" height="2.8" rx="0.5"/><rect x="2.3" y="5.6" width="1.6" height="4.8" rx="0.5"/><rect x="12.1" y="5.6" width="1.6" height="4.8" rx="0.5"/><rect x="13.7" y="6.6" width="1.6" height="2.8" rx="0.5"/><path d="M3.9 8h8.2"/>')
+  dumbbell: DI_SVG('<rect x="0.7" y="6.6" width="1.6" height="2.8" rx="0.5"/><rect x="2.3" y="5.6" width="1.6" height="4.8" rx="0.5"/><rect x="12.1" y="5.6" width="1.6" height="4.8" rx="0.5"/><rect x="13.7" y="6.6" width="1.6" height="2.8" rx="0.5"/><path d="M3.9 8h8.2"/>'),
+  nutri: DI_FA('fa-apple-whole')
 };
 const COLS=[
   ['CLIENTE','Cliente'],['STATO CLIENTE','Stato'],['PERCORSO','Percorso'],
@@ -2972,6 +2973,7 @@ function renderTable(rows){
           <div class="cc-subrow">
             <span class="cc-info" title="Tutor">${DI.user}${esc(r['TUTOR']||'—')}</span>
             <span class="cc-info" title="Trainer">${DI.dumbbell}${esc(r['TRAINER']||'—')}</span>
+            <span class="cc-info" title="Nutrizionista">${DI.nutri}${esc(r['NUTRI']||'—')}</span>
             <span class="cc-info" title="Fine percorso">${ic('clock')}${finLabel}${scad?' <span class="danger">'+ic('warn')+'</span>':''}${renBadge}</span>
           </div>
         </div>
