@@ -3326,6 +3326,15 @@ function chiudiRinnovaAbbonamento(){
   document.getElementById('rinnova-modal').style.display='none';
   renewingClienteName=null;
 }
+/* Ricava la durata totale (in mesi) di un percorso dal suo testo, sommando
+   tutti i numeri presenti: "12 mesi" -> 12, "6 mesi + 6 Gnocca" -> 12,
+   "GNOCCA 6" -> 6. Se non c'è nessun numero (es. "PROMO ESTATE") restituisce
+   null e la data di fine percorso non viene toccata automaticamente. */
+function percorsoDurataMesi(p){
+  const nums=String(p||'').match(/\d+/g);
+  if(!nums) return null;
+  return nums.reduce((a,b)=>a+parseInt(b,10),0);
+}
 function salvaRinnovaAbbonamento(){
   const r=DATA.find(x=>x['CLIENTE']===renewingClienteName);
   if(!r) return;
@@ -3341,6 +3350,21 @@ function salvaRinnovaAbbonamento(){
   r['INCASSO']=incasso;
   r['TIPO INCASSO']='Rinnovo';
   if(euro(incasso)>0) r['DATA INCASSO']=isoToIt(dataIso); else delete r['DATA INCASSO'];
+  /* Il rinnovo fa partire un nuovo ciclo: aggiorniamo inizio/fine percorso in
+     base alla data del rinnovo e alla durata del percorso scelto, così la
+     cliente esce subito dall'elenco "Rinnovi da gestire" (che si basa su
+     FINE PERCORSO) invece di restarci con la vecchia data ormai scaduta. */
+  const iniRinnovo=pdate(dataIso);
+  if(/all life long/i.test(percorso)){
+    r['INIZIO PERCORSO']=isoToIt(dataIso);
+    r['FINE PERCORSO']='';
+  } else {
+    const mesi=percorsoDurataMesi(percorso);
+    if(mesi){
+      r['INIZIO PERCORSO']=isoToIt(dataIso);
+      r['FINE PERCORSO']=fdate(addMonths(iniRinnovo,mesi));
+    }
+  }
   saveClienti();
   buildFilters();
   const nome=renewingClienteName;
