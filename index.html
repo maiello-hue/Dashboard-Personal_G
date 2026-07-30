@@ -301,6 +301,22 @@ h3 .ico,.sub .ico{color:var(--muted)}
 .rata-item input[type=checkbox]{width:16px;height:16px;accent-color:var(--green);cursor:pointer;flex-shrink:0}
 .iban{font-family:monospace;font-size:11px;color:var(--muted)}
 .tag-pagato{background:rgba(31,157,99,.13);color:var(--green);padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700}
+/* .rata-card: riga della lista "Promemoria rate da rimborsare". A differenza
+   di .rata-item (usata nel "Piano bonifici", tutta su una riga) qui nome e
+   data stanno insieme in alto, il tag di stato va a capo sotto, e l'IBAN è
+   nascosto in un dettaglio che si apre al click sulla riga. */
+.rata-card{padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.rata-card:last-child{border:none}
+.rata-card.paid{opacity:.5}
+.rata-card.paid .rn{text-decoration:line-through}
+.rata-card input[type=checkbox]{width:16px;height:16px;accent-color:var(--green);cursor:pointer;flex-shrink:0}
+.rata-main{display:flex;align-items:center;gap:10px;cursor:pointer}
+.rata-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rata-chevron{color:var(--muted2);font-size:11px;flex-shrink:0;width:14px;text-align:center}
+.rata-tagrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;padding-left:26px}
+.rata-tagrow:empty{display:none}
+.rata-detail{display:flex;align-items:center;gap:8px;margin:8px 0 0 26px;padding:8px 10px;background:var(--card2);border-radius:8px}
+.iban-label{font-size:10px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:.3px;flex-shrink:0}
 #loader{text-align:center;padding:60px;color:var(--muted)}
 #error{display:none;background:rgba(210,63,63,.08);border:1px solid var(--red);border-radius:12px;padding:20px;margin:20px 0;color:var(--red)}
 @media(max-width:900px){
@@ -377,6 +393,12 @@ h3 .ico,.sub .ico{color:var(--muted)}
   .kpi-list-row-amt{flex-wrap:nowrap !important}
   .kpi-list-row-amt>span:first-child{flex:1 1 auto !important;min-width:0 !important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .kpi-list-row-amt>span:last-child{flex:0 0 auto !important;margin-top:0 !important}
+  /* Lista "Promemoria rate da rimborsare": su schermi stretti la data si
+     accorcia e il nome prende meno spazio per lasciar posto all'importo. */
+  .rata-date{font-weight:600;font-size:12px}
+  .rata-amt{font-weight:700;font-size:12.5px}
+  .rata-tagrow,.rata-detail{padding-left:26px;margin-left:0}
+  .iban{word-break:break-all}
   .color-popover,.ac-dropdown{max-width:calc(100vw - 20px)}
   /* Su iPhone Safari zooma automaticamente la pagina quando si tocca un campo
      con font-size sotto i 16px: tutti gli input/select qui erano a 12-14px.
@@ -3256,14 +3278,17 @@ function renderRimborsi(){
   document.getElementById('r-summary').textContent=nDa+' rate da pagare · '+fmtEuro(up.filter(it=>!isPag(it)).reduce((s,it)=>s+it.amt,0));
   if(hide) up=up.filter(it=>!isPag(it));
   document.getElementById('rate-list').innerHTML=up.length?up.map(it=>{
-    const k=rataKey(it), paid=isPag(it);
-    return `<div class="rata-item${paid?' paid':''}">
-      ${paid?'<span style="width:16px;text-align:center">'+ic('check')+'</span>':`<input type="checkbox" onchange="rataToggle('${jsEsc(k)}')" title="segna come pagata">`}
-      <span class="rn" style="min-width:90px;font-weight:600">${fdate(it.date)}</span>
-      ${paid?'<span class="tag-pagato">PAGATO</span>':''}
-      <span class="rn" style="flex:1;min-width:180px">${esc(it.r.cliente)} · rata ${it.i}/${it.n} · ${rimbBadge(it.r.stato)}</span>
-      <span class="rn" style="font-weight:700">${fmtEuro(it.amt)}</span>
-      <span class="iban">${esc(it.r.iban||'IBAN mancante')}</span>
+    const k=rataKey(it), paid=isPag(it), exp=RATE_EXP.has(k);
+    return `<div class="rata-card${paid?' paid':''}">
+      <div class="rata-main" onclick="toggleRateExp('${jsEsc(k)}')">
+        ${paid?'<span style="width:16px;text-align:center">'+ic('check')+'</span>':`<input type="checkbox" onclick="event.stopPropagation()" onchange="rataToggle('${jsEsc(k)}')" title="segna come pagata">`}
+        <span class="rn rata-date">${fdate(it.date)}</span>
+        <span class="rn rata-name">${esc(it.r.cliente)} · rata ${it.i}/${it.n}</span>
+        <span class="rn rata-amt">${fmtEuro(it.amt)}</span>
+        <span class="rata-chevron">${exp?'▾':'▸'}</span>
+      </div>
+      <div class="rata-tagrow">${paid?'<span class="tag-pagato">PAGATO</span>':''}${rimbBadge(it.r.stato)}</div>
+      ${exp?`<div class="rata-detail"><span class="iban-label">IBAN</span><span class="iban">${esc(it.r.iban||'IBAN mancante')}</span></div>`:''}
     </div>`;
   }).join(''):'<div class="sub">'+ic('check')+'Nessuna rata nel periodo selezionato</div>';
 
@@ -3302,6 +3327,11 @@ function renderRimborsi(){
       </div>`;
     return main+`<tr class="exp"><td colspan="12"><b>Piano bonifici — ${esc(r.cliente)}:</b> ${piano}${editHtml}</td></tr>`;
   }).join('');
+}
+let RATE_EXP=new Set();
+function toggleRateExp(k){
+  RATE_EXP.has(k)?RATE_EXP.delete(k):RATE_EXP.add(k);
+  renderRimborsi();
 }
 let REXP=new Set();
 function toggleRExp(id){
