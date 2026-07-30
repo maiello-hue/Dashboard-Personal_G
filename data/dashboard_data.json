@@ -8693,12 +8693,12 @@
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "22/01/2026",
    "FINE PERCORSO": "22/07/2026",
-   "IMPORTO": "€ 606,00",
+   "IMPORTO": "1164",
    "METODO PAGAMENTO": "Scalapay",
    "STATO PAGAMENTO": "SALDATO",
-   "TIPO INCASSO": "",
+   "TIPO INCASSO": "Rinnovo",
    "N° FATTURA": "",
-   "INCASSO": "",
+   "INCASSO": "1164",
    "RIMBORSO": "",
    "TUTOR": "Margherita",
    "TRAINER": "Marco",
@@ -8709,7 +8709,8 @@
    "€ NUTRI": "€ 12,00",
    "CONTRATTO": "SI",
    "CHECK": "",
-   "RISULTATO": ""
+   "RISULTATO": "",
+   "DATA INCASSO": "30/07/2026"
   },
   {
    "CLIENTE": "Brigida Russo",
@@ -24134,7 +24135,10 @@
   "Martina Pacciani": {
    "note": " ",
    "st": "da"
+  },
+  "Arianna Tanzini": {
+   "st": "rin"
   }
  },
- "updatedAt": "2026-07-30T20:28:06.356Z"
+ "updatedAt": "2026-07-30T20:30:15.626Z"
 }
