@@ -320,6 +320,13 @@ h3 .ico,.sub .ico{color:var(--muted)}
   .content{width:100%}
 }
 @media(max-width:600px){
+  /* Rete di sicurezza: con lo zoom disattivato l'utente non può più "allargare
+     la vista" se qualcosa sfora la larghezza dello schermo. Impedendo lo
+     scroll orizzontale della pagina, un eventuale elemento troppo largo resta
+     contenuto/va a capo invece di spostare l'intera pagina di lato. Le tabelle
+     che devono scorrere (tablewrap, rate-table) lo fanno comunque al loro
+     interno, non sono influenzate da questa regola. */
+  html,body{overflow-x:hidden}
   body{padding:10px;padding-bottom:0}
   .app-shell{gap:0}
   .content{padding-bottom:16px}
@@ -357,6 +364,13 @@ h3 .ico,.sub .ico{color:var(--muted)}
      sidebar non c'è, quindi quel calcolo lascerebbe pochissimi pixel al testo.
      Lo neutralizziamo e lasciamo che vada semplicemente a capo. */
   .exp td{max-width:none;position:static;white-space:normal}
+  /* .kpi-list-row (la modale che si apre cliccando una KPI: es. "Clienti
+     totali") non aveva flex-wrap: nome (min-width fisso) + badge + data
+     insieme superavano la larghezza di un telefono e uscivano dallo schermo.
+     Ora che lo zoom è disattivato non c'è più modo di "allargare" la vista
+     per vederli, quindi devono andare a capo da soli. */
+  .kpi-list-row{flex-wrap:wrap;row-gap:6px}
+  .kpi-list-row>span:first-child{flex:1 1 100% !important;min-width:0 !important}
   .color-popover,.ac-dropdown{max-width:calc(100vw - 20px)}
   /* Su iPhone Safari zooma automaticamente la pagina quando si tocca un campo
      con font-size sotto i 16px: tutti gli input/select qui erano a 12-14px.
