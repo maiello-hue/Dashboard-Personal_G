@@ -2246,7 +2246,12 @@ function setCheckField(cliente,field,value){
   saveClienti();
   buildCheckPage();
 }
-function isCheckExcluded(r){ return (r['CHECK_ESCLUSA']||'').trim().toUpperCase()==='SI'; }
+/* Le clienti entrate nel mese in corso (INIZIO PERCORSO nel mese di oggi) non hanno
+   ancora avuto il tempo di ricevere un check: contarle abbasserebbe ingiustamente
+   la percentuale, quindi vengono escluse in automatico, oltre a quelle escluse a
+   mano con il pulsante "Nascondi dal conteggio". */
+function isNewThisMonth(r){ return inMese(r,'INIZIO PERCORSO',mesekey(new Date())); }
+function isCheckExcluded(r){ return (r['CHECK_ESCLUSA']||'').trim().toUpperCase()==='SI' || isNewThisMonth(r); }
 function toggleCheckExclude(cliente){
   const r=DATA.find(x=>x['CLIENTE']===cliente);
   if(!r) return;
@@ -2275,11 +2280,15 @@ function buildCheckPage(){
     const open=q?true:checkSectionsExpanded.has(title);
     const rowsHtml=rows.map(r=>{
       const cliente=r['CLIENTE'];
-      const excluded=isCheckExcluded(r);
+      const manualExcl=(r['CHECK_ESCLUSA']||'').trim().toUpperCase()==='SI';
+      const newMonth=isNewThisMonth(r);
+      const excluded=manualExcl||newMonth;
+      const reasonLabel=manualExcl?' <span class="sub" style="margin:0">(esclusa dal conteggio)</span>'
+        :newMonth?' <span class="sub" style="margin:0">(entrata questo mese, esclusa dal conteggio)</span>':'';
       return `<div class="fonte-client-row"${excluded?' style="opacity:.5"':''}>
-        <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0">${esc(cliente)}${excluded?' <span class="sub" style="margin:0">(esclusa dal conteggio)</span>':''}</span>
+        <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0">${esc(cliente)}${reasonLabel}</span>
         <span style="display:flex;align-items:center;gap:14px;flex-shrink:0;flex-wrap:wrap">
-          <button class="icon-btn" title="${excluded?'Includi nel conteggio':'Nascondi dal conteggio'}" onclick="toggleCheckExclude('${jsEsc(cliente)}')">${ic(excluded?'eye-off':'eye')}</button>
+          <button class="icon-btn" title="${manualExcl?'Includi nel conteggio':'Nascondi dal conteggio'}" onclick="toggleCheckExclude('${jsEsc(cliente)}')">${ic(manualExcl?'eye-off':'eye')}</button>
           ${checkToggleGroupHtml(cliente,'CHECK','Check',r['CHECK'])}
           ${checkToggleGroupHtml(cliente,'RISULTATO','Risultato',r['RISULTATO'])}
         </span>
