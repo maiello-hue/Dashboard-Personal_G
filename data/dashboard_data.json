@@ -8698,7 +8698,7 @@
    "STATO PAGAMENTO": "SALDATO",
    "TIPO INCASSO": "Rinnovo",
    "N° FATTURA": "",
-   "INCASSO": "1164",
+   "INCASSO": "",
    "RIMBORSO": "",
    "TUTOR": "Margherita",
    "TRAINER": "Marco",
@@ -8709,8 +8709,7 @@
    "€ NUTRI": "€ 12,00",
    "CONTRATTO": "SI",
    "CHECK": "",
-   "RISULTATO": "",
-   "DATA INCASSO": "30/07/2026"
+   "RISULTATO": ""
   },
   {
    "CLIENTE": "Brigida Russo",
@@ -24140,5 +24139,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-07-30T20:30:15.626Z"
+ "updatedAt": "2026-07-30T20:30:55.171Z"
 }
