@@ -189,27 +189,6 @@ th:hover{color:var(--text)}
 td{padding:10px 8px;border-bottom:1px solid var(--border);white-space:nowrap}
 tr.main:hover{background:var(--card2);cursor:pointer}
 .tablewrap{overflow-x:auto}
-/* Tabella "Elenco clienti": con table-layout:auto (default) il browser
-   assegna lo spazio in eccesso alle colonne in modo poco prevedibile — di
-   solito quella col contenuto più largo (es. "Percorso", per via di badge
-   come "6 mesi + 6 Gnocca") finisce per "risucchiare" quasi tutto lo spazio
-   vuoto, creando un salto enorme prima della colonna successiva mentre le
-   altre restano appiccicate. Con table-layout:fixed e percentuali fisse per
-   colonna lo spazio si distribuisce in modo prevedibile e uniforme su tutta
-   la riga (percentuali leggermente più larghe solo dove serve davvero, es.
-   nome cliente e percorso, per non tagliare il testo). */
-#clienti-table{table-layout:fixed}
-#clienti-table td{overflow:hidden;text-overflow:ellipsis}
-#clienti-table th:nth-child(1),#clienti-table td:nth-child(1){width:15%}
-#clienti-table th:nth-child(2),#clienti-table td:nth-child(2){width:10%}
-#clienti-table th:nth-child(3),#clienti-table td:nth-child(3){width:12%}
-#clienti-table th:nth-child(4),#clienti-table td:nth-child(4){width:9%}
-#clienti-table th:nth-child(5),#clienti-table td:nth-child(5){width:9%}
-#clienti-table th:nth-child(6),#clienti-table td:nth-child(6){width:11%}
-#clienti-table th:nth-child(7),#clienti-table td:nth-child(7){width:9%}
-#clienti-table th:nth-child(8),#clienti-table td:nth-child(8){width:8.5%}
-#clienti-table th:nth-child(9),#clienti-table td:nth-child(9){width:8.5%}
-#clienti-table th:nth-child(10),#clienti-table td:nth-child(10){width:8%}
 .cc-list{display:none}
 .progress{width:90px;height:6px;background:var(--card2);border-radius:3px;overflow:hidden;display:inline-block;vertical-align:middle}
 .progress i{display:block;height:100%;border-radius:3px}
@@ -3204,7 +3183,7 @@ function renderTable(rows){
   });
   const desktopRowHtml=({r,i,ini,prog,finTxt,detailInner})=>{
     const main=`<tr class="main" onclick="toggleExp(${i})">
-      <td data-label="Cliente" title="${esc(r['CLIENTE'])}">${r['CLIENTE']}</td><td data-label="Stato">${statoBadge(r['STATO CLIENTE'])}</td><td data-label="Percorso">${percBadge(r['PERCORSO'])}</td>
+      <td data-label="Cliente">${r['CLIENTE']}</td><td data-label="Stato">${statoBadge(r['STATO CLIENTE'])}</td><td data-label="Percorso">${percBadge(r['PERCORSO'])}</td>
       <td data-label="Inizio">${fdate(ini)}</td><td data-label="Fine">${finTxt}</td><td data-label="Avanzamento">${prog}</td>
       <td data-label="Venditore">${vendBadge(r['VENDITORE'])}</td>
       <td data-label="Tutor">${tutBadge(r['TUTOR'])}</td><td data-label="Trainer">${trainBadge(r['TRAINER'])}</td><td data-label="Nutri">${nutriBadge(r['NUTRI'])}</td></tr>`;
