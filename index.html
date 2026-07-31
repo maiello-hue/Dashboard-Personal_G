@@ -976,6 +976,17 @@ h3 .ico,.sub .ico{color:var(--muted)}
   </div>
 </div>
 
+<div class="modal-overlay" id="rimborsa-cliente-modal" onclick="if(event.target===this) chiudiRimborsaCliente()">
+  <div class="modal-card">
+    <h3><span class="ico"><svg viewBox="0 0 16 16"><path d="M3.5 8A4.5 4.5 0 1 0 6.2 3.9"/><path d="M3.5 5V8H6.5"/></svg></span>Rimborsa — <span id="rimborsa-cliente-name"></span></h3>
+    <div class="editbar" id="rimborsa-cliente-fields"></div>
+    <div class="editbar-actions">
+      <button class="btn" onclick="salvaRimborsaCliente()"><span class="ico"><svg viewBox="0 0 16 16"><path d="M3 3h7.5l2.5 2.5V13H3z"/><path d="M5 3v3h5V3"/><path d="M5.3 9H10.7V13H5.3z"/></svg></span>Salva rimborso</button>
+      <button class="btn ghost" onclick="chiudiRimborsaCliente()">Chiudi</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="kpi-list-modal" onclick="if(event.target===this) chiudiListaClienti()">
   <div class="modal-card" style="max-width:560px">
     <h3 id="kpi-list-title"></h3>
@@ -3176,6 +3187,7 @@ function renderTable(rows){
         <span class="detail-item" title="Risultato">${DI.star}${esc(r['RISULTATO']||'—')}</span>
         <span class="row-icon-actions" onclick="event.stopPropagation()">
           <button class="pill-btn" title="Modifica" onclick="apriModificaCliente('${jsEsc(r['CLIENTE'])}')">${ic('edit')}Modifica</button>
+          ${catFilter==='storico'?`<button class="pill-btn" title="Rimborsa" onclick="apriRimborsaCliente('${jsEsc(r['CLIENTE'])}')">${ic('undo')}Rimborsa</button>`:''}
           <button class="pill-btn danger" title="Elimina cliente" onclick="eliminaCliente('${jsEsc(r['CLIENTE'])}')">${ic('trash')}Elimina</button>
         </span>`;
     const arch=pdate(r['DATA ARCHIVIAZIONE']);
@@ -3505,6 +3517,45 @@ function salvaRimborsoModal(){
   });
   saveRimborsi();
   chiudiModificaRimborso();
+  buildRimbFilters(); renderRimborsi();
+}
+
+/* ---------- rimborsa da Storico ----------
+   Pulsante "Rimborsa" sulla riga di ogni cliente nella sezione Storico:
+   apre una finestra con gli stessi campi del "Nuovo rimborso", precompilando
+   Percorso e Venditore con i dati già presenti sulla scheda cliente (così
+   non vanno ridigitati), e al salvataggio crea automaticamente la riga
+   nella sezione Rimborsi, esattamente come farebbe "Nuovo rimborso" a mano. */
+let rimborsaClienteNome=null;
+function apriRimborsaCliente(nome){
+  const r=DATA.find(x=>x['CLIENTE']===nome);
+  if(!r) return;
+  rimborsaClienteNome=nome;
+  document.getElementById('rimborsa-cliente-name').textContent=nome;
+  document.getElementById('rimborsa-cliente-fields').innerHTML=RIMB_EDIT_FIELDS.map(([f,l])=>{
+    let prefill='';
+    if(f==='percorso') prefill=r['PERCORSO']||'';
+    else if(f==='venditore') prefill=r['VENDITORE']||'';
+    else if(f==='metodo') prefill=r['METODO PAGAMENTO']||'';
+    return `<label>${l}<input id="rimb-${f}" value="${esc(prefill)}"></label>`;
+  }).join('');
+  document.getElementById('rimborsa-cliente-modal').style.display='flex';
+}
+function chiudiRimborsaCliente(){
+  document.getElementById('rimborsa-cliente-modal').style.display='none';
+  rimborsaClienteNome=null;
+}
+function salvaRimborsaCliente(){
+  if(!rimborsaClienteNome) return;
+  const rec={id:uid(), cliente:rimborsaClienteNome};
+  RIMB_EDIT_FIELDS.forEach(([f])=>{
+    let v=document.getElementById('rimb-'+f).value.trim();
+    if(f==='rate') v=parseInt(v)||0;
+    rec[f]=v;
+  });
+  RIMB.push(rec);
+  saveRimborsi();
+  chiudiRimborsaCliente();
   buildRimbFilters(); renderRimborsi();
 }
 
