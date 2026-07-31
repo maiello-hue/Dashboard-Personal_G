@@ -23391,6 +23391,25 @@
    "VENDITORE": "Salvatore",
    "FONTE": "",
    "DATA INCASSO": "30/07/2026"
+  },
+  {
+   "CLIENTE": "Nubia Fabbri",
+   "EMAIL": "",
+   "STATO CLIENTE": "IN PERCORSO",
+   "PERCORSO": "6 mesi + 6 Gnocca",
+   "INIZIO PERCORSO": "31/07/2026",
+   "FINE PERCORSO": "31/07/2027",
+   "IMPORTO": "1668",
+   "METODO PAGAMENTO": "HeyLight",
+   "STATO PAGAMENTO": "SALDATO",
+   "TIPO INCASSO": "Nuovo Cliente",
+   "INCASSO": "1668",
+   "TUTOR": "Manuela",
+   "TRAINER": "Marco",
+   "NUTRI": "",
+   "VENDITORE": "Peppe",
+   "FONTE": "",
+   "DATA INCASSO": "31/07/2026"
   }
  ],
  "rimborsi": [
@@ -24156,5 +24175,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-07-31T15:18:08.240Z"
+ "updatedAt": "2026-07-31T16:14:23.821Z"
 }
