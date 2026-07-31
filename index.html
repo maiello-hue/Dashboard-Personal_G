@@ -3672,7 +3672,7 @@ let savedPage=null; try{savedPage=localStorage.getItem(LAST_PAGE_KEY);}catch(e){
 showPage(VALID_PAGES.includes(savedPage)?savedPage:'dashboard');
 if(ghConfigured()){ setGhStatus(ic('sync')+'Connessione a GitHub…'); syncFromGithub(true); }
 else { setGhStatus('Non connesso a GitHub — dati solo su questo dispositivo'); }
-setInterval(()=>syncFromGithub(false), 2*60*1000);
+setInterval(()=>syncFromGithub(false), 30*1000);
 
 /* renderTable() ora costruisce solo la versione (tabella desktop o schede
    mobile) effettivamente visibile in base alla larghezza dello schermo: se si
