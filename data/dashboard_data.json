@@ -21769,7 +21769,7 @@
   },
   {
    "CLIENTE": "Annarita Garofalo",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "ABBANDONATO",
    "PERCORSO": "6 mesi + 6 Gnocca",
    "INIZIO PERCORSO": "03/07/2026",
    "FINE PERCORSO": "03/07/2027",
@@ -21792,7 +21792,9 @@
    "RISULTATO": "",
    "FONTE": "ADV",
    "DATA INCASSO": "29/07/2026",
-   "VENDITORE": "Salvatore"
+   "VENDITORE": "Salvatore",
+   "EMAIL": "",
+   "DATA ARCHIVIAZIONE": "31/07/2026"
   },
   {
    "CLIENTE": "Juhi Caciagli",
@@ -24150,5 +24152,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-07-31T10:44:42.752Z"
+ "updatedAt": "2026-07-31T10:48:47.196Z"
 }
