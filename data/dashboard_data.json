@@ -7815,15 +7815,15 @@
   {
    "CLIENTE": "Alessandra Pacciani",
    "STATO CLIENTE": "IN PERCORSO",
-   "PERCORSO": "6 mesi",
-   "INIZIO PERCORSO": "08/01/2026",
-   "FINE PERCORSO": "08/07/2026",
-   "IMPORTO": "€ 1.005,00",
-   "METODO PAGAMENTO": "PagoDIL",
+   "PERCORSO": "6 mesi + 6 Gnocca",
+   "INIZIO PERCORSO": "31/07/2026",
+   "FINE PERCORSO": "31/07/2027",
+   "IMPORTO": "1164",
+   "METODO PAGAMENTO": "HeyLight",
    "STATO PAGAMENTO": "SALDATO",
-   "TIPO INCASSO": "",
+   "TIPO INCASSO": "Rinnovo",
    "N° FATTURA": "",
-   "INCASSO": "",
+   "INCASSO": "1164",
    "RIMBORSO": "",
    "TUTOR": "Manuela",
    "TRAINER": "Marco",
@@ -7835,7 +7835,8 @@
    "CONTRATTO": "",
    "CHECK": "",
    "RISULTATO": "",
-   "FONTE": "ADV"
+   "FONTE": "ADV",
+   "DATA INCASSO": "31/07/2026"
   },
   {
    "CLIENTE": "Desiree Dalla Nora",
@@ -24150,7 +24151,10 @@
   },
   "Tania Orselli": {
    "st": "rin"
+  },
+  "Alessandra Pacciani": {
+   "st": "rin"
   }
  },
- "updatedAt": "2026-07-31T10:48:47.196Z"
+ "updatedAt": "2026-07-31T15:18:08.240Z"
 }
