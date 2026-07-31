@@ -1188,19 +1188,9 @@ function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2
    dispositivo, non vengono mai inviate altrove se non a GitHub.
    ============================================================ */
 const GH_KEY='gh_settings_v1', GH_PATH='data/dashboard_data.json';
-// Credenziali di default: ogni dispositivo che apre la dashboard si collega automaticamente
-// a GitHub senza dover passare da Impostazioni, così i dati restano sempre allineati.
-const GH_DEFAULT_SETTINGS={owner:'maiello-hue',repo:'Dashboard-Personal_G',branch:'main',token:'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'};
 let GH_SHA=null, GH_SYNC_TIMER=null, GH_BUSY=false, GH_LAST_UPDATED_AT=null;
 
-function ghSettings(){
-  let saved=null;
-  try{saved=JSON.parse(localStorage.getItem(GH_KEY)||'null');}catch(e){saved=null;}
-  if(saved&&saved.owner&&saved.repo&&saved.token) return saved;
-  // Nessuna configurazione salvata su questo dispositivo: applica il collegamento automatico di default.
-  ghSaveSettings(GH_DEFAULT_SETTINGS);
-  return GH_DEFAULT_SETTINGS;
-}
+function ghSettings(){try{return JSON.parse(localStorage.getItem(GH_KEY)||'null');}catch(e){return null;}}
 function ghSaveSettings(s){localStorage.setItem(GH_KEY,JSON.stringify(s));}
 function ghClearSettings(){localStorage.removeItem(GH_KEY);GH_SHA=null;setGhStatus('Disconnesso da GitHub');}
 function ghConfigured(){const s=ghSettings();return !!(s&&s.owner&&s.repo&&s.token);}
