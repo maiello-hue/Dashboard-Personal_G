@@ -8519,7 +8519,7 @@
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "19/01/2026",
-   "FINE PERCORSO": "19/07/2026",
+   "FINE PERCORSO": "19/08/2026",
    "IMPORTO": "€ 1.005,00",
    "METODO PAGAMENTO": "Bonifico",
    "STATO PAGAMENTO": "OMAGGIO",
@@ -24150,5 +24150,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-07-30T20:53:40.001Z"
+ "updatedAt": "2026-07-31T10:44:42.752Z"
 }
