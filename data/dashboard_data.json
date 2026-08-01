@@ -22868,11 +22868,12 @@
    "€ TRAINER": "€ 17,00",
    "€ NUTRI": "€ 12,00",
    "CONTRATTO": "",
-   "CHECK": "",
+   "CHECK": "SI",
    "RISULTATO": "",
    "FONTE": "ORGANICO",
    "DATA INCASSO": "29/07/2026",
-   "VENDITORE": "Personal_G"
+   "VENDITORE": "Personal_G",
+   "DATA CHECK": "01/08/2026"
   },
   {
    "CLIENTE": "Maria Di Vicino",
@@ -24665,5 +24666,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T20:03:36.319Z"
+ "updatedAt": "2026-08-01T20:03:41.603Z"
 }
