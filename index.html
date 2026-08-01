@@ -1280,6 +1280,7 @@ async function syncFromGithub(showStatus){
       applyPromoEstateImport();
       applyGnoccaSheetImport();
       applyMeseFlussoMigrationOnce();
+      applyCheckJulyFixOnce();
       applyVenditoreLug26Import();
       applyFonteMap();
       buildFilters(); buildRimbFilters(); render(); renderRimborsi();
@@ -1454,16 +1455,32 @@ function applyGnoccaSheetImport(){
    questa funzione. Le clienti/incassi già presenti PRIMA di questa modifica non hanno
    questi campi e sparirebbero dal mese corrente pur essendo realmente di questo mese:
    qui li recuperiamo una sola volta (idempotente: se il campo è già valorizzato non lo
-   tocca più), assegnandoli al mese in cui viene eseguita questa migrazione. Stessa cosa
-   per DATA CHECK (check/risultato inseriti prima che il conteggio diventasse mensile
-   come per gli incassi): senza questa migrazione sparirebbero tutti dal mese corrente
-   il giorno del deploy, pur essendo stati inseriti davvero questo mese. */
+   tocca più), assegnandoli al mese in cui viene eseguita questa migrazione. Per DATA
+   CHECK invece i check/risultato legacy non sono di questo mese ma del mese scorso
+   (sono stati inseriti prima che il conteggio diventasse mensile): li assegnamo
+   quindi all'ultimo giorno del mese precedente, non a oggi. */
 function applyMeseFlussoMigrationOnce(){
   let changed=false;
   DATA.forEach(r=>{
     if(isArchiviata(r)&&!r['DATA ARCHIVIAZIONE']){ r['DATA ARCHIVIAZIONE']=todayIt(); changed=true; }
     if(euro(r['INCASSO'])>0&&!r['DATA INCASSO']){ r['DATA INCASSO']=todayIt(); changed=true; }
-    if(((r['CHECK']||'').trim()!==''||(r['RISULTATO']||'').trim()!=='')&&!r['DATA CHECK']){ r['DATA CHECK']=todayIt(); changed=true; }
+    if(((r['CHECK']||'').trim()!==''||(r['RISULTATO']||'').trim()!=='')&&!r['DATA CHECK']){ r['DATA CHECK']=lastMonthDayIt(); changed=true; }
+  });
+  if(changed) saveClienti();
+}
+/* Correzione una tantum: la primissima versione della migrazione qui sopra assegnava
+   erroneamente ai check legacy la data di oggi invece del mese scorso, facendoli
+   comparire in agosto invece che in luglio. Qui sistemiamo i record già toccati da
+   quel bug (marcati con _CHECK_JULY_FIX così da correggerli una sola volta, senza
+   ritoccare eventuali check inseriti davvero il giorno del deploy dopo la correzione). */
+function applyCheckJulyFixOnce(){
+  let changed=false;
+  DATA.forEach(r=>{
+    if(r['DATA CHECK']==='01/08/2026'&&!r['_CHECK_JULY_FIX']){
+      r['DATA CHECK']='31/07/2026';
+      r['_CHECK_JULY_FIX']='1';
+      changed=true;
+    }
   });
   if(changed) saveClienti();
 }
@@ -1598,6 +1615,14 @@ function pdate(s){
 }
 function fdate(d){return d?d.toLocaleDateString('it-IT'):'—';}
 function todayIt(){ const d=new Date(); return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear(); }
+/* Ultimo giorno del mese precedente a oggi, in formato gg/mm/aaaa. Usata per i check
+   "legacy" (inseriti prima che esistesse DATA CHECK): questi check sono stati fatti
+   realmente nel mese scorso, non oggi, quindi vanno assegnati lì e non al mese corrente. */
+function lastMonthDayIt(){
+  const d=new Date();
+  const lastDayPrevMonth=new Date(d.getFullYear(),d.getMonth(),0);
+  return String(lastDayPrevMonth.getDate()).padStart(2,'0')+'/'+String(lastDayPrevMonth.getMonth()+1).padStart(2,'0')+'/'+lastDayPrevMonth.getFullYear();
+}
 function itToIso(it){
   if(!it) return '';
   const m=String(it).match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
@@ -3874,6 +3899,7 @@ applyLug26Import();
 applyPromoEstateImport();
 applyGnoccaSheetImport();
 applyMeseFlussoMigrationOnce();
+applyCheckJulyFixOnce();
 applyVenditoreLug26Import();
 applyFonteMap();
 loadManagedLists();
