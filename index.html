@@ -1490,7 +1490,7 @@ function applyPromoEstateImport(){
    non risultavano presenti in questo foglio). Le clienti già esistenti vengono
    riconosciute per nome e saltate, senza mai duplicarle o sovrascriverle.
    Idempotente: rieseguibile ad ogni avvio, sia in locale che dopo una sincronizzazione GitHub. */
-const GNOCCA_SHEET_NUOVI_CLIENTI=[{"CLIENTE":"Celine Hervo","STATO CLIENTE":"IN PERCORSO","PERCORSO":"8 mesi","INIZIO PERCORSO":"15/07/2026","FINE PERCORSO":"15/07/2027","IMPORTO":"€ 768,00","METODO PAGAMENTO":"PagoDIL","STATO PAGAMENTO":"SALDATO","TIPO INCASSO":"","N° FATTURA":"","INCASSO":"","RIMBORSO":"","TUTOR":"Mara","TRAINER":"","NUTRI":"Sofia","PAGANTE":"SI","€ TUTOR":"","€ TRAINER":"","€ NUTRI":"","CONTRATTO":"","CHECK":"","RISULTATO":""}];
+const GNOCCA_SHEET_NUOVI_CLIENTI=[];
 const GNOCCA_SHEET_CLIENTI_NOMI=GNOCCA_SHEET_NUOVI_CLIENTI.map(r=>r['CLIENTE'].trim().toUpperCase());
 function applyGnoccaSheetImport(){
   const r=mergeNuoviClienti(GNOCCA_SHEET_NUOVI_CLIENTI);
