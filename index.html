@@ -1063,6 +1063,16 @@ function inMese(r,field,meseSel){
   const d=pdate(r[field]);
   return !!d && mesekey(d)===meseSel;
 }
+/* "Fino al mese selezionato incluso" (cumulativo, non solo quel mese): usata per
+   Clienti totali, così una cliente entrata dal 01 del mese successivo non gonfia
+   il totale dei mesi precedenti, ma vi si aggiunge solo a partire dal proprio
+   mese di INIZIO PERCORSO. Se il campo è vuoto non escludiamo per prudenza
+   (meglio mostrare una cliente coi dati incompleti che farla sparire dal totale). */
+function finoAMese(r,field,meseSel){
+  const d=pdate(r[field]);
+  if(!d) return true;
+  return mesekey(d)<=meseSel;
+}
 function buildMeseOptions(){
   const sel=effectiveMese();
   const keys=new Set([mesekey(new Date())]);
@@ -2899,8 +2909,11 @@ function render(){
   const att=attA.length;
   /* "Clienti totali" esclude le Abbandonate e le Non rinnovate: rappresenta il
      parco clienti attuale (attive + congelate + sparite + mai iniziato), non
-     lo storico completo. */
-  const totA=allRows.filter(r=>!isArchiviata(r));
+     lo storico completo. È inoltre cumulativa sul mese selezionato: una cliente
+     entrata dal 01 del mese successivo non deve gonfiare il totale dei mesi
+     precedenti, ma comparirci solo a partire dal proprio mese di INIZIO PERCORSO
+     (altrimenti si falsificano i dati storici, come segnalato). */
+  const totA=allRows.filter(r=>!isArchiviata(r)&&finoAMese(r,'INIZIO PERCORSO',meseSel));
   const scadA=allRows.filter(r=>{const d=pdate(r['FINE PERCORSO']);return d&&d>=now&&d<=in30&&r['STATO CLIENTE']==='IN PERCORSO';});
   const scad30=scadA.length, brkScad=brk(scadA);
   const premiumRows=allRows.filter(r=>!isGnocca(r)), gnoccaRows=allRows.filter(isGnocca);
