@@ -903,7 +903,10 @@ h3 .ico,.sub .ico{color:var(--muted)}
     </div>
 
     <div id="page-check" style="display:none">
-      <div class="sub" style="margin-bottom:14px">Elenco delle clienti con stato "In percorso", divise per Premium e Gnocca. Per ciascuna, segna se il check è stato effettuato e se il risultato è stato raggiunto.</div>
+      <div class="sub" style="margin-bottom:14px">Elenco delle clienti con stato "In percorso", divise per Premium e Gnocca. Per ciascuna, segna se il check è stato effettuato e se il risultato è stato raggiunto. Come per gli incassi, i check ripartono da zero a ogni nuovo mese senza bisogno di azzerare nulla a mano: quelli dei mesi passati restano comunque consultabili dal menu qui sotto (in sola lettura).</div>
+      <div class="mese-sel-row filters">
+        <select id="check-mese-select" aria-label="Mese check" onchange="setDashMese(this.value)"></select>
+      </div>
       <div class="filters">
         <input type="text" id="check-search" placeholder="Cerca cliente…" oninput="debouncedBuildCheckPage()">
       </div>
@@ -1064,13 +1067,13 @@ function buildMeseOptions(){
   const sel=effectiveMese();
   const keys=new Set([mesekey(new Date())]);
   DATA.forEach(r=>{
-    ['DATA ARCHIVIAZIONE','DATA INCASSO'].forEach(f=>{
+    ['DATA ARCHIVIAZIONE','DATA INCASSO','DATA CHECK'].forEach(f=>{
       const d=pdate(r[f]);
       if(d) keys.add(mesekey(d));
     });
   });
   const opts=[...keys].sort().reverse().map(k=>`<option value="${k}"${k===sel?' selected':''}>${mesekeyLabel(k)}</option>`).join('');
-  ['dash-mese-select','inc-mese-select','prov-mese-select'].forEach(id=>{
+  ['dash-mese-select','inc-mese-select','prov-mese-select','check-mese-select'].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.innerHTML=opts;
   });
@@ -1451,12 +1454,16 @@ function applyGnoccaSheetImport(){
    questa funzione. Le clienti/incassi già presenti PRIMA di questa modifica non hanno
    questi campi e sparirebbero dal mese corrente pur essendo realmente di questo mese:
    qui li recuperiamo una sola volta (idempotente: se il campo è già valorizzato non lo
-   tocca più), assegnandoli al mese in cui viene eseguita questa migrazione. */
+   tocca più), assegnandoli al mese in cui viene eseguita questa migrazione. Stessa cosa
+   per DATA CHECK (check/risultato inseriti prima che il conteggio diventasse mensile
+   come per gli incassi): senza questa migrazione sparirebbero tutti dal mese corrente
+   il giorno del deploy, pur essendo stati inseriti davvero questo mese. */
 function applyMeseFlussoMigrationOnce(){
   let changed=false;
   DATA.forEach(r=>{
     if(isArchiviata(r)&&!r['DATA ARCHIVIAZIONE']){ r['DATA ARCHIVIAZIONE']=todayIt(); changed=true; }
     if(euro(r['INCASSO'])>0&&!r['DATA INCASSO']){ r['DATA INCASSO']=todayIt(); changed=true; }
+    if(((r['CHECK']||'').trim()!==''||(r['RISULTATO']||'').trim()!=='')&&!r['DATA CHECK']){ r['DATA CHECK']=todayIt(); changed=true; }
   });
   if(changed) saveClienti();
 }
@@ -2364,6 +2371,11 @@ function setCheckField(cliente,field,value){
   const r=DATA.find(x=>x['CLIENTE']===cliente);
   if(!r) return;
   r[field]=value;
+  /* Data in cui è stato inserito questo check: è quello che permette al check
+     di "azzerarsi" da solo a ogni nuovo mese (esattamente come DATA INCASSO
+     per gli incassi) senza dover cancellare nulla a mano — vedi checkValMese
+     e buildPerfCollabTable più sotto. */
+  r['DATA CHECK']=todayIt();
   saveClienti();
   buildCheckPage();
 }
@@ -2391,8 +2403,18 @@ function toggleCheckExclude(cliente){
   saveClienti();
   buildCheckPage();
 }
-function checkToggleGroupHtml(cliente,field,label,currentVal){
+/* editable=false per i mesi passati: si vede lo storico di quel mese ma non lo
+   si può modificare (evita di confondere "sto correggendo il check di ottobre"
+   con "sto inserendo il check di questo mese"). */
+function checkToggleGroupHtml(cliente,field,label,currentVal,editable){
   const v=(currentVal||'').trim().toUpperCase();
+  if(!editable){
+    return `<span class="check-toggle-group">
+      <span class="check-toggle-label">${label}</span>
+      <span class="check-toggle-btn${v==='SI'?' on':''}" style="pointer-events:none">Sì</span>
+      <span class="check-toggle-btn${v==='NO'?' on off':''}" style="pointer-events:none">No</span>
+    </span>`;
+  }
   return `<span class="check-toggle-group">
     <span class="check-toggle-label">${label}</span>
     <button class="check-toggle-btn${v==='SI'?' on':''}" onclick="setCheckField('${jsEsc(cliente)}','${field}','SI')">Sì</button>
@@ -2400,9 +2422,19 @@ function checkToggleGroupHtml(cliente,field,label,currentVal){
   </span>`;
 }
 function isInPercorso(r){ return (r['STATO CLIENTE']||'').trim().toUpperCase()==='IN PERCORSO'; }
+/* Valore di CHECK/RISULTATO "per il mese scelto": se il check è stato inserito
+   in un mese diverso da quello che si sta guardando, si considera come non
+   ancora fatto per quel mese (stesso principio di DATA INCASSO per gli
+   incassi: il dato storico resta su DATA per sempre, ma il conteggio del mese
+   in corso riparte sempre da zero). */
+function checkValMese(r,field,meseSel){
+  return inMese(r,'DATA CHECK',meseSel)?(r[field]||''):'';
+}
 function buildCheckPage(){
   const el=document.getElementById('check-list');
   if(!el) return;
+  const meseSel=effectiveMese();
+  const isCurrentMonth=meseSel===mesekey(new Date());
   const q=(document.getElementById('check-search')?.value||'').trim().toLowerCase();
   const matches=r=>!q||(r['CLIENTE']||'').toLowerCase().includes(q);
   const byName=(a,b)=>(a['CLIENTE']||'').localeCompare(b['CLIENTE']||'','it');
@@ -2421,8 +2453,8 @@ function buildCheckPage(){
         <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0">${esc(cliente)}${reasonLabel}</span>
         <span style="display:flex;align-items:center;gap:14px;flex-shrink:0;flex-wrap:wrap">
           <button class="icon-btn" title="${manualExcl?'Includi nel conteggio':'Nascondi dal conteggio'}" onclick="toggleCheckExclude('${jsEsc(cliente)}')">${ic(manualExcl?'eye-off':'eye')}</button>
-          ${checkToggleGroupHtml(cliente,'CHECK','Check',r['CHECK'])}
-          ${checkToggleGroupHtml(cliente,'RISULTATO','Risultato',r['RISULTATO'])}
+          ${checkToggleGroupHtml(cliente,'CHECK','Check',checkValMese(r,'CHECK',meseSel),isCurrentMonth)}
+          ${checkToggleGroupHtml(cliente,'RISULTATO','Risultato',checkValMese(r,'RISULTATO',meseSel),isCurrentMonth)}
         </span>
       </div>`;
     }).join('')||`<div class="sub">${q?'Nessuna cliente trovata.':'Nessuna cliente in questa categoria.'}</div>`;
@@ -2463,14 +2495,19 @@ function buildPerfCollabTable(){
   const elId={TUTOR:'perf-tutor-table-body',TRAINER:'perf-trainer-table-body',NUTRI:'perf-nutri-table-body'};
   const normName=s=>(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');
   const PERF_TUTOR_EXCLUDE=new Set(['duccio','personalg','martina']);
+  /* Check e miglioramenti si contano solo per il mese selezionato (DATA CHECK
+     nel mese scelto): esattamente come gli incassi, il conteggio riparte da
+     solo a ogni nuovo mese senza bisogno di azzerare nulla a mano, e i mesi
+     passati restano consultabili scegliendoli dal menu della pagina Check. */
+  const meseSel=effectiveMese();
   const allRows=[];
   ['TUTOR','TRAINER','NUTRI'].forEach(field=>{
     distinct(field).forEach(name=>{
       if(field==='TUTOR'&&PERF_TUTOR_EXCLUDE.has(normName(name))) return;
       const assigned=DATA.filter(r=>(r[field]||'').trim()===name&&isInPercorso(r)&&!isCheckExcluded(r));
       if(!assigned.length) return;
-      const checkInserito=assigned.filter(r=>(r['CHECK']||'').trim()!=='').length;
-      const miglioramenti=assigned.filter(r=>(r['RISULTATO']||'').trim().toUpperCase()==='SI').length;
+      const checkInserito=assigned.filter(r=>checkValMese(r,'CHECK',meseSel)!=='').length;
+      const miglioramenti=assigned.filter(r=>checkValMese(r,'RISULTATO',meseSel).toUpperCase()==='SI').length;
       const checkRate=pct(checkInserito,assigned.length), migRate=pct(miglioramenti,assigned.length);
       allRows.push({field,name,tot:assigned.length,checkInserito,checkRate,miglioramenti,migRate});
     });
