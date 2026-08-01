@@ -7924,7 +7924,9 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "ADV",
-   "DATA INCASSO": "31/07/2026"
+   "DATA INCASSO": "31/07/2026",
+   "CHECK_ESCLUSA": "",
+   "CHECK_ESCLUSA_MESE": ""
   },
   {
    "CLIENTE": "Desiree Dalla Nora",
@@ -24661,5 +24663,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T18:38:34.952Z"
+ "updatedAt": "2026-08-01T20:03:23.222Z"
 }
