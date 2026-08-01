@@ -2167,7 +2167,7 @@ function distinct(field){
 const EDIT_FIELDS=[
   ['EMAIL','Email'],
   ['STATO CLIENTE','Stato'],['PERCORSO','Percorso'],['INIZIO PERCORSO','Inizio'],['FINE PERCORSO','Fine'],
-  ['IMPORTO','Importo'],['METODO PAGAMENTO','Metodo pag.'],['STATO PAGAMENTO','Stato pag.'],['TIPO INCASSO','Tipo incasso'],['INCASSO','Incasso'],
+  ['IMPORTO','Importo'],['METODO PAGAMENTO','Metodo pag.'],['STATO PAGAMENTO','Stato pag.'],['TIPO INCASSO','Tipo incasso'],['INCASSO','Incasso'],['DATA INCASSO','Data incasso'],
   ['TUTOR','Tutor'],['TRAINER','Trainer'],['NUTRI','Nutri'],['VENDITORE','Venditore'],['FONTE','Fonte']
 ];
 /* Tipo scadenza: distingue come va gestita la scadenza di una cliente in
@@ -2645,6 +2645,14 @@ function editFieldHtml(f,l,idPrefix,value){
        3/4/6... per chi paga a rate più distanziate. */
     return `<label id="${idPrefix}-FREQUENZA_RATE-wrap">${l}<input type="number" min="1" step="1" id="${idPrefix}-FREQUENZA_RATE" autocomplete="off" value="${esc(value||'1')}"></label>`;
   }
+  if(f==='DATA INCASSO'){
+    /* Data reale dell'incasso: decide in quale mese conta nella pagina Incassi.
+       Di default è oggi, ma va cambiata quando si registra con qualche giorno di
+       ritardo un incasso di un mese già passato (es. cliente entrata a fine
+       luglio inserita in dashboard il 1° agosto): altrimenti finirebbe contata
+       nel mese sbagliato. Se Incasso resta a 0 questo campo viene ignorato. */
+    return `<label id="${idPrefix}-DATA_INCASSO-wrap">${l}<input type="date" id="${idPrefix}-DATA_INCASSO" value="${itToIso(value)||itToIso(todayIt())}"></label>`;
+  }
   if(f==='DATA PROSSIMA RATA'){
     /* Da dove partire a generare i promemoria delle rate: utile per le clienti
        che hanno già pagato una parte del percorso a rate (magari gestite finora
@@ -2759,7 +2767,7 @@ function readEditFieldValue(idPrefix,f){
     const customEl=document.getElementById(idKey+'__custom');
     v=customEl?customEl.value.trim():'';
   }
-  if((f==='INIZIO PERCORSO'||f==='FINE PERCORSO'||f==='DATA PROSSIMA RATA')&&v) v=isoToIt(v);
+  if((f==='INIZIO PERCORSO'||f==='FINE PERCORSO'||f==='DATA PROSSIMA RATA'||f==='DATA INCASSO')&&v) v=isoToIt(v);
   return v;
 }
 function salvaNuovaCliente(){
@@ -2769,7 +2777,10 @@ function salvaNuovaCliente(){
   const rec={CLIENTE:nome};
   EDIT_FIELDS.forEach(([f])=>{ rec[f]=readEditFieldValue('new',f); });
   if(isArchiviata(rec)) rec['DATA ARCHIVIAZIONE']=todayIt();
-  if(euro(rec['INCASSO'])>0) rec['DATA INCASSO']=todayIt();
+  /* DATA INCASSO arriva già dal campo data del form (di default oggi, modificabile
+     per registrare con ritardo un incasso di un mese precedente): la teniamo solo
+     se c'è davvero un incasso, altrimenti la scartiamo. */
+  if(euro(rec['INCASSO'])<=0) delete rec['DATA INCASSO'];
   DATA.push(rec);
   saveClienti();
   toggleAddCliente(false);
@@ -3535,7 +3546,6 @@ function salvaClienteModal(){
   const r=DATA.find(x=>x['CLIENTE']===editingClienteName);
   if(!r) return;
   const eraArchiviata=isArchiviata(r);
-  const incassoPrima=euro(r['INCASSO']);
   EDIT_FIELDS.forEach(([f])=>{ r[f]=readEditFieldValue('editm',f); });
   const oraArchiviata=isArchiviata(r);
   if(oraArchiviata&&!eraArchiviata){
@@ -3547,15 +3557,12 @@ function salvaClienteModal(){
     /* riattivata: la data archiviazione precedente non ha più senso */
     delete r['DATA ARCHIVIAZIONE'];
   }
-  const incassoDopo=euro(r['INCASSO']);
-  if(incassoDopo>0&&incassoDopo!==incassoPrima){
-    /* l'importo incassato è stato appena inserito/modificato a mano: registriamo la
-       data di oggi come "data incasso", cosi l'incasso conta nel mese in cui è stato
-       davvero registrato (non nel mese di inizio percorso). */
-    r['DATA INCASSO']=todayIt();
-  } else if(incassoDopo<=0){
-    delete r['DATA INCASSO'];
-  }
+  /* DATA INCASSO arriva già dal campo data del form qui sopra (di default oggi
+     ma modificabile a mano): non la forziamo più a "oggi" a ogni salvataggio,
+     così un incasso registrato con qualche giorno di ritardo può essere
+     attribuito al mese in cui è davvero avvenuto invece che a quello in cui
+     è stato digitato in dashboard. La teniamo solo se c'è davvero un incasso. */
+  if(euro(r['INCASSO'])<=0) delete r['DATA INCASSO'];
   saveClienti();
   chiudiModificaCliente();
   buildFilters(); render();
