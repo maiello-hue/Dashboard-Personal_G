@@ -23480,31 +23480,6 @@
    "FONTE": ""
   },
   {
-   "CLIENTE": "Patricia Ramos",
-   "STATO CLIENTE": "IN PERCORSO",
-   "PERCORSO": "GNOCCA 12",
-   "INIZIO PERCORSO": "17/12/2025",
-   "FINE PERCORSO": "17/12/2026",
-   "IMPORTO": "€ 588,00",
-   "METODO PAGAMENTO": "PagoDIL",
-   "STATO PAGAMENTO": "SALDATO",
-   "TIPO INCASSO": "",
-   "N° FATTURA": "",
-   "INCASSO": "",
-   "RIMBORSO": "",
-   "TUTOR": "",
-   "TRAINER": "",
-   "NUTRI": "",
-   "PAGANTE": "SI",
-   "€ TUTOR": "",
-   "€ TRAINER": "",
-   "€ NUTRI": "",
-   "CONTRATTO": "",
-   "CHECK": "",
-   "RISULTATO": "",
-   "FONTE": ""
-  },
-  {
    "CLIENTE": "Lucrezia Selene Stabile",
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "GNOCCA 12",
@@ -24661,5 +24636,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T18:13:07.637Z"
+ "updatedAt": "2026-08-01T18:13:16.032Z"
 }
