@@ -2506,17 +2506,21 @@ function handleCustomSelectChange(sel){
   if(sel.value==='__custom__'){ customEl.style.display='block'; customEl.focus(); }
   else customEl.style.display='none';
 }
-/* Mostra i campi "N° rate" e "Ogni quanti mesi" solo quando il tipo scadenza
-   selezionato è "Trance", sia all'apertura del form (chiamata subito dopo
-   aver riempito i campi) sia al cambio della select. */
+/* Mostra i campi "N° rate", "Ogni quanti mesi" e "Data prossima rata" solo
+   quando il tipo scadenza selezionato è "Trance", sia all'apertura del form
+   (chiamata subito dopo aver riempito i campi) sia al cambio della select. */
 function toggleNumeroRateField(idPrefix){
   const sel=document.getElementById(idPrefix+'-TIPO_SCADENZA');
   const wrap=document.getElementById(idPrefix+'-NUMERO_RATE-wrap');
   const wrapFreq=document.getElementById(idPrefix+'-FREQUENZA_RATE-wrap');
+  const wrapProx=document.getElementById(idPrefix+'-DATA_PROSSIMA_RATA-wrap');
+  const wrapSolo=document.getElementById(idPrefix+'-SOLO_RATE-wrap');
   if(!sel||!wrap) return;
   const show=sel.value==='Trance'?'':'none';
   wrap.style.display=show;
   if(wrapFreq) wrapFreq.style.display=show;
+  if(wrapProx) wrapProx.style.display=show;
+  if(wrapSolo) wrapSolo.style.display=show;
 }
 function editFieldHtml(f,l,idPrefix,value){
   /* Email cliente: serve (tra l'altro) per un futuro abbinamento automatico
@@ -2544,6 +2548,14 @@ function editFieldHtml(f,l,idPrefix,value){
        con le clienti Trance già presenti che non hanno ancora questo campo),
        3/4/6... per chi paga a rate più distanziate. */
     return `<label id="${idPrefix}-FREQUENZA_RATE-wrap">${l}<input type="number" min="1" step="1" id="${idPrefix}-FREQUENZA_RATE" autocomplete="off" value="${esc(value||'1')}"></label>`;
+  }
+  if(f==='DATA PROSSIMA RATA'){
+    /* Da dove partire a generare i promemoria delle rate: utile per le clienti
+       che hanno già pagato una parte del percorso a rate (magari gestite finora
+       a mano) e per cui vuoi ricordarti solo delle rate che mancano ancora, non
+       di quelle già incassate in passato. Se lasciato vuoto si parte da Inizio
+       percorso come sempre (comportamento invariato per chi inizia ora). */
+    return `<label id="${idPrefix}-DATA_PROSSIMA_RATA-wrap">${l}<input type="date" id="${idPrefix}-DATA_PROSSIMA_RATA" value="${itToIso(value)}"></label>`;
   }
   if(f in SELECT_FIELDS){
     return selectFieldHtml(f,l,idPrefix,value,acSourceValues(f),SELECT_FIELDS[f],f==='STATO CLIENTE'?STATO_LABELS:null);
@@ -2651,7 +2663,7 @@ function readEditFieldValue(idPrefix,f){
     const customEl=document.getElementById(idKey+'__custom');
     v=customEl?customEl.value.trim():'';
   }
-  if((f==='INIZIO PERCORSO'||f==='FINE PERCORSO')&&v) v=isoToIt(v);
+  if((f==='INIZIO PERCORSO'||f==='FINE PERCORSO'||f==='DATA PROSSIMA RATA')&&v) v=isoToIt(v);
   return v;
 }
 function salvaNuovaCliente(){
@@ -3210,18 +3222,22 @@ function renderTrancheItem(e,now,isTrancePaid){
     </div>
   </div>`;
 }
-/* Genera le rate di una cliente "Trance": prima rata a Inizio percorso, poi
-   una ogni Frequenza rate mesi (default 1 = mensile, per restare compatibili
-   con le clienti Trance impostate prima che questo campo esistesse), per un
-   totale di Numero rate rate da Importo/Numero rate ciascuna (stessa logica
-   di generazione di instsOf() per i rimborsi, ma con Inizio percorso/Importo
-   al posto di Recesso/Storno). */
+/* Genera le rate di una cliente "Trance": si parte da Data prossima rata se
+   impostata (utile per chi ha già pagato una parte del percorso a rate e a cui
+   interessano solo i promemoria delle rate ancora da incassare, non di quelle
+   già pagate in passato), altrimenti da Inizio percorso come per una cliente
+   che comincia ora a pagare a rate. Da lì una rata ogni Frequenza rate mesi
+   (default 1 = mensile, per restare compatibili con le clienti Trance
+   impostate prima che questo campo esistesse), per un totale di Numero rate
+   rate da Importo/Numero rate ciascuna (stessa logica di generazione di
+   instsOf() per i rimborsi, ma con Inizio percorso/Importo al posto di
+   Recesso/Storno). */
 function tranceInstsOf(r){
   if(tipoScadenza(r)!=='Trance') return [];
   const n=parseInt(r['NUMERO RATE'])||0;
   if(n<=0) return [];
   const freq=parseInt(r['FREQUENZA RATE'])||1;
-  const d0=pdate(r['INIZIO PERCORSO']);
+  const d0=pdate(r['DATA PROSSIMA RATA'])||pdate(r['INIZIO PERCORSO']);
   if(!d0) return [];
   const tot=euro(r['IMPORTO']);
   const amt=tot?tot/n:0;
@@ -3466,8 +3482,15 @@ function apriRinnovaAbbonamento(nome){
     editFieldHtml('METODO PAGAMENTO','Metodo di pagamento','rinnova',r['METODO PAGAMENTO']||'')+
     editFieldHtml('INCASSO','Incasso','rinnova','')+
     editFieldHtml('TIPO SCADENZA','Tipo scadenza','rinnova',r['TIPO SCADENZA']||'')+
-    editFieldHtml('NUMERO RATE','N° rate','rinnova',r['NUMERO RATE']||'')+
-    editFieldHtml('FREQUENZA RATE','Ogni quanti mesi','rinnova',r['FREQUENZA RATE']||'1');
+    editFieldHtml('NUMERO RATE','N° rate rimanenti','rinnova',r['NUMERO RATE']||'')+
+    editFieldHtml('FREQUENZA RATE','Ogni quanti mesi','rinnova',r['FREQUENZA RATE']||'1')+
+    editFieldHtml('DATA PROSSIMA RATA','Data prossima rata','rinnova',r['DATA PROSSIMA RATA']||'')+
+    /* Per una cliente che ha già pagato una parte del percorso a rate (magari
+       finora segnata solo a mano) non si vuole registrare un nuovo rinnovo vero
+       e proprio: si vuole solo dire al sistema quante rate mancano ancora e da
+       quando ricordarle. Spuntando questa casella si salvano solo i campi legati
+       alle rate, senza toccare percorso/incasso/inizio-fine percorso. */
+    `<label id="rinnova-SOLO_RATE-wrap" style="flex:1 1 100%"><input type="checkbox" id="rinnova-SOLO_RATE" style="width:auto;margin-right:6px"> Aggiorna solo la programmazione delle rate (non registrare un nuovo rinnovo)</label>`;
   toggleNumeroRateField('rinnova');
   document.getElementById('rinnova-modal').style.display='flex';
 }
@@ -3487,13 +3510,9 @@ function percorsoDurataMesi(p){
 function salvaRinnovaAbbonamento(){
   const r=DATA.find(x=>x['CLIENTE']===renewingClienteName);
   if(!r) return;
-  const dataIso=document.getElementById('rinnova-DATA').value;
-  if(!dataIso){ alert('Inserisci la data del rinnovo.'); return; }
-  const percorso=readEditFieldValue('rinnova','PERCORSO');
-  const importo=readEditFieldValue('rinnova','IMPORTO');
-  const metodo=readEditFieldValue('rinnova','METODO PAGAMENTO');
-  const incasso=readEditFieldValue('rinnova','INCASSO');
   const tipoScad=readEditFieldValue('rinnova','TIPO SCADENZA');
+  const soloRateEl=document.getElementById('rinnova-SOLO_RATE');
+  const soloRate=tipoScad==='Trance'&&soloRateEl&&soloRateEl.checked;
   if(tipoScad==='Trance'){
     const nRate=readEditFieldValue('rinnova','NUMERO RATE');
     if(!parseInt(nRate)||parseInt(nRate)<=0){ alert('Inserisci un numero di rate valido.'); return; }
@@ -3501,11 +3520,31 @@ function salvaRinnovaAbbonamento(){
     if(!parseInt(freq)||parseInt(freq)<=0){ alert('Inserisci ogni quanti mesi va incassata la rata.'); return; }
     r['NUMERO RATE']=nRate;
     r['FREQUENZA RATE']=freq;
+    const dataProssima=readEditFieldValue('rinnova','DATA PROSSIMA RATA');
+    if(dataProssima) r['DATA PROSSIMA RATA']=dataProssima; else delete r['DATA PROSSIMA RATA'];
   } else {
     delete r['NUMERO RATE'];
     delete r['FREQUENZA RATE'];
+    delete r['DATA PROSSIMA RATA'];
   }
   r['TIPO SCADENZA']=tipoScad;
+  /* "Aggiorna solo la programmazione delle rate": per una cliente che ha già
+     pagato una parte del percorso a rate non si vuole registrare un nuovo
+     rinnovo (non tocchiamo percorso/importo/incasso/inizio-fine percorso),
+     si vogliono salvare solo i campi delle rate appena impostati sopra. */
+  if(soloRate){
+    saveClienti();
+    buildFilters();
+    chiudiRinnovaAbbonamento();
+    render();
+    return;
+  }
+  const dataIso=document.getElementById('rinnova-DATA').value;
+  if(!dataIso){ alert('Inserisci la data del rinnovo.'); return; }
+  const percorso=readEditFieldValue('rinnova','PERCORSO');
+  const importo=readEditFieldValue('rinnova','IMPORTO');
+  const metodo=readEditFieldValue('rinnova','METODO PAGAMENTO');
+  const incasso=readEditFieldValue('rinnova','INCASSO');
   r['PERCORSO']=percorso;
   r['IMPORTO']=importo;
   r['METODO PAGAMENTO']=metodo;
