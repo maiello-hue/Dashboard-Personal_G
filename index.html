@@ -2506,14 +2506,17 @@ function handleCustomSelectChange(sel){
   if(sel.value==='__custom__'){ customEl.style.display='block'; customEl.focus(); }
   else customEl.style.display='none';
 }
-/* Mostra il campo "N° rate" solo quando il tipo scadenza selezionato è
-   "Trance", sia all'apertura del form (chiamata subito dopo aver riempito
-   i campi) sia al cambio della select. */
+/* Mostra i campi "N° rate" e "Ogni quanti mesi" solo quando il tipo scadenza
+   selezionato è "Trance", sia all'apertura del form (chiamata subito dopo
+   aver riempito i campi) sia al cambio della select. */
 function toggleNumeroRateField(idPrefix){
   const sel=document.getElementById(idPrefix+'-TIPO_SCADENZA');
   const wrap=document.getElementById(idPrefix+'-NUMERO_RATE-wrap');
+  const wrapFreq=document.getElementById(idPrefix+'-FREQUENZA_RATE-wrap');
   if(!sel||!wrap) return;
-  wrap.style.display=sel.value==='Trance'?'':'none';
+  const show=sel.value==='Trance'?'':'none';
+  wrap.style.display=show;
+  if(wrapFreq) wrapFreq.style.display=show;
 }
 function editFieldHtml(f,l,idPrefix,value){
   /* Email cliente: serve (tra l'altro) per un futuro abbinamento automatico
@@ -2535,6 +2538,12 @@ function editFieldHtml(f,l,idPrefix,value){
   }
   if(f==='NUMERO RATE'){
     return `<label id="${idPrefix}-NUMERO_RATE-wrap">${l}<input type="number" min="1" step="1" id="${idPrefix}-NUMERO_RATE" autocomplete="off" value="${esc(value||'')}"></label>`;
+  }
+  if(f==='FREQUENZA RATE'){
+    /* Ogni quante mesi va ripetuta la rata: 1 = mensile (default, retrocompatibile
+       con le clienti Trance già presenti che non hanno ancora questo campo),
+       3/4/6... per chi paga a rate più distanziate. */
+    return `<label id="${idPrefix}-FREQUENZA_RATE-wrap">${l}<input type="number" min="1" step="1" id="${idPrefix}-FREQUENZA_RATE" autocomplete="off" value="${esc(value||'1')}"></label>`;
   }
   if(f in SELECT_FIELDS){
     return selectFieldHtml(f,l,idPrefix,value,acSourceValues(f),SELECT_FIELDS[f],f==='STATO CLIENTE'?STATO_LABELS:null);
@@ -3190,9 +3199,10 @@ function renderTrancheItem(e,now,isTrancePaid){
   const k=tranceKey(e);
   const paid=isTrancePaid(e);
   const ggLabel=gg<0?`scaduta da ${-gg} gg`:gg===0?'scade oggi':`${gg} gg`;
+  const freqLabel=e.freq&&e.freq>1?` · ogni ${e.freq} mesi`:'';
   return `<div class="scad-item">
     ${paid?'<span style="width:16px;text-align:center">'+ic('check')+'</span>':`<input type="checkbox" onchange="tranceToggle('${jsEsc(k)}')" title="segna rata come incassata">`}
-    <span style="flex:1;min-width:200px">${esc(name)} ${statoBadge(r['STATO CLIENTE'])} · rata ${e.i}/${e.n} · ${fmtEuro(e.amt)} ${tipoScadBadge('Trance')}</span>
+    <span style="flex:1;min-width:200px">${esc(name)} ${statoBadge(r['STATO CLIENTE'])} · rata ${e.i}/${e.n} · ${fmtEuro(e.amt)}${freqLabel} ${tipoScadBadge('Trance')}</span>
     <div class="scad-right">
       <span class="scad-date ${!paid&&gg<0?'danger':''}">${fdate(d)} · ${ggLabel}</span>
       ${paid?'<span class="tag-pagato">INCASSATA</span>':''}
@@ -3201,19 +3211,22 @@ function renderTrancheItem(e,now,isTrancePaid){
   </div>`;
 }
 /* Genera le rate di una cliente "Trance": prima rata a Inizio percorso, poi
-   una al mese, per un totale di Numero rate rate da Importo/Numero rate
-   ciascuna (stessa logica di generazione di instsOf() per i rimborsi, ma con
-   Inizio percorso/Importo al posto di Recesso/Storno). */
+   una ogni Frequenza rate mesi (default 1 = mensile, per restare compatibili
+   con le clienti Trance impostate prima che questo campo esistesse), per un
+   totale di Numero rate rate da Importo/Numero rate ciascuna (stessa logica
+   di generazione di instsOf() per i rimborsi, ma con Inizio percorso/Importo
+   al posto di Recesso/Storno). */
 function tranceInstsOf(r){
   if(tipoScadenza(r)!=='Trance') return [];
   const n=parseInt(r['NUMERO RATE'])||0;
   if(n<=0) return [];
+  const freq=parseInt(r['FREQUENZA RATE'])||1;
   const d0=pdate(r['INIZIO PERCORSO']);
   if(!d0) return [];
   const tot=euro(r['IMPORTO']);
   const amt=tot?tot/n:0;
   const out=[];
-  for(let i=0;i<n;i++) out.push({date:addMonths(d0,i),amt,i:i+1,n,r});
+  for(let i=0;i<n;i++) out.push({date:addMonths(d0,i*freq),amt,i:i+1,n,freq,r});
   return out;
 }
 const TRANCE_KEY='global_trance_pagate';
@@ -3451,7 +3464,8 @@ function apriRinnovaAbbonamento(nome){
     editFieldHtml('METODO PAGAMENTO','Metodo di pagamento','rinnova',r['METODO PAGAMENTO']||'')+
     editFieldHtml('INCASSO','Incasso','rinnova','')+
     editFieldHtml('TIPO SCADENZA','Tipo scadenza','rinnova',r['TIPO SCADENZA']||'')+
-    editFieldHtml('NUMERO RATE','N° rate','rinnova',r['NUMERO RATE']||'');
+    editFieldHtml('NUMERO RATE','N° rate','rinnova',r['NUMERO RATE']||'')+
+    editFieldHtml('FREQUENZA RATE','Ogni quanti mesi','rinnova',r['FREQUENZA RATE']||'1');
   toggleNumeroRateField('rinnova');
   document.getElementById('rinnova-modal').style.display='flex';
 }
@@ -3481,9 +3495,13 @@ function salvaRinnovaAbbonamento(){
   if(tipoScad==='Trance'){
     const nRate=readEditFieldValue('rinnova','NUMERO RATE');
     if(!parseInt(nRate)||parseInt(nRate)<=0){ alert('Inserisci un numero di rate valido.'); return; }
+    const freq=readEditFieldValue('rinnova','FREQUENZA RATE');
+    if(!parseInt(freq)||parseInt(freq)<=0){ alert('Inserisci ogni quanti mesi va incassata la rata.'); return; }
     r['NUMERO RATE']=nRate;
+    r['FREQUENZA RATE']=freq;
   } else {
     delete r['NUMERO RATE'];
+    delete r['FREQUENZA RATE'];
   }
   r['TIPO SCADENZA']=tipoScad;
   r['PERCORSO']=percorso;
