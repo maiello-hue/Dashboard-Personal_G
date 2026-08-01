@@ -151,7 +151,7 @@
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "17/10/2024",
-   "FINE PERCORSO": "17/10/2025",
+   "FINE PERCORSO": "17/10/2026",
    "IMPORTO": "€ 1.228,00",
    "METODO PAGAMENTO": "PayPal",
    "STATO PAGAMENTO": "RECUPERO",
@@ -24194,5 +24194,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T09:20:45.980Z"
+ "updatedAt": "2026-08-01T09:22:06.480Z"
 }
