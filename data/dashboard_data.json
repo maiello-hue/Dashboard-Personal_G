@@ -23855,7 +23855,7 @@
   },
   {
    "CLIENTE": "Francesca Girotto",
-   "STATO CLIENTE": "ABBANDONATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "6 mesi + 6 Gnocca",
    "INIZIO PERCORSO": "24/07/2026",
    "FINE PERCORSO": "24/07/2027",
@@ -23878,9 +23878,34 @@
    "RISULTATO": "",
    "DATA INCASSO": "01/08/2026",
    "VENDITORE": "Personal_G",
-   "FONTE": "ORGANICO",
-   "EMAIL": "",
-   "DATA ARCHIVIAZIONE": "01/08/2026"
+   "FONTE": "ORGANICO"
+  },
+  {
+   "CLIENTE": "Enrica Tavilla",
+   "STATO CLIENTE": "IN PERCORSO",
+   "PERCORSO": "6 mesi + 6 Gnocca",
+   "INIZIO PERCORSO": "25/07/2026",
+   "FINE PERCORSO": "25/07/2027",
+   "IMPORTO": "€ 1.850,82",
+   "METODO PAGAMENTO": "HeyLight",
+   "STATO PAGAMENTO": "SALDATO",
+   "TIPO INCASSO": "Nuovo Cliente",
+   "N° FATTURA": "",
+   "INCASSO": "€ 1.850,82",
+   "RIMBORSO": "",
+   "TUTOR": "Giulia",
+   "TRAINER": "Marco",
+   "NUTRI": "Matilde",
+   "PAGANTE": "SI",
+   "€ TUTOR": "€ 15,00",
+   "€ TRAINER": "€ 17,00",
+   "€ NUTRI": "€ 12,00",
+   "CONTRATTO": "",
+   "CHECK": "",
+   "RISULTATO": "",
+   "DATA INCASSO": "01/08/2026",
+   "VENDITORE": "Personal_G",
+   "FONTE": "ADV"
   }
  ],
  "rimborsi": [
@@ -24646,5 +24671,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T20:28:30.810Z"
+ "updatedAt": "2026-08-01T20:28:34.594Z"
 }
