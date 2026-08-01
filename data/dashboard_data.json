@@ -23480,31 +23480,6 @@
    "FONTE": ""
   },
   {
-   "CLIENTE": "Lucrezia Selene Stabile",
-   "STATO CLIENTE": "IN PERCORSO",
-   "PERCORSO": "GNOCCA 12",
-   "INIZIO PERCORSO": "19/01/2026",
-   "FINE PERCORSO": "19/01/2027",
-   "IMPORTO": "€ 588,00",
-   "METODO PAGAMENTO": "PagoDIL",
-   "STATO PAGAMENTO": "SALDATO",
-   "TIPO INCASSO": "",
-   "N° FATTURA": "",
-   "INCASSO": "",
-   "RIMBORSO": "",
-   "TUTOR": "",
-   "TRAINER": "",
-   "NUTRI": "",
-   "PAGANTE": "SI",
-   "€ TUTOR": "",
-   "€ TRAINER": "",
-   "€ NUTRI": "",
-   "CONTRATTO": "",
-   "CHECK": "",
-   "RISULTATO": "",
-   "FONTE": ""
-  },
-  {
    "CLIENTE": "Francesca Romanelli",
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "GNOCCA 12",
@@ -24582,5 +24557,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T18:13:53.450Z"
+ "updatedAt": "2026-08-01T18:14:19.478Z"
 }
