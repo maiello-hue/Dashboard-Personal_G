@@ -10957,11 +10957,11 @@
   },
   {
    "CLIENTE": "Giada Ciulli",
-   "STATO CLIENTE": "ABBANDONATO",
-   "PERCORSO": "12 mesi",
-   "INIZIO PERCORSO": "13/02/2026",
-   "FINE PERCORSO": "13/02/2027",
-   "IMPORTO": "€ 1.428,00",
+   "STATO CLIENTE": "IN PERCORSO",
+   "PERCORSO": "GNOCCA 12",
+   "INIZIO PERCORSO": "10/07/2026",
+   "FINE PERCORSO": "10/07/2027",
+   "IMPORTO": "588",
    "METODO PAGAMENTO": "PagoDIL",
    "STATO PAGAMENTO": "RIMBORSATO",
    "TIPO INCASSO": "",
@@ -10969,8 +10969,8 @@
    "INCASSO": "",
    "RIMBORSO": "",
    "TUTOR": "",
-   "TRAINER": "Gianmiki",
-   "NUTRI": "Alessia",
+   "TRAINER": "",
+   "NUTRI": "",
    "PAGANTE": "SI",
    "€ TUTOR": "",
    "€ TRAINER": "€ 17,00",
@@ -10979,7 +10979,8 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "ORGANICO",
-   "DATA ARCHIVIAZIONE": "29/07/2026"
+   "EMAIL": "",
+   "VENDITORE": ""
   },
   {
    "CLIENTE": "Giorgia Frizzerin",
@@ -24613,5 +24614,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T18:27:27.845Z"
+ "updatedAt": "2026-08-01T18:28:32.930Z"
 }
