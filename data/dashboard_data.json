@@ -23,7 +23,8 @@
    "CONTRATTO": "",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Rosalia Cavataio",
@@ -96,7 +97,8 @@
    "CONTRATTO": "SI",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Silvia Calza",
@@ -195,7 +197,8 @@
    "CONTRATTO": "",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Elisa Pernarella",
@@ -247,7 +250,8 @@
    "FONTE": "INSTAGRAM",
    "DATA INCASSO": "30/07/2026",
    "VENDITORE": "",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Alessia Gambardella",
@@ -523,7 +527,8 @@
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
    "DATA INCASSO": "29/07/2026",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Federica Bordin",
@@ -653,7 +658,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "INSTAGRAM",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Giada Marigliano",
@@ -679,7 +685,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "INSTAGRAM",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Maria Fernarda Ramello",
@@ -984,7 +991,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Jessica Petterlini",
@@ -1085,7 +1093,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "INSTAGRAM",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Valentina Bussi",
@@ -1136,7 +1145,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "INSTAGRAM",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Elisa Mauri",
@@ -1162,7 +1172,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Jessica Venturi",
@@ -1212,7 +1223,8 @@
    "CONTRATTO": "",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Federica Lattanzi",
@@ -1484,7 +1496,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Giovanni Bassi",
@@ -1609,7 +1622,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "REFERRAL",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Elisa Orlando",
@@ -1710,7 +1724,8 @@
    "CONTRATTO": "",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Erika Passamonti",
@@ -1811,7 +1826,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "INSTAGRAM",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Matilde Gigliotti (Duccio Brenna)",
@@ -1836,7 +1852,8 @@
    "CONTRATTO": "SI",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Loredana Gurrieri",
@@ -1936,7 +1953,8 @@
    "CONTRATTO": "",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Greta Caneva",
@@ -2035,7 +2053,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Stefania Lucchiari (Rossella Maida)",
@@ -2210,7 +2229,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Martina Coppola",
@@ -2236,7 +2256,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "INSTAGRAM",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Veronica Valiani",
@@ -2337,7 +2358,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Martina Vita",
@@ -2388,7 +2410,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "REFERRAL",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Amelia Leuci",
@@ -2437,7 +2460,8 @@
    "CONTRATTO": "",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Elisa Faraoni",
@@ -2512,7 +2536,8 @@
    "CONTRATTO": "",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Tania Giuntoli",
@@ -2611,7 +2636,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Teresa Falcone",
@@ -2686,7 +2712,8 @@
    "CONTRATTO": "",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Giulia Villanova",
@@ -2786,7 +2813,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "REFERRAL",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Elena Viola",
@@ -3086,7 +3114,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "INSTAGRAM",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Eleonora Tavoni",
@@ -3162,7 +3191,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Serena Savio",
@@ -3487,7 +3517,8 @@
    "CONTRATTO": "",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Ilaria Marini",
@@ -3761,7 +3792,8 @@
    "RISULTATO": "SI",
    "FONTE": "ADV",
    "CHECK_ESCLUSA": "SI",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Valentina Frangini",
@@ -4085,7 +4117,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Beatrice Chiesa",
@@ -4210,7 +4243,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Martina Crocetta",
@@ -4429,7 +4463,8 @@
    "CONTRATTO": "SI",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Sofia Anguillesi",
@@ -4504,7 +4539,8 @@
    "CONTRATTO": "",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Denise Colombo",
@@ -4553,7 +4589,8 @@
    "CONTRATTO": "SI",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Clarissa Dini",
@@ -4676,7 +4713,8 @@
    "CONTRATTO": "",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Barbara Benedetti",
@@ -5091,7 +5129,8 @@
    "CONTRATTO": "",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Noemi Incani",
@@ -5237,7 +5276,8 @@
    "CONTRATTO": "",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Silvia Marzoli",
@@ -5385,7 +5425,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Giorgia Madarese",
@@ -5657,7 +5698,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Caterina Baldelli",
@@ -5754,7 +5796,8 @@
    "CONTRATTO": "",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Sonia Pomo",
@@ -5853,7 +5896,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Francesca Greco",
@@ -5878,7 +5922,8 @@
    "CONTRATTO": "SI",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Mikol Manni",
@@ -7181,7 +7226,8 @@
    "CONTRATTO": "",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Barbara Fiorella",
@@ -7232,7 +7278,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Giovanna La Marca",
@@ -7308,7 +7355,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Rosy Bovo (Martina Bruno)",
@@ -7459,7 +7507,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Irene Di Natale",
@@ -7562,7 +7611,8 @@
    "RISULTATO": "NO",
    "FONTE": "ADV",
    "DATA INCASSO": "29/07/2026",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Michela Balbi",
@@ -7612,7 +7662,8 @@
    "CONTRATTO": "",
    "CHECK": "SI",
    "RISULTATO": "NO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Elena Zacchi",
@@ -7638,7 +7689,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Francesca Natalini",
@@ -7764,7 +7816,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "REFERRAL",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Antonella Nenna",
@@ -7814,7 +7867,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Serena Bini",
@@ -7840,7 +7894,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Jessica Rampinelli",
@@ -7866,7 +7921,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Alessandra Pacciani",
@@ -7944,7 +8000,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "REFERRAL",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Benedetta Lami",
@@ -7994,7 +8051,8 @@
    "CONTRATTO": "",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Rosalba Lagioia",
@@ -8046,7 +8104,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Cecilia Moriconi",
@@ -8097,7 +8156,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Francesca Maria Taurisano",
@@ -8148,7 +8208,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Martina Coral",
@@ -8199,7 +8260,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Laura Cavaliere",
@@ -8249,7 +8311,8 @@
    "CONTRATTO": "",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Alessandra Tocchella",
@@ -8402,7 +8465,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Angelina Di Popolo",
@@ -8478,7 +8542,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "REFERRAL",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Monia Monti",
@@ -8504,7 +8569,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Myriam Abdalla (Roxana Luca)",
@@ -8580,7 +8646,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Monia Lerose",
@@ -8631,7 +8698,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Oriana Caporali",
@@ -8809,7 +8877,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Daniela Dagradi",
@@ -8986,7 +9055,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Pamela Saiu",
@@ -9111,7 +9181,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Maria Elena Lunghini",
@@ -9261,7 +9332,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Maria Garieri",
@@ -9336,7 +9408,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Valentina Colaneri",
@@ -9413,7 +9486,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Anita Kolecaj",
@@ -9611,7 +9685,8 @@
    "CONTRATTO": "SI",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Mariangela Speranza",
@@ -9662,7 +9737,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Lucia Maurizzi",
@@ -9688,7 +9764,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Erica Pioppini",
@@ -9714,7 +9791,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Margareth Di Dio",
@@ -9789,7 +9867,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Sabrina Rocca",
@@ -9915,7 +9994,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Virginia Giusti",
@@ -9941,7 +10021,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Ornella Fanni",
@@ -10043,7 +10124,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Simona Mugnaini",
@@ -10069,7 +10151,8 @@
    "CHECK": "SI",
    "RISULTATO": "",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Francesca Rizza",
@@ -10292,7 +10375,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Linda Dorigo",
@@ -10342,7 +10426,8 @@
    "CONTRATTO": "",
    "CHECK": "SI",
    "RISULTATO": "NO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Barbara Zanni",
@@ -10516,7 +10601,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Martina Donzelli",
@@ -10967,7 +11053,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "INSTAGRAM",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Francesca Piroli",
@@ -11066,7 +11153,8 @@
    "CONTRATTO": "",
    "CHECK": "SI",
    "RISULTATO": "NO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Benedetta Vico",
@@ -11143,7 +11231,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "REFERRAL",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Martina Fersini",
@@ -11244,7 +11333,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Giorgia Pasquali",
@@ -11321,7 +11411,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Alessia Perini",
@@ -11397,7 +11488,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Federica Notarangelo",
@@ -11423,7 +11515,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Cristina Broccolo",
@@ -11523,7 +11616,8 @@
    "CONTRATTO": "",
    "CHECK": "SI",
    "RISULTATO": "NO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Elisa Talone",
@@ -11549,7 +11643,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Selenia Calistri",
@@ -11575,7 +11670,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Lorena Matonti",
@@ -11601,7 +11697,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Michela Puntel",
@@ -11652,7 +11749,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "REFERRAL",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Valentina Allegri",
@@ -11678,7 +11776,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Justine Palazzin",
@@ -11729,7 +11828,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "INSTAGRAM",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Alessia Pellicciari",
@@ -11904,7 +12004,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Letizia Mari",
@@ -11930,7 +12031,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Sabrina Sabatinelli",
@@ -12006,7 +12108,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Chiara Crescimone",
@@ -12032,7 +12135,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Lucrezia Rossi",
@@ -12082,7 +12186,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "INSTAGRAM",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Stefania Diana",
@@ -12107,7 +12212,8 @@
    "CONTRATTO": "",
    "CHECK": "SI",
    "RISULTATO": "NO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Caterina Taylor",
@@ -12234,7 +12340,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Eleonora Menicacci",
@@ -12260,7 +12367,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Graziella La Rocca",
@@ -12459,7 +12567,8 @@
    "CONTRATTO": "",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Aurora Quartararo",
@@ -12535,7 +12644,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "INSTAGRAM",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Claudia Tiberio",
@@ -12561,7 +12671,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Erika Almeida Delgado",
@@ -12612,7 +12723,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Maria Rosa Mennitto",
@@ -12638,7 +12750,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Martina Petriachi",
@@ -12664,7 +12777,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Debora D'Orsogna Bucci",
@@ -12840,7 +12954,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Linda Meini",
@@ -12891,7 +13006,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Antonella Simeone",
@@ -12917,7 +13033,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Paola Boragno",
@@ -12968,7 +13085,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Eleonora Di Sario",
@@ -13222,7 +13340,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Rosalba Trigilio",
@@ -13248,7 +13367,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Elisa Pugliese",
@@ -13399,7 +13519,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Federica Del Mastro",
@@ -13476,7 +13597,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Simona Sette",
@@ -13552,7 +13674,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Barbara Bellan",
@@ -13628,7 +13751,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Paola Donato",
@@ -13729,7 +13853,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Martina Vargiu",
@@ -13805,7 +13930,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Sofia Chiappetta",
@@ -13831,7 +13957,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Letizia Ferracchiato",
@@ -13857,7 +13984,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Marta Cantatore",
@@ -14108,7 +14236,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Chiara Conti",
@@ -14134,7 +14263,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "REFERRAL",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Valentina Iacuele",
@@ -14185,7 +14315,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Giulia Badalassi",
@@ -14260,7 +14391,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "REFERRAL",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Valeria Scalia",
@@ -14412,7 +14544,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "INSTAGRAM",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Federica Alfei",
@@ -14438,7 +14571,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Antonia Bagnato",
@@ -14514,7 +14648,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "INSTAGRAM",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Chiara Rosati",
@@ -14540,7 +14675,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Denise Stefani",
@@ -14566,7 +14702,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Rebecca Olivadese",
@@ -14667,7 +14804,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "INSTAGRAM",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Denise Cremone",
@@ -14743,7 +14881,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "INSTAGRAM",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Mariarosaria Venditto",
@@ -14769,7 +14908,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Daniela Di Iorio",
@@ -14820,7 +14960,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Silvia Panzella",
@@ -14846,7 +14987,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Laura Pagni",
@@ -14922,7 +15064,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Sara Venturini",
@@ -14973,7 +15116,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Teresa Cappellini",
@@ -15024,7 +15168,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Elisabetta Zito",
@@ -15050,7 +15195,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Gabriella D'Andrea",
@@ -15355,7 +15501,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Mariangela D'Elia",
@@ -15381,7 +15528,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Gabriella Rania",
@@ -15456,7 +15604,8 @@
    "CONTRATTO": "",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Anastasia Parodi (Katarina Djordjevic)",
@@ -15507,7 +15656,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Roberta Vassilich",
@@ -15607,7 +15757,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Alessia Di Fonzo",
@@ -15634,7 +15785,8 @@
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
    "DATA INCASSO": "29/07/2026",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Francesca Clerici",
@@ -15685,7 +15837,8 @@
    "CONTRATTO": "",
    "CHECK": "SI",
    "RISULTATO": "NO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Anna Mancini",
@@ -15711,7 +15864,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Cristina Corsini",
@@ -15787,7 +15941,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Deborah Pirola",
@@ -15888,7 +16043,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Giulia Vitellozzi",
@@ -15914,7 +16070,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Mariachiara Bonini",
@@ -15940,7 +16097,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Irene Testai",
@@ -16167,7 +16325,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Beatrice Parronchi",
@@ -16292,7 +16451,8 @@
    "CONTRATTO": "",
    "CHECK": "SI",
    "RISULTATO": "NO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Elisa Santi",
@@ -16318,7 +16478,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Michela Molinaro",
@@ -16344,7 +16505,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Valentina Manini",
@@ -16370,7 +16532,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Ramona Lenti",
@@ -16446,7 +16609,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Mariavittoria Nocco",
@@ -16548,7 +16712,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Camilla Coveri",
@@ -16624,7 +16789,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Rebecca Pizzoni",
@@ -16699,7 +16865,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Anna Ricco",
@@ -16751,7 +16918,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Edlira Leka",
@@ -16900,7 +17068,8 @@
    "CONTRATTO": "",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Claudia Nanni",
@@ -16926,7 +17095,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Giovanna Sabatini",
@@ -16952,7 +17122,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "INSTAGRAM",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Isabella Vegliato",
@@ -17078,7 +17249,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Antonietta Cerbone",
@@ -17104,7 +17276,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Chiara Staine",
@@ -17130,7 +17303,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "INSTAGRAM",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Giusy Galassi",
@@ -17229,7 +17403,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "REFERRAL",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Rebecca Boglione",
@@ -17306,7 +17481,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Tommaso Di Maria (Paola Indelicato)",
@@ -17332,7 +17508,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "REFERRAL",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Elena Andreea Enache",
@@ -17358,7 +17535,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Carolina Vannini",
@@ -17433,7 +17611,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "REFERRAL",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Francesca Coppini",
@@ -17459,7 +17638,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Sara Carniel",
@@ -17685,7 +17865,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Cristiana Gambis",
@@ -17711,7 +17892,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "INSTAGRAM",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Francesca D'Agostino",
@@ -18063,7 +18245,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Giulia Redaelli",
@@ -18089,7 +18272,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Martina Bisesti",
@@ -18215,7 +18399,8 @@
    "CHECK": "SI",
    "RISULTATO": "",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Irene Boschi",
@@ -18341,7 +18526,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Lucia Mazzi",
@@ -18417,7 +18603,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Maristella Battafarano",
@@ -18469,7 +18656,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Giulia Chiga",
@@ -18520,7 +18708,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Ludmila Laudonio",
@@ -18620,7 +18809,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Chiara Rispoli",
@@ -18671,7 +18861,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Mina Esposito",
@@ -18772,7 +18963,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Sabrina Di Domenico",
@@ -18799,7 +18991,8 @@
    "RISULTATO": "SI",
    "FONTE": "INSTAGRAM",
    "DATA INCASSO": "29/07/2026",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Roberta Ceglie",
@@ -18874,7 +19067,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Alessia Salmaso",
@@ -18925,7 +19119,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Vanessa Citti",
@@ -18951,7 +19146,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Chiara Giorgetti",
@@ -18977,7 +19173,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Jessica Colletti",
@@ -19054,7 +19251,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Marika De Flaviis (Daniele Di Eustachio)",
@@ -19079,7 +19277,8 @@
    "CONTRATTO": "SI",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Valentina Granai",
@@ -19154,7 +19353,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Silvia Paolucci",
@@ -19206,7 +19406,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Monika Gielzynska",
@@ -19232,7 +19433,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "INSTAGRAM",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Elisa Bonomini",
@@ -19283,7 +19485,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Giulia Brogi",
@@ -19309,7 +19512,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Tery Chiarugi",
@@ -19335,7 +19539,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Elena Grifoni",
@@ -19361,7 +19566,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Laura Eugeni",
@@ -19387,7 +19593,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Elisa Bitorsoli",
@@ -19413,7 +19620,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Anna Rita Satta",
@@ -19439,7 +19647,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Eleonora Bianchi",
@@ -19465,7 +19674,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Erika Braga",
@@ -19517,7 +19727,8 @@
    "RISULTATO": "SI",
    "FONTE": "ADV",
    "VENDITORE": "",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Laura Santi Laurini",
@@ -19542,7 +19753,8 @@
    "CONTRATTO": "SI",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Dafne Cerbone",
@@ -19618,7 +19830,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "INSTAGRAM",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Ilaria Trovati",
@@ -19743,7 +19956,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Silvia Barrovecchio",
@@ -19794,7 +20008,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Bianca Brandi",
@@ -19845,7 +20060,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Desiree Cusumano",
@@ -19871,7 +20087,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Giulia Ossani",
@@ -20220,7 +20437,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Silvia Salemme",
@@ -20321,7 +20539,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Valentina Celestre",
@@ -20347,7 +20566,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Ilenya Cariati",
@@ -20499,7 +20719,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Sandra Belli",
@@ -20648,7 +20869,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Erica Innocenti",
@@ -21044,7 +21266,8 @@
    "CONTRATTO": "SI",
    "CHECK": "SI",
    "RISULTATO": "NO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Graziana De Pascale",
@@ -21095,7 +21318,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Chiara Signorini",
@@ -21221,7 +21445,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Stella Spinelli",
@@ -21247,7 +21472,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "INSTAGRAM",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Benedetta Cola Zannier",
@@ -21273,7 +21499,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Juliana Arboleda Hurtado",
@@ -21299,7 +21526,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Ylenia Mapelli",
@@ -21426,7 +21654,8 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Francesca Pisano",
@@ -21653,7 +21882,8 @@
    "RISULTATO": "SI",
    "FONTE": "INSTAGRAM",
    "DATA INCASSO": "29/07/2026",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Marta Secco",
@@ -21705,7 +21935,8 @@
    "RISULTATO": "NO",
    "FONTE": "ADV",
    "DATA INCASSO": "29/07/2026",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Tatiana Manciu",
@@ -21757,7 +21988,8 @@
    "CHECK": "SI",
    "RISULTATO": "NO",
    "DATA INCASSO": "29/07/2026",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Anna Contino",
@@ -21784,7 +22016,8 @@
    "RISULTATO": "NO",
    "FONTE": "ADV",
    "DATA INCASSO": "29/07/2026",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Gaia Coletti",
@@ -24427,5 +24660,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T12:49:00.445Z"
+ "updatedAt": "2026-08-01T12:57:24.852Z"
 }
