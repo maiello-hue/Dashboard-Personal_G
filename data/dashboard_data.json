@@ -18903,8 +18903,8 @@
    "€ TRAINER": "€ 17,00",
    "€ NUTRI": "€ 12,00",
    "CONTRATTO": "SI",
-   "CHECK": "",
-   "RISULTATO": ""
+   "CHECK": "SI",
+   "RISULTATO": "NO"
   },
   {
    "CLIENTE": "Francesca Bongiorno",
@@ -24194,5 +24194,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T11:48:25.847Z"
+ "updatedAt": "2026-08-01T11:50:37.414Z"
 }
