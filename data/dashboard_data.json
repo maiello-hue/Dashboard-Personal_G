@@ -6996,7 +6996,7 @@
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "24/12/2025",
-   "FINE PERCORSO": "24/06/2026",
+   "FINE PERCORSO": "24/09/2026",
    "IMPORTO": "€ 1.005,00",
    "METODO PAGAMENTO": "Qomodo",
    "STATO PAGAMENTO": "RECUPERO",
@@ -24194,5 +24194,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T09:06:51.949Z"
+ "updatedAt": "2026-08-01T09:07:17.181Z"
 }
