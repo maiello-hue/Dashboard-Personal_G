@@ -23410,6 +23410,25 @@
    "VENDITORE": "Peppe",
    "FONTE": "",
    "DATA INCASSO": "31/07/2026"
+  },
+  {
+   "CLIENTE": "Genni Piobbici",
+   "EMAIL": "",
+   "STATO CLIENTE": "IN PERCORSO",
+   "PERCORSO": "6 mesi + 6 Gnocca",
+   "INIZIO PERCORSO": "31/07/2026",
+   "FINE PERCORSO": "31/07/2027",
+   "IMPORTO": "1850,82",
+   "METODO PAGAMENTO": "HeyLight",
+   "STATO PAGAMENTO": "SALDATO",
+   "TIPO INCASSO": "Nuovo Cliente",
+   "INCASSO": "1850,82",
+   "TUTOR": "Andrea",
+   "TRAINER": "Marco",
+   "NUTRI": "Vanessa",
+   "VENDITORE": "Personal_G",
+   "FONTE": "",
+   "DATA INCASSO": "01/08/2026"
   }
  ],
  "rimborsi": [
@@ -24175,5 +24194,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-07-31T16:14:23.821Z"
+ "updatedAt": "2026-08-01T07:38:23.510Z"
 }
