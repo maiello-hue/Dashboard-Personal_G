@@ -23826,6 +23826,30 @@
    "CONTRATTO": "",
    "CHECK": "",
    "RISULTATO": ""
+  },
+  {
+   "CLIENTE": "Celine Hervo",
+   "STATO CLIENTE": "IN PERCORSO",
+   "PERCORSO": "8 mesi",
+   "INIZIO PERCORSO": "15/07/2026",
+   "FINE PERCORSO": "15/07/2027",
+   "IMPORTO": "€ 768,00",
+   "METODO PAGAMENTO": "PagoDIL",
+   "STATO PAGAMENTO": "SALDATO",
+   "TIPO INCASSO": "",
+   "N° FATTURA": "",
+   "INCASSO": "",
+   "RIMBORSO": "",
+   "TUTOR": "Mara",
+   "TRAINER": "",
+   "NUTRI": "Sofia",
+   "PAGANTE": "SI",
+   "€ TUTOR": "",
+   "€ TRAINER": "",
+   "€ NUTRI": "",
+   "CONTRATTO": "",
+   "CHECK": "",
+   "RISULTATO": ""
   }
  ],
  "rimborsi": [
@@ -24591,5 +24615,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T21:03:02.492Z"
+ "updatedAt": "2026-08-01T21:03:12.600Z"
 }
