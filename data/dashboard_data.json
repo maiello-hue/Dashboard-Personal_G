@@ -1097,31 +1097,6 @@
    "_CHECK_JULY_FIX": "1"
   },
   {
-   "CLIENTE": "Valentina Bussi",
-   "STATO CLIENTE": "SPARITA",
-   "PERCORSO": "12 mesi",
-   "INIZIO PERCORSO": "18/08/2025",
-   "FINE PERCORSO": "18/08/2026",
-   "IMPORTO": "€ 1.698,00",
-   "METODO PAGAMENTO": "Scalapay",
-   "STATO PAGAMENTO": "DA SALDARE",
-   "TIPO INCASSO": "",
-   "N° FATTURA": "",
-   "INCASSO": "",
-   "RIMBORSO": "",
-   "TUTOR": "Mara",
-   "TRAINER": "Marco",
-   "NUTRI": "Matilde",
-   "PAGANTE": "NO",
-   "€ TUTOR": "€ 0,00",
-   "€ TRAINER": "€ 0,00",
-   "€ NUTRI": "€ 12,00",
-   "CONTRATTO": "",
-   "CHECK": "",
-   "RISULTATO": "",
-   "FONTE": "ADV"
-  },
-  {
    "CLIENTE": "Azzurra Nencioni",
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
@@ -24736,5 +24711,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T18:03:00.466Z"
+ "updatedAt": "2026-08-01T18:11:12.711Z"
 }
