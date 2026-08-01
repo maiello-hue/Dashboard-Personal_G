@@ -23580,31 +23580,6 @@
    "FONTE": ""
   },
   {
-   "CLIENTE": "Paula Andreea Petras",
-   "STATO CLIENTE": "IN PERCORSO",
-   "PERCORSO": "GNOCCA 12",
-   "INIZIO PERCORSO": "16/06/2026",
-   "FINE PERCORSO": "16/06/2027",
-   "IMPORTO": "€ 990,00",
-   "METODO PAGAMENTO": "Bonifico",
-   "STATO PAGAMENTO": "SALDATO",
-   "TIPO INCASSO": "",
-   "N° FATTURA": "",
-   "INCASSO": "",
-   "RIMBORSO": "",
-   "TUTOR": "",
-   "TRAINER": "",
-   "NUTRI": "Matilde",
-   "PAGANTE": "SI",
-   "€ TUTOR": "",
-   "€ TRAINER": "",
-   "€ NUTRI": "",
-   "CONTRATTO": "",
-   "CHECK": "",
-   "RISULTATO": "",
-   "FONTE": ""
-  },
-  {
    "CLIENTE": "Celine Hervo",
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "8 mesi",
@@ -24686,5 +24661,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T18:11:47.065Z"
+ "updatedAt": "2026-08-01T18:13:07.637Z"
 }
