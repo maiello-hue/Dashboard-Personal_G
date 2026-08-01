@@ -1202,6 +1202,16 @@ function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2
    ============================================================ */
 const GH_KEY='gh_settings_v1', GH_PATH='data/dashboard_data.json';
 let GH_SHA=null, GH_SYNC_TIMER=null, GH_BUSY=false, GH_LAST_UPDATED_AT=null;
+/* GH_DIRTY: tiene traccia di modifiche locali salvate (localStorage) ma non ancora
+   inviate a GitHub. Persistito in localStorage (non solo in memoria) perché deve
+   sopravvivere a un ricaricamento della pagina: se l'utente elimina/modifica una
+   cliente e ricarica subito dopo, senza questo flag il sync in arrivo dal server
+   sovrascriverebbe la modifica locale con la versione remota ancora vecchia,
+   facendo "ricomparire" ciò che era stato appena eliminato. */
+const LS_GH_DIRTY='gh_dirty_v1';
+function markGhDirty(){try{localStorage.setItem(LS_GH_DIRTY,'1');}catch(e){}}
+function clearGhDirty(){try{localStorage.removeItem(LS_GH_DIRTY);}catch(e){}}
+function isGhDirty(){try{return localStorage.getItem(LS_GH_DIRTY)==='1';}catch(e){return false;}}
 
 function ghSettings(){try{return JSON.parse(localStorage.getItem(GH_KEY)||'null');}catch(e){return null;}}
 function ghSaveSettings(s){localStorage.setItem(GH_KEY,JSON.stringify(s));}
@@ -1269,8 +1279,45 @@ function applyAllData(d){
   try{localStorage.setItem(RIMB_KEY,JSON.stringify(d.ratePagate||{}));}catch(e){}
   try{localStorage.setItem(REN_KEY,JSON.stringify(d.rinnovi||{}));}catch(e){}
 }
+async function pushPendingNow(){
+  /* invia subito (senza debounce) i dati locali correnti a GitHub. Usata sia dal
+     timer normale di scheduleGithubSync, sia da syncFromGithub quando trova
+     modifiche locali non ancora inviate (GH_DIRTY), per evitare che una lettura
+     dal server sovrascriva una modifica locale appena fatta. */
+  if(!ghConfigured()) return false;
+  if(GH_BUSY) return false;
+  GH_BUSY=true;
+  try{
+    setGhStatus(ic('sync')+'Salvataggio su GitHub…');
+    const payload=collectAllData();
+    await ghPutFile(payload,'Aggiornamento dati dashboard');
+    GH_LAST_UPDATED_AT=payload.updatedAt;
+    clearGhDirty();
+    setGhStatus(ic('check')+'Sincronizzato alle '+new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}));
+    return true;
+  }catch(e){
+    setGhStatus(ic('warn')+e.message,true);
+    return false;
+  }finally{
+    GH_BUSY=false;
+  }
+}
 async function syncFromGithub(showStatus){
   if(!ghConfigured()) return;
+  if(isGhDirty()){
+    /* ci sono modifiche locali (es. un'eliminazione) salvate ma non ancora
+       confermate su GitHub — capita se la pagina viene ricaricata subito dopo
+       una modifica, prima che il salvataggio automatico facesse in tempo a
+       partire. Le inviamo PRIMA di leggere qualunque dato remoto: altrimenti
+       rischiamo di sovrascrivere la modifica locale con la versione vecchia
+       ancora presente su GitHub. */
+    clearTimeout(GH_SYNC_TIMER);
+    const ok=await pushPendingNow();
+    if(ok) return; /* i nostri dati sono ora anche su GitHub: niente altro da fare */
+    /* se l'invio fallisce (es. offline) continuiamo comunque a provare a leggere
+       lo stato remoto per non bloccare l'app; GH_DIRTY resta impostato e si
+       ritenterà al prossimo giro. */
+  }
   try{
     if(showStatus) setGhStatus(ic('sync')+'Sincronizzazione…');
     const remote=await ghGetFile();
@@ -1303,23 +1350,21 @@ async function syncFromGithub(showStatus){
 }
 function scheduleGithubSync(){
   if(!ghConfigured()) return;
+  /* segna subito che ci sono modifiche locali da inviare: se la pagina viene
+     ricaricata prima che questo timer scatti, isGhDirty() lo saprà comunque. */
+  markGhDirty();
   clearTimeout(GH_SYNC_TIMER);
-  GH_SYNC_TIMER=setTimeout(async ()=>{
-    if(GH_BUSY) return;
-    GH_BUSY=true;
-    try{
-      setGhStatus(ic('sync')+'Salvataggio su GitHub…');
-      const payload=collectAllData();
-      await ghPutFile(payload,'Aggiornamento dati dashboard');
-      GH_LAST_UPDATED_AT=payload.updatedAt;
-      setGhStatus(ic('check')+'Sincronizzato alle '+new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}));
-    }catch(e){
-      setGhStatus(ic('warn')+e.message,true);
-    }finally{
-      GH_BUSY=false;
-    }
-  },900);
+  GH_SYNC_TIMER=setTimeout(()=>{ pushPendingNow(); },900);
 }
+/* Se la pagina si chiude/ricarica mentre c'è un salvataggio in sospeso (entro i
+   900ms di debounce), tentiamo comunque un invio immediato: meglio un tentativo
+   in più (idempotente, stesso contenuto) che perdere la scrittura. */
+window.addEventListener('beforeunload',()=>{
+  if(GH_SYNC_TIMER && isGhDirty()){
+    clearTimeout(GH_SYNC_TIMER);
+    pushPendingNow();
+  }
+});
 
 /* ---------- pagina impostazioni GitHub ---------- */
 function fillGhForm(){
