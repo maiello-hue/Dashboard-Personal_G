@@ -805,7 +805,7 @@
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "22/07/2025",
-   "FINE PERCORSO": "22/07/2026",
+   "FINE PERCORSO": "08/08/2026",
    "IMPORTO": "€ 1.218,00",
    "METODO PAGAMENTO": "Scalapay",
    "STATO PAGAMENTO": "SALDATO",
@@ -24194,5 +24194,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T09:04:20.650Z"
+ "updatedAt": "2026-08-01T09:05:21.200Z"
 }
