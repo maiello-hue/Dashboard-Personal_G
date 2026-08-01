@@ -23855,7 +23855,7 @@
   },
   {
    "CLIENTE": "Francesca Girotto",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "ABBANDONATO",
    "PERCORSO": "6 mesi + 6 Gnocca",
    "INIZIO PERCORSO": "24/07/2026",
    "FINE PERCORSO": "24/07/2027",
@@ -23878,7 +23878,9 @@
    "RISULTATO": "",
    "DATA INCASSO": "01/08/2026",
    "VENDITORE": "Personal_G",
-   "FONTE": "ORGANICO"
+   "FONTE": "ORGANICO",
+   "EMAIL": "",
+   "DATA ARCHIVIAZIONE": "01/08/2026"
   },
   {
    "CLIENTE": "Enrica Tavilla",
@@ -24673,5 +24675,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T20:28:05.990Z"
+ "updatedAt": "2026-08-01T20:28:17.275Z"
 }
