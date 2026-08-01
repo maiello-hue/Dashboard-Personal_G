@@ -16829,7 +16829,7 @@
   },
   {
    "CLIENTE": "Anna Ricco",
-   "STATO CLIENTE": "ABBANDONATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "06/05/2026",
    "FINE PERCORSO": "06/05/2027",
@@ -16851,7 +16851,8 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "INSTAGRAM",
-   "DATA ARCHIVIAZIONE": "29/07/2026"
+   "EMAIL": "",
+   "VENDITORE": ""
   },
   {
    "CLIENTE": "Elena Turrisi",
@@ -24447,5 +24448,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T21:10:54.106Z"
+ "updatedAt": "2026-08-01T21:30:08.541Z"
 }
