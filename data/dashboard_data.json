@@ -23708,30 +23708,6 @@
    "NUTRI": "Nicole",
    "VENDITORE": "",
    "FONTE": "ADV"
-  },
-  {
-   "CLIENTE": "Chiara Pintus",
-   "STATO CLIENTE": "IN PERCORSO",
-   "PERCORSO": "12 MESI",
-   "INIZIO PERCORSO": "27/02/2026",
-   "FINE PERCORSO": "27/02/2027",
-   "IMPORTO": "€ 816,00",
-   "METODO PAGAMENTO": "PagoDIL",
-   "STATO PAGAMENTO": "SALDATO",
-   "TIPO INCASSO": "",
-   "N° FATTURA": "",
-   "INCASSO": "",
-   "RIMBORSO": "",
-   "TUTOR": "Duccio",
-   "TRAINER": "",
-   "NUTRI": "Vanessa",
-   "PAGANTE": "SI",
-   "€ TUTOR": "",
-   "€ TRAINER": "",
-   "€ NUTRI": "",
-   "CONTRATTO": "",
-   "CHECK": "",
-   "RISULTATO": ""
   }
  ],
  "rimborsi": [
@@ -24497,5 +24473,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T21:00:25.782Z"
+ "updatedAt": "2026-08-01T21:00:38.581Z"
 }
