@@ -23882,7 +23882,7 @@
   },
   {
    "CLIENTE": "Enrica Tavilla",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "ABBANDONATO",
    "PERCORSO": "6 mesi + 6 Gnocca",
    "INIZIO PERCORSO": "25/07/2026",
    "FINE PERCORSO": "25/07/2027",
@@ -23905,7 +23905,9 @@
    "RISULTATO": "",
    "DATA INCASSO": "01/08/2026",
    "VENDITORE": "Personal_G",
-   "FONTE": "ADV"
+   "FONTE": "ADV",
+   "EMAIL": "",
+   "DATA ARCHIVIAZIONE": "01/08/2026"
   }
  ],
  "rimborsi": [
@@ -24671,5 +24673,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T20:26:50.196Z"
+ "updatedAt": "2026-08-01T20:28:05.990Z"
 }
