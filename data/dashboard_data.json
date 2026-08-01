@@ -12275,7 +12275,7 @@
   },
   {
    "CLIENTE": "Céline Hervo",
-   "STATO CLIENTE": "ABBANDONATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "GNOCCA 12",
    "INIZIO PERCORSO": "15/07/2026",
    "FINE PERCORSO": "15/03/2027",
@@ -12297,7 +12297,6 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "ADV",
-   "DATA ARCHIVIAZIONE": "29/07/2026",
    "EMAIL": "",
    "VENDITORE": ""
   },
@@ -24592,5 +24591,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T21:02:52.294Z"
+ "updatedAt": "2026-08-01T21:03:02.492Z"
 }
