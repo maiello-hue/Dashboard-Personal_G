@@ -12269,18 +12269,18 @@
   {
    "CLIENTE": "Céline Hervo",
    "STATO CLIENTE": "ABBANDONATO",
-   "PERCORSO": "12 mesi",
-   "INIZIO PERCORSO": "28/02/2026",
-   "FINE PERCORSO": "28/02/2027",
-   "IMPORTO": "€ 1.850,00",
+   "PERCORSO": "GNOCCA 12",
+   "INIZIO PERCORSO": "15/07/2026",
+   "FINE PERCORSO": "15/03/2027",
+   "IMPORTO": "588",
    "METODO PAGAMENTO": "PagoDIL",
-   "STATO PAGAMENTO": "RIMBORSATO",
+   "STATO PAGAMENTO": "SALDATO",
    "TIPO INCASSO": "",
    "N° FATTURA": "",
    "INCASSO": "",
    "RIMBORSO": "",
-   "TUTOR": "Mara",
-   "TRAINER": "Federica",
+   "TUTOR": "",
+   "TRAINER": "",
    "NUTRI": "Sofia",
    "PAGANTE": "SI",
    "€ TUTOR": "€ 15,00",
@@ -12290,7 +12290,9 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "ADV",
-   "DATA ARCHIVIAZIONE": "29/07/2026"
+   "DATA ARCHIVIAZIONE": "29/07/2026",
+   "EMAIL": "",
+   "VENDITORE": ""
   },
   {
    "CLIENTE": "Natasha Vollero",
@@ -24611,5 +24613,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T18:24:43.328Z"
+ "updatedAt": "2026-08-01T18:27:27.845Z"
 }
