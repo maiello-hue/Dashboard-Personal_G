@@ -654,7 +654,7 @@
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "04/07/2025",
-   "FINE PERCORSO": "04/07/2026",
+   "FINE PERCORSO": "04/08/2026",
    "IMPORTO": "€ 1.347,00",
    "METODO PAGAMENTO": "Scalapay",
    "STATO PAGAMENTO": "OMAGGIO",
@@ -24194,5 +24194,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T07:46:06.656Z"
+ "updatedAt": "2026-08-01T09:03:41.196Z"
 }
