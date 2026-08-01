@@ -23772,10 +23772,10 @@
    "TIPO INCASSO": "Nuovo Cliente",
    "INCASSO": "616,92",
    "DATA INCASSO": "31/07/2026",
-   "TUTOR": "",
-   "TRAINER": "",
-   "NUTRI": "",
-   "VENDITORE": "",
+   "TUTOR": "Margherita",
+   "TRAINER": "Marco",
+   "NUTRI": "Sofia",
+   "VENDITORE": "Personal_G",
    "FONTE": ""
   },
   {
@@ -24560,5 +24560,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T18:15:29.695Z"
+ "updatedAt": "2026-08-01T18:18:01.861Z"
 }
