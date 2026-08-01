@@ -499,7 +499,7 @@
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "15/05/2025",
-   "FINE PERCORSO": "15/05/2026",
+   "FINE PERCORSO": "15/09/2026",
    "IMPORTO": "€ 1.698,00",
    "METODO PAGAMENTO": "Bonifico",
    "STATO PAGAMENTO": "SALDATO",
@@ -24194,5 +24194,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T09:23:16.329Z"
+ "updatedAt": "2026-08-01T09:23:59.362Z"
 }
