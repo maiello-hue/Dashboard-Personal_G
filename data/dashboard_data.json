@@ -23758,30 +23758,6 @@
    "RISULTATO": ""
   },
   {
-   "CLIENTE": "Paula Andreea Petras",
-   "STATO CLIENTE": "IN PERCORSO",
-   "PERCORSO": "12 MESI",
-   "INIZIO PERCORSO": "16/06/2026",
-   "FINE PERCORSO": "16/06/2027",
-   "IMPORTO": "€ 990,00",
-   "METODO PAGAMENTO": "Bonifico",
-   "STATO PAGAMENTO": "SALDATO",
-   "TIPO INCASSO": "",
-   "N° FATTURA": "",
-   "INCASSO": "",
-   "RIMBORSO": "",
-   "TUTOR": "Martina",
-   "TRAINER": "",
-   "NUTRI": "Matilde",
-   "PAGANTE": "SI",
-   "€ TUTOR": "",
-   "€ TRAINER": "",
-   "€ NUTRI": "",
-   "CONTRATTO": "",
-   "CHECK": "",
-   "RISULTATO": ""
-  },
-  {
    "CLIENTE": "Francesca Romanelli",
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 MESI",
@@ -24593,5 +24569,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T20:59:03.199Z"
+ "updatedAt": "2026-08-01T20:59:37.218Z"
 }
