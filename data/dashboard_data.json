@@ -23879,33 +23879,6 @@
    "DATA INCASSO": "01/08/2026",
    "VENDITORE": "Personal_G",
    "FONTE": "ORGANICO"
-  },
-  {
-   "CLIENTE": "Enrica Tavilla",
-   "STATO CLIENTE": "IN PERCORSO",
-   "PERCORSO": "6 mesi + 6 Gnocca",
-   "INIZIO PERCORSO": "25/07/2026",
-   "FINE PERCORSO": "25/07/2027",
-   "IMPORTO": "€ 1.850,82",
-   "METODO PAGAMENTO": "HeyLight",
-   "STATO PAGAMENTO": "SALDATO",
-   "TIPO INCASSO": "Nuovo Cliente",
-   "N° FATTURA": "",
-   "INCASSO": "€ 1.850,82",
-   "RIMBORSO": "",
-   "TUTOR": "Giulia",
-   "TRAINER": "Marco",
-   "NUTRI": "Matilde",
-   "PAGANTE": "SI",
-   "€ TUTOR": "€ 15,00",
-   "€ TRAINER": "€ 17,00",
-   "€ NUTRI": "€ 12,00",
-   "CONTRATTO": "",
-   "CHECK": "",
-   "RISULTATO": "",
-   "DATA INCASSO": "01/08/2026",
-   "VENDITORE": "Personal_G",
-   "FONTE": "ADV"
   }
  ],
  "rimborsi": [
