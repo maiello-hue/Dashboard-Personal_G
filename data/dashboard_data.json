@@ -103,7 +103,7 @@
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "01/04/2024",
-   "FINE PERCORSO": "01/09/2026",
+   "FINE PERCORSO": "01/04/2025",
    "IMPORTO": "€ 1.698,00",
    "METODO PAGAMENTO": "Bonifico",
    "STATO PAGAMENTO": "RECUPERO",
@@ -127,7 +127,7 @@
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "27/05/2024",
-   "FINE PERCORSO": "27/09/2026",
+   "FINE PERCORSO": "27/05/2025",
    "IMPORTO": "€ 1.428,00",
    "METODO PAGAMENTO": "Stripe",
    "STATO PAGAMENTO": "RECUPERO",
@@ -153,7 +153,7 @@
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "17/10/2024",
-   "FINE PERCORSO": "17/10/2026",
+   "FINE PERCORSO": "17/10/2025",
    "IMPORTO": "€ 1.228,00",
    "METODO PAGAMENTO": "PayPal",
    "STATO PAGAMENTO": "RECUPERO",
@@ -177,7 +177,7 @@
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "23/10/2024",
-   "FINE PERCORSO": "23/08/2026",
+   "FINE PERCORSO": "23/04/2025",
    "IMPORTO": "€ 722,00",
    "METODO PAGAMENTO": "Bonifico",
    "STATO PAGAMENTO": "RECUPERO",
@@ -329,7 +329,7 @@
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "03/04/2025",
-   "FINE PERCORSO": "03/08/2026",
+   "FINE PERCORSO": "03/04/2026",
    "IMPORTO": "€ 1.698,00",
    "METODO PAGAMENTO": "Scalapay",
    "STATO PAGAMENTO": "RECUPERO",
@@ -503,7 +503,7 @@
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "15/05/2025",
-   "FINE PERCORSO": "15/09/2026",
+   "FINE PERCORSO": "15/05/2026",
    "IMPORTO": "€ 1.698,00",
    "METODO PAGAMENTO": "Bonifico",
    "STATO PAGAMENTO": "SALDATO",
@@ -556,7 +556,7 @@
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "20/05/2025",
-   "FINE PERCORSO": "20/08/2026",
+   "FINE PERCORSO": "20/05/2026",
    "IMPORTO": "€ 1.698,00",
    "METODO PAGAMENTO": "Scalapay",
    "STATO PAGAMENTO": "SALDATO",
@@ -607,7 +607,7 @@
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "25/06/2025",
-   "FINE PERCORSO": "25/09/2026",
+   "FINE PERCORSO": "25/06/2026",
    "IMPORTO": "€ 1.698,00",
    "METODO PAGAMENTO": "Scalapay",
    "STATO PAGAMENTO": "SALDATO",
@@ -634,7 +634,7 @@
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "30/06/2025",
-   "FINE PERCORSO": "30/08/2026",
+   "FINE PERCORSO": "30/06/2026",
    "IMPORTO": "€ 1.998,00",
    "METODO PAGAMENTO": "Bonifico",
    "STATO PAGAMENTO": "OMAGGIO",
@@ -660,7 +660,7 @@
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "04/07/2025",
-   "FINE PERCORSO": "04/08/2026",
+   "FINE PERCORSO": "04/07/2026",
    "IMPORTO": "€ 1.347,00",
    "METODO PAGAMENTO": "Scalapay",
    "STATO PAGAMENTO": "OMAGGIO",
@@ -812,7 +812,7 @@
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "22/07/2025",
-   "FINE PERCORSO": "08/08/2026",
+   "FINE PERCORSO": "22/07/2026",
    "IMPORTO": "€ 1.218,00",
    "METODO PAGAMENTO": "Scalapay",
    "STATO PAGAMENTO": "SALDATO",
@@ -939,7 +939,7 @@
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "30/07/2025",
-   "FINE PERCORSO": "02/09/2026",
+   "FINE PERCORSO": "30/07/2026",
    "IMPORTO": "€ 1.698,00",
    "METODO PAGAMENTO": "Scalapay",
    "STATO PAGAMENTO": "SALDATO",
@@ -1507,10 +1507,9 @@
    "€ TRAINER": "€ 17,00",
    "€ NUTRI": "€ 12,00",
    "CONTRATTO": "SI",
-   "CHECK": "SI",
-   "RISULTATO": "SI",
-   "FONTE": "REFERRAL",
-   "DATA CHECK": "01/08/2026"
+   "CHECK": "",
+   "RISULTATO": "",
+   "FONTE": "REFERRAL"
   },
   {
    "CLIENTE": "Benedetta Querci",
@@ -6943,7 +6942,7 @@
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "4 mesi",
    "INIZIO PERCORSO": "23/12/2025",
-   "FINE PERCORSO": "23/08/2026",
+   "FINE PERCORSO": "23/04/2026",
    "IMPORTO": "€ 680,00",
    "METODO PAGAMENTO": "PayPal",
    "STATO PAGAMENTO": "RECUPERO",
@@ -7042,7 +7041,7 @@
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "24/12/2025",
-   "FINE PERCORSO": "24/09/2026",
+   "FINE PERCORSO": "24/06/2026",
    "IMPORTO": "€ 1.005,00",
    "METODO PAGAMENTO": "Qomodo",
    "STATO PAGAMENTO": "RECUPERO",
@@ -8181,7 +8180,7 @@
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "13/01/2026",
-   "FINE PERCORSO": "13/08/2026",
+   "FINE PERCORSO": "13/07/2026",
    "IMPORTO": "€ 1.005,00",
    "METODO PAGAMENTO": "Qomodo",
    "STATO PAGAMENTO": "OMAGGIO",
@@ -9847,7 +9846,7 @@
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "4 mesi",
    "INIZIO PERCORSO": "03/02/2026",
-   "FINE PERCORSO": "03/09/2026",
+   "FINE PERCORSO": "03/06/2026",
    "IMPORTO": "€ 680,00",
    "METODO PAGAMENTO": "Bonifico",
    "STATO PAGAMENTO": "RECUPERO",
@@ -9965,10 +9964,9 @@
    "€ TRAINER": "€ 17,00",
    "€ NUTRI": "€ 12,00",
    "CONTRATTO": "",
-   "CHECK": "SI",
-   "RISULTATO": "SI",
-   "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "CHECK": "",
+   "RISULTATO": "",
+   "FONTE": "ORGANICO"
   },
   {
    "CLIENTE": "Romina Savini",
@@ -10069,7 +10067,7 @@
    "€ NUTRI": "€ 12,00",
    "CONTRATTO": "",
    "CHECK": "SI",
-   "RISULTATO": "SI",
+   "RISULTATO": "",
    "FONTE": "ADV",
    "DATA CHECK": "01/08/2026"
   },
@@ -12612,7 +12610,7 @@
    "€ NUTRI": "€ 12,00",
    "CONTRATTO": "",
    "CHECK": "SI",
-   "RISULTATO": "SI",
+   "RISULTATO": "NO",
    "FONTE": "ADV",
    "DATA CHECK": "01/08/2026"
   },
@@ -13044,10 +13042,9 @@
    "€ TRAINER": "€ 17,00",
    "€ NUTRI": "€ 12,00",
    "CONTRATTO": "SI",
-   "CHECK": "SI",
-   "RISULTATO": "NO",
-   "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "CHECK": "",
+   "RISULTATO": "",
+   "FONTE": "ADV"
   },
   {
    "CLIENTE": "Gabriella La Rosa",
@@ -14008,10 +14005,9 @@
    "€ TRAINER": "€ 17,00",
    "€ NUTRI": "€ 12,00",
    "CONTRATTO": "",
-   "CHECK": "SI",
-   "RISULTATO": "SI",
-   "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "CHECK": "",
+   "RISULTATO": "",
+   "FONTE": "ADV"
   },
   {
    "CLIENTE": "Irene Calonaci",
@@ -14618,10 +14614,9 @@
    "€ TRAINER": "€ 17,00",
    "€ NUTRI": "",
    "CONTRATTO": "SI",
-   "CHECK": "SI",
-   "RISULTATO": "SI",
-   "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "CHECK": "",
+   "RISULTATO": "",
+   "FONTE": "ORGANICO"
   },
   {
    "CLIENTE": "Roberta Cusini",
@@ -15078,10 +15073,9 @@
    "€ TRAINER": "€ 17,00",
    "€ NUTRI": "",
    "CONTRATTO": "SI",
-   "CHECK": "SI",
-   "RISULTATO": "SI",
-   "FONTE": "ADV",
-   "DATA CHECK": "01/08/2026"
+   "CHECK": "",
+   "RISULTATO": "",
+   "FONTE": "ADV"
   },
   {
    "CLIENTE": "Serena Riccardi",
@@ -19108,9 +19102,8 @@
    "€ TRAINER": "€ 17,00",
    "€ NUTRI": "€ 12,00",
    "CONTRATTO": "SI",
-   "CHECK": "SI",
-   "RISULTATO": "NO",
-   "DATA CHECK": "01/08/2026"
+   "CHECK": "",
+   "RISULTATO": ""
   },
   {
    "CLIENTE": "Francesca Bongiorno",
@@ -24434,5 +24427,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T12:47:58.120Z"
+ "updatedAt": "2026-08-01T12:49:00.445Z"
 }
