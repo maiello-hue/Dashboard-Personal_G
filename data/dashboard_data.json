@@ -15685,6 +15685,31 @@
    "RISULTATO": ""
   },
   {
+   "CLIENTE": "Rebecca Bondini",
+   "STATO CLIENTE": "IN PERCORSO",
+   "PERCORSO": "12 mesi",
+   "INIZIO PERCORSO": "16/04/2026",
+   "FINE PERCORSO": "16/04/2027",
+   "IMPORTO": "€ 1.850,82",
+   "METODO PAGAMENTO": "Scalapay",
+   "STATO PAGAMENTO": "DA SALDARE",
+   "TIPO INCASSO": "",
+   "N° FATTURA": "",
+   "INCASSO": "",
+   "RIMBORSO": "",
+   "TUTOR": "Giulia",
+   "TRAINER": "Marco",
+   "NUTRI": "Vanessa",
+   "PAGANTE": "SI",
+   "€ TUTOR": "€ 15,00",
+   "€ TRAINER": "€ 17,00",
+   "€ NUTRI": "€ 12,00",
+   "CONTRATTO": "",
+   "CHECK": "",
+   "RISULTATO": "",
+   "FONTE": "ADV"
+  },
+  {
    "CLIENTE": "Elisabetta Giorgetto",
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
@@ -19961,31 +19986,6 @@
    "FONTE": "ORGANICO",
    "DATA CHECK": "31/07/2026",
    "_CHECK_JULY_FIX": "1"
-  },
-  {
-   "CLIENTE": "Bianca Brandi",
-   "STATO CLIENTE": "IN PERCORSO",
-   "PERCORSO": "6 mesi + 6 Gnocca",
-   "INIZIO PERCORSO": "15/06/2026",
-   "FINE PERCORSO": "15/06/2027",
-   "IMPORTO": "€1.850,82",
-   "METODO PAGAMENTO": "HeyLight",
-   "STATO PAGAMENTO": "SALDATO",
-   "TIPO INCASSO": "",
-   "N° FATTURA": "",
-   "INCASSO": "",
-   "RIMBORSO": "",
-   "TUTOR": "Manuela",
-   "TRAINER": "Gianmiki",
-   "NUTRI": "Sofia",
-   "PAGANTE": "SI",
-   "€ TUTOR": "€ 15,00",
-   "€ TRAINER": "€ 17,00",
-   "€ NUTRI": "€ 12,00",
-   "CONTRATTO": "SI",
-   "CHECK": "",
-   "RISULTATO": "",
-   "FONTE": "ADV"
   },
   {
    "CLIENTE": "Elisabetta Superti",
@@ -24686,5 +24686,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T18:11:30.366Z"
+ "updatedAt": "2026-08-01T18:11:47.065Z"
 }
