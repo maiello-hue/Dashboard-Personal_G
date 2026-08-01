@@ -23782,30 +23782,6 @@
    "RISULTATO": ""
   },
   {
-   "CLIENTE": "Jessica Casile",
-   "STATO CLIENTE": "IN PERCORSO",
-   "PERCORSO": "12 MESI",
-   "INIZIO PERCORSO": "30/10/2025",
-   "FINE PERCORSO": "30/10/2026",
-   "IMPORTO": "€ 588,00",
-   "METODO PAGAMENTO": "PagoDIL",
-   "STATO PAGAMENTO": "SALDATO",
-   "TIPO INCASSO": "",
-   "N° FATTURA": "",
-   "INCASSO": "",
-   "RIMBORSO": "",
-   "TUTOR": "",
-   "TRAINER": "",
-   "NUTRI": "",
-   "PAGANTE": "SI",
-   "€ TUTOR": "",
-   "€ TRAINER": "",
-   "€ NUTRI": "",
-   "CONTRATTO": "",
-   "CHECK": "",
-   "RISULTATO": ""
-  },
-  {
    "CLIENTE": "Francesca Romanelli",
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 MESI",
@@ -24617,5 +24593,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T20:37:13.710Z"
+ "updatedAt": "2026-08-01T20:59:03.199Z"
 }
