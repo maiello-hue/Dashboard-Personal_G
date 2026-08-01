@@ -175,7 +175,7 @@
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "23/10/2024",
-   "FINE PERCORSO": "23/04/2025",
+   "FINE PERCORSO": "23/08/2026",
    "IMPORTO": "€ 722,00",
    "METODO PAGAMENTO": "Bonifico",
    "STATO PAGAMENTO": "RECUPERO",
@@ -24194,5 +24194,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T09:22:58.147Z"
+ "updatedAt": "2026-08-01T09:23:16.329Z"
 }
