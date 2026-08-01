@@ -2420,11 +2420,21 @@ function isNewThisMonth(r){
   const k=mesekey(d);
   return k===mesekey(oggi)||k===mesekey(meseScorso);
 }
-function isCheckExcluded(r){ return (r['CHECK_ESCLUSA']||'').trim().toUpperCase()==='SI' || isNewThisMonth(r); }
+/* L'esclusione manuale ("Nascondi dal conteggio") è legata al mese in cui è stata
+   impostata (CHECK_ESCLUSA_MESE), esattamente come DATA CHECK: a ogni nuovo mese
+   torna quindi calcolabile da sola, senza doverla togliere a mano una per una. */
+function isCheckExcluded(r,meseSel){
+  const mese=meseSel||mesekey(new Date());
+  const manualExcl=(r['CHECK_ESCLUSA']||'').trim().toUpperCase()==='SI'&&r['CHECK_ESCLUSA_MESE']===mese;
+  return manualExcl||isNewThisMonth(r);
+}
 function toggleCheckExclude(cliente){
   const r=DATA.find(x=>x['CLIENTE']===cliente);
   if(!r) return;
-  r['CHECK_ESCLUSA']=isCheckExcluded(r)?'':'SI';
+  const meseCorrente=mesekey(new Date());
+  const esclusaOra=(r['CHECK_ESCLUSA']||'').trim().toUpperCase()==='SI'&&r['CHECK_ESCLUSA_MESE']===meseCorrente;
+  if(esclusaOra){ r['CHECK_ESCLUSA']=''; r['CHECK_ESCLUSA_MESE']=''; }
+  else{ r['CHECK_ESCLUSA']='SI'; r['CHECK_ESCLUSA_MESE']=meseCorrente; }
   saveClienti();
   buildCheckPage();
 }
@@ -2469,15 +2479,18 @@ function buildCheckPage(){
     const open=q?true:checkSectionsExpanded.has(title);
     const rowsHtml=rows.map(r=>{
       const cliente=r['CLIENTE'];
-      const manualExcl=(r['CHECK_ESCLUSA']||'').trim().toUpperCase()==='SI';
+      const manualExcl=(r['CHECK_ESCLUSA']||'').trim().toUpperCase()==='SI'&&r['CHECK_ESCLUSA_MESE']===meseSel;
       const newMonth=isNewThisMonth(r);
       const excluded=manualExcl||newMonth;
       const reasonLabel=manualExcl?' <span class="sub" style="margin:0">(esclusa dal conteggio)</span>'
         :newMonth?' <span class="sub" style="margin:0">(entrata di recente, esclusa dal conteggio)</span>':'';
+      const exclBtn=isCurrentMonth
+        ?`<button class="icon-btn" title="${manualExcl?'Includi nel conteggio':'Nascondi dal conteggio'}" onclick="toggleCheckExclude('${jsEsc(cliente)}')">${ic(manualExcl?'eye-off':'eye')}</button>`
+        :(manualExcl?`<span class="icon-btn" style="pointer-events:none;opacity:.6" title="Esclusa dal conteggio in questo mese">${ic('eye-off')}</span>`:'');
       return `<div class="fonte-client-row"${excluded?' style="opacity:.5"':''}>
         <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0">${esc(cliente)}${reasonLabel}</span>
         <span style="display:flex;align-items:center;gap:14px;flex-shrink:0;flex-wrap:wrap">
-          <button class="icon-btn" title="${manualExcl?'Includi nel conteggio':'Nascondi dal conteggio'}" onclick="toggleCheckExclude('${jsEsc(cliente)}')">${ic(manualExcl?'eye-off':'eye')}</button>
+          ${exclBtn}
           ${checkToggleGroupHtml(cliente,'CHECK','Check',checkValMese(r,'CHECK',meseSel),isCurrentMonth)}
           ${checkToggleGroupHtml(cliente,'RISULTATO','Risultato',checkValMese(r,'RISULTATO',meseSel),isCurrentMonth)}
         </span>
@@ -2529,7 +2542,7 @@ function buildPerfCollabTable(){
   ['TUTOR','TRAINER','NUTRI'].forEach(field=>{
     distinct(field).forEach(name=>{
       if(field==='TUTOR'&&PERF_TUTOR_EXCLUDE.has(normName(name))) return;
-      const assigned=DATA.filter(r=>(r[field]||'').trim()===name&&isInPercorso(r)&&!isCheckExcluded(r));
+      const assigned=DATA.filter(r=>(r[field]||'').trim()===name&&isInPercorso(r)&&!isCheckExcluded(r,meseSel));
       if(!assigned.length) return;
       const checkInserito=assigned.filter(r=>checkValMese(r,'CHECK',meseSel)!=='').length;
       const miglioramenti=assigned.filter(r=>checkValMese(r,'RISULTATO',meseSel).toUpperCase()==='SI').length;
