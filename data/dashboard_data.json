@@ -23710,30 +23710,6 @@
    "FONTE": "ADV"
   },
   {
-   "CLIENTE": "Francesca Romanelli",
-   "STATO CLIENTE": "IN PERCORSO",
-   "PERCORSO": "12 MESI",
-   "INIZIO PERCORSO": "25/01/2026",
-   "FINE PERCORSO": "25/01/2027",
-   "IMPORTO": "€ 768,00",
-   "METODO PAGAMENTO": "PagoDIL",
-   "STATO PAGAMENTO": "SALDATO",
-   "TIPO INCASSO": "",
-   "N° FATTURA": "",
-   "INCASSO": "",
-   "RIMBORSO": "",
-   "TUTOR": "Margherita",
-   "TRAINER": "",
-   "NUTRI": "Sofia",
-   "PAGANTE": "SI",
-   "€ TUTOR": "",
-   "€ TRAINER": "",
-   "€ NUTRI": "",
-   "CONTRATTO": "",
-   "CHECK": "",
-   "RISULTATO": ""
-  },
-  {
    "CLIENTE": "Chiara Pintus",
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 MESI",
@@ -24521,5 +24497,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T21:00:07.114Z"
+ "updatedAt": "2026-08-01T21:00:25.782Z"
 }
