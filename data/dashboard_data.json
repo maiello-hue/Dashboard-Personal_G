@@ -23446,31 +23446,6 @@
    "RISULTATO": ""
   },
   {
-   "CLIENTE": "Celine Hervo",
-   "STATO CLIENTE": "IN PERCORSO",
-   "PERCORSO": "8 mesi",
-   "INIZIO PERCORSO": "15/07/2026",
-   "FINE PERCORSO": "15/07/2027",
-   "IMPORTO": "€ 768,00",
-   "METODO PAGAMENTO": "PagoDIL",
-   "STATO PAGAMENTO": "SALDATO",
-   "TIPO INCASSO": "",
-   "N° FATTURA": "",
-   "INCASSO": "",
-   "RIMBORSO": "",
-   "TUTOR": "",
-   "TRAINER": "",
-   "NUTRI": "Sofia",
-   "PAGANTE": "SI",
-   "€ TUTOR": "",
-   "€ TRAINER": "",
-   "€ NUTRI": "",
-   "CONTRATTO": "",
-   "CHECK": "",
-   "RISULTATO": "",
-   "FONTE": ""
-  },
-  {
    "CLIENTE": "Cristina Castagna",
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "6 mesi + 6 Gnocca",
@@ -24617,5 +24592,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T21:02:46.339Z"
+ "updatedAt": "2026-08-01T21:02:52.294Z"
 }
