@@ -2674,7 +2674,17 @@ function editFieldHtml(f,l,idPrefix,value){
   if(f==='FONTE'){
     return `<label>${l}<select id="${idPrefix}-FONTE"><option value=""${!value?' selected':''}>—</option>${FONTE_OPTIONS.map(o=>`<option value="${o}"${value===o?' selected':''}>${o}</option>`).join('')}</select></label>`;
   }
-  if(f==='INIZIO PERCORSO'||f==='FINE PERCORSO'){
+  if(f==='INIZIO PERCORSO'){
+    /* Di default oggi (mai vuoto): se questo campo resta vuoto su una cliente
+       nuova, il conteggio "Clienti totali" la considera presente anche nei mesi
+       PRECEDENTI a quello in cui viene aggiunta (fail-safe pensato per non far
+       sparire clienti con dati incompleti dal totale, vedi finoAMese) — quindi una
+       cliente aggiunta oggi finirebbe per gonfiare anche il totale del mese
+       scorso. Con la data di oggi già precompilata questo non succede più; resta
+       comunque modificabile per chi ha iniziato con qualche giorno di ritardo. */
+    return `<label>${l}<input type="date" id="${idPrefix}-${f.replace(/ /g,'_')}" value="${itToIso(value)||itToIso(todayIt())}"></label>`;
+  }
+  if(f==='FINE PERCORSO'){
     return `<label>${l}<input type="date" id="${idPrefix}-${f.replace(/ /g,'_')}" value="${itToIso(value)}"></label>`;
   }
   if(f==='TIPO SCADENZA'){
