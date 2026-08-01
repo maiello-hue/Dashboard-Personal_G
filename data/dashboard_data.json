@@ -12499,7 +12499,7 @@
    "€ NUTRI": "€ 12,00",
    "CONTRATTO": "",
    "CHECK": "SI",
-   "RISULTATO": "NO",
+   "RISULTATO": "SI",
    "FONTE": "ADV"
   },
   {
@@ -13878,7 +13878,7 @@
    "€ NUTRI": "€ 12,00",
    "CONTRATTO": "",
    "CHECK": "SI",
-   "RISULTATO": "",
+   "RISULTATO": "SI",
    "FONTE": "ADV"
   },
   {
@@ -24194,5 +24194,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T12:13:49.965Z"
+ "updatedAt": "2026-08-01T12:15:32.398Z"
 }
