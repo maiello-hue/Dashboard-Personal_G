@@ -2535,15 +2535,15 @@ function buildCheckPage(){
     const rowsHtml=rows.map(r=>{
       const cliente=r['CLIENTE'];
       const manualExcl=(r['CHECK_ESCLUSA']||'').trim().toUpperCase()==='SI'&&r['CHECK_ESCLUSA_MESE']===meseSel;
-      const newMonth=isNewThisMonth(r);
-      const excluded=manualExcl||newMonth;
-      const reasonLabel=manualExcl?' <span class="sub" style="margin:0">(esclusa dal conteggio)</span>'
-        :newMonth?' <span class="sub" style="margin:0">(entrata di recente, esclusa dal conteggio)</span>':'';
+      /* Niente più etichetta testuale tra parentesi né testo affievolito per le
+         escluse dal conteggio: il nome resta uguale a tutti gli altri, l'unico
+         indicatore visivo resta l'icona occhio (già presente per tutti gli altri
+         motivi) accanto al nome. */
       const exclBtn=isCurrentMonth
         ?`<button class="icon-btn" title="${manualExcl?'Includi nel conteggio':'Nascondi dal conteggio'}" onclick="toggleCheckExclude('${jsEsc(cliente)}')">${ic(manualExcl?'eye-off':'eye')}</button>`
         :(manualExcl?`<span class="icon-btn" style="pointer-events:none;opacity:.6" title="Esclusa dal conteggio in questo mese">${ic('eye-off')}</span>`:'');
-      return `<div class="fonte-client-row"${excluded?' style="opacity:.5"':''}>
-        <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0">${esc(cliente)}${reasonLabel}</span>
+      return `<div class="fonte-client-row">
+        <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0">${esc(cliente)}</span>
         <span style="display:flex;align-items:center;gap:14px;flex-shrink:0;flex-wrap:wrap">
           ${exclBtn}
           ${checkToggleGroupHtml(cliente,'CHECK','Check',checkValMese(r,'CHECK',meseSel),isCurrentMonth)}
