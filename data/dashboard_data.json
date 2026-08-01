@@ -890,7 +890,8 @@
    "CHECK": "NO",
    "RISULTATO": "",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "01/08/2026"
+   "DATA CHECK": "31/07/2026",
+   "_CHECK_JULY_FIX": "1"
   },
   {
    "CLIENTE": "Debora Volpi",
@@ -24670,5 +24671,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T20:09:38.099Z"
+ "updatedAt": "2026-08-01T20:10:58.230Z"
 }
