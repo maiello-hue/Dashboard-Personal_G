@@ -23483,31 +23483,6 @@
    "FONTE": ""
   },
   {
-   "CLIENTE": "Chiara Pintus",
-   "STATO CLIENTE": "IN PERCORSO",
-   "PERCORSO": "GNOCCA 12",
-   "INIZIO PERCORSO": "27/02/2026",
-   "FINE PERCORSO": "27/02/2027",
-   "IMPORTO": "€ 816,00",
-   "METODO PAGAMENTO": "PagoDIL",
-   "STATO PAGAMENTO": "SALDATO",
-   "TIPO INCASSO": "",
-   "N° FATTURA": "",
-   "INCASSO": "",
-   "RIMBORSO": "",
-   "TUTOR": "",
-   "TRAINER": "",
-   "NUTRI": "Vanessa",
-   "PAGANTE": "SI",
-   "€ TUTOR": "",
-   "€ TRAINER": "",
-   "€ NUTRI": "",
-   "CONTRATTO": "",
-   "CHECK": "",
-   "RISULTATO": "",
-   "FONTE": ""
-  },
-  {
    "CLIENTE": "Celine Hervo",
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "8 mesi",
@@ -24661,5 +24636,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T18:24:19.791Z"
+ "updatedAt": "2026-08-01T18:24:30.806Z"
 }
