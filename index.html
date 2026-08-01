@@ -2125,9 +2125,24 @@ function distinct(field){
 const EDIT_FIELDS=[
   ['EMAIL','Email'],
   ['STATO CLIENTE','Stato'],['PERCORSO','Percorso'],['INIZIO PERCORSO','Inizio'],['FINE PERCORSO','Fine'],
+  ['TIPO SCADENZA','Tipo scadenza'],['NUMERO RATE','N° rate'],
   ['IMPORTO','Importo'],['METODO PAGAMENTO','Metodo pag.'],['STATO PAGAMENTO','Stato pag.'],['TIPO INCASSO','Tipo incasso'],['INCASSO','Incasso'],
   ['TUTOR','Tutor'],['TRAINER','Trainer'],['NUTRI','Nutri'],['VENDITORE','Venditore'],['FONTE','Fonte']
 ];
+/* Tipo scadenza: distingue come va gestita la scadenza di una cliente in
+   "Gestione scadenze". "Rinnovo" (default, retrocompatibile con le clienti
+   già presenti che non hanno questo campo) segue Fine percorso come sempre.
+   "Trance" indica un pagamento diviso in più rate (es. clienti che saldano
+   l'abbonamento a scaglioni): in questo caso Numero rate genera in automatico
+   il piano di incasso, una rata al mese a partire da Inizio percorso, per
+   un importo pari a Importo/Numero rate. */
+const TIPO_SCADENZA_OPTIONS=['Rinnovo','Trance'];
+function tipoScadenza(r){ return r['TIPO SCADENZA']==='Trance'?'Trance':'Rinnovo'; }
+function tipoScadBadge(tipo){
+  return tipo==='Trance'
+    ?'<span class="badge" style="background:rgba(42,120,214,.13);color:var(--blue)">TRANCE</span>'
+    :'<span class="badge" style="background:rgba(0,131,0,.13);color:var(--green)">RINNOVO</span>';
+}
 const FONTE_OPTIONS=['ADV','ORGANICO','INSTAGRAM','REFERRAL'];
 const FONTE_KEYS=['ADV','ORGANICO','INSTAGRAM','REFERRAL'];
 const FONTE_LABELS={'ADV':'ADV','ORGANICO':'Organico','INSTAGRAM':'Instagram','REFERRAL':'Referral'};
@@ -2490,6 +2505,15 @@ function handleCustomSelectChange(sel){
   if(sel.value==='__custom__'){ customEl.style.display='block'; customEl.focus(); }
   else customEl.style.display='none';
 }
+/* Mostra il campo "N° rate" solo quando il tipo scadenza selezionato è
+   "Trance", sia all'apertura del form (chiamata subito dopo aver riempito
+   i campi) sia al cambio della select. */
+function toggleNumeroRateField(idPrefix){
+  const sel=document.getElementById(idPrefix+'-TIPO_SCADENZA');
+  const wrap=document.getElementById(idPrefix+'-NUMERO_RATE-wrap');
+  if(!sel||!wrap) return;
+  wrap.style.display=sel.value==='Trance'?'':'none';
+}
 function editFieldHtml(f,l,idPrefix,value){
   /* Email cliente: serve (tra l'altro) per un futuro abbinamento automatico
      con Hyros in base all'indirizzo. Niente autocomplete sui valori delle
@@ -2503,6 +2527,13 @@ function editFieldHtml(f,l,idPrefix,value){
   }
   if(f==='INIZIO PERCORSO'||f==='FINE PERCORSO'){
     return `<label>${l}<input type="date" id="${idPrefix}-${f.replace(/ /g,'_')}" value="${itToIso(value)}"></label>`;
+  }
+  if(f==='TIPO SCADENZA'){
+    const v=tipoScadenza({['TIPO SCADENZA']:value});
+    return `<label>${l}<select id="${idPrefix}-TIPO_SCADENZA" onchange="toggleNumeroRateField('${idPrefix}')">${TIPO_SCADENZA_OPTIONS.map(o=>`<option value="${o}"${v===o?' selected':''}>${o==='Trance'?'Trance (pagamento a rate)':o}</option>`).join('')}</select></label>`;
+  }
+  if(f==='NUMERO RATE'){
+    return `<label id="${idPrefix}-NUMERO_RATE-wrap">${l}<input type="number" min="1" step="1" id="${idPrefix}-NUMERO_RATE" autocomplete="off" value="${esc(value||'')}"></label>`;
   }
   if(f in SELECT_FIELDS){
     return selectFieldHtml(f,l,idPrefix,value,acSourceValues(f),SELECT_FIELDS[f],f==='STATO CLIENTE'?STATO_LABELS:null);
@@ -2599,6 +2630,7 @@ function toggleAddCliente(force){
     document.getElementById('add-cliente-fields').innerHTML=
       `<label>Cliente*<input id="new-CLIENTE" placeholder="Nome e cognome"></label>`+
       EDIT_FIELDS.map(([f,l])=>editFieldHtml(f,l,'new','')).join('');
+    toggleNumeroRateField('new');
   }
 }
 function readEditFieldValue(idPrefix,f){
@@ -2954,49 +2986,39 @@ function render(){
   mkChart('c-collab',{type:'bar',data:{labels:cb.map(x=>x[0]),datasets:[{data:cb.map(x=>x[1]),backgroundColor:cb.map(x=>chartTagColor(role.toLowerCase(),x[0])),borderRadius:6}]},options:{...common,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{...gridOpt,beginAtZero:true},y:gridOpt}}});
   }
 
-  /* rinnovi da gestire */
+  /* rinnovi da gestire + rate da incassare (Trance) */
   const win=+document.getElementById('scad-window').value;
   const hide=document.getElementById('scad-hide').checked;
   const inWin=new Date(now.getTime()+win*864e5);
   const ren=renAll();
-  /* Includiamo anche le clienti già scadute (Fine percorso nel passato), non solo
-     quelle in arrivo entro la finestra scelta: finché lo Stato cliente resta
-     "In percorso/Congelato/Sparita" (cioè nessuno ha ancora aggiornato manualmente
-     lo stato) è una scadenza ancora da gestire, ed è anzi la più urgente. */
-  let sc=allRows.filter(r=>{const d=pdate(r['FINE PERCORSO']);return d&&d<=inWin&&['IN PERCORSO','CONGELATO','SPARITA'].includes(r['STATO CLIENTE']);})
-    .sort((a,b)=>pdate(a['FINE PERCORSO'])-pdate(b['FINE PERCORSO']));
   const stOf=r=>(ren[r['CLIENTE']]&&ren[r['CLIENTE']].st)||'da';
-  const daCont=sc.filter(r=>stOf(r)==='da').length, gestiti=sc.filter(r=>['rin','no'].includes(stOf(r))).length;
-  document.getElementById('ren-summary').textContent=sc.length?`${sc.length} in scadenza · ${daCont} da contattare · ${gestiti} gestiti`:'';
+  const trancePag=trancePagate();
+  const isTrancePaid=it=>!!trancePag[tranceKey(it)];
+  /* Includiamo anche le clienti già scadute (Fine percorso nel passato) o le
+     rate già scadute e non incassate, non solo quelle in arrivo entro la
+     finestra scelta: finché non vengono gestite (rinnovo/posticipo per i
+     rinnovi, spunta "incassata" per le rate) sono le scadenze più urgenti. */
+  const rinnEntries=allRows
+    .filter(r=>{const d=pdate(r['FINE PERCORSO']);return tipoScadenza(r)==='Rinnovo'&&d&&d<=inWin&&['IN PERCORSO','CONGELATO','SPARITA'].includes(r['STATO CLIENTE']);})
+    .map(r=>({type:'rinnovo',date:pdate(r['FINE PERCORSO']),r}));
+  const tranEntries=allRows
+    .filter(r=>tipoScadenza(r)==='Trance'&&['IN PERCORSO','CONGELATO','SPARITA'].includes(r['STATO CLIENTE']))
+    .flatMap(tranceInstsOf)
+    .filter(it=>it.date<=inWin)
+    .map(it=>({type:'trance',date:it.date,r:it.r,i:it.i,n:it.n,amt:it.amt}));
+  let sc=[...rinnEntries,...tranEntries].sort((a,b)=>a.date-b.date);
+  const isGestito=e=>e.type==='trance'?isTrancePaid(e):['rin','no'].includes(stOf(e.r));
+  const daCont=sc.filter(e=>e.type==='rinnovo'&&stOf(e.r)==='da').length, gestiti=sc.filter(isGestito).length;
+  const nTrance=sc.filter(e=>e.type==='trance').length;
+  document.getElementById('ren-summary').textContent=sc.length?`${sc.length} in scadenza · ${daCont} da contattare${nTrance?` · ${nTrance} rate da incassare`:''} · ${gestiti} gestiti`:'';
   document.getElementById('k-scad-d').textContent=brkScad+' · '+daCont+' da contattare';
-  if(hide) sc=sc.filter(r=>!['rin','no'].includes(stOf(r)));
+  if(hide) sc=sc.filter(e=>!isGestito(e));
   document.getElementById('scadenze').innerHTML=sc.length?groupScadenzeByMonth(sc).map(g=>{
     const isOpen=scadGroupsOpen.has(g.key);
     const header=`<div class="storico-group-header" onclick="toggleScadGroup('${jsEsc(g.key)}')"><span class="storico-group-arrow">${isOpen?'⌄':'›'}</span><span class="storico-group-label">${esc(g.label)}</span><span class="count">${g.items.length}</span></div>`;
-    const body=isOpen?g.items.map(r=>{
-      const d=pdate(r['FINE PERCORSO']), gg=Math.ceil((d-now)/864e5);
-      const name=r['CLIENTE'];
-      const ggLabel=gg<0?`scaduta da ${-gg} gg`:gg===0?'scade oggi':`${gg} gg`;
-      const rowOpen=scadExpanded.has(name);
-      const collabInfo=(ic2,l,v)=>`<span style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted)" title="${l}">${ic2}${esc(v||'—')}</span>`;
-      const collabPanel=rowOpen?`<div style="flex:1 1 100%;margin-top:10px;display:flex;gap:18px;flex-wrap:wrap" onclick="event.stopPropagation()">
-        ${collabInfo(DI.user,'Tutor',r['TUTOR'])}
-        ${collabInfo(DI.dumbbell,'Trainer',r['TRAINER'])}
-        ${collabInfo(DI.nutri,'Nutrizionista',r['NUTRI'])}
-      </div>`:'';
-      return `<div class="scad-item" onclick="toggleScadExpand('${jsEsc(name)}')" style="cursor:pointer">
-        <span style="flex:1;min-width:200px">${esc(name)} ${statoBadge(r['STATO CLIENTE'])} · ${esc(r['PERCORSO']||'—')}</span>
-        <div class="scad-right">
-          <span class="scad-date ${gg<0?'danger':''}">${fdate(d)} · ${ggLabel}</span>
-          <button class="icon-btn" title="Rinnova abbonamento" onclick="event.stopPropagation();apriRinnovaAbbonamento('${jsEsc(name)}')">${ic('sync')}</button>
-          <button class="icon-btn" title="Posticipa abbonamento" onclick="event.stopPropagation();apriPosticipaAbbonamento('${jsEsc(name)}')">${ic('clock')}</button>
-          <span class="storico-group-arrow">${rowOpen?'⌄':'›'}</span>
-        </div>
-        ${collabPanel}
-      </div>`;
-    }).join(''):'';
+    const body=isOpen?g.items.map(e=>e.type==='trance'?renderTrancheItem(e,now,isTrancePaid):renderRinnovoItem(e,now)).join(''):'';
     return header+body;
-  }).join(''):'<div class="sub">'+(hide&&gestiti?ic('check')+'Tutti i rinnovi in scadenza sono stati gestiti':ic('check')+'Nessun percorso in scadenza nel periodo selezionato')+'</div>';
+  }).join(''):'<div class="sub">'+(hide&&gestiti?ic('check')+'Tutti i rinnovi e le rate in scadenza sono stati gestiti':ic('check')+'Nessun percorso o rata in scadenza nel periodo selezionato')+'</div>';
 
   const storicoCountEl=document.getElementById('storico-count');
   if(storicoCountEl) storicoCountEl.textContent='('+allRows.filter(isArchiviata).length+')';
@@ -3115,19 +3137,93 @@ function salvaPosticipaAbbonamento(){
 /* Raggruppa i "Rinnovi da gestire" per mese di Fine percorso (stesso mese che
    compare nella colonna data di ogni riga). Ogni gruppo parte chiuso, come
    nello Storico: è l'utente a scegliere quali mesi aprire. */
+/* rows: array di "entry" unificate {type:'rinnovo'|'trance', date, ...}
+   (vedi rinnEntries/tranEntries in render()). Raggruppa per mese di e.date,
+   che per i rinnovi è Fine percorso e per le rate è la data della singola rata. */
 function groupScadenzeByMonth(rows){
   const groups={};
-  rows.forEach(r=>{
-    const d=pdate(r['FINE PERCORSO']);
+  rows.forEach(e=>{
+    const d=e.date;
     const key=d?(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')):'_nodata';
     if(!groups[key]) groups[key]={key,d,items:[]};
-    groups[key].items.push(r);
+    groups[key].items.push(e);
   });
   return Object.values(groups).sort((a,b)=>{
     if(a.key==='_nodata') return 1;
     if(b.key==='_nodata') return -1;
     return a.d-b.d;
   }).map(g=>({key:g.key,label:g.key==='_nodata'?'Senza data':(MESI_CAP[g.d.getMonth()]+' '+g.d.getFullYear()),items:g.items}));
+}
+/* Riga "rinnovo" nell'elenco unificato di Gestione scadenze (stesso markup di
+   prima, solo estratto in funzione a sé per poter alternare con le righe
+   "trance"). */
+function renderRinnovoItem(e,now){
+  const r=e.r, d=e.date, gg=Math.ceil((d-now)/864e5);
+  const name=r['CLIENTE'];
+  const ggLabel=gg<0?`scaduta da ${-gg} gg`:gg===0?'scade oggi':`${gg} gg`;
+  const rowOpen=scadExpanded.has(name);
+  const collabInfo=(ic2,l,v)=>`<span style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted)" title="${l}">${ic2}${esc(v||'—')}</span>`;
+  const collabPanel=rowOpen?`<div style="flex:1 1 100%;margin-top:10px;display:flex;gap:18px;flex-wrap:wrap" onclick="event.stopPropagation()">
+    ${collabInfo(DI.user,'Tutor',r['TUTOR'])}
+    ${collabInfo(DI.dumbbell,'Trainer',r['TRAINER'])}
+    ${collabInfo(DI.nutri,'Nutrizionista',r['NUTRI'])}
+  </div>`:'';
+  return `<div class="scad-item" onclick="toggleScadExpand('${jsEsc(name)}')" style="cursor:pointer">
+    <span style="flex:1;min-width:200px">${esc(name)} ${statoBadge(r['STATO CLIENTE'])} · ${esc(r['PERCORSO']||'—')}</span>
+    <div class="scad-right">
+      <span class="scad-date ${gg<0?'danger':''}">${fdate(d)} · ${ggLabel}</span>
+      <button class="icon-btn" title="Rinnova abbonamento" onclick="event.stopPropagation();apriRinnovaAbbonamento('${jsEsc(name)}')">${ic('sync')}</button>
+      <button class="icon-btn" title="Posticipa abbonamento" onclick="event.stopPropagation();apriPosticipaAbbonamento('${jsEsc(name)}')">${ic('clock')}</button>
+      <span class="storico-group-arrow">${rowOpen?'⌄':'›'}</span>
+    </div>
+    ${collabPanel}
+  </div>`;
+}
+/* Riga "trance" nell'elenco unificato di Gestione scadenze: una rata di
+   pagamento da incassare, con checkbox per segnarla come incassata (stesso
+   pattern delle rate di rimborso, ma con verso opposto: qui è un incasso da
+   ricevere, non un bonifico da fare, quindi una rata scaduta e non ancora
+   spuntata resta evidenziata come urgente invece di essere data per "fatta"). */
+function renderTrancheItem(e,now,isTrancePaid){
+  const r=e.r, d=e.date, gg=Math.ceil((d-now)/864e5);
+  const name=r['CLIENTE'];
+  const k=tranceKey(e);
+  const paid=isTrancePaid(e);
+  const ggLabel=gg<0?`scaduta da ${-gg} gg`:gg===0?'scade oggi':`${gg} gg`;
+  return `<div class="scad-item">
+    ${paid?'<span style="width:16px;text-align:center">'+ic('check')+'</span>':`<input type="checkbox" onchange="tranceToggle('${jsEsc(k)}')" title="segna rata come incassata">`}
+    <span style="flex:1;min-width:200px">${esc(name)} ${statoBadge(r['STATO CLIENTE'])} · rata ${e.i}/${e.n} · ${fmtEuro(e.amt)} ${tipoScadBadge('Trance')}</span>
+    <div class="scad-right">
+      <span class="scad-date ${!paid&&gg<0?'danger':''}">${fdate(d)} · ${ggLabel}</span>
+      ${paid?'<span class="tag-pagato">INCASSATA</span>':''}
+    </div>
+  </div>`;
+}
+/* Genera le rate di una cliente "Trance": prima rata a Inizio percorso, poi
+   una al mese, per un totale di Numero rate rate da Importo/Numero rate
+   ciascuna (stessa logica di generazione di instsOf() per i rimborsi, ma con
+   Inizio percorso/Importo al posto di Recesso/Storno). */
+function tranceInstsOf(r){
+  if(tipoScadenza(r)!=='Trance') return [];
+  const n=parseInt(r['NUMERO RATE'])||0;
+  if(n<=0) return [];
+  const d0=pdate(r['INIZIO PERCORSO']);
+  if(!d0) return [];
+  const tot=euro(r['IMPORTO']);
+  const amt=tot?tot/n:0;
+  const out=[];
+  for(let i=0;i<n;i++) out.push({date:addMonths(d0,i),amt,i:i+1,n,r});
+  return out;
+}
+const TRANCE_KEY='global_trance_pagate';
+function trancePagate(){try{return JSON.parse(localStorage.getItem(TRANCE_KEY)||'{}');}catch(e){return {};}}
+function tranceKey(it){return it.r['CLIENTE']+'|'+it.date.toISOString().slice(0,10)+'|'+it.i;}
+function tranceToggle(k){
+  const a=trancePagate();
+  a[k]?delete a[k]:a[k]=1;
+  try{localStorage.setItem(TRANCE_KEY,JSON.stringify(a));}catch(e){}
+  scheduleGithubSync();
+  render();
 }
 function groupStoricoByMonth(rowsCalc){
   /* raggruppa per il mese in cui la cliente è stata effettivamente spostata in Abbandono/Non
@@ -3298,6 +3394,7 @@ function apriModificaCliente(nome){
   editingClienteName=nome;
   document.getElementById('edit-cliente-name').textContent=nome;
   document.getElementById('edit-cliente-fields').innerHTML=EDIT_FIELDS.map(([f,l])=>editFieldHtml(f,l,'editm',r[f]||'')).join('');
+  toggleNumeroRateField('editm');
   document.getElementById('edit-cliente-modal').style.display='flex';
 }
 function chiudiModificaCliente(){
