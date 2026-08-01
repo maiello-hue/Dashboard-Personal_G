@@ -7612,7 +7612,8 @@
    "FONTE": "ADV",
    "DATA INCASSO": "29/07/2026",
    "DATA CHECK": "31/07/2026",
-   "_CHECK_JULY_FIX": "1"
+   "_CHECK_JULY_FIX": "1",
+   "CHECK_ESCLUSA": ""
   },
   {
    "CLIENTE": "Michela Balbi",
@@ -24660,5 +24661,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T12:57:24.852Z"
+ "updatedAt": "2026-08-01T12:57:39.195Z"
 }
