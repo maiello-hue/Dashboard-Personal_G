@@ -20825,7 +20825,7 @@
   },
   {
    "CLIENTE": "Erica Innocenti",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "ABBANDONATO",
    "PERCORSO": "6 mesi + 6 Gnocca",
    "INIZIO PERCORSO": "20/06/2026",
    "FINE PERCORSO": "20/06/2027",
@@ -20846,7 +20846,10 @@
    "CONTRATTO": "SI",
    "CHECK": "",
    "RISULTATO": "",
-   "FONTE": "ADV"
+   "FONTE": "ADV",
+   "EMAIL": "",
+   "VENDITORE": "",
+   "DATA ARCHIVIAZIONE": "01/08/2026"
   },
   {
    "CLIENTE": "Jessica Bosis",
@@ -24557,5 +24560,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T18:14:19.478Z"
+ "updatedAt": "2026-08-01T18:15:29.695Z"
 }
