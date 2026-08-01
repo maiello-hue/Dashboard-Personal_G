@@ -3297,6 +3297,7 @@ function renderTable(rows){
         <span class="detail-item" title="Risultato">${DI.star}${esc(r['RISULTATO']||'—')}</span>
         <span class="row-icon-actions" onclick="event.stopPropagation()">
           <button class="pill-btn" title="Modifica" onclick="apriModificaCliente('${jsEsc(r['CLIENTE'])}')">${ic('edit')}Modifica</button>
+          <button class="pill-btn" title="Rinnova abbonamento / imposta pagamento a rate" onclick="apriRinnovaAbbonamento('${jsEsc(r['CLIENTE'])}')">${ic('sync')}Rinnova</button>
           ${catFilter==='storico'?`<button class="pill-btn" title="Rimborsa" onclick="apriRimborsaCliente('${jsEsc(r['CLIENTE'])}')">${ic('undo')}Rimborsa</button>`:''}
           <button class="pill-btn danger" title="Elimina cliente" onclick="eliminaCliente('${jsEsc(r['CLIENTE'])}')">${ic('trash')}Elimina</button>
         </span>`;
@@ -3329,6 +3330,7 @@ function renderTable(rows){
         </div>
         <div class="cc-actions" onclick="event.stopPropagation()">
           <button class="cc-btn" title="Modifica" onclick="apriModificaCliente('${jsEsc(r['CLIENTE'])}')">${ic('edit')}</button>
+          <button class="cc-btn" title="Rinnova abbonamento / imposta pagamento a rate" onclick="apriRinnovaAbbonamento('${jsEsc(r['CLIENTE'])}')">${ic('sync')}</button>
           <span class="cc-chevron">${open?'⌄':'›'}</span>
         </div>
       </div>
