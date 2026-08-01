@@ -1019,6 +1019,17 @@ h3 .ico,.sub .ico{color:var(--muted)}
   </div>
 </div>
 
+<div class="modal-overlay" id="tipo-scad-modal" onclick="if(event.target===this) chiudiTipoScadenza()">
+  <div class="modal-card">
+    <h3><span class="ico"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M8 5v1.1M8 9.9V11M6.1 6.3c.3-.6 1-1 1.9-1s1.7.4 1.7 1c0 1.4-3.2.7-3.2 2.1 0 .6.8 1 1.7 1s1.6-.4 1.9-1"/></svg></span>Tipo scadenza — <span id="tipo-scad-cliente-name"></span></h3>
+    <div class="editbar" id="tipo-scad-fields"></div>
+    <div class="editbar-actions">
+      <button class="btn" onclick="salvaTipoScadenza()"><span class="ico"><svg viewBox="0 0 16 16"><path d="M3 3h7.5l2.5 2.5V13H3z"/><path d="M5 3v3h5V3"/><path d="M5.3 9H10.7V13H5.3z"/></svg></span>Salva</button>
+      <button class="btn ghost" onclick="chiudiTipoScadenza()">Chiudi</button>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ============================================================
    DASHBOARD INDIPENDENTE — dati salvati sul dispositivo (localStorage)
@@ -2125,7 +2136,6 @@ function distinct(field){
 const EDIT_FIELDS=[
   ['EMAIL','Email'],
   ['STATO CLIENTE','Stato'],['PERCORSO','Percorso'],['INIZIO PERCORSO','Inizio'],['FINE PERCORSO','Fine'],
-  ['TIPO SCADENZA','Tipo scadenza'],['NUMERO RATE','N° rate'],
   ['IMPORTO','Importo'],['METODO PAGAMENTO','Metodo pag.'],['STATO PAGAMENTO','Stato pag.'],['TIPO INCASSO','Tipo incasso'],['INCASSO','Incasso'],
   ['TUTOR','Tutor'],['TRAINER','Trainer'],['NUTRI','Nutri'],['VENDITORE','Venditore'],['FONTE','Fonte']
 ];
@@ -2135,7 +2145,9 @@ const EDIT_FIELDS=[
    "Trance" indica un pagamento diviso in più rate (es. clienti che saldano
    l'abbonamento a scaglioni): in questo caso Numero rate genera in automatico
    il piano di incasso, una rata al mese a partire da Inizio percorso, per
-   un importo pari a Importo/Numero rate. */
+   un importo pari a Importo/Numero rate. Questi due campi si impostano
+   direttamente da "Gestione scadenze" (bottone dedicato su ogni riga), non
+   dal form Nuova/Modifica cliente. */
 const TIPO_SCADENZA_OPTIONS=['Rinnovo','Trance'];
 function tipoScadenza(r){ return r['TIPO SCADENZA']==='Trance'?'Trance':'Rinnovo'; }
 function tipoScadBadge(tipo){
@@ -2630,7 +2642,6 @@ function toggleAddCliente(force){
     document.getElementById('add-cliente-fields').innerHTML=
       `<label>Cliente*<input id="new-CLIENTE" placeholder="Nome e cognome"></label>`+
       EDIT_FIELDS.map(([f,l])=>editFieldHtml(f,l,'new','')).join('');
-    toggleNumeroRateField('new');
   }
 }
 function readEditFieldValue(idPrefix,f){
@@ -3174,6 +3185,7 @@ function renderRinnovoItem(e,now){
       <span class="scad-date ${gg<0?'danger':''}">${fdate(d)} · ${ggLabel}</span>
       <button class="icon-btn" title="Rinnova abbonamento" onclick="event.stopPropagation();apriRinnovaAbbonamento('${jsEsc(name)}')">${ic('sync')}</button>
       <button class="icon-btn" title="Posticipa abbonamento" onclick="event.stopPropagation();apriPosticipaAbbonamento('${jsEsc(name)}')">${ic('clock')}</button>
+      <button class="icon-btn" title="Imposta tipo scadenza (Rinnovo/Trance)" onclick="event.stopPropagation();apriTipoScadenza('${jsEsc(name)}')">${ic('coin')}</button>
       <span class="storico-group-arrow">${rowOpen?'⌄':'›'}</span>
     </div>
     ${collabPanel}
@@ -3196,6 +3208,7 @@ function renderTrancheItem(e,now,isTrancePaid){
     <div class="scad-right">
       <span class="scad-date ${!paid&&gg<0?'danger':''}">${fdate(d)} · ${ggLabel}</span>
       ${paid?'<span class="tag-pagato">INCASSATA</span>':''}
+      <button class="icon-btn" title="Imposta tipo scadenza (Rinnovo/Trance)" onclick="event.stopPropagation();apriTipoScadenza('${jsEsc(name)}')">${ic('coin')}</button>
     </div>
   </div>`;
 }
@@ -3394,7 +3407,6 @@ function apriModificaCliente(nome){
   editingClienteName=nome;
   document.getElementById('edit-cliente-name').textContent=nome;
   document.getElementById('edit-cliente-fields').innerHTML=EDIT_FIELDS.map(([f,l])=>editFieldHtml(f,l,'editm',r[f]||'')).join('');
-  toggleNumeroRateField('editm');
   document.getElementById('edit-cliente-modal').style.display='flex';
 }
 function chiudiModificaCliente(){
@@ -3500,6 +3512,43 @@ function salvaRinnovaAbbonamento(){
   const nome=renewingClienteName;
   chiudiRinnovaAbbonamento();
   renSet(nome,'st','rin');
+}
+
+/* Imposta tipo scadenza (Rinnovo/Trance) + N° rate: apribile dal bottone
+   dedicato su ogni riga di "Gestione scadenze" (sia da un rinnovo che da una
+   rata già impostata a Trance, per poterla correggere). Non fa più parte del
+   form Nuova/Modifica cliente: si gestisce solo da qui. */
+let tipoScadClienteName=null;
+function apriTipoScadenza(nome){
+  const r=DATA.find(x=>x['CLIENTE']===nome);
+  if(!r) return;
+  tipoScadClienteName=nome;
+  document.getElementById('tipo-scad-cliente-name').textContent=nome;
+  document.getElementById('tipo-scad-fields').innerHTML=
+    editFieldHtml('TIPO SCADENZA','Tipo scadenza','tscad',r['TIPO SCADENZA']||'')+
+    editFieldHtml('NUMERO RATE','N° rate','tscad',r['NUMERO RATE']||'');
+  toggleNumeroRateField('tscad');
+  document.getElementById('tipo-scad-modal').style.display='flex';
+}
+function chiudiTipoScadenza(){
+  document.getElementById('tipo-scad-modal').style.display='none';
+  tipoScadClienteName=null;
+}
+function salvaTipoScadenza(){
+  const r=DATA.find(x=>x['CLIENTE']===tipoScadClienteName);
+  if(!r) return;
+  const tipo=readEditFieldValue('tscad','TIPO SCADENZA');
+  r['TIPO SCADENZA']=tipo;
+  if(tipo==='Trance'){
+    const n=readEditFieldValue('tscad','NUMERO RATE');
+    if(!parseInt(n)||parseInt(n)<=0){ alert('Inserisci un numero di rate valido.'); return; }
+    r['NUMERO RATE']=n;
+  } else {
+    delete r['NUMERO RATE'];
+  }
+  saveClienti();
+  chiudiTipoScadenza();
+  buildFilters(); render();
 }
 
 /* ================= RIMBORSI ================= */
