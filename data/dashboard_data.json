@@ -22494,7 +22494,9 @@
    "RISULTATO": "",
    "FONTE": "INSTAGRAM",
    "DATA INCASSO": "29/07/2026",
-   "VENDITORE": "Personal_G"
+   "VENDITORE": "Personal_G",
+   "CHECK_ESCLUSA": "",
+   "CHECK_ESCLUSA_MESE": ""
   },
   {
    "CLIENTE": "Sara Anania",
@@ -24666,5 +24668,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T20:03:41.603Z"
+ "updatedAt": "2026-08-01T20:03:53.052Z"
 }
