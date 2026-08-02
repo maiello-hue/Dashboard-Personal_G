@@ -143,7 +143,8 @@ h1{font-size:22px;font-weight:500}
 .fv2-search-btn .ico svg{width:14px;height:14px}
 .fv2-clear-btn{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:999px;border:1px solid var(--border-strong);background:var(--card);color:var(--red);cursor:pointer;flex-shrink:0}
 .fv2-clear-btn:hover{background:rgba(227,73,72,.1);border-color:var(--red)}
-.fv2-clear-btn svg{width:13px;height:13px}
+.fv2-clear-btn .ico{margin-right:0}
+.fv2-clear-btn .ico svg{width:13px;height:13px}
 .fv2-pill{display:inline-flex;align-items:center;gap:7px;background:var(--card2);border:1px solid var(--border-strong);color:var(--text);border-radius:999px;padding:8px 13px;font-size:12.5px;cursor:pointer;white-space:nowrap;min-width:0}
 .fv2-pill:hover{background:var(--surface-2, var(--card))}
 .fv2-pill.flash{animation:filterFlash .45s ease}
@@ -152,7 +153,7 @@ h1{font-size:22px;font-weight:500}
 .fv2-pill-value{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px}
 .fv2-pill .msf-count{margin-left:-2px}
 .fv2-pill .chev-ico{display:flex;color:var(--muted2);margin-left:1px}
-.fv2-pill .chev-ico svg{width:10px;height:10px}
+.fv2-pill .chev-ico svg{width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .fv2-pill-main{background:var(--card);border-width:1.5px}
 @media(max-width:760px){
   .filters-v2{padding:12px}
@@ -825,7 +826,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
             <label class="fv2-label">Stato</label>
             <div class="msf" id="msf-stato"><button type="button" class="fv2-pill fv2-pill-main" onclick="toggleMsf('stato')"><span class="ico"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M5.3 8.2l1.7 1.7 3.4-3.7"/></svg></span><span class="fv2-pill-value" id="msf-stato-value">Tutti</span><span class="msf-count" id="msf-stato-count"></span><span class="chev-ico"><svg viewBox="0 0 16 16"><path d="M4 6.2l4 4 4-4"/></svg></span></button><div class="msf-menu" id="msf-stato-menu"></div></div>
           </div>
-          <button type="button" class="fv2-clear-btn" title="Azzera tutti i filtri" onclick="resetFilters()"><svg viewBox="0 0 16 16"><path d="M4.2 4.2l7.6 7.6M11.8 4.2l-7.6 7.6"/></svg></button>
+          <button type="button" class="fv2-clear-btn" title="Azzera tutti i filtri" onclick="resetFilters()"><span class="ico"><svg viewBox="0 0 16 16"><path d="M4.2 4.2l7.6 7.6M11.8 4.2l-7.6 7.6"/></svg></span></button>
         </div>
         <div class="fv2-row">
           <div class="fv2-field">
