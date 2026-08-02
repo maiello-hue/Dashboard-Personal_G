@@ -3199,7 +3199,7 @@ function render(){
      di abbandono non va mostrata (dato non rappresentativo), ma i conteggi
      grezzi (clienti/abbandono/non rinnovo/totale) restano visibili normalmente.
      Formato chiave: "nomeNormalizzato|YYYY-MM". */
-  const ABB_PCT_HIDE=new Set(['elisa|2026-07']);
+  const ABB_PCT_HIDE=new Set(['elisa|2026-07','niccol|2026-07','personalg|2026-07']);
   ['TUTOR','TRAINER','NUTRI'].forEach(field=>{
     distinct(field).forEach(name=>{
       const assigned=allRows.filter(r=>r[field]===name);
