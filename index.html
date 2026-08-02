@@ -3193,6 +3193,12 @@ function render(){
      nel momento in cui l'utente le guarda davvero. */
   let collabRateRows=[];
   if(currentPage==='analisi'){
+  const normNameAbb=s=>(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+  /* Eccezioni manuali: per questi collaboratori, in un mese specifico, la %
+     di abbandono non va mostrata (dato non rappresentativo), ma i conteggi
+     grezzi (clienti/abbandono/non rinnovo/totale) restano visibili normalmente.
+     Formato chiave: "nomeNormalizzato|YYYY-MM". */
+  const ABB_PCT_HIDE=new Set(['elisa|2026-07']);
   ['TUTOR','TRAINER','NUTRI'].forEach(field=>{
     distinct(field).forEach(name=>{
       const assigned=allRows.filter(r=>r[field]===name);
@@ -3204,11 +3210,12 @@ function render(){
       KPI_LABELS[keyAbb]=name+' · Abbandono ('+collabRoleLabel[field]+')';
       KPI_LABELS[keyNonrin]=name+' · Non rinnovo ('+collabRoleLabel[field]+')';
       KPI_LABELS[keyTot]=name+' · Totale ('+collabRoleLabel[field]+')';
+      const hidePct=ABB_PCT_HIDE.has(normNameAbb(name)+'|'+meseSel);
       collabRateRows.push({
         field,name,tot:assigned.length,
         abbRate:pct(abbRows.length,assigned.length),abbN:abbRows.length,keyAbb,
         nonrinRate:pct(nonrinRows.length,assigned.length),nonrinN:nonrinRows.length,keyNonrin,
-        totRate:pct(totRows.length,assigned.length),totN:totRows.length,keyTot
+        totRate:pct(totRows.length,assigned.length),totN:totRows.length,keyTot,hidePct
       });
     });
   });
@@ -3219,7 +3226,7 @@ function render(){
       ${numCell(r.abbN,r.keyAbb)}
       ${numCell(r.nonrinN,r.keyNonrin)}
       ${numCell(r.totN,r.keyTot)}
-      ${cell(r.totRate,r.totN,r.tot,r.keyTot)}
+      ${r.hidePct?'<td class="rate-cell"><div class="rate-cell-inner"><span class="rate-pill" style="background:var(--card2);color:var(--muted)">—</span></div></td>':cell(r.totRate,r.totN,r.tot,r.keyTot)}
     </tr>`;
   let collabTableHtml='';
   ['TUTOR','TRAINER','NUTRI'].forEach(field=>{
@@ -3296,7 +3303,7 @@ function render(){
   const abbTop3El=document.getElementById('abbandono-top3');
   if(abbTop3El){
     const RANK_ICON=['🥇','🥈','🥉'];
-    const abbTop3=abbCompRows.slice().sort((a,b)=>a.totRate-b.totRate).slice(0,3);
+    const abbTop3=abbCompRows.filter(r=>!r.hidePct).sort((a,b)=>a.totRate-b.totRate).slice(0,3);
     abbTop3El.innerHTML=abbTop3.length?abbTop3.map((r,i)=>{
       const c=rateColor(r.totRate);
       return `<div class="top3-row" style="cursor:pointer" onclick="apriListaClienti('${r.keyTot}')">
