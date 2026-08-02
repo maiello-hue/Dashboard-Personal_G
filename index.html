@@ -785,19 +785,19 @@ h3 .ico,.sub .ico{color:var(--muted)}
       </div>
 
       <div id="analisi-tab-fonte" class="grid" style="display:none">
-        <div class="card span6"><h3>Fonte clienti</h3><div class="chartbox"><canvas id="c-fonte"></canvas></div></div>
-        <div class="card span6"><h3>Fonte per mese</h3><div class="chartbox"><canvas id="c-fonte-mese"></canvas></div></div>
+        <div class="card span6"><h3><span><i class="fa-solid fa-bullhorn" style="color:#2f7fd1"></i>Fonte clienti</span></h3><div class="chartbox"><canvas id="c-fonte"></canvas></div></div>
+        <div class="card span6"><h3><span><i class="fa-solid fa-chart-line" style="color:#1f9d63"></i>Fonte per mese</span></h3><div class="chartbox"><canvas id="c-fonte-mese"></canvas></div></div>
         <div class="card span12">
-          <h3>Elenco clienti per fonte</h3>
+          <h3><span><i class="fa-solid fa-list" style="color:#b5720f"></i>Elenco clienti per fonte</span></h3>
           <div class="sub" style="margin-bottom:10px">Clicca su una fonte per espandere l'elenco, suddiviso mese per mese, con il totale in fondo.</div>
           <div id="fonte-report"></div>
         </div>
       </div>
 
       <div id="analisi-tab-abbandono" class="grid" style="display:none">
-        <div class="card span6"><h3>Confronto tassi (%)</h3><div class="chartbox"><canvas id="c-abbandono-rate"></canvas></div></div>
+        <div class="card span6"><h3><span><i class="fa-solid fa-chart-column" style="color:#d23f3f"></i>Confronto tassi (%)</span></h3><div class="chartbox"><canvas id="c-abbandono-rate"></canvas></div></div>
         <div class="card span6">
-          <h3>Composizione abbandoni
+          <h3><span><i class="fa-solid fa-chart-pie" style="color:#7c56d9"></i>Composizione abbandoni</span>
             <span class="roletabs">
               <button id="arc-TUTOR" class="on" onclick="setAbbCompRole('TUTOR')">Tutor</button>
               <button id="arc-TRAINER" onclick="setAbbCompRole('TRAINER')">Trainer</button>
@@ -807,7 +807,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
           <div class="chartbox"><canvas id="c-abbandono-comp"></canvas></div>
         </div>
         <div class="card span12">
-          <h3>Tasso di abbandono</h3>
+          <h3><span><i class="fa-solid fa-table-list" style="color:#767c8a"></i>Tasso di abbandono</span></h3>
           <div class="sub" style="margin-bottom:10px">Percentuali sul totale di ciascuna categoria, calcolate separatamente per Premium e Gnocca.</div>
           <table class="rate-table">
             <thead>
@@ -817,7 +817,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
           </table>
         </div>
         <div class="card span12">
-          <h3>Tasso di abbandono per collaboratore</h3>
+          <h3><span><i class="fa-solid fa-users-gear" style="color:#2f7fd1"></i>Tasso di abbandono per collaboratore</span></h3>
           <div class="sub" style="margin-bottom:10px">Percentuali calcolate sul totale delle clienti assegnate a ciascun collaboratore (Tutor, Trainer, Nutrizionista).</div>
           <table class="rate-table">
             <thead>
@@ -829,9 +829,9 @@ h3 .ico,.sub .ico{color:var(--muted)}
       </div>
 
       <div id="analisi-tab-performance" class="grid" style="display:none">
-        <div class="card span6"><h3>Confronto tassi (%)</h3><div class="chartbox"><canvas id="c-perf-rate"></canvas></div></div>
+        <div class="card span6"><h3><span><i class="fa-solid fa-chart-column" style="color:#1f9d63"></i>Confronto tassi (%)</span></h3><div class="chartbox"><canvas id="c-perf-rate"></canvas></div></div>
         <div class="card span6">
-          <h3>Composizione miglioramenti
+          <h3><span><i class="fa-solid fa-chart-pie" style="color:#7c56d9"></i>Composizione miglioramenti</span>
             <span class="roletabs">
               <button id="pcr-TUTOR" class="on" onclick="setPerfCompRole('TUTOR')">Tutor</button>
               <button id="pcr-TRAINER" onclick="setPerfCompRole('TRAINER')">Trainer</button>
@@ -841,25 +841,25 @@ h3 .ico,.sub .ico{color:var(--muted)}
           <div class="chartbox"><canvas id="c-perf-comp"></canvas></div>
         </div>
         <div class="card span12">
-          <h3>Tasso di performance per collaboratore</h3>
+          <h3><span><i class="fa-solid fa-circle-info" style="color:#767c8a"></i>Tasso di performance per collaboratore</span></h3>
           <div class="sub" style="margin-bottom:10px">Calcolato solo sulle clienti con stato "In percorso". Per ciascun collaboratore: clienti assegnate, quante hanno un check inserito, quante hanno un miglioramento (Risultato = Sì) e la percentuale di miglioramento sul totale delle clienti. Divisa per categoria, i venditori non sono inclusi.</div>
         </div>
         <div class="card span12">
-          <h3>Tutor</h3>
+          <h3><span><i class="fa-solid fa-user" style="color:#7c56d9"></i>Tutor</span></h3>
           <table class="rate-table">
             <thead><tr><th>Collaboratore</th><th>Clienti</th><th>Check inserito</th><th>Miglioramenti</th><th>% Miglioramento (sul totale)</th></tr></thead>
             <tbody id="perf-tutor-table-body"></tbody>
           </table>
         </div>
         <div class="card span12">
-          <h3>Trainer</h3>
+          <h3><span><i class="fa-solid fa-dumbbell" style="color:#0a8aa8"></i>Trainer</span></h3>
           <table class="rate-table">
             <thead><tr><th>Collaboratore</th><th>Clienti</th><th>Check inserito</th><th>Miglioramenti</th><th>% Miglioramento (sul totale)</th></tr></thead>
             <tbody id="perf-trainer-table-body"></tbody>
           </table>
         </div>
         <div class="card span12">
-          <h3>Nutrizioniste</h3>
+          <h3><span><i class="fa-solid fa-apple-whole" style="color:#a67f00"></i>Nutrizioniste</span></h3>
           <table class="rate-table">
             <thead><tr><th>Collaboratore</th><th>Clienti</th><th>Check inserito</th><th>Miglioramenti</th><th>% Miglioramento (sul totale)</th></tr></thead>
             <tbody id="perf-nutri-table-body"></tbody>
@@ -2754,15 +2754,17 @@ function buildPerfCollabTable(){
   /* grafici interattivi (Chart.js): confronto % check inserito / % miglioramento
      per collaboratore, e composizione dei miglioramenti per categoria scelta. */
   if(typeof Chart==='undefined'||!document.getElementById('c-perf-rate')) return;
-  const common={plugins:{legend:{labels:{color:'#63625c',font:{size:11},boxWidth:12}}},maintainAspectRatio:false};
+  const common={plugins:{legend:{align:'center',labels:{color:'#63625c',font:{size:11},boxWidth:8,usePointStyle:true,pointStyle:'circle',padding:14}}},maintainAspectRatio:false};
   const gridOpt={grid:{color:'#e4e3dd'},ticks:{color:'#63625c',font:{size:11}}};
+  const pctTooltip={callbacks:{label:c=>{const tot=c.dataset.data.reduce((a,b)=>a+b,0);const p=tot?((c.parsed/tot)*100).toFixed(1):0;return ' '+c.label+': '+c.parsed+' ('+p+'%)';}}};
+  const cursorHover=(evt,elements)=>{evt.native.target.style.cursor=elements.length?'pointer':'default';};
   const sorted=['TUTOR','TRAINER','NUTRI'].flatMap(field=>allRows.filter(r=>r.field===field).sort((a,b)=>a.name.localeCompare(b.name,'it')));
   mkChart('c-perf-rate',{type:'bar',data:{labels:sorted.map(r=>r.name),datasets:[
     {label:'% Check inserito',data:sorted.map(r=>+r.checkRate.toFixed(1)),backgroundColor:'#4f6fe0',borderRadius:6},
     {label:'% Miglioramento',data:sorted.map(r=>+r.migRate.toFixed(1)),backgroundColor:'#1f9d63',borderRadius:6}
-  ]},options:{...common,scales:{x:gridOpt,y:{...gridOpt,beginAtZero:true,ticks:{...gridOpt.ticks,callback:v=>v+'%'}}},plugins:{...common.plugins,tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.formattedValue+'%'}}}}});
+  ]},options:{...common,scales:{x:gridOpt,y:{...gridOpt,beginAtZero:true,ticks:{...gridOpt.ticks,callback:v=>v+'%'}}},plugins:{...common.plugins,tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.formattedValue+'%'}}},onHover:cursorHover,onClick:(evt,els)=>{if(!els.length)return;const i=els[0].index;apriListaCampo(sorted[i].field,sorted[i].name,sorted[i].name);}}});
   const compRows=allRows.filter(r=>r.field===perfCompRole);
-  mkChart('c-perf-comp',{type:'doughnut',data:{labels:compRows.map(r=>r.name),datasets:[{data:compRows.map(r=>r.miglioramenti),backgroundColor:compRows.map(r=>chartTagColor(perfCompRole.toLowerCase(),r.name)),borderWidth:0}]},options:{...common,cutout:'62%'}});
+  mkChart('c-perf-comp',{type:'doughnut',data:{labels:compRows.map(r=>r.name),datasets:[{data:compRows.map(r=>r.miglioramenti),backgroundColor:compRows.map(r=>chartTagColor(perfCompRole.toLowerCase(),r.name)),borderWidth:0}]},options:{...common,cutout:'62%',onHover:cursorHover,onClick:(evt,els)=>{if(!els.length)return;const i=els[0].index;apriListaCampo(perfCompRole,compRows[i].name,compRows[i].name);},plugins:{...common.plugins,tooltip:pctTooltip}}});
 }
 const SELECT_FIELDS={'STATO CLIENTE':false,'STATO PAGAMENTO':false,'TIPO INCASSO':false,'PERCORSO':true,'METODO PAGAMENTO':true,'TUTOR':true,'TRAINER':true,'NUTRI':true,'VENDITORE':true};
 function selectFieldHtml(f,l,idPrefix,value,options,allowCustom,labelMap){
@@ -3268,9 +3270,9 @@ function render(){
     {label:'Abbandono',data:collabSorted.map(r=>+r.abbRate.toFixed(1)),backgroundColor:'#d23f3f',borderRadius:6},
     {label:'Non rinnovo',data:collabSorted.map(r=>+r.nonrinRate.toFixed(1)),backgroundColor:'#b5720f',borderRadius:6},
     {label:'Totale',data:collabSorted.map(r=>+r.totRate.toFixed(1)),backgroundColor:'#7c56d9',borderRadius:6}
-  ]},options:{...common,scales:{x:gridOpt,y:{...gridOpt,beginAtZero:true,ticks:{...gridOpt.ticks,callback:v=>v+'%'}}},plugins:{...common.plugins,tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.formattedValue+'%'}}}}});
+  ]},options:{...common,scales:{x:gridOpt,y:{...gridOpt,beginAtZero:true,ticks:{...gridOpt.ticks,callback:v=>v+'%'}}},plugins:{...common.plugins,tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.formattedValue+'%'}}},onHover:cursorHover,onClick:(evt,els)=>{if(!els.length)return;const i=els[0].index;apriListaCampo(collabSorted[i].field,collabSorted[i].name,collabSorted[i].name);}}});
   const abbCompRows=collabSorted.filter(r=>r.field===abbCompRole);
-  mkChart('c-abbandono-comp',{type:'doughnut',data:{labels:abbCompRows.map(r=>r.name),datasets:[{data:abbCompRows.map(r=>r.totN),backgroundColor:abbCompRows.map(r=>chartTagColor(r.field.toLowerCase(),r.name)),borderWidth:0}]},options:{...common,cutout:'62%'}});
+  mkChart('c-abbandono-comp',{type:'doughnut',data:{labels:abbCompRows.map(r=>r.name),datasets:[{data:abbCompRows.map(r=>r.totN),backgroundColor:abbCompRows.map(r=>chartTagColor(r.field.toLowerCase(),r.name)),borderWidth:0}]},options:{...common,cutout:'62%',onHover:cursorHover,onClick:(evt,els)=>{if(!els.length)return;const i=els[0].index;apriListaCampo(abbCompRole,abbCompRows[i].name,abbCompRows[i].name);},plugins:{...common.plugins,tooltip:pctTooltip}}});
 
   const st=countBy(allRows,'STATO CLIENTE');
   mkChart('c-stato',{type:'doughnut',data:{labels:st.map(x=>statoLabel(x[0])),datasets:[{data:st.map(x=>x[1]),backgroundColor:st.map(x=>({'IN PERCORSO':'#1f9d63','CONGELATO':'#2f7fd1','NON RINNOVATO':'#767c8a','ABBANDONATO':'#d23f3f','SPARITA':'#b5720f'}[x[0]]||'#7c56d9')),borderWidth:0}]},options:{...common,cutout:'62%',onHover:cursorHover,onClick:(evt,els)=>{if(!els.length)return;const i=els[0].index;apriListaCampo('STATO CLIENTE',st[i][0],'Stato: '+statoLabel(st[i][0]));},plugins:{...common.plugins,tooltip:pctTooltip}}});
@@ -3282,7 +3284,7 @@ function render(){
   mkChart('c-metodo',{type:'doughnut',data:{labels:mp.map(x=>x[0]),datasets:[{data:mp.map(x=>x[1]),backgroundColor:mp.map(x=>METODO_COLORS[x[0]]||'#8b8a83'),borderWidth:0}]},options:{...common,cutout:'62%',onHover:cursorHover,onClick:(evt,els)=>{if(!els.length)return;const i=els[0].index;apriListaCampo('METODO PAGAMENTO',mp[i][0],'Metodo: '+mp[i][0]);},plugins:{...common.plugins,tooltip:pctTooltip}}});
 
   const fn=countBy(allRows,'FONTE');
-  mkChart('c-fonte',{type:'doughnut',data:{labels:fn.map(x=>x[0]),datasets:[{data:fn.map(x=>x[1]),backgroundColor:fn.map(x=>FONTE_COLORS[x[0]]||'#7c56d9'),borderWidth:0}]},options:{...common,cutout:'62%'}});
+  mkChart('c-fonte',{type:'doughnut',data:{labels:fn.map(x=>x[0]),datasets:[{data:fn.map(x=>x[1]),backgroundColor:fn.map(x=>FONTE_COLORS[x[0]]||'#7c56d9'),borderWidth:0}]},options:{...common,cutout:'62%',onHover:cursorHover,onClick:(evt,els)=>{if(!els.length)return;const i=els[0].index;apriListaCampo('FONTE',fn[i][0],'Fonte: '+fn[i][0]);},plugins:{...common.plugins,tooltip:pctTooltip}}});
 
   const byMF={};
   allRows.forEach(r=>{
