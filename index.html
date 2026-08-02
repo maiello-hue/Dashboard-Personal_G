@@ -2722,6 +2722,11 @@ function buildPerfCollabTable(){
   const elId={TUTOR:'perf-tutor-table-body',TRAINER:'perf-trainer-table-body',NUTRI:'perf-nutri-table-body'};
   const normName=s=>(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');
   const PERF_TUTOR_EXCLUDE=new Set(['duccio','personalg','martina']);
+  /* Eccezioni manuali: per questi collaboratori, in un mese specifico, la % di
+     miglioramento non va mostrata (dato non rappresentativo), ma i conteggi
+     grezzi (clienti/check/miglioramenti) restano visibili normalmente.
+     Formato chiave: "nomeNormalizzato|YYYY-MM". */
+  const PERF_PCT_HIDE=new Set(['elisa|2026-07']);
   /* Check e miglioramenti si contano solo per il mese selezionato (DATA CHECK
      nel mese scelto): esattamente come gli incassi, il conteggio riparte da
      solo a ogni nuovo mese senza bisogno di azzerare nulla a mano, e i mesi
@@ -2736,7 +2741,8 @@ function buildPerfCollabTable(){
       const checkInserito=assigned.filter(r=>checkValMese(r,'CHECK',meseSel)!=='').length;
       const miglioramenti=assigned.filter(r=>checkValMese(r,'RISULTATO',meseSel).toUpperCase()==='SI').length;
       const checkRate=pct(checkInserito,assigned.length), migRate=pct(miglioramenti,assigned.length);
-      allRows.push({field,name,tot:assigned.length,checkInserito,checkRate,miglioramenti,migRate});
+      const hidePct=PERF_PCT_HIDE.has(normName(name)+'|'+meseSel);
+      allRows.push({field,name,tot:assigned.length,checkInserito,checkRate,miglioramenti,migRate,hidePct});
     });
   });
   ['TUTOR','TRAINER','NUTRI'].forEach(field=>{
@@ -2748,7 +2754,7 @@ function buildPerfCollabTable(){
         ${numCell(r.tot)}
         ${numCell(r.checkInserito)}
         ${numCell(r.miglioramenti)}
-        ${pctCell(r.migRate)}
+        ${r.hidePct?'<td class="rate-cell"><div class="rate-cell-inner"><span class="rate-pill" style="background:var(--card2);color:var(--muted)">—</span></div></td>':pctCell(r.migRate)}
       </tr>`).join('')||'<tr><td colspan="5" class="sub">Nessun collaboratore con clienti assegnate.</td></tr>';
   });
   /* grafici interattivi (Chart.js): confronto % check inserito / % miglioramento
