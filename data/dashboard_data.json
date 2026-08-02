@@ -7882,15 +7882,15 @@
   {
    "CLIENTE": "Jessica Rampinelli",
    "STATO CLIENTE": "IN PERCORSO",
-   "PERCORSO": "6 mesi",
-   "INIZIO PERCORSO": "08/01/2026",
-   "FINE PERCORSO": "08/07/2026",
-   "IMPORTO": "€ 1.002,00",
-   "METODO PAGAMENTO": "PagoDIL",
+   "PERCORSO": "24 mesi",
+   "INIZIO PERCORSO": "02/08/2026",
+   "FINE PERCORSO": "02/08/2028",
+   "IMPORTO": "3240",
+   "METODO PAGAMENTO": "HeyLight",
    "STATO PAGAMENTO": "SALDATO",
-   "TIPO INCASSO": "",
+   "TIPO INCASSO": "Rinnovo",
    "N° FATTURA": "",
-   "INCASSO": "",
+   "INCASSO": "3000",
    "RIMBORSO": "",
    "TUTOR": "Margherita",
    "TRAINER": "Fiorenzo",
@@ -7904,7 +7904,9 @@
    "RISULTATO": "SI",
    "FONTE": "ADV",
    "DATA CHECK": "31/07/2026",
-   "_CHECK_JULY_FIX": "1"
+   "_CHECK_JULY_FIX": "1",
+   "TIPO SCADENZA": "Rinnovo",
+   "DATA INCASSO": "02/08/2026"
   },
   {
    "CLIENTE": "Alessandra Pacciani",
@@ -24450,7 +24452,10 @@
   },
   "Alessandra Pacciani": {
    "st": "rin"
+  },
+  "Jessica Rampinelli": {
+   "st": "rin"
   }
  },
- "updatedAt": "2026-08-02T06:57:36.936Z"
+ "updatedAt": "2026-08-02T14:59:55.697Z"
 }
