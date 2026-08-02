@@ -14,6 +14,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Personal_G">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
 :root{
@@ -1083,6 +1086,16 @@ h3 .ico,.sub .ico{color:var(--muted)}
       </div>
 
       <div class="card" style="max-width:640px;margin-top:16px">
+        <h3><span class="ico"><svg viewBox="0 0 16 16"><path d="M8 2.5v7.5M5 7l3 3 3-3"/><path d="M3 13h10"/></svg></span>Esporta elenco clienti</h3>
+        <div class="sub" style="margin-bottom:10px">Esporta l'elenco completo delle clienti, con tutti i dati associati, nel formato che preferisci.</div>
+        <div class="editbar-actions" style="flex-wrap:wrap">
+          <button class="btn ghost" onclick="esportaClientiExcel()"><span class="ico"><svg viewBox="0 0 16 16"><path d="M8 2.5v7.5M5 7l3 3 3-3"/><path d="M3 13h10"/></svg></span>Esporta Excel</button>
+          <button class="btn ghost" onclick="esportaClientiPDF()"><span class="ico"><svg viewBox="0 0 16 16"><path d="M8 2.5v7.5M5 7l3 3 3-3"/><path d="M3 13h10"/></svg></span>Esporta PDF</button>
+          <button class="btn ghost" onclick="esportaClientiCSV()"><span class="ico"><svg viewBox="0 0 16 16"><path d="M8 2.5v7.5M5 7l3 3 3-3"/><path d="M3 13h10"/></svg></span>Esporta CSV</button>
+        </div>
+      </div>
+
+      <div class="card" style="max-width:640px;margin-top:16px">
         <h3>Elenchi personalizzabili</h3>
         <div class="sub" style="margin-bottom:10px">Personalizza colori, collaboratori, metodi di pagamento e percorsi usati nelle varie sezioni della dashboard. Le voci qui presenti sono anche i suggerimenti mostrati nei form "Nuova cliente" e "Modifica cliente". Tutto si applica subito e resta salvato su questo dispositivo.</div>
         <div id="settings-panel-body"></div>
@@ -1573,6 +1586,71 @@ function importaBackup(ev){
     ev.target.value='';
   };
   reader.readAsText(file);
+}
+
+/* Esportazione dell'elenco clienti (Excel / PDF / CSV), con tutti i dati
+   associati a ciascuna cliente. Le colonne partono da un ordine "logico"
+   (nome, stato/percorso, pagamento, collaboratori, ecc.) e includono anche
+   eventuali campi extra presenti solo su alcune clienti (es. dati di
+   archiviazione, rateizzazione, venditore/fonte), aggiunti in coda in
+   ordine alfabetico, così l'esportazione resta completa qualunque sia lo
+   stato dei dati. */
+function clientExportColumns(){
+  const base=['CLIENTE','N° FATTURA','STATO CLIENTE','PERCORSO','INIZIO PERCORSO','FINE PERCORSO',
+    'TIPO SCADENZA','NUMERO RATE','FREQUENZA RATE','DATA PROSSIMA RATA',
+    'IMPORTO','METODO PAGAMENTO','STATO PAGAMENTO','TIPO INCASSO','INCASSO','DATA INCASSO','RIMBORSO',
+    'TUTOR','TRAINER','NUTRI','VENDITORE','FONTE','PAGANTE','€ TUTOR','€ TRAINER','€ NUTRI','CONTRATTO',
+    'CHECK','RISULTATO','DATA CHECK','DATA ARCHIVIAZIONE'];
+  const present=base.filter(k=>DATA.some(r=>k in r));
+  const extra=new Set();
+  DATA.forEach(r=>Object.keys(r).forEach(k=>{ if(!base.includes(k)) extra.add(k); }));
+  return present.concat([...extra].sort((a,b)=>a.localeCompare(b,'it')));
+}
+function clientExportRows(){
+  const cols=clientExportColumns();
+  const rows=DATA.map(r=>cols.map(c=>r[c]!=null?String(r[c]):''));
+  return {cols,rows};
+}
+function csvEscapeCell(v){
+  v=v==null?'':String(v);
+  return /[",\n\r;]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;
+}
+function esportaClientiCSV(){
+  if(!DATA.length){ alert('Nessuna cliente da esportare.'); return; }
+  const {cols,rows}=clientExportRows();
+  const lines=[cols.map(csvEscapeCell).join(',')].concat(rows.map(r=>r.map(csvEscapeCell).join(',')));
+  const blob=new Blob(['﻿'+lines.join('\r\n')],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='clienti_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+}
+function esportaClientiExcel(){
+  if(!DATA.length){ alert('Nessuna cliente da esportare.'); return; }
+  if(typeof XLSX==='undefined'){ alert('Libreria Excel non disponibile: verifica la connessione internet e riprova.'); return; }
+  const {cols,rows}=clientExportRows();
+  const ws=XLSX.utils.aoa_to_sheet([cols,...rows]);
+  ws['!cols']=cols.map(()=>({wch:16}));
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Clienti');
+  XLSX.writeFile(wb,'clienti_'+new Date().toISOString().slice(0,10)+'.xlsx');
+}
+function esportaClientiPDF(){
+  if(!DATA.length){ alert('Nessuna cliente da esportare.'); return; }
+  if(typeof window.jspdf==='undefined'){ alert('Libreria PDF non disponibile: verifica la connessione internet e riprova.'); return; }
+  const {cols,rows}=clientExportRows();
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({orientation:'landscape',unit:'pt',format:'a4'});
+  doc.setFontSize(12);
+  doc.text('Elenco clienti — Personal_G ('+new Date().toLocaleDateString('it-IT')+')',20,25);
+  doc.autoTable({
+    head:[cols], body:rows, startY:35,
+    styles:{fontSize:5.5,cellPadding:2,overflow:'linebreak'},
+    headStyles:{fillColor:[224,36,94],fontSize:6},
+    margin:{left:15,right:15,top:35,bottom:15},
+    theme:'grid'
+  });
+  doc.save('clienti_'+new Date().toISOString().slice(0,10)+'.pdf');
 }
 
 /* Aggiunge nuove clienti a quelle esistenti, senza sostituire nulla.
