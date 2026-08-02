@@ -203,6 +203,12 @@ h1{font-size:22px;font-weight:500}
 .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px;margin-bottom:20px}
 .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:none}
 .card h3{font-size:16px;color:var(--text);font-weight:500;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center}
+.card-accent{border-left-width:3px;border-left-style:solid;border-radius:0 12px 12px 0}
+.card-accent h3 i{font-size:15px;margin-right:9px}
+.card-accent-green{border-left-color:#1f9d63}.card-accent-green h3 i{color:#1f9d63}
+.card-accent-blue{border-left-color:#2f7fd1}.card-accent-blue h3 i{color:#2f7fd1}
+.card-accent-orange{border-left-color:#b5720f}.card-accent-orange h3 i{color:#b5720f}
+.card-accent-purple{border-left-color:#7c56d9}.card-accent-purple h3 i{color:#7c56d9}
 .span4{grid-column:span 4}.span6{grid-column:span 6}.span8{grid-column:span 8}.span12{grid-column:span 12}
 @media(max-width:1000px){.span4,.span6,.span8{grid-column:span 12}}
 .chartbox{position:relative;height:260px}
@@ -768,11 +774,11 @@ h3 .ico,.sub .ico{color:var(--muted)}
       </div>
 
       <div id="analisi-tab-stato" class="grid">
-        <div class="card span4"><h3>Stato clienti</h3><div class="chartbox"><canvas id="c-stato"></canvas></div></div>
-        <div class="card span4"><h3>Percorsi scelti</h3><div class="chartbox"><canvas id="c-percorso"></canvas></div></div>
-        <div class="card span4"><h3>Metodi di pagamento</h3><div class="chartbox"><canvas id="c-metodo"></canvas></div></div>
-        <div class="card span12">
-          <h3>Clienti per collaboratore
+        <div class="card card-accent card-accent-green span4"><h3><span><i class="fa-solid fa-user-group"></i>Stato clienti</span></h3><div class="chartbox"><canvas id="c-stato"></canvas></div></div>
+        <div class="card card-accent card-accent-blue span4"><h3><span><i class="fa-solid fa-route"></i>Percorsi scelti</span></h3><div class="chartbox"><canvas id="c-percorso"></canvas></div></div>
+        <div class="card card-accent card-accent-orange span4"><h3><span><i class="fa-solid fa-credit-card"></i>Metodi di pagamento</span></h3><div class="chartbox"><canvas id="c-metodo"></canvas></div></div>
+        <div class="card card-accent card-accent-purple span12">
+          <h3><span><i class="fa-solid fa-users-gear"></i>Clienti per collaboratore</span>
             <span class="roletabs">
               <button id="rt-TUTOR" class="on" onclick="setRole('TUTOR')">Tutor</button>
               <button id="rt-TRAINER" onclick="setRole('TRAINER')">Trainer</button>
