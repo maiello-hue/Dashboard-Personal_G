@@ -126,6 +126,41 @@ h1{font-size:22px;font-weight:500}
 @media(max-width:760px){
   .msf-menu{left:auto;right:0}
 }
+/* ---------- barra ricerca/filtri clienti (stile card con etichette) ---------- */
+.filters-v2{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px 18px;margin-bottom:16px}
+.fv2-row{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end}
+.fv2-row+.fv2-row{margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.fv2-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.fv2-label{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted2)}
+.fv2-search-field{flex:1 1 220px}
+.fv2-search-wrap{position:relative;display:flex;align-items:center}
+.fv2-search-wrap>.ico{position:absolute;left:11px;color:var(--muted2);display:flex}
+.fv2-search-wrap>.ico svg{width:14px;height:14px}
+.fv2-search-wrap input{width:100%;padding:9px 12px 9px 32px;border:1px solid var(--border-strong);border-radius:10px;background:var(--card2);font-size:13px;color:var(--text);box-sizing:border-box;outline:none;transition:border-color .15s ease}
+.fv2-search-wrap input:focus{border-color:var(--accent)}
+.fv2-search-btn{display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+.fv2-search-btn:hover{opacity:.9}
+.fv2-search-btn .ico svg{width:14px;height:14px}
+.fv2-clear-btn{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:999px;border:1px solid var(--border-strong);background:var(--card);color:var(--red);cursor:pointer;flex-shrink:0}
+.fv2-clear-btn:hover{background:rgba(227,73,72,.1);border-color:var(--red)}
+.fv2-clear-btn svg{width:13px;height:13px}
+.fv2-pill{display:inline-flex;align-items:center;gap:7px;background:var(--card2);border:1px solid var(--border-strong);color:var(--text);border-radius:999px;padding:8px 13px;font-size:12.5px;cursor:pointer;white-space:nowrap;min-width:0}
+.fv2-pill:hover{background:var(--surface-2, var(--card))}
+.fv2-pill.flash{animation:filterFlash .45s ease}
+.fv2-pill .ico{display:flex;color:var(--muted2)}
+.fv2-pill .ico svg{width:14px;height:14px}
+.fv2-pill-value{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px}
+.fv2-pill .msf-count{margin-left:-2px}
+.fv2-pill .chev-ico{display:flex;color:var(--muted2);margin-left:1px}
+.fv2-pill .chev-ico svg{width:10px;height:10px}
+.fv2-pill-main{background:var(--card);border-width:1.5px}
+@media(max-width:760px){
+  .filters-v2{padding:12px}
+  .fv2-row{gap:8px}
+  .fv2-search-field{flex:1 1 100%}
+  .fv2-search-btn{flex:1 1 auto;justify-content:center}
+  .fv2-clear-btn{margin-left:auto}
+}
 .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px;margin-bottom:20px}
 .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:none}
 .card h3{font-size:16px;color:var(--text);font-weight:500;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center}
@@ -776,16 +811,49 @@ h3 .ico,.sub .ico{color:var(--muted)}
         <button id="cat-gnocca" onclick="setCategoria('gnocca')">Gnocca</button>
         <button id="cat-storico" onclick="setCategoria('storico')">Storico <span class="count" id="storico-count"></span></button>
       </div>
-      <div class="filters">
-        <input type="text" id="f-search" placeholder="Cerca cliente…" oninput="debouncedRender()">
-        <div class="msf" id="msf-stato"><button type="button" class="msf-btn" onclick="toggleMsf('stato')">Stato<span class="msf-count" id="msf-stato-count"></span></button><div class="msf-menu" id="msf-stato-menu"></div></div>
-        <div class="msf" id="msf-percorso"><button type="button" class="msf-btn" onclick="toggleMsf('percorso')">Percorso<span class="msf-count" id="msf-percorso-count"></span></button><div class="msf-menu" id="msf-percorso-menu"></div></div>
-        <div class="msf" id="msf-tutor"><button type="button" class="msf-btn" onclick="toggleMsf('tutor')">Tutor<span class="msf-count" id="msf-tutor-count"></span></button><div class="msf-menu" id="msf-tutor-menu"></div></div>
-        <div class="msf" id="msf-trainer"><button type="button" class="msf-btn" onclick="toggleMsf('trainer')">Trainer<span class="msf-count" id="msf-trainer-count"></span></button><div class="msf-menu" id="msf-trainer-menu"></div></div>
-        <div class="msf" id="msf-nutri"><button type="button" class="msf-btn" onclick="toggleMsf('nutri')">Nutri<span class="msf-count" id="msf-nutri-count"></span></button><div class="msf-menu" id="msf-nutri-menu"></div></div>
-        <div class="msf" id="msf-metodo"><button type="button" class="msf-btn" onclick="toggleMsf('metodo')">Pagamento<span class="msf-count" id="msf-metodo-count"></span></button><div class="msf-menu" id="msf-metodo-menu"></div></div>
-        <div class="msf" id="msf-pag"><button type="button" class="msf-btn" onclick="toggleMsf('pag')">Stato pag.<span class="msf-count" id="msf-pag-count"></span></button><div class="msf-menu" id="msf-pag-menu"></div></div>
-        <button class="icon-btn primary" id="btn-nuova-cliente" title="Nuova cliente" onclick="toggleAddCliente()"><span class="ico"><svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></svg></span></button>
+      <div class="filters-v2">
+        <div class="fv2-row">
+          <div class="fv2-field fv2-search-field">
+            <label class="fv2-label" for="f-search">Ricerca</label>
+            <div class="fv2-search-wrap">
+              <span class="ico"><svg viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.3"/><path d="M10.3 10.3 13.5 13.5"/></svg></span>
+              <input type="text" id="f-search" placeholder="Nome cliente…" oninput="debouncedRender()">
+            </div>
+          </div>
+          <button type="button" class="fv2-search-btn" onclick="render()"><span class="ico"><svg viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.3"/><path d="M10.3 10.3 13.5 13.5"/></svg></span>Cerca</button>
+          <div class="fv2-field">
+            <label class="fv2-label">Stato</label>
+            <div class="msf" id="msf-stato"><button type="button" class="fv2-pill fv2-pill-main" onclick="toggleMsf('stato')"><span class="ico"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M5.3 8.2l1.7 1.7 3.4-3.7"/></svg></span><span class="fv2-pill-value" id="msf-stato-value">Tutti</span><span class="msf-count" id="msf-stato-count"></span><span class="chev-ico"><svg viewBox="0 0 16 16"><path d="M4 6.2l4 4 4-4"/></svg></span></button><div class="msf-menu" id="msf-stato-menu"></div></div>
+          </div>
+          <button type="button" class="fv2-clear-btn" title="Azzera tutti i filtri" onclick="resetFilters()"><svg viewBox="0 0 16 16"><path d="M4.2 4.2l7.6 7.6M11.8 4.2l-7.6 7.6"/></svg></button>
+        </div>
+        <div class="fv2-row">
+          <div class="fv2-field">
+            <label class="fv2-label">Percorso</label>
+            <div class="msf" id="msf-percorso"><button type="button" class="fv2-pill" onclick="toggleMsf('percorso')"><span class="ico"><svg viewBox="0 0 16 16"><rect x="2.3" y="3.3" width="11.4" height="10.4" rx="1.3"/><path d="M2.3 6.6h11.4M5.5 2v3M10.5 2v3"/></svg></span><span class="fv2-pill-value" id="msf-percorso-value">Tutti</span><span class="msf-count" id="msf-percorso-count"></span><span class="chev-ico"><svg viewBox="0 0 16 16"><path d="M4 6.2l4 4 4-4"/></svg></span></button><div class="msf-menu" id="msf-percorso-menu"></div></div>
+          </div>
+          <div class="fv2-field">
+            <label class="fv2-label">Tutor</label>
+            <div class="msf" id="msf-tutor"><button type="button" class="fv2-pill" onclick="toggleMsf('tutor')"><span class="ico"><svg viewBox="0 0 16 16"><circle cx="8" cy="5.6" r="2.6"/><path d="M3 13.3c0-2.7 2.2-4.4 5-4.4s5 1.7 5 4.4"/></svg></span><span class="fv2-pill-value" id="msf-tutor-value">Tutti</span><span class="msf-count" id="msf-tutor-count"></span><span class="chev-ico"><svg viewBox="0 0 16 16"><path d="M4 6.2l4 4 4-4"/></svg></span></button><div class="msf-menu" id="msf-tutor-menu"></div></div>
+          </div>
+          <div class="fv2-field">
+            <label class="fv2-label">Trainer</label>
+            <div class="msf" id="msf-trainer"><button type="button" class="fv2-pill" onclick="toggleMsf('trainer')"><span class="ico"><svg viewBox="0 0 16 16"><circle cx="8" cy="5.6" r="2.6"/><path d="M3 13.3c0-2.7 2.2-4.4 5-4.4s5 1.7 5 4.4"/></svg></span><span class="fv2-pill-value" id="msf-trainer-value">Tutti</span><span class="msf-count" id="msf-trainer-count"></span><span class="chev-ico"><svg viewBox="0 0 16 16"><path d="M4 6.2l4 4 4-4"/></svg></span></button><div class="msf-menu" id="msf-trainer-menu"></div></div>
+          </div>
+          <div class="fv2-field">
+            <label class="fv2-label">Nutrizionista</label>
+            <div class="msf" id="msf-nutri"><button type="button" class="fv2-pill" onclick="toggleMsf('nutri')"><span class="ico"><svg viewBox="0 0 16 16"><circle cx="8" cy="5.6" r="2.6"/><path d="M3 13.3c0-2.7 2.2-4.4 5-4.4s5 1.7 5 4.4"/></svg></span><span class="fv2-pill-value" id="msf-nutri-value">Tutte</span><span class="msf-count" id="msf-nutri-count"></span><span class="chev-ico"><svg viewBox="0 0 16 16"><path d="M4 6.2l4 4 4-4"/></svg></span></button><div class="msf-menu" id="msf-nutri-menu"></div></div>
+          </div>
+          <div class="fv2-field">
+            <label class="fv2-label">Pagamento</label>
+            <div class="msf" id="msf-metodo"><button type="button" class="fv2-pill" onclick="toggleMsf('metodo')"><span class="ico"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M8 5v1.1M8 9.9V11M6.1 6.3c.3-.6 1-1 1.9-1s1.7.4 1.7 1c0 1.4-3.2.7-3.2 2.1 0 .6.8 1 1.7 1s1.6-.4 1.9-1"/></svg></span><span class="fv2-pill-value" id="msf-metodo-value">Tutti</span><span class="msf-count" id="msf-metodo-count"></span><span class="chev-ico"><svg viewBox="0 0 16 16"><path d="M4 6.2l4 4 4-4"/></svg></span></button><div class="msf-menu" id="msf-metodo-menu"></div></div>
+          </div>
+          <div class="fv2-field">
+            <label class="fv2-label">Stato pag.</label>
+            <div class="msf" id="msf-pag"><button type="button" class="fv2-pill" onclick="toggleMsf('pag')"><span class="ico"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M5.3 8.2l1.7 1.7 3.4-3.7"/></svg></span><span class="fv2-pill-value" id="msf-pag-value">Tutti</span><span class="msf-count" id="msf-pag-count"></span><span class="chev-ico"><svg viewBox="0 0 16 16"><path d="M4 6.2l4 4 4-4"/></svg></span></button><div class="msf-menu" id="msf-pag-menu"></div></div>
+          </div>
+          <button class="icon-btn primary" id="btn-nuova-cliente" title="Nuova cliente" onclick="toggleAddCliente()"><span class="ico"><svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></svg></span></button>
+        </div>
       </div>
 
       <div class="card" id="add-cliente-card" style="display:none">
@@ -2177,12 +2245,17 @@ function clearMsf(key){
   buildFilters();
   render();
 }
+const MSF_DEFAULT_TEXT={stato:'Tutti',percorso:'Tutti',tutor:'Tutti',trainer:'Tutti',nutri:'Tutte',metodo:'Tutti',pag:'Tutti'};
+const MSF_SEL_WORD={stato:'sel.',percorso:'sel.',tutor:'sel.',trainer:'sel.',nutri:'sel.',metodo:'sel.',pag:'sel.'};
 function updateMsfCount(key){
   const el=document.getElementById('msf-'+key+'-count');
-  if(!el) return;
   const n=msFilters[key].size;
-  el.textContent=n?String(n):'';
-  el.style.display=n?'inline-flex':'none';
+  if(el){
+    el.textContent=n?String(n):'';
+    el.style.display=n?'inline-flex':'none';
+  }
+  const valEl=document.getElementById('msf-'+key+'-value');
+  if(valEl) valEl.textContent=n?(n+' '+(MSF_SEL_WORD[key]||'sel.')):(MSF_DEFAULT_TEXT[key]||'Tutti');
 }
 function toggleMsf(key){
   const menu=document.getElementById('msf-'+key+'-menu');
@@ -2191,7 +2264,7 @@ function toggleMsf(key){
   const willOpen=!menu.classList.contains('open');
   document.querySelectorAll('.msf-menu').forEach(m=>m.classList.remove('open'));
   if(willOpen) menu.classList.add('open');
-  const btn=wrap&&wrap.querySelector('.msf-btn');
+  const btn=wrap&&wrap.querySelector('.msf-btn,.fv2-pill');
   if(btn){ btn.classList.remove('flash'); void btn.offsetWidth; btn.classList.add('flash'); setTimeout(()=>btn.classList.remove('flash'),450); }
 }
 document.addEventListener('click',function(e){
@@ -3224,7 +3297,9 @@ const ICO_PATHS={
   undo:'<path d="M4 8h6a3.2 3.2 0 1 1 0 6.4H8.5"/><path d="M6.6 5.2 4 8l2.6 2.8"/>',
   x:'<path d="M4.2 4.2l7.6 7.6M11.8 4.2l-7.6 7.6"/>',
   eye:'<path d="M1.3 8S4 3.5 8 3.5 14.7 8 14.7 8 12 12.5 8 12.5 1.3 8 1.3 8z"/><circle cx="8" cy="8" r="2.2"/>',
-  'eye-off':'<path d="M4.1 4.6C2.5 5.7 1.3 8 1.3 8s2.7 4.5 6.7 4.5c1.1 0 2.1-.3 3-.8M11 4.4c1.9 1 3.7 3.6 3.7 3.6s-.6 1.1-1.7 2.3"/><path d="M6.3 6.4a2.2 2.2 0 0 0 3.1 3.1"/><path d="M2.3 2.6l11.4 11.4"/>'
+  'eye-off':'<path d="M4.1 4.6C2.5 5.7 1.3 8 1.3 8s2.7 4.5 6.7 4.5c1.1 0 2.1-.3 3-.8M11 4.4c1.9 1 3.7 3.6 3.7 3.6s-.6 1.1-1.7 2.3"/><path d="M6.3 6.4a2.2 2.2 0 0 0 3.1 3.1"/><path d="M2.3 2.6l11.4 11.4"/>',
+  chev:'<path d="M4 6.2l4 4 4-4"/>',
+  user:'<circle cx="8" cy="5.6" r="2.6"/><path d="M3 13.3c0-2.7 2.2-4.4 5-4.4s5 1.7 5 4.4"/>'
 };
 function ic(name){ return `<span class="ico"><svg viewBox="0 0 16 16">${ICO_PATHS[name]||''}</svg></span>`; }
 
