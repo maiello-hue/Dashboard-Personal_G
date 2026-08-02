@@ -822,13 +822,14 @@ h3 .ico,.sub .ico{color:var(--muted)}
             </div>
           </div>
           <button type="button" class="fv2-search-btn" onclick="render()"><span class="ico"><svg viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.3"/><path d="M10.3 10.3 13.5 13.5"/></svg></span>Cerca</button>
+          <button class="icon-btn primary" id="btn-nuova-cliente" title="Nuova cliente" onclick="toggleAddCliente()"><span class="ico"><svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></svg></span></button>
+          <button type="button" class="fv2-clear-btn" title="Azzera tutti i filtri" onclick="resetFilters()"><span class="ico"><svg viewBox="0 0 16 16"><path d="M4.2 4.2l7.6 7.6M11.8 4.2l-7.6 7.6"/></svg></span></button>
+        </div>
+        <div class="fv2-row">
           <div class="fv2-field">
             <label class="fv2-label">Stato</label>
             <div class="msf" id="msf-stato"><button type="button" class="fv2-pill fv2-pill-main" onclick="toggleMsf('stato')"><span class="ico"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M5.3 8.2l1.7 1.7 3.4-3.7"/></svg></span><span class="fv2-pill-value" id="msf-stato-value">Tutti</span><span class="msf-count" id="msf-stato-count"></span><span class="chev-ico"><svg viewBox="0 0 16 16"><path d="M4 6.2l4 4 4-4"/></svg></span></button><div class="msf-menu" id="msf-stato-menu"></div></div>
           </div>
-          <button type="button" class="fv2-clear-btn" title="Azzera tutti i filtri" onclick="resetFilters()"><span class="ico"><svg viewBox="0 0 16 16"><path d="M4.2 4.2l7.6 7.6M11.8 4.2l-7.6 7.6"/></svg></span></button>
-        </div>
-        <div class="fv2-row">
           <div class="fv2-field">
             <label class="fv2-label">Percorso</label>
             <div class="msf" id="msf-percorso"><button type="button" class="fv2-pill" onclick="toggleMsf('percorso')"><span class="ico"><svg viewBox="0 0 16 16"><rect x="2.3" y="3.3" width="11.4" height="10.4" rx="1.3"/><path d="M2.3 6.6h11.4M5.5 2v3M10.5 2v3"/></svg></span><span class="fv2-pill-value" id="msf-percorso-value">Tutti</span><span class="msf-count" id="msf-percorso-count"></span><span class="chev-ico"><svg viewBox="0 0 16 16"><path d="M4 6.2l4 4 4-4"/></svg></span></button><div class="msf-menu" id="msf-percorso-menu"></div></div>
@@ -839,21 +840,20 @@ h3 .ico,.sub .ico{color:var(--muted)}
           </div>
           <div class="fv2-field">
             <label class="fv2-label">Trainer</label>
-            <div class="msf" id="msf-trainer"><button type="button" class="fv2-pill" onclick="toggleMsf('trainer')"><span class="ico"><svg viewBox="0 0 16 16"><circle cx="8" cy="5.6" r="2.6"/><path d="M3 13.3c0-2.7 2.2-4.4 5-4.4s5 1.7 5 4.4"/></svg></span><span class="fv2-pill-value" id="msf-trainer-value">Tutti</span><span class="msf-count" id="msf-trainer-count"></span><span class="chev-ico"><svg viewBox="0 0 16 16"><path d="M4 6.2l4 4 4-4"/></svg></span></button><div class="msf-menu" id="msf-trainer-menu"></div></div>
+            <div class="msf" id="msf-trainer"><button type="button" class="fv2-pill" onclick="toggleMsf('trainer')"><span class="ico"><svg viewBox="0 0 16 16"><circle cx="3" cy="8" r="2"/><circle cx="13" cy="8" r="2"/><path d="M5 8h6"/></svg></span><span class="fv2-pill-value" id="msf-trainer-value">Tutti</span><span class="msf-count" id="msf-trainer-count"></span><span class="chev-ico"><svg viewBox="0 0 16 16"><path d="M4 6.2l4 4 4-4"/></svg></span></button><div class="msf-menu" id="msf-trainer-menu"></div></div>
           </div>
           <div class="fv2-field">
             <label class="fv2-label">Nutrizionista</label>
-            <div class="msf" id="msf-nutri"><button type="button" class="fv2-pill" onclick="toggleMsf('nutri')"><span class="ico"><svg viewBox="0 0 16 16"><circle cx="8" cy="5.6" r="2.6"/><path d="M3 13.3c0-2.7 2.2-4.4 5-4.4s5 1.7 5 4.4"/></svg></span><span class="fv2-pill-value" id="msf-nutri-value">Tutte</span><span class="msf-count" id="msf-nutri-count"></span><span class="chev-ico"><svg viewBox="0 0 16 16"><path d="M4 6.2l4 4 4-4"/></svg></span></button><div class="msf-menu" id="msf-nutri-menu"></div></div>
+            <div class="msf" id="msf-nutri"><button type="button" class="fv2-pill" onclick="toggleMsf('nutri')"><span class="ico"><svg viewBox="0 0 16 16"><path d="M13 3C7 3 3 7 3 13c6 0 10-4 10-10z"/><path d="M4.5 11.5 11.5 4.5"/></svg></span><span class="fv2-pill-value" id="msf-nutri-value">Tutte</span><span class="msf-count" id="msf-nutri-count"></span><span class="chev-ico"><svg viewBox="0 0 16 16"><path d="M4 6.2l4 4 4-4"/></svg></span></button><div class="msf-menu" id="msf-nutri-menu"></div></div>
           </div>
           <div class="fv2-field">
             <label class="fv2-label">Pagamento</label>
-            <div class="msf" id="msf-metodo"><button type="button" class="fv2-pill" onclick="toggleMsf('metodo')"><span class="ico"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M8 5v1.1M8 9.9V11M6.1 6.3c.3-.6 1-1 1.9-1s1.7.4 1.7 1c0 1.4-3.2.7-3.2 2.1 0 .6.8 1 1.7 1s1.6-.4 1.9-1"/></svg></span><span class="fv2-pill-value" id="msf-metodo-value">Tutti</span><span class="msf-count" id="msf-metodo-count"></span><span class="chev-ico"><svg viewBox="0 0 16 16"><path d="M4 6.2l4 4 4-4"/></svg></span></button><div class="msf-menu" id="msf-metodo-menu"></div></div>
+            <div class="msf" id="msf-metodo"><button type="button" class="fv2-pill" onclick="toggleMsf('metodo')"><span class="ico"><svg viewBox="0 0 16 16"><rect x="1.5" y="3.5" width="13" height="9" rx="1.3"/><path d="M1.5 6.5h13"/><path d="M4 10h3"/></svg></span><span class="fv2-pill-value" id="msf-metodo-value">Tutti</span><span class="msf-count" id="msf-metodo-count"></span><span class="chev-ico"><svg viewBox="0 0 16 16"><path d="M4 6.2l4 4 4-4"/></svg></span></button><div class="msf-menu" id="msf-metodo-menu"></div></div>
           </div>
           <div class="fv2-field">
             <label class="fv2-label">Stato pag.</label>
             <div class="msf" id="msf-pag"><button type="button" class="fv2-pill" onclick="toggleMsf('pag')"><span class="ico"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M5.3 8.2l1.7 1.7 3.4-3.7"/></svg></span><span class="fv2-pill-value" id="msf-pag-value">Tutti</span><span class="msf-count" id="msf-pag-count"></span><span class="chev-ico"><svg viewBox="0 0 16 16"><path d="M4 6.2l4 4 4-4"/></svg></span></button><div class="msf-menu" id="msf-pag-menu"></div></div>
           </div>
-          <button class="icon-btn primary" id="btn-nuova-cliente" title="Nuova cliente" onclick="toggleAddCliente()"><span class="ico"><svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></svg></span></button>
         </div>
       </div>
 
