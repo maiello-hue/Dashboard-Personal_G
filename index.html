@@ -801,14 +801,14 @@ h3 .ico,.sub .ico{color:var(--muted)}
       <div id="analisi-tab-abbandono" class="grid" style="display:none">
         <div class="card span6"><h3><span><i class="fa-solid fa-chart-column" style="color:#e0245e"></i>Confronto tassi (%)</span></h3><div class="chartbox"><canvas id="c-abbandono-rate"></canvas></div></div>
         <div class="card span6">
-          <h3><span><i class="fa-solid fa-chart-pie" style="color:#e0245e"></i>Composizione abbandoni</span>
+          <h3><span><i class="fa-solid fa-trophy" style="color:#e0245e"></i>TOP 3</span>
             <span class="roletabs">
               <button id="arc-TUTOR" class="on" onclick="setAbbCompRole('TUTOR')">Tutor</button>
               <button id="arc-TRAINER" onclick="setAbbCompRole('TRAINER')">Trainer</button>
               <button id="arc-NUTRI" onclick="setAbbCompRole('NUTRI')">Nutri</button>
             </span>
           </h3>
-          <div class="chartbox"><canvas id="c-abbandono-comp"></canvas></div>
+          <div id="abbandono-top3" class="top3-list"></div>
         </div>
         <div class="card span12">
           <h3><span><i class="fa-solid fa-table-list" style="color:#e0245e"></i>Tasso di abbandono</span></h3>
@@ -3293,7 +3293,19 @@ function render(){
     {label:'Totale',data:collabSorted.map(r=>+r.totRate.toFixed(1)),backgroundColor:'#7c56d9',borderRadius:6}
   ]},options:{...common,scales:{x:gridOpt,y:{...gridOpt,beginAtZero:true,ticks:{...gridOpt.ticks,callback:v=>v+'%'}}},plugins:{...common.plugins,tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.formattedValue+'%'}}},onHover:cursorHover,onClick:(evt,els)=>{if(!els.length)return;const i=els[0].index;apriListaCampo(collabSorted[i].field,collabSorted[i].name,collabSorted[i].name);}}});
   const abbCompRows=collabSorted.filter(r=>r.field===abbCompRole);
-  mkChart('c-abbandono-comp',{type:'doughnut',data:{labels:abbCompRows.map(r=>r.name),datasets:[{data:abbCompRows.map(r=>r.totN),backgroundColor:abbCompRows.map(r=>chartTagColor(r.field.toLowerCase(),r.name)),borderWidth:0}]},options:{...common,cutout:'62%',onHover:cursorHover,onClick:(evt,els)=>{if(!els.length)return;const i=els[0].index;apriListaCampo(abbCompRole,abbCompRows[i].name,abbCompRows[i].name);},plugins:{...common.plugins,tooltip:pctTooltip}}});
+  const abbTop3El=document.getElementById('abbandono-top3');
+  if(abbTop3El){
+    const RANK_ICON=['🥇','🥈','🥉'];
+    const abbTop3=abbCompRows.slice().sort((a,b)=>b.totRate-a.totRate).slice(0,3);
+    abbTop3El.innerHTML=abbTop3.length?abbTop3.map((r,i)=>{
+      const c=rateColor(r.totRate);
+      return `<div class="top3-row" style="cursor:pointer" onclick="apriListaClienti('${r.keyTot}')">
+        <span class="top3-rank top3-rank-${i+1}">${RANK_ICON[i]}</span>
+        <div class="rate-row-label" style="flex:1">${collabBadgeFn[r.field](r.name)}</div>
+        <span class="rate-pill" style="background:${c.bg};color:${c.fg}">${fmtPct(r.totRate)}</span>
+      </div>`;
+    }).join(''):'<div class="sub">Nessun collaboratore con clienti assegnate.</div>';
+  }
 
   const st=countBy(allRows,'STATO CLIENTE');
   mkChart('c-stato',{type:'doughnut',data:{labels:st.map(x=>statoLabel(x[0])),datasets:[{data:st.map(x=>x[1]),backgroundColor:st.map(x=>({'IN PERCORSO':'#1f9d63','CONGELATO':'#2f7fd1','NON RINNOVATO':'#767c8a','ABBANDONATO':'#d23f3f','SPARITA':'#b5720f'}[x[0]]||'#7c56d9')),borderWidth:0}]},options:{...common,cutout:'62%',onHover:cursorHover,onClick:(evt,els)=>{if(!els.length)return;const i=els[0].index;apriListaCampo('STATO CLIENTE',st[i][0],'Stato: '+statoLabel(st[i][0]));},plugins:{...common.plugins,tooltip:pctTooltip}}});
