@@ -203,12 +203,7 @@ h1{font-size:22px;font-weight:500}
 .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px;margin-bottom:20px}
 .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:none}
 .card h3{font-size:16px;color:var(--text);font-weight:500;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center}
-.card-accent{border-left-width:3px;border-left-style:solid;border-radius:0 12px 12px 0}
-.card-accent h3 i{font-size:15px;margin-right:9px}
-.card-accent-green{border-left-color:#1f9d63}.card-accent-green h3 i{color:#1f9d63}
-.card-accent-blue{border-left-color:#2f7fd1}.card-accent-blue h3 i{color:#2f7fd1}
-.card-accent-orange{border-left-color:#b5720f}.card-accent-orange h3 i{color:#b5720f}
-.card-accent-purple{border-left-color:#7c56d9}.card-accent-purple h3 i{color:#7c56d9}
+.card h3 i{font-size:15px;margin-right:9px}
 .span4{grid-column:span 4}.span6{grid-column:span 6}.span8{grid-column:span 8}.span12{grid-column:span 12}
 @media(max-width:1000px){.span4,.span6,.span8{grid-column:span 12}}
 .chartbox{position:relative;height:260px}
@@ -774,11 +769,11 @@ h3 .ico,.sub .ico{color:var(--muted)}
       </div>
 
       <div id="analisi-tab-stato" class="grid">
-        <div class="card card-accent card-accent-green span4"><h3><span><i class="fa-solid fa-user-group"></i>Stato clienti</span></h3><div class="chartbox"><canvas id="c-stato"></canvas></div></div>
-        <div class="card card-accent card-accent-blue span4"><h3><span><i class="fa-solid fa-route"></i>Percorsi scelti</span></h3><div class="chartbox"><canvas id="c-percorso"></canvas></div></div>
-        <div class="card card-accent card-accent-orange span4"><h3><span><i class="fa-solid fa-credit-card"></i>Metodi di pagamento</span></h3><div class="chartbox"><canvas id="c-metodo"></canvas></div></div>
-        <div class="card card-accent card-accent-purple span12">
-          <h3><span><i class="fa-solid fa-users-gear"></i>Clienti per collaboratore</span>
+        <div class="card span4"><h3><span><i class="fa-solid fa-user-group" style="color:#1f9d63"></i>Stato clienti</span></h3><div class="chartbox"><canvas id="c-stato"></canvas></div></div>
+        <div class="card span4"><h3><span><i class="fa-solid fa-route" style="color:#2f7fd1"></i>Percorsi scelti</span></h3><div class="chartbox"><canvas id="c-percorso"></canvas></div></div>
+        <div class="card span4"><h3><span><i class="fa-solid fa-credit-card" style="color:#b5720f"></i>Metodi di pagamento</span></h3><div class="chartbox"><canvas id="c-metodo"></canvas></div></div>
+        <div class="card span12">
+          <h3><span><i class="fa-solid fa-users-gear" style="color:#7c56d9"></i>Clienti per collaboratore</span>
             <span class="roletabs">
               <button id="rt-TUTOR" class="on" onclick="setRole('TUTOR')">Tutor</button>
               <button id="rt-TRAINER" onclick="setRole('TRAINER')">Trainer</button>
@@ -3263,8 +3258,10 @@ function render(){
   KPI_LISTS.incAlt=allRows.filter(r=>incMese(r)&&isAltT(r));
   KPI_LISTS.incTot=incTotRows;
 
-  const common={plugins:{legend:{labels:{color:'#63625c',font:{size:11},boxWidth:12}}},maintainAspectRatio:false};
+  const common={plugins:{legend:{align:'center',labels:{color:'#63625c',font:{size:11},boxWidth:8,usePointStyle:true,pointStyle:'circle',padding:14}}},maintainAspectRatio:false};
   const gridOpt={grid:{color:'#e4e3dd'},ticks:{color:'#63625c',font:{size:11}}};
+  const pctTooltip={callbacks:{label:c=>{const tot=c.dataset.data.reduce((a,b)=>a+b,0);const p=tot?((c.parsed/tot)*100).toFixed(1):0;return ' '+c.label+': '+c.parsed+' ('+p+'%)';}}};
+  const cursorHover=(evt,elements)=>{evt.native.target.style.cursor=elements.length?'pointer':'default';};
   if(currentPage==='analisi'){
   const collabSorted=['TUTOR','TRAINER','NUTRI'].flatMap(field=>collabRateRows.filter(r=>r.field===field).sort((a,b)=>a.name.localeCompare(b.name,'it')));
   mkChart('c-abbandono-rate',{type:'bar',data:{labels:collabSorted.map(r=>r.name),datasets:[
@@ -3276,13 +3273,13 @@ function render(){
   mkChart('c-abbandono-comp',{type:'doughnut',data:{labels:abbCompRows.map(r=>r.name),datasets:[{data:abbCompRows.map(r=>r.totN),backgroundColor:abbCompRows.map(r=>chartTagColor(r.field.toLowerCase(),r.name)),borderWidth:0}]},options:{...common,cutout:'62%'}});
 
   const st=countBy(allRows,'STATO CLIENTE');
-  mkChart('c-stato',{type:'doughnut',data:{labels:st.map(x=>statoLabel(x[0])),datasets:[{data:st.map(x=>x[1]),backgroundColor:st.map(x=>({'IN PERCORSO':'#1f9d63','CONGELATO':'#2f7fd1','NON RINNOVATO':'#767c8a','ABBANDONATO':'#d23f3f','SPARITA':'#b5720f'}[x[0]]||'#7c56d9')),borderWidth:0}]},options:{...common,cutout:'62%'}});
+  mkChart('c-stato',{type:'doughnut',data:{labels:st.map(x=>statoLabel(x[0])),datasets:[{data:st.map(x=>x[1]),backgroundColor:st.map(x=>({'IN PERCORSO':'#1f9d63','CONGELATO':'#2f7fd1','NON RINNOVATO':'#767c8a','ABBANDONATO':'#d23f3f','SPARITA':'#b5720f'}[x[0]]||'#7c56d9')),borderWidth:0}]},options:{...common,cutout:'62%',onHover:cursorHover,onClick:(evt,els)=>{if(!els.length)return;const i=els[0].index;apriListaCampo('STATO CLIENTE',st[i][0],'Stato: '+statoLabel(st[i][0]));},plugins:{...common.plugins,tooltip:pctTooltip}}});
 
   const pc=countBy(allRows,'PERCORSO');
-  mkChart('c-percorso',{type:'bar',data:{labels:pc.map(x=>x[0]),datasets:[{data:pc.map(x=>x[1]),backgroundColor:PALETTE,borderRadius:6}]},options:{...common,plugins:{legend:{display:false}},scales:{x:gridOpt,y:{...gridOpt,beginAtZero:true}}}});
+  mkChart('c-percorso',{type:'bar',data:{labels:pc.map(x=>x[0]),datasets:[{data:pc.map(x=>x[1]),backgroundColor:PALETTE,borderRadius:6}]},options:{...common,plugins:{legend:{display:false}},scales:{x:gridOpt,y:{...gridOpt,beginAtZero:true}},onHover:cursorHover,onClick:(evt,els)=>{if(!els.length)return;const i=els[0].index;apriListaCampo('PERCORSO',pc[i][0],'Percorso: '+pc[i][0]);}}});
 
   const mp=countBy(allRows,'METODO PAGAMENTO');
-  mkChart('c-metodo',{type:'doughnut',data:{labels:mp.map(x=>x[0]),datasets:[{data:mp.map(x=>x[1]),backgroundColor:mp.map(x=>METODO_COLORS[x[0]]||'#8b8a83'),borderWidth:0}]},options:{...common,cutout:'62%'}});
+  mkChart('c-metodo',{type:'doughnut',data:{labels:mp.map(x=>x[0]),datasets:[{data:mp.map(x=>x[1]),backgroundColor:mp.map(x=>METODO_COLORS[x[0]]||'#8b8a83'),borderWidth:0}]},options:{...common,cutout:'62%',onHover:cursorHover,onClick:(evt,els)=>{if(!els.length)return;const i=els[0].index;apriListaCampo('METODO PAGAMENTO',mp[i][0],'Metodo: '+mp[i][0]);},plugins:{...common.plugins,tooltip:pctTooltip}}});
 
   const fn=countBy(allRows,'FONTE');
   mkChart('c-fonte',{type:'doughnut',data:{labels:fn.map(x=>x[0]),datasets:[{data:fn.map(x=>x[1]),backgroundColor:fn.map(x=>FONTE_COLORS[x[0]]||'#7c56d9'),borderWidth:0}]},options:{...common,cutout:'62%'}});
@@ -3321,7 +3318,7 @@ function render(){
 
   if(currentPage==='analisi'){
   const cb=countBy(allRows.filter(r=>r[role]),role).slice(0,12);
-  mkChart('c-collab',{type:'bar',data:{labels:cb.map(x=>x[0]),datasets:[{data:cb.map(x=>x[1]),backgroundColor:cb.map(x=>chartTagColor(role.toLowerCase(),x[0])),borderRadius:6}]},options:{...common,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{...gridOpt,beginAtZero:true},y:gridOpt}}});
+  mkChart('c-collab',{type:'bar',data:{labels:cb.map(x=>x[0]),datasets:[{data:cb.map(x=>x[1]),backgroundColor:cb.map(x=>chartTagColor(role.toLowerCase(),x[0])),borderRadius:6}]},options:{...common,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{...gridOpt,beginAtZero:true},y:gridOpt},onHover:cursorHover,onClick:(evt,els)=>{if(!els.length)return;const i=els[0].index;apriListaCampo(role,cb[i][0],cb[i][0]);}}});
   }
 
   /* rinnovi da gestire + rate da incassare (Trance) */
@@ -3738,6 +3735,23 @@ function apriListaClienti(key){
 }
 function chiudiListaClienti(){
   document.getElementById('kpi-list-modal').style.display='none';
+}
+/* Apre la stessa modale delle card KPI ma filtrando direttamente su un campo/valore
+   qualsiasi: usata dai grafici di "Analisi dati" per rendere ogni fetta/barra
+   cliccabile (stato, percorso, metodo di pagamento, collaboratore). */
+function apriListaCampo(field,value,label){
+  const rows=DATA.filter(r=>(r[field]||'(vuoto)')===value).sort((a,b)=>a['CLIENTE'].localeCompare(b['CLIENTE'],'it'));
+  document.getElementById('kpi-list-title').textContent=label+' ('+rows.length+')';
+  document.getElementById('kpi-list-body').innerHTML=rows.length?rows.map(r=>{
+    const fin=pdate(r['FINE PERCORSO']);
+    return `<div class="kpi-list-row">
+      <span style="flex:1;min-width:160px">${esc(r['CLIENTE'])}</span>
+      ${statoBadge(r['STATO CLIENTE'])}
+      ${percBadge(r['PERCORSO'])}
+      <span class="count" style="min-width:90px;text-align:right">${fin?fdate(fin):'—'}</span>
+    </div>`;
+  }).join(''):'<div class="sub">Nessuna cliente in questa categoria.</div>';
+  document.getElementById('kpi-list-modal').style.display='flex';
 }
 let editingClienteName=null;
 function apriModificaCliente(nome){
