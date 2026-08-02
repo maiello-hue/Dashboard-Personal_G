@@ -3296,7 +3296,7 @@ function render(){
   const abbTop3El=document.getElementById('abbandono-top3');
   if(abbTop3El){
     const RANK_ICON=['🥇','🥈','🥉'];
-    const abbTop3=abbCompRows.slice().sort((a,b)=>b.totRate-a.totRate).slice(0,3);
+    const abbTop3=abbCompRows.slice().sort((a,b)=>a.totRate-b.totRate).slice(0,3);
     abbTop3El.innerHTML=abbTop3.length?abbTop3.map((r,i)=>{
       const c=rateColor(r.totRate);
       return `<div class="top3-row" style="cursor:pointer" onclick="apriListaClienti('${r.keyTot}')">
