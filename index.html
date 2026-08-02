@@ -370,15 +370,16 @@ h3 .ico,.sub .ico{color:var(--muted)}
 .modal-card-lg{max-width:760px;border-radius:20px;padding:30px 34px}
 .modal-card-lg h3{font-size:20px;font-weight:600;margin-bottom:22px}
 .incrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
-.incbox{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px;cursor:pointer;transition:filter .1s,box-shadow .1s}
+.incbox{position:relative;background:var(--card);border:1px solid var(--border);border-left-width:3px;border-left-style:solid;border-radius:0 12px 12px 0;padding:14px 16px;cursor:pointer;transition:filter .1s,box-shadow .1s}
 .incbox:hover{filter:brightness(.97);box-shadow:0 2px 8px rgba(0,0,0,.06)}
 .incbox .l{font-size:13px;color:var(--muted);font-weight:400}
-.incbox .v{font-size:22px;font-weight:500;margin-top:6px}
+.incbox .v{font-size:22px;font-weight:500;margin-top:6px;color:var(--text)}
 .incbox .d{font-size:12px;color:var(--muted2);margin-top:4px}
-.incbox.inc-green{background:#eaf7ef;border-color:#d7ecdf}
-.incbox.inc-blue{background:#eaf3fc;border-color:#d8e8f8}
-.incbox.inc-orange{background:#faf1e2;border-color:#f1e2c4}
-.incbox.inc-purple{background:#f1eefb;border-color:#e3ddf5}
+.inc-ic{position:absolute;top:14px;right:14px;font-size:20px}
+.incbox.inc-green{border-left-color:#1f9d63}
+.incbox.inc-blue{border-left-color:#2f7fd1}
+.incbox.inc-orange{border-left-color:#b5720f}
+.incbox.inc-purple{border-left-color:#7c56d9}
 .rata-item{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
 .rata-item:last-child{border:none}
 .rata-item.paid{opacity:.5}
@@ -746,10 +747,10 @@ h3 .ico,.sub .ico{color:var(--muted)}
       <div class="grid">
         <div class="card span12">
           <div class="incrow">
-            <div class="incbox inc-green" onclick="apriListaClienti('incRin')"><div class="l">Rinnovo percorsi</div><div class="v" style="color:var(--green)" id="i-rin">–</div><div class="d" id="i-rin-d"></div></div>
-            <div class="incbox inc-blue" onclick="apriListaClienti('incRic')"><div class="l">Ricorrenti</div><div class="v" style="color:var(--blue)" id="i-ric">–</div><div class="d" id="i-ric-d"></div></div>
-            <div class="incbox inc-orange" onclick="apriListaClienti('incAlt')"><div class="l">Nuovo cliente</div><div class="v" style="color:var(--orange)" id="i-alt">–</div><div class="d" id="i-alt-d"></div></div>
-            <div class="incbox inc-purple" onclick="apriListaClienti('incTot')"><div class="l" id="i-tot-l">Totale incassato</div><div class="v" style="color:var(--purple)" id="i-tot">–</div><div class="d" id="i-tot-d"></div></div>
+            <div class="incbox inc-green" onclick="apriListaClienti('incRin')"><div class="inc-ic" style="color:#1f9d63"><i class="fa-solid fa-rotate-right"></i></div><div class="l">Rinnovo percorsi</div><div class="v" id="i-rin">–</div><div class="d" id="i-rin-d"></div></div>
+            <div class="incbox inc-blue" onclick="apriListaClienti('incRic')"><div class="inc-ic" style="color:#2f7fd1"><i class="fa-solid fa-repeat"></i></div><div class="l">Ricorrenti</div><div class="v" id="i-ric">–</div><div class="d" id="i-ric-d"></div></div>
+            <div class="incbox inc-orange" onclick="apriListaClienti('incAlt')"><div class="inc-ic" style="color:#b5720f"><i class="fa-solid fa-user-plus"></i></div><div class="l">Nuovo cliente</div><div class="v" id="i-alt">–</div><div class="d" id="i-alt-d"></div></div>
+            <div class="incbox inc-purple" onclick="apriListaClienti('incTot')"><div class="inc-ic" style="color:#7c56d9"><i class="fa-solid fa-sack-dollar"></i></div><div class="l" id="i-tot-l">Totale incassato</div><div class="v" id="i-tot">–</div><div class="d" id="i-tot-d"></div></div>
           </div>
         </div>
         <div class="card span12"><h3>Nuove entrate per mese</h3><div class="chartbox"><canvas id="c-entrate"></canvas></div></div>
