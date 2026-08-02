@@ -103,6 +103,7 @@ h1{font-size:22px;font-weight:500}
 .kpis-v2 .kpi-red{border-left-color:#d23f3f}
 .kpis-v2 .kpi-purple{border-left-color:#7c56d9}
 .kpis-v2 .kpi-azzurro{border-left-color:#0a8aa8}
+.kpis-v2 .kpi-yellow{border-left-color:#a67f00}
 @media(max-width:760px){
   .dash-hero{padding:14px}
   .dash-hero-top .v{font-size:26px}
@@ -1013,7 +1014,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
 
     <div id="page-compensi" style="display:none">
       <div class="sub" style="margin-bottom:14px">Compenso dovuto a ciascun collaboratore, calcolato sulla situazione attuale delle clienti (Premium e Gnocca). Contano le clienti "In percorso"; tra le "Non rinnovato" contano solo quelle il cui percorso è finito dal giorno 16 del mese in poi (fine percorso prima del 15 non conta). Congelate, sparite, mai iniziato e abbandonate non contano mai. L'importo di ogni singola cliente è modificabile direttamente sulla sua riga.</div>
-      <div class="kpis" id="comp-kpis"></div>
+      <div class="kpis kpis-v2" id="comp-kpis"></div>
       <div class="grid">
         <div class="card span12"><h3>Tutor</h3><div id="comp-tutor"></div></div>
         <div class="card span12"><h3>Trainer</h3><div id="comp-trainer"></div></div>
@@ -2468,10 +2469,10 @@ function buildCompensi(){
   });
   const fmtE=n=>'€ '+n.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2,useGrouping:true});
   document.getElementById('comp-kpis').innerHTML=`
-    <div class="kpi kpi-purple"><div class="l">Tutor</div><div class="v">${fmtE(roleTotals.tutor)}</div></div>
-    <div class="kpi kpi-azzurro"><div class="l">Trainer</div><div class="v">${fmtE(roleTotals.trainer)}</div></div>
-    <div class="kpi kpi-yellow"><div class="l">Nutrizionista</div><div class="v">${fmtE(roleTotals.nutri)}</div></div>
-    <div class="kpi"><div class="l">Totale compensi</div><div class="v">${fmtE(grandTotal)}</div></div>`;
+    <div class="kpi kpi-purple"><div class="kpi-ic" style="color:#7c56d9"><i class="fa-solid fa-user"></i></div><div class="l">Tutor</div><div class="v">${fmtE(roleTotals.tutor)}</div></div>
+    <div class="kpi kpi-azzurro"><div class="kpi-ic" style="color:#0a8aa8"><i class="fa-solid fa-dumbbell"></i></div><div class="l">Trainer</div><div class="v">${fmtE(roleTotals.trainer)}</div></div>
+    <div class="kpi kpi-yellow"><div class="kpi-ic" style="color:#a67f00"><i class="fa-solid fa-apple-whole"></i></div><div class="l">Nutrizionista</div><div class="v">${fmtE(roleTotals.nutri)}</div></div>
+    <div class="kpi kpi-gray"><div class="kpi-ic" style="color:#37424f"><i class="fa-solid fa-sack-dollar"></i></div><div class="l">Totale compensi</div><div class="v">${fmtE(grandTotal)}</div></div>`;
 }
 /* ---------- provvigioni venditori ---------- */
 /* Tabella a scaglioni fissi: l'incasso della cliente deve corrispondere (con una
