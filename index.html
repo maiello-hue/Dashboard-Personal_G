@@ -3107,8 +3107,10 @@ function render(){
   const totA=allRows.filter(r=>!isArchiviata(r)&&finoAMese(r,'INIZIO PERCORSO',meseSel));
   /* "Nuove" = clienti il cui INIZIO PERCORSO cade proprio nel mese selezionato
      (non cumulativo come Clienti totali): serve a capire quante nuove clienti
-     sono state inserite in quel singolo mese, a prescindere dallo stato attuale. */
-  const nuoveA=allRows.filter(r=>inMese(r,'INIZIO PERCORSO',meseSel));
+     sono state inserite in quel singolo mese, a prescindere dallo stato attuale.
+     Chi rinnova ottiene anch'essa un nuovo INIZIO PERCORSO (nuovo ciclo) ma non è
+     una cliente nuova: va esclusa qui, resta comunque conteggiata in "In percorso". */
+  const nuoveA=allRows.filter(r=>inMese(r,'INIZIO PERCORSO',meseSel)&&!(r['TIPO INCASSO']||'').toLowerCase().includes('rinnovo'));
   const scadA=allRows.filter(r=>{const d=pdate(r['FINE PERCORSO']);return d&&d>=now&&d<=in30&&r['STATO CLIENTE']==='IN PERCORSO';});
   const scad30=scadA.length, brkScad=brk(scadA);
   const premiumRows=allRows.filter(r=>!isGnocca(r)), gnoccaRows=allRows.filter(isGnocca);
