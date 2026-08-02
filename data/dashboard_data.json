@@ -16164,7 +16164,7 @@
   },
   {
    "CLIENTE": "Elena Frappi",
-   "STATO CLIENTE": "SPARITA",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "GNOCCA 12",
    "INIZIO PERCORSO": "22/04/2026",
    "FINE PERCORSO": "22/04/2027",
@@ -16185,7 +16185,9 @@
    "CONTRATTO": "",
    "CHECK": "",
    "RISULTATO": "",
-   "FONTE": "ADV"
+   "FONTE": "ADV",
+   "EMAIL": "",
+   "VENDITORE": ""
   },
   {
    "CLIENTE": "Valentina Camillieri",
@@ -24450,5 +24452,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-02T06:56:07.538Z"
+ "updatedAt": "2026-08-02T06:57:36.936Z"
 }
