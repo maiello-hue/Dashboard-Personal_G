@@ -769,11 +769,11 @@ h3 .ico,.sub .ico{color:var(--muted)}
       </div>
 
       <div id="analisi-tab-stato" class="grid">
-        <div class="card span4"><h3><span><i class="fa-solid fa-user-group" style="color:#c2368f"></i>Stato clienti</span></h3><div class="chartbox"><canvas id="c-stato"></canvas></div></div>
-        <div class="card span4"><h3><span><i class="fa-solid fa-route" style="color:#c2368f"></i>Percorsi scelti</span></h3><div class="chartbox"><canvas id="c-percorso"></canvas></div></div>
-        <div class="card span4"><h3><span><i class="fa-solid fa-credit-card" style="color:#c2368f"></i>Metodi di pagamento</span></h3><div class="chartbox"><canvas id="c-metodo"></canvas></div></div>
+        <div class="card span4"><h3><span><i class="fa-solid fa-user-group" style="color:#e0245e"></i>Stato clienti</span></h3><div class="chartbox"><canvas id="c-stato"></canvas></div></div>
+        <div class="card span4"><h3><span><i class="fa-solid fa-route" style="color:#e0245e"></i>Percorsi scelti</span></h3><div class="chartbox"><canvas id="c-percorso"></canvas></div></div>
+        <div class="card span4"><h3><span><i class="fa-solid fa-credit-card" style="color:#e0245e"></i>Metodi di pagamento</span></h3><div class="chartbox"><canvas id="c-metodo"></canvas></div></div>
         <div class="card span12">
-          <h3><span><i class="fa-solid fa-users-gear" style="color:#c2368f"></i>Clienti per collaboratore</span>
+          <h3><span><i class="fa-solid fa-users-gear" style="color:#e0245e"></i>Clienti per collaboratore</span>
             <span class="roletabs">
               <button id="rt-TUTOR" class="on" onclick="setRole('TUTOR')">Tutor</button>
               <button id="rt-TRAINER" onclick="setRole('TRAINER')">Trainer</button>
@@ -785,19 +785,19 @@ h3 .ico,.sub .ico{color:var(--muted)}
       </div>
 
       <div id="analisi-tab-fonte" class="grid" style="display:none">
-        <div class="card span6"><h3><span><i class="fa-solid fa-bullhorn" style="color:#c2368f"></i>Fonte clienti</span></h3><div class="chartbox"><canvas id="c-fonte"></canvas></div></div>
-        <div class="card span6"><h3><span><i class="fa-solid fa-chart-line" style="color:#c2368f"></i>Fonte per mese</span></h3><div class="chartbox"><canvas id="c-fonte-mese"></canvas></div></div>
+        <div class="card span6"><h3><span><i class="fa-solid fa-bullhorn" style="color:#e0245e"></i>Fonte clienti</span></h3><div class="chartbox"><canvas id="c-fonte"></canvas></div></div>
+        <div class="card span6"><h3><span><i class="fa-solid fa-chart-line" style="color:#e0245e"></i>Fonte per mese</span></h3><div class="chartbox"><canvas id="c-fonte-mese"></canvas></div></div>
         <div class="card span12">
-          <h3><span><i class="fa-solid fa-list" style="color:#c2368f"></i>Elenco clienti per fonte</span></h3>
+          <h3><span><i class="fa-solid fa-list" style="color:#e0245e"></i>Elenco clienti per fonte</span></h3>
           <div class="sub" style="margin-bottom:10px">Clicca su una fonte per espandere l'elenco, suddiviso mese per mese, con il totale in fondo.</div>
           <div id="fonte-report"></div>
         </div>
       </div>
 
       <div id="analisi-tab-abbandono" class="grid" style="display:none">
-        <div class="card span6"><h3><span><i class="fa-solid fa-chart-column" style="color:#c2368f"></i>Confronto tassi (%)</span></h3><div class="chartbox"><canvas id="c-abbandono-rate"></canvas></div></div>
+        <div class="card span6"><h3><span><i class="fa-solid fa-chart-column" style="color:#e0245e"></i>Confronto tassi (%)</span></h3><div class="chartbox"><canvas id="c-abbandono-rate"></canvas></div></div>
         <div class="card span6">
-          <h3><span><i class="fa-solid fa-chart-pie" style="color:#c2368f"></i>Composizione abbandoni</span>
+          <h3><span><i class="fa-solid fa-chart-pie" style="color:#e0245e"></i>Composizione abbandoni</span>
             <span class="roletabs">
               <button id="arc-TUTOR" class="on" onclick="setAbbCompRole('TUTOR')">Tutor</button>
               <button id="arc-TRAINER" onclick="setAbbCompRole('TRAINER')">Trainer</button>
@@ -807,7 +807,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
           <div class="chartbox"><canvas id="c-abbandono-comp"></canvas></div>
         </div>
         <div class="card span12">
-          <h3><span><i class="fa-solid fa-table-list" style="color:#c2368f"></i>Tasso di abbandono</span></h3>
+          <h3><span><i class="fa-solid fa-table-list" style="color:#e0245e"></i>Tasso di abbandono</span></h3>
           <div class="sub" style="margin-bottom:10px">Percentuali sul totale di ciascuna categoria, calcolate separatamente per Premium e Gnocca.</div>
           <table class="rate-table">
             <thead>
@@ -817,7 +817,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
           </table>
         </div>
         <div class="card span12">
-          <h3><span><i class="fa-solid fa-users-gear" style="color:#c2368f"></i>Tasso di abbandono per collaboratore</span></h3>
+          <h3><span><i class="fa-solid fa-users-gear" style="color:#e0245e"></i>Tasso di abbandono per collaboratore</span></h3>
           <div class="sub" style="margin-bottom:10px">Percentuali calcolate sul totale delle clienti assegnate a ciascun collaboratore (Tutor, Trainer, Nutrizionista).</div>
           <table class="rate-table">
             <thead>
@@ -829,9 +829,9 @@ h3 .ico,.sub .ico{color:var(--muted)}
       </div>
 
       <div id="analisi-tab-performance" class="grid" style="display:none">
-        <div class="card span6"><h3><span><i class="fa-solid fa-chart-column" style="color:#c2368f"></i>Confronto tassi (%)</span></h3><div class="chartbox"><canvas id="c-perf-rate"></canvas></div></div>
+        <div class="card span6"><h3><span><i class="fa-solid fa-chart-column" style="color:#e0245e"></i>Confronto tassi (%)</span></h3><div class="chartbox"><canvas id="c-perf-rate"></canvas></div></div>
         <div class="card span6">
-          <h3><span><i class="fa-solid fa-chart-pie" style="color:#c2368f"></i>Composizione miglioramenti</span>
+          <h3><span><i class="fa-solid fa-chart-pie" style="color:#e0245e"></i>Composizione miglioramenti</span>
             <span class="roletabs">
               <button id="pcr-TUTOR" class="on" onclick="setPerfCompRole('TUTOR')">Tutor</button>
               <button id="pcr-TRAINER" onclick="setPerfCompRole('TRAINER')">Trainer</button>
@@ -841,25 +841,25 @@ h3 .ico,.sub .ico{color:var(--muted)}
           <div class="chartbox"><canvas id="c-perf-comp"></canvas></div>
         </div>
         <div class="card span12">
-          <h3><span><i class="fa-solid fa-circle-info" style="color:#c2368f"></i>Tasso di performance per collaboratore</span></h3>
+          <h3><span><i class="fa-solid fa-circle-info" style="color:#e0245e"></i>Tasso di performance per collaboratore</span></h3>
           <div class="sub" style="margin-bottom:10px">Calcolato solo sulle clienti con stato "In percorso". Per ciascun collaboratore: clienti assegnate, quante hanno un check inserito, quante hanno un miglioramento (Risultato = Sì) e la percentuale di miglioramento sul totale delle clienti. Divisa per categoria, i venditori non sono inclusi.</div>
         </div>
         <div class="card span12">
-          <h3><span><i class="fa-solid fa-user" style="color:#c2368f"></i>Tutor</span></h3>
+          <h3><span><i class="fa-solid fa-user" style="color:#e0245e"></i>Tutor</span></h3>
           <table class="rate-table">
             <thead><tr><th>Collaboratore</th><th>Clienti</th><th>Check inserito</th><th>Miglioramenti</th><th>% Miglioramento (sul totale)</th></tr></thead>
             <tbody id="perf-tutor-table-body"></tbody>
           </table>
         </div>
         <div class="card span12">
-          <h3><span><i class="fa-solid fa-dumbbell" style="color:#c2368f"></i>Trainer</span></h3>
+          <h3><span><i class="fa-solid fa-dumbbell" style="color:#e0245e"></i>Trainer</span></h3>
           <table class="rate-table">
             <thead><tr><th>Collaboratore</th><th>Clienti</th><th>Check inserito</th><th>Miglioramenti</th><th>% Miglioramento (sul totale)</th></tr></thead>
             <tbody id="perf-trainer-table-body"></tbody>
           </table>
         </div>
         <div class="card span12">
-          <h3><span><i class="fa-solid fa-apple-whole" style="color:#c2368f"></i>Nutrizioniste</span></h3>
+          <h3><span><i class="fa-solid fa-apple-whole" style="color:#e0245e"></i>Nutrizioniste</span></h3>
           <table class="rate-table">
             <thead><tr><th>Collaboratore</th><th>Clienti</th><th>Check inserito</th><th>Miglioramenti</th><th>% Miglioramento (sul totale)</th></tr></thead>
             <tbody id="perf-nutri-table-body"></tbody>
