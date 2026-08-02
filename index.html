@@ -2732,6 +2732,24 @@ function buildPerfCollabTable(){
      grezzi (clienti/check/miglioramenti) restano visibili normalmente.
      Formato chiave: "nomeNormalizzato|YYYY-MM". */
   const PERF_PCT_HIDE=new Set(['elisa|2026-07']);
+  /* Eccezioni manuali sulla CLASSIFICA (TOP 3), valide dal mese indicato in poi
+     (non solo per un mese specifico come sopra):
+     - PERF_TOP3_EXCLUDE_FROM: collaboratori da escludere SOLO dalla classifica
+       di un determinato ruolo, dal mese "from" in avanti (in tabella restano
+       visibili con la loro % normale, es. Elisa/Tutor).
+     - PERF_PCT_HIDE_FROM: come PERF_PCT_HIDE ma non legato a un mese preciso;
+       da qui in poi nasconde anche la % in tabella (dati grezzi visibili), es.
+       Personal_G/Trainer, che va anche escluso dalla classifica.
+     - PERF_TOP3_FORCE_FROM: collaboratori da includere sempre nella classifica
+       di un determinato ruolo, dal mese "from" in avanti, anche se non hanno
+       clienti "In percorso" assegnate in quel mese (in tal caso compaiono con
+       dati a zero) o non rientrerebbero naturalmente nella top 3. */
+  const PERF_TOP3_EXCLUDE_FROM=[{field:'TUTOR',name:'elisa',from:'2026-08'},{field:'TRAINER',name:'personalg',from:'2026-08'}];
+  const PERF_PCT_HIDE_FROM=[{field:'TRAINER',name:'personalg',from:'2026-08'}];
+  const PERF_TOP3_FORCE_FROM=[{field:'TRAINER',name:'niccol',from:'2026-08'}];
+  const isTop3Excluded=(field,name)=>PERF_TOP3_EXCLUDE_FROM.some(e=>e.field===field&&e.name===normName(name)&&meseSel>=e.from);
+  const isPctHiddenFrom=(field,name)=>PERF_PCT_HIDE_FROM.some(e=>e.field===field&&e.name===normName(name)&&meseSel>=e.from);
+  const isTop3Forced=(field,name)=>PERF_TOP3_FORCE_FROM.some(e=>e.field===field&&e.name===normName(name)&&meseSel>=e.from);
   /* Check e miglioramenti si contano solo per il mese selezionato (DATA CHECK
      nel mese scelto): esattamente come gli incassi, il conteggio riparte da
      solo a ogni nuovo mese senza bisogno di azzerare nulla a mano, e i mesi
@@ -2742,12 +2760,13 @@ function buildPerfCollabTable(){
     distinct(field).forEach(name=>{
       if(field==='TUTOR'&&PERF_TUTOR_EXCLUDE.has(normName(name))) return;
       const assigned=DATA.filter(r=>(r[field]||'').trim()===name&&isInPercorso(r)&&!isCheckExcluded(r,meseSel));
-      if(!assigned.length) return;
+      if(!assigned.length&&!isTop3Forced(field,name)) return;
       const checkInserito=assigned.filter(r=>checkValMese(r,'CHECK',meseSel)!=='').length;
       const miglioramenti=assigned.filter(r=>checkValMese(r,'RISULTATO',meseSel).toUpperCase()==='SI').length;
       const checkRate=pct(checkInserito,assigned.length), migRate=pct(miglioramenti,assigned.length);
-      const hidePct=PERF_PCT_HIDE.has(normName(name)+'|'+meseSel);
-      allRows.push({field,name,tot:assigned.length,checkInserito,checkRate,miglioramenti,migRate,hidePct});
+      const hidePct=PERF_PCT_HIDE.has(normName(name)+'|'+meseSel)||isPctHiddenFrom(field,name);
+      const excludeTop3=isTop3Excluded(field,name);
+      allRows.push({field,name,tot:assigned.length,checkInserito,checkRate,miglioramenti,migRate,hidePct,excludeTop3});
     });
   });
   ['TUTOR','TRAINER','NUTRI'].forEach(field=>{
@@ -2777,7 +2796,16 @@ function buildPerfCollabTable(){
   const top3El=document.getElementById('perf-top3');
   if(top3El){
     const RANK_ICON=['🥇','🥈','🥉'];
-    const top3=allRows.filter(r=>r.field===perfCompRole&&!r.hidePct).sort((a,b)=>b.migRate-a.migRate||b.tot-a.tot).slice(0,3);
+    const top3Pool=allRows.filter(r=>r.field===perfCompRole&&!r.hidePct&&!r.excludeTop3).sort((a,b)=>b.migRate-a.migRate||b.tot-a.tot);
+    const top3=top3Pool.slice(0,3);
+    const forcedIn=top3Pool.filter(r=>isTop3Forced(r.field,r.name));
+    forcedIn.forEach(f=>{
+      if(!top3.includes(f)){
+        top3.pop();
+        top3.push(f);
+      }
+    });
+    top3.sort((a,b)=>b.migRate-a.migRate||b.tot-a.tot);
     top3El.innerHTML=top3.length?top3.map((r,i)=>{
       const c=perfColor(r.migRate);
       return `<div class="top3-row" style="cursor:pointer" onclick="apriListaCampo('${perfCompRole}','${jsEsc(r.name)}','${jsEsc(r.name)}')">
