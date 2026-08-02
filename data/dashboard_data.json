@@ -6129,7 +6129,7 @@
   },
   {
    "CLIENTE": "Sefora Ardito",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "CONGELATO",
    "PERCORSO": "GNOCCA 12",
    "INIZIO PERCORSO": "03/12/2025",
    "FINE PERCORSO": "03/12/2026",
@@ -6150,7 +6150,9 @@
    "CONTRATTO": "",
    "CHECK": "",
    "RISULTATO": "",
-   "FONTE": "INSTAGRAM"
+   "FONTE": "INSTAGRAM",
+   "EMAIL": "",
+   "VENDITORE": ""
   },
   {
    "CLIENTE": "Dania Fabbrizzi",
@@ -24448,5 +24450,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-01T21:30:08.541Z"
+ "updatedAt": "2026-08-02T06:56:07.538Z"
 }
