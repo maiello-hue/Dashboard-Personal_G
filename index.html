@@ -75,6 +75,30 @@ h1{font-size:22px;font-weight:500}
 .kpi-azzurro{background:#e0f4fb}.kpi-azzurro .l,.kpi-azzurro .v{color:#0a8aa8}
 .kpi-yellow{background:#fdf6d6}.kpi-yellow .l,.kpi-yellow .v{color:#a67f00}
 .kpi-gray{background:#e2e6ec}.kpi-gray .l,.kpi-gray .v{color:#37424f}
+.dash-hero{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:14px;cursor:pointer;transition:filter .1s,box-shadow .1s}
+.dash-hero:hover{filter:brightness(.98);box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.dash-hero-top{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.dash-hero-top .l{font-size:13px;color:var(--muted);font-weight:400}
+.dash-hero-top .v{font-size:32px;font-weight:500;margin-top:4px}
+.dash-hero-top .d{font-size:12px;color:var(--muted2)}
+.dash-bar{display:flex;height:10px;border-radius:6px;overflow:hidden;background:var(--border)}
+.dash-bar-seg{transition:width .3s ease}
+.dash-legend{display:flex;gap:16px;margin-top:10px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.dash-legend b{color:var(--text);font-weight:600}
+.dash-dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:5px;vertical-align:middle}
+.dash-alert{display:flex;align-items:center;gap:10px;background:#fdf6d6;border-radius:12px;padding:12px 16px;margin-bottom:16px;cursor:pointer;transition:filter .1s}
+.dash-alert:hover{filter:brightness(.97)}
+.dash-alert-ico{color:#a67f00;font-size:16px;display:flex;flex-shrink:0}
+.dash-alert-text{font-size:13px;color:#a67f00}
+.dash-alert-text b{font-weight:700}
+.dash-alert-sub{color:#a67f00;opacity:.75;margin-left:4px}
+.kpi-ic{font-size:15px;margin-bottom:8px}
+@media(max-width:760px){
+  .dash-hero{padding:14px}
+  .dash-hero-top .v{font-size:26px}
+  .dash-legend{gap:10px;font-size:11px}
+  .dash-alert{padding:10px 12px}
+}
 .mese-sel-row{display:flex;align-items:center;gap:8px;margin-bottom:12px}
 .fonte-section{border:1px solid var(--border);border-radius:10px;margin-top:10px;overflow:hidden}
 .fonte-section:first-child{margin-top:0}
@@ -670,15 +694,37 @@ h3 .ico,.sub .ico{color:var(--muted)}
       <div class="mese-sel-row filters">
         <select id="dash-mese-select" aria-label="Mese abbandoni, non rinnovo e tassi" onchange="setDashMese(this.value)"></select>
       </div>
-      <div class="kpis">
-        <div class="kpi" onclick="apriListaClienti('tot')"><div class="l">Clienti totali</div><div class="v" id="k-tot">–</div><div class="d" id="k-tot-d"></div></div>
-        <div class="kpi kpi-green" onclick="apriListaClienti('att')"><div class="l">In percorso</div><div class="v" id="k-att">–</div><div class="d" id="k-att-d"></div></div>
-        <div class="kpi kpi-blue" onclick="apriListaClienti('cong')"><div class="l">Congelate</div><div class="v" id="k-cong">–</div><div class="d" id="k-cong-d"></div></div>
-        <div class="kpi kpi-red" onclick="apriListaClienti('abb')"><div class="l" id="k-abb-l">Abbandonate</div><div class="v" id="k-abb">–</div><div class="d" id="k-abb-d"></div></div>
-        <div class="kpi kpi-orange" onclick="apriListaClienti('spar')"><div class="l">Sparite</div><div class="v" id="k-spar">–</div><div class="d" id="k-spar-d"></div></div>
-        <div class="kpi kpi-purple" onclick="apriListaClienti('nonrin')"><div class="l" id="k-nonrin-l">Non rinnovo</div><div class="v" id="k-nonrin">–</div><div class="d" id="k-nonrin-d"></div></div>
-        <div class="kpi kpi-gray" onclick="apriListaClienti('mai')"><div class="l">Mai iniziato</div><div class="v" id="k-mai">–</div><div class="d" id="k-mai-d"></div></div>
-        <div class="kpi" onclick="apriListaClienti('scad')"><div class="l">In scadenza 30gg</div><div class="v" id="k-scad">–</div><div class="d" id="k-scad-d">fine percorso entro 30 giorni</div></div>
+      <div class="dash-hero" onclick="apriListaClienti('tot')">
+        <div class="dash-hero-top">
+          <div><div class="l">Clienti totali</div><div class="v" id="k-tot">–</div></div>
+          <div class="d" id="k-tot-d"></div>
+        </div>
+        <div class="dash-bar" id="dash-bar">
+          <div class="dash-bar-seg" id="bar-att" style="background:#1f9d63;width:0%"></div>
+          <div class="dash-bar-seg" id="bar-cong" style="background:#2f7fd1;width:0%"></div>
+          <div class="dash-bar-seg" id="bar-spar" style="background:#b5720f;width:0%"></div>
+          <div class="dash-bar-seg" id="bar-mai" style="background:#8b8a83;width:0%"></div>
+        </div>
+        <div class="dash-legend">
+          <span><i class="dash-dot" style="background:#1f9d63"></i>In percorso <b id="leg-att">–</b></span>
+          <span><i class="dash-dot" style="background:#2f7fd1"></i>Congelate <b id="leg-cong">–</b></span>
+          <span><i class="dash-dot" style="background:#b5720f"></i>Sparite <b id="leg-spar">–</b></span>
+          <span><i class="dash-dot" style="background:#8b8a83"></i>Mai iniziato <b id="leg-mai">–</b></span>
+        </div>
+      </div>
+
+      <div class="dash-alert" onclick="apriListaClienti('scad')">
+        <span class="dash-alert-ico"><i class="fa-solid fa-clock"></i></span>
+        <div class="dash-alert-text"><b id="k-scad">–</b> clienti in scadenza nei prossimi 30 giorni <span class="dash-alert-sub" id="k-scad-d"></span></div>
+      </div>
+
+      <div class="kpis kpis-v2">
+        <div class="kpi kpi-green" onclick="apriListaClienti('att')"><div class="kpi-ic" style="color:#1f9d63"><i class="fa-solid fa-circle-check"></i></div><div class="l">In percorso</div><div class="v" id="k-att">–</div><div class="d" id="k-att-d"></div></div>
+        <div class="kpi kpi-blue" onclick="apriListaClienti('cong')"><div class="kpi-ic" style="color:#2f7fd1"><i class="fa-solid fa-snowflake"></i></div><div class="l">Congelate</div><div class="v" id="k-cong">–</div><div class="d" id="k-cong-d"></div></div>
+        <div class="kpi kpi-orange" onclick="apriListaClienti('spar')"><div class="kpi-ic" style="color:#b5720f"><i class="fa-solid fa-ghost"></i></div><div class="l">Sparite</div><div class="v" id="k-spar">–</div><div class="d" id="k-spar-d"></div></div>
+        <div class="kpi kpi-gray" onclick="apriListaClienti('mai')"><div class="kpi-ic" style="color:#37424f"><i class="fa-solid fa-hourglass-start"></i></div><div class="l">Mai iniziato</div><div class="v" id="k-mai">–</div><div class="d" id="k-mai-d"></div></div>
+        <div class="kpi kpi-red" onclick="apriListaClienti('abb')"><div class="kpi-ic" style="color:#d23f3f"><i class="fa-solid fa-user-xmark"></i></div><div class="l" id="k-abb-l">Abbandonate</div><div class="v" id="k-abb">–</div><div class="d" id="k-abb-d"></div></div>
+        <div class="kpi kpi-purple" onclick="apriListaClienti('nonrin')"><div class="kpi-ic" style="color:#7c56d9"><i class="fa-solid fa-calendar-xmark"></i></div><div class="l" id="k-nonrin-l">Non rinnovo</div><div class="v" id="k-nonrin">–</div><div class="d" id="k-nonrin-d"></div></div>
       </div>
     </div>
 
@@ -3153,6 +3199,15 @@ function render(){
   document.getElementById('k-mai').textContent=maiA.length;
   document.getElementById('k-mai-d').textContent=brk(maiA);
   document.getElementById('k-scad').textContent=scad30;
+  const totBarD=totA.length||1;
+  document.getElementById('bar-att').style.width=(attA.length/totBarD*100)+'%';
+  document.getElementById('bar-cong').style.width=(congA.length/totBarD*100)+'%';
+  document.getElementById('bar-spar').style.width=(sparA.length/totBarD*100)+'%';
+  document.getElementById('bar-mai').style.width=(maiA.length/totBarD*100)+'%';
+  document.getElementById('leg-att').textContent=attA.length;
+  document.getElementById('leg-cong').textContent=congA.length;
+  document.getElementById('leg-spar').textContent=sparA.length;
+  document.getElementById('leg-mai').textContent=maiA.length;
 
   const fmtEuro2=n=>'€ '+n.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2,useGrouping:true});
   const tipo=r=>(r['TIPO INCASSO']||'').toLowerCase();
