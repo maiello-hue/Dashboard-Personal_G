@@ -102,6 +102,7 @@ h1{font-size:22px;font-weight:500}
 .kpis-v2 .kpi-gray{border-left-color:#8b8a83}
 .kpis-v2 .kpi-red{border-left-color:#d23f3f}
 .kpis-v2 .kpi-purple{border-left-color:#7c56d9}
+.kpis-v2 .kpi-azzurro{border-left-color:#0a8aa8}
 @media(max-width:760px){
   .dash-hero{padding:14px}
   .dash-hero-top .v{font-size:26px}
@@ -732,6 +733,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
         <div class="kpi kpi-blue" onclick="apriListaClienti('cong')"><div class="kpi-ic" style="color:#2f7fd1"><i class="fa-solid fa-snowflake"></i></div><div class="l">Congelate</div><div class="v" id="k-cong">–</div><div class="d" id="k-cong-d"></div></div>
         <div class="kpi kpi-orange" onclick="apriListaClienti('spar')"><div class="kpi-ic" style="color:#b5720f"><i class="fa-solid fa-ghost"></i></div><div class="l">Sparite</div><div class="v" id="k-spar">–</div><div class="d" id="k-spar-d"></div></div>
         <div class="kpi kpi-gray" onclick="apriListaClienti('mai')"><div class="kpi-ic" style="color:#37424f"><i class="fa-solid fa-hourglass-start"></i></div><div class="l">Mai iniziato</div><div class="v" id="k-mai">–</div><div class="d" id="k-mai-d"></div></div>
+        <div class="kpi kpi-azzurro" onclick="apriListaClienti('nuove')"><div class="kpi-ic" style="color:#0a8aa8"><i class="fa-solid fa-user-plus"></i></div><div class="l">Nuove</div><div class="v" id="k-nuove">–</div><div class="d" id="k-nuove-d"></div></div>
         <div class="kpi kpi-red" onclick="apriListaClienti('abb')"><div class="kpi-ic" style="color:#d23f3f"><i class="fa-solid fa-user-xmark"></i></div><div class="l" id="k-abb-l">Abbandonate</div><div class="v" id="k-abb">–</div><div class="d" id="k-abb-d"></div></div>
         <div class="kpi kpi-purple" onclick="apriListaClienti('nonrin')"><div class="kpi-ic" style="color:#7c56d9"><i class="fa-solid fa-calendar-xmark"></i></div><div class="l" id="k-nonrin-l">Non rinnovo</div><div class="v" id="k-nonrin">–</div><div class="d" id="k-nonrin-d"></div></div>
       </div>
@@ -3103,13 +3105,17 @@ function render(){
      precedenti, ma comparirci solo a partire dal proprio mese di INIZIO PERCORSO
      (altrimenti si falsificano i dati storici, come segnalato). */
   const totA=allRows.filter(r=>!isArchiviata(r)&&finoAMese(r,'INIZIO PERCORSO',meseSel));
+  /* "Nuove" = clienti il cui INIZIO PERCORSO cade proprio nel mese selezionato
+     (non cumulativo come Clienti totali): serve a capire quante nuove clienti
+     sono state inserite in quel singolo mese, a prescindere dallo stato attuale. */
+  const nuoveA=allRows.filter(r=>inMese(r,'INIZIO PERCORSO',meseSel));
   const scadA=allRows.filter(r=>{const d=pdate(r['FINE PERCORSO']);return d&&d>=now&&d<=in30&&r['STATO CLIENTE']==='IN PERCORSO';});
   const scad30=scadA.length, brkScad=brk(scadA);
   const premiumRows=allRows.filter(r=>!isGnocca(r)), gnoccaRows=allRows.filter(isGnocca);
   const abbPremiumA=abbA.filter(r=>!isGnocca(r)), abbGnoccaA=abbA.filter(isGnocca);
   const nonrinPremiumA=nonrinA.filter(r=>!isGnocca(r)), nonrinGnoccaA=nonrinA.filter(isGnocca);
   const totPremiumA=abbPremiumA.concat(nonrinPremiumA), totGnoccaA=abbGnoccaA.concat(nonrinGnoccaA);
-  KPI_LISTS={tot:totA,att:attA,cong:congA,abb:abbA,spar:sparA,nonrin:nonrinA,mai:maiA,scad:scadA,
+  KPI_LISTS={tot:totA,att:attA,cong:congA,abb:abbA,spar:sparA,nonrin:nonrinA,mai:maiA,scad:scadA,nuove:nuoveA,
     abbPremium:abbPremiumA,abbGnocca:abbGnoccaA,nonrinPremium:nonrinPremiumA,nonrinGnocca:nonrinGnoccaA,
     abbTotPremium:totPremiumA,abbTotGnocca:totGnoccaA};
   const pct=(n,d)=>d?(n/d*100):0;
@@ -3207,6 +3213,8 @@ function render(){
   document.getElementById('k-spar-d').textContent=brk(sparA);
   document.getElementById('k-mai').textContent=maiA.length;
   document.getElementById('k-mai-d').textContent=brk(maiA);
+  document.getElementById('k-nuove').textContent=nuoveA.length;
+  document.getElementById('k-nuove-d').textContent=brk(nuoveA)+' · '+fmtPct(pct(nuoveA.length,totA.length))+' del totale';
   document.getElementById('k-scad').textContent=scad30;
   const totBarD=totA.length||1;
   document.getElementById('bar-att').style.width=(attA.length/totBarD*100)+'%';
@@ -3689,7 +3697,7 @@ function toggleExp(i){
   expanded.has(name)?expanded.delete(name):expanded.add(name);
   render();
 }
-const KPI_LABELS={tot:'Clienti totali',att:'In percorso',cong:'Congelate',abb:'Abbandonate',spar:'Sparite',nonrin:'Non rinnovo',mai:'Mai iniziato',scad:'In scadenza 30gg',incRin:'Rinnovo percorsi',incRic:'Ricorrenti',incAlt:'Nuovo cliente',incTot:'Totale incassato',abbPremium:'Abbandono Premium',abbGnocca:'Abbandono Gnocca',nonrinPremium:'Non rinnovo Premium',nonrinGnocca:'Non rinnovo Gnocca',abbTotPremium:'Abbandono totale Premium',abbTotGnocca:'Abbandono totale Gnocca'};
+const KPI_LABELS={tot:'Clienti totali',att:'In percorso',cong:'Congelate',abb:'Abbandonate',spar:'Sparite',nonrin:'Non rinnovo',mai:'Mai iniziato',nuove:'Nuove',scad:'In scadenza 30gg',incRin:'Rinnovo percorsi',incRic:'Ricorrenti',incAlt:'Nuovo cliente',incTot:'Totale incassato',abbPremium:'Abbandono Premium',abbGnocca:'Abbandono Gnocca',nonrinPremium:'Non rinnovo Premium',nonrinGnocca:'Non rinnovo Gnocca',abbTotPremium:'Abbandono totale Premium',abbTotGnocca:'Abbandono totale Gnocca'};
 const INC_KPI_KEYS=new Set(['incRin','incRic','incAlt','incTot']);
 function apriListaClienti(key){
   const rows=[...(KPI_LISTS[key]||[])].sort((a,b)=>a['CLIENTE'].localeCompare(b['CLIENTE'],'it'));
