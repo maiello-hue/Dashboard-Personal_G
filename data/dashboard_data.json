@@ -23533,13 +23533,14 @@
    "METODO PAGAMENTO": "Scalapay",
    "STATO PAGAMENTO": "SALDATO",
    "TIPO INCASSO": "Nuovo Cliente",
-   "INCASSO": "185082",
+   "INCASSO": "1850,82",
    "TUTOR": "Margherita",
    "TRAINER": "Niccolò",
    "NUTRI": "Sofia",
    "VENDITORE": "Personal_G",
    "FONTE": "",
-   "DATA INCASSO": "30/07/2026"
+   "DATA INCASSO": "30/07/2026",
+   "N FATTURA": ""
   },
   {
    "CLIENTE": "Giulia Gherardi",
@@ -24457,5 +24458,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-02T14:59:55.697Z"
+ "updatedAt": "2026-08-02T17:31:44.508Z"
 }
