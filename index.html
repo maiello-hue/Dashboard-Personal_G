@@ -1029,7 +1029,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
       <div class="mese-sel-row filters">
         <select id="prov-mese-select" aria-label="Mese provvigioni venditori" onchange="setDashMese(this.value)"></select>
       </div>
-      <div class="kpis" id="prov-kpis"></div>
+      <div class="kpis kpis-v2" id="prov-kpis"></div>
       <div class="card span12" id="prov-venditori"></div>
     </div>
 
@@ -2518,8 +2518,12 @@ function buildProvvigioni(){
   const fmtE=n=>'€ '+n.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2,useGrouping:true});
   /* elenco venditori sempre visibile (Personal_G, Salvatore, Peppe + eventuali altri
      aggiunti da Impostazioni), anche se in questo mese non hanno ancora clienti. */
-  const names=new Set(MANAGED_LISTS.venditore||[]);
-  DATA.forEach(r=>{ const v=(r['VENDITORE']||'').trim(); if(v) names.add(v); });
+  /* "Martina" e "Gennaro" comparivano nei rimborsi storici come venditore ma non lo
+     sono mai stati davvero: vanno esclusi anche se ricompaiono scansionando DATA
+     (removeVenditoriNonValidiOnce li toglie solo dall'elenco gestito, non da qui). */
+  const EXCLUDED_VENDITORI=new Set(['MARTINA','GENNARO']);
+  const names=new Set((MANAGED_LISTS.venditore||[]).filter(v=>!EXCLUDED_VENDITORI.has(v.trim().toUpperCase())));
+  DATA.forEach(r=>{ const v=(r['VENDITORE']||'').trim(); if(v&&!EXCLUDED_VENDITORI.has(v.toUpperCase())) names.add(v); });
   const nameList=[...names].sort((a,b)=>a.localeCompare(b,'it'));
   let grandTotal=0;
   const sectionsHtml=nameList.map(name=>{
@@ -2566,8 +2570,8 @@ function buildProvvigioni(){
       const hasOverride=Object.prototype.hasOwnProperty.call(PROV_OVERRIDES,cliente);
       return s+(hasOverride?PROV_OVERRIDES[cliente]:provvigioneAuto(euro(r['INCASSO'])));
     },0);
-    return `<div class="kpi ${cls}"><div class="l">${esc(name)}</div><div class="v">${fmtE(tot)}</div></div>`;
-  }).join('')+`<div class="kpi"><div class="l">Totale provvigioni</div><div class="v">${fmtE(grandTotal)}</div></div>`;
+    return `<div class="kpi ${cls}"><div class="kpi-ic" style="color:#1f9d63"><i class="fa-solid fa-user-tie"></i></div><div class="l">${esc(name)}</div><div class="v">${fmtE(tot)}</div></div>`;
+  }).join('')+`<div class="kpi kpi-gray"><div class="kpi-ic" style="color:#37424f"><i class="fa-solid fa-sack-dollar"></i></div><div class="l">Totale provvigioni</div><div class="v">${fmtE(grandTotal)}</div></div>`;
 }
 /* ---------- pagina Check: elenco clienti con check/risultato sì-no, per Premium/Gnocca ---------- */
 let checkSectionsExpanded=new Set(['Premium','Gnocca']);
