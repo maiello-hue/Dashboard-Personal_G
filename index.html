@@ -2344,7 +2344,7 @@ function distinct(field){
   return [...new Set(DATA.map(r=>r[field]).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'it'));
 }
 const EDIT_FIELDS=[
-  ['EMAIL','Email'],
+  ['N FATTURA','N° Fattura'],
   ['STATO CLIENTE','Stato'],['PERCORSO','Percorso'],['INIZIO PERCORSO','Inizio'],['FINE PERCORSO','Fine'],
   ['IMPORTO','Importo'],['METODO PAGAMENTO','Metodo pag.'],['STATO PAGAMENTO','Stato pag.'],['TIPO INCASSO','Tipo incasso'],['INCASSO','Incasso'],['DATA INCASSO','Data incasso'],
   ['TUTOR','Tutor'],['TRAINER','Trainer'],['NUTRI','Nutri'],['VENDITORE','Venditore'],['FONTE','Fonte']
@@ -2369,6 +2369,7 @@ const FONTE_OPTIONS=['ADV','ORGANICO','INSTAGRAM','REFERRAL'];
 const FONTE_KEYS=['ADV','ORGANICO','INSTAGRAM','REFERRAL'];
 const FONTE_LABELS={'ADV':'ADV','ORGANICO':'Organico','INSTAGRAM':'Instagram','REFERRAL':'Referral'};
 const FONTE_COLORS={'ADV':'#4f6fe0','ORGANICO':'#1f9d63','INSTAGRAM':'#d1568c','REFERRAL':'#b5720f','(vuoto)':'#a8a7a0'};
+const METODO_COLORS={'HeyLight':'#d23f3f','PagoDIL':'#e0b400','Scalapay':'#b57edc','PayPal':'#0c3d78','Qomodo':'#1f9d63','Bonifico':'#2f9bd6','EVA':'#7c56d9','(vuoto)':'#a8a7a0'};
 let fonteExpanded=new Set();
 let fonteMonthExpanded=new Set();
 let compensiExpanded=new Set();
@@ -2802,12 +2803,8 @@ function toggleNumeroRateField(idPrefix){
   if(wrapSolo) wrapSolo.style.display=show;
 }
 function editFieldHtml(f,l,idPrefix,value){
-  /* Email cliente: serve (tra l'altro) per un futuro abbinamento automatico
-     con Hyros in base all'indirizzo. Niente autocomplete sui valori delle
-     altre clienti (a differenza degli altri campi testuali): non avrebbe
-     senso suggerire l'email di qualcun altro. */
-  if(f==='EMAIL'){
-    return `<label>${l}<input type="email" id="${idPrefix}-EMAIL" autocomplete="off" value="${esc(value||'')}"></label>`;
+  if(f==='N FATTURA'){
+    return `<label>${l}<input type="text" id="${idPrefix}-N_FATTURA" autocomplete="off" value="${esc(value||'')}"></label>`;
   }
   if(f==='FONTE'){
     return `<label>${l}<select id="${idPrefix}-FONTE"><option value=""${!value?' selected':''}>—</option>${FONTE_OPTIONS.map(o=>`<option value="${o}"${value===o?' selected':''}>${o}</option>`).join('')}</select></label>`;
@@ -3285,7 +3282,7 @@ function render(){
   mkChart('c-percorso',{type:'bar',data:{labels:pc.map(x=>x[0]),datasets:[{data:pc.map(x=>x[1]),backgroundColor:PALETTE,borderRadius:6}]},options:{...common,plugins:{legend:{display:false}},scales:{x:gridOpt,y:{...gridOpt,beginAtZero:true}}}});
 
   const mp=countBy(allRows,'METODO PAGAMENTO');
-  mkChart('c-metodo',{type:'doughnut',data:{labels:mp.map(x=>x[0]),datasets:[{data:mp.map(x=>x[1]),backgroundColor:PALETTE,borderWidth:0}]},options:{...common,cutout:'62%'}});
+  mkChart('c-metodo',{type:'doughnut',data:{labels:mp.map(x=>x[0]),datasets:[{data:mp.map(x=>x[1]),backgroundColor:mp.map(x=>METODO_COLORS[x[0]]||'#8b8a83'),borderWidth:0}]},options:{...common,cutout:'62%'}});
 
   const fn=countBy(allRows,'FONTE');
   mkChart('c-fonte',{type:'doughnut',data:{labels:fn.map(x=>x[0]),datasets:[{data:fn.map(x=>x[1]),backgroundColor:fn.map(x=>FONTE_COLORS[x[0]]||'#7c56d9'),borderWidth:0}]},options:{...common,cutout:'62%'}});
@@ -3410,6 +3407,7 @@ const DI={
   split: DI_SVG('<circle cx="6" cy="8" r="4"/><circle cx="10" cy="8" r="4"/>'),
   fonte: DI_SVG('<path d="M2.5 3.2h5.1l5.9 5.9-5.1 5.1-5.9-5.9z"/><circle cx="5.4" cy="6.1" r="1"/>'),
   mail: DI_FA('fa-envelope'),
+  invoice: DI_FA('fa-file-invoice'),
   dumbbell: DI_SVG('<rect x="0.7" y="6.6" width="1.6" height="2.8" rx="0.5"/><rect x="2.3" y="5.6" width="1.6" height="4.8" rx="0.5"/><rect x="12.1" y="5.6" width="1.6" height="4.8" rx="0.5"/><rect x="13.7" y="6.6" width="1.6" height="2.8" rx="0.5"/><path d="M3.9 8h8.2"/>'),
   nutri: DI_FA('fa-apple-whole')
 };
@@ -3625,7 +3623,7 @@ function renderTable(rows){
     const finTxt=fin?`${fdate(fin)}${scad?' <span class="danger">'+ic('warn')+'</span>':''}${renBadge}`:'—';
     const finLabel=fin?fdate(fin):'MAI';
     const detailInner=`
-        <span class="detail-item" title="Email">${DI.mail}${esc(r['EMAIL']||'—')}</span>
+        <span class="detail-item" title="N° Fattura">${DI.invoice}${esc(r['N FATTURA']||'—')}</span>
         <span class="detail-item" title="Fonte">${DI.fonte}${esc(r['FONTE']||'—')}</span>
         <span class="detail-item" title="Importo">${DI.coin}${esc(r['IMPORTO']||'—')}</span>
         <span class="detail-item" title="Metodo di pagamento">${DI.card}${esc(r['METODO PAGAMENTO']||'—')}</span>
