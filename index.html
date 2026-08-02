@@ -348,6 +348,10 @@ h3 .ico,.sub .ico{color:var(--muted)}
 .rate-cell:hover{background:var(--card2)}
 .rate-cell-inner{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:90px}
 .rate-pill{display:inline-block;padding:3px 11px;border-radius:999px;font-size:14px;font-weight:600}
+.top3-list{display:flex;flex-direction:column;gap:10px}
+.top3-row{display:flex;align-items:center;gap:14px;padding:14px 16px;border:1px solid var(--border);border-radius:12px;transition:background .15s ease}
+.top3-row:hover{background:var(--card2)}
+.top3-rank{font-size:22px;line-height:1;flex-shrink:0;width:28px;text-align:center}
 .rate-bar-track{width:90px;height:5px;border-radius:3px;background:var(--border);overflow:hidden}
 .rate-bar-fill{height:100%;border-radius:3px;transition:width .2s ease}
 .rate-sub{font-size:11px;color:var(--muted2)}
@@ -831,14 +835,14 @@ h3 .ico,.sub .ico{color:var(--muted)}
       <div id="analisi-tab-performance" class="grid" style="display:none">
         <div class="card span6"><h3><span><i class="fa-solid fa-chart-column" style="color:#e0245e"></i>Confronto tassi (%)</span></h3><div class="chartbox"><canvas id="c-perf-rate"></canvas></div></div>
         <div class="card span6">
-          <h3><span><i class="fa-solid fa-chart-pie" style="color:#e0245e"></i>Composizione miglioramenti</span>
+          <h3><span><i class="fa-solid fa-trophy" style="color:#e0245e"></i>TOP 3</span>
             <span class="roletabs">
               <button id="pcr-TUTOR" class="on" onclick="setPerfCompRole('TUTOR')">Tutor</button>
               <button id="pcr-TRAINER" onclick="setPerfCompRole('TRAINER')">Trainer</button>
               <button id="pcr-NUTRI" onclick="setPerfCompRole('NUTRI')">Nutri</button>
             </span>
           </h3>
-          <div class="chartbox"><canvas id="c-perf-comp"></canvas></div>
+          <div id="perf-top3" class="top3-list"></div>
         </div>
         <div class="card span12">
           <h3><span><i class="fa-solid fa-circle-info" style="color:#e0245e"></i>Tasso di performance per collaboratore</span></h3>
@@ -2769,8 +2773,19 @@ function buildPerfCollabTable(){
     {label:'% Check inserito',data:sorted.map(r=>+r.checkRate.toFixed(1)),backgroundColor:'#4f6fe0',borderRadius:6},
     {label:'% Miglioramento',data:sorted.map(r=>+r.migRate.toFixed(1)),backgroundColor:'#1f9d63',borderRadius:6}
   ]},options:{...common,scales:{x:gridOpt,y:{...gridOpt,beginAtZero:true,ticks:{...gridOpt.ticks,callback:v=>v+'%'}}},plugins:{...common.plugins,tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.formattedValue+'%'}}},onHover:cursorHover,onClick:(evt,els)=>{if(!els.length)return;const i=els[0].index;apriListaCampo(sorted[i].field,sorted[i].name,sorted[i].name);}}});
-  const compRows=allRows.filter(r=>r.field===perfCompRole);
-  mkChart('c-perf-comp',{type:'doughnut',data:{labels:compRows.map(r=>r.name),datasets:[{data:compRows.map(r=>r.miglioramenti),backgroundColor:compRows.map(r=>chartTagColor(perfCompRole.toLowerCase(),r.name)),borderWidth:0}]},options:{...common,cutout:'62%',onHover:cursorHover,onClick:(evt,els)=>{if(!els.length)return;const i=els[0].index;apriListaCampo(perfCompRole,compRows[i].name,compRows[i].name);},plugins:{...common.plugins,tooltip:pctTooltip}}});
+  const top3El=document.getElementById('perf-top3');
+  if(top3El){
+    const RANK_ICON=['🥇','🥈','🥉'];
+    const top3=allRows.filter(r=>r.field===perfCompRole&&!r.hidePct).sort((a,b)=>b.migRate-a.migRate||b.tot-a.tot).slice(0,3);
+    top3El.innerHTML=top3.length?top3.map((r,i)=>{
+      const c=perfColor(r.migRate);
+      return `<div class="top3-row" style="cursor:pointer" onclick="apriListaCampo('${perfCompRole}','${jsEsc(r.name)}','${jsEsc(r.name)}')">
+        <span class="top3-rank top3-rank-${i+1}">${RANK_ICON[i]}</span>
+        <div class="rate-row-label" style="flex:1">${collabBadgeFn[perfCompRole](r.name)}</div>
+        <span class="rate-pill" style="background:${c.bg};color:${c.fg}">${fmtPct(r.migRate)}</span>
+      </div>`;
+    }).join(''):'<div class="sub">Nessun collaboratore con clienti assegnate.</div>';
+  }
 }
 const SELECT_FIELDS={'STATO CLIENTE':false,'STATO PAGAMENTO':false,'TIPO INCASSO':false,'PERCORSO':true,'METODO PAGAMENTO':true,'TUTOR':true,'TRAINER':true,'NUTRI':true,'VENDITORE':true};
 function selectFieldHtml(f,l,idPrefix,value,options,allowCustom,labelMap){
