@@ -3548,6 +3548,11 @@ function buildFonteEsitoTable(allRows){
    mese-per-mese (richiederebbe uno storico degli stati passati che i dati non
    hanno), ma una "fotografia" onesta e verificabile: quante clienti di ogni
    coorte sono sopravvissute fino ad oggi. */
+let retentionYearsOpen=new Set();
+function toggleRetentionYear(y){
+  retentionYearsOpen.has(y)?retentionYearsOpen.delete(y):retentionYearsOpen.add(y);
+  buildRetentionTable();
+}
 function buildRetentionTable(){
   const el=document.getElementById('retention-table-body');
   if(!el) return;
@@ -3564,14 +3569,19 @@ function buildRetentionTable(){
   });
   const keys=Object.keys(groups).sort().reverse();
   if(!keys.length){ el.innerHTML='<tr><td colspan="5" class="sub">Nessuna cliente con data di ingresso registrata.</td></tr>'; return; }
-  /* Raggruppate per anno (più recente in cima), con un'intestazione che mostra
-     anche il totale clienti entrate in quell'anno, come nella tabella "Tasso di
-     abbandono per collaboratore" qui sopra. */
+  /* Raggruppate per anno (più recente in cima) come un menu a tendina: l'anno
+     si espande con un clic sull'intestazione (stesso comportamento dei gruppi
+     mensili in "Rinnovi da gestire"), mostrando anche il totale clienti entrate
+     in quell'anno accanto all'anno stesso. */
   const years=[...new Set(keys.map(k=>k.slice(0,4)))];
   el.innerHTML=years.map(y=>{
     const yearKeys=keys.filter(k=>k.slice(0,4)===y);
     const totYear=yearKeys.reduce((s,k)=>s+groups[k].tot,0);
-    const rowsHtml=yearKeys.map(k=>{
+    const isOpen=retentionYearsOpen.has(y);
+    const header=`<tr class="rate-group-row" style="cursor:pointer" onclick="toggleRetentionYear('${y}')">
+      <td colspan="5"><span class="fonte-caret" style="margin-right:6px">${isOpen?'▾':'▸'}</span>${y} — ${totYear} client${totYear===1?'e':'i'} entrate</td>
+    </tr>`;
+    const rowsHtml=isOpen?yearKeys.map(k=>{
       const g=groups[k];
       const mesiTrascorsi=(now.getFullYear()-g.cohortDate.getFullYear())*12+(now.getMonth()-g.cohortDate.getMonth());
       const pctR=g.tot?g.attive/g.tot*100:0;
@@ -3583,8 +3593,8 @@ function buildRetentionTable(){
         <td style="text-align:center">${mesiTrascorsi}</td>
         <td class="rate-cell"><div class="rate-cell-inner"><span class="rate-pill" style="background:${c.bg};color:${c.fg}">${Math.round(pctR)}%</span></div></td>
       </tr>`;
-    }).join('');
-    return `<tr class="rate-group-row"><td colspan="5">${y} — ${totYear} client${totYear===1?'e':'i'} entrate</td></tr>${rowsHtml}`;
+    }).join(''):'';
+    return header+rowsHtml;
   }).join('');
 }
 function setRole(r){
