@@ -3563,19 +3563,29 @@ function buildRetentionTable(){
     if(!isArchiviata(r)) groups[k].attive++;
   });
   const keys=Object.keys(groups).sort().reverse();
-  el.innerHTML=keys.length?keys.map(k=>{
-    const g=groups[k];
-    const mesiTrascorsi=(now.getFullYear()-g.cohortDate.getFullYear())*12+(now.getMonth()-g.cohortDate.getMonth());
-    const pctR=g.tot?g.attive/g.tot*100:0;
-    const c=pctR>=70?{bg:'#eaf7ef',fg:'#1f9d63'}:pctR>=40?{bg:'#faf1e2',fg:'#b5720f'}:{bg:'#fbebeb',fg:'#d23f3f'};
-    return `<tr class="rate-tr">
-      <td><div class="rate-row-label">${esc(mesekeyLabel(k))}</div></td>
-      <td style="text-align:center">${g.tot}</td>
-      <td style="text-align:center">${g.attive}</td>
-      <td style="text-align:center">${mesiTrascorsi}</td>
-      <td class="rate-cell"><div class="rate-cell-inner"><span class="rate-pill" style="background:${c.bg};color:${c.fg}">${Math.round(pctR)}%</span></div></td>
-    </tr>`;
-  }).join(''):'<tr><td colspan="5" class="sub">Nessuna cliente con data di ingresso registrata.</td></tr>';
+  if(!keys.length){ el.innerHTML='<tr><td colspan="5" class="sub">Nessuna cliente con data di ingresso registrata.</td></tr>'; return; }
+  /* Raggruppate per anno (più recente in cima), con un'intestazione che mostra
+     anche il totale clienti entrate in quell'anno, come nella tabella "Tasso di
+     abbandono per collaboratore" qui sopra. */
+  const years=[...new Set(keys.map(k=>k.slice(0,4)))];
+  el.innerHTML=years.map(y=>{
+    const yearKeys=keys.filter(k=>k.slice(0,4)===y);
+    const totYear=yearKeys.reduce((s,k)=>s+groups[k].tot,0);
+    const rowsHtml=yearKeys.map(k=>{
+      const g=groups[k];
+      const mesiTrascorsi=(now.getFullYear()-g.cohortDate.getFullYear())*12+(now.getMonth()-g.cohortDate.getMonth());
+      const pctR=g.tot?g.attive/g.tot*100:0;
+      const c=pctR>=70?{bg:'#eaf7ef',fg:'#1f9d63'}:pctR>=40?{bg:'#faf1e2',fg:'#b5720f'}:{bg:'#fbebeb',fg:'#d23f3f'};
+      return `<tr class="rate-tr">
+        <td><div class="rate-row-label">${esc(mesekeyLabel(k))}</div></td>
+        <td style="text-align:center">${g.tot}</td>
+        <td style="text-align:center">${g.attive}</td>
+        <td style="text-align:center">${mesiTrascorsi}</td>
+        <td class="rate-cell"><div class="rate-cell-inner"><span class="rate-pill" style="background:${c.bg};color:${c.fg}">${Math.round(pctR)}%</span></div></td>
+      </tr>`;
+    }).join('');
+    return `<tr class="rate-group-row"><td colspan="5">${y} — ${totYear} client${totYear===1?'e':'e'} entrate</td></tr>${rowsHtml}`;
+  }).join('');
 }
 function setRole(r){
   role=r;
