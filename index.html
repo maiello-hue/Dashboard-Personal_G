@@ -93,30 +93,21 @@ h1{font-size:22px;font-weight:500}
 .dash-alert{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-left:3px solid #a67f00;border-radius:0 12px 12px 0;padding:12px 16px;margin-bottom:16px;cursor:pointer;transition:filter .1s}
 .dash-alert:hover{filter:brightness(.97)}
 .dash-alert-ico{color:#a67f00;font-size:16px;display:flex;flex-shrink:0}
-.dash-alert-text{font-size:13px;color:var(--text);flex:1}
+.dash-alert-text{font-size:13px;color:var(--text)}
 .dash-alert-text b{font-weight:700}
 .dash-alert-sub{color:var(--muted2);margin-left:4px}
 .dash-alert-risk{border-left-color:#d23f3f}
 .dash-alert-risk .dash-alert-ico{color:#d23f3f}
-.dash-alert-chip{margin-left:auto;flex-shrink:0;background:#fbebeb;color:#a32d2d;border-radius:999px;padding:4px 10px;font-size:11px;font-weight:600;white-space:nowrap;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
-.dash-alert-chip:hover{filter:brightness(.95)}
-.trend-badge{display:inline-block;font-size:11px;font-weight:600;white-space:nowrap;vertical-align:middle}
-.trend-good{color:#1f9d63}
-.trend-bad{color:#d23f3f}
-.trend-flat{color:var(--muted)}
+.trend-badge{display:inline-block;font-size:11px;font-weight:600;padding:2px 6px;border-radius:6px;white-space:nowrap;vertical-align:middle}
+.trend-good{background:#eaf7ef;color:#1f9d63}
+.trend-bad{background:#fbebeb;color:#d23f3f}
+.trend-flat{background:var(--card2);color:var(--muted)}
 .goal-bar-wrap{display:flex;flex-direction:column;gap:8px}
 .goal-bar{height:14px;border-radius:999px;background:var(--card2);overflow:hidden}
 .goal-bar-fill{height:100%;background:#1f9d63;border-radius:999px;transition:width .3s ease}
 .goal-bar-fill.over{background:#4f6fe0}
 .goal-bar-label{font-size:13px;color:var(--muted)}
-.goal-block{margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
-.goal-block-label{font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.4px}
-.mese-warn{display:flex;align-items:center;gap:6px;font-size:11px;color:#a67f00;padding:0 2px 10px;margin-bottom:2px}
-.mese-warn i{font-size:11px}
-.collab-avatar{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;font-size:11px;font-weight:700;flex-shrink:0}
-.collab-namewrap{display:inline-flex;flex-direction:column;line-height:1.25}
-.collab-name{font-size:13px;color:var(--text)}
-.collab-role{font-size:11px;color:var(--muted)}
+.mese-warn{display:flex;align-items:center;gap:8px;font-size:12px;color:#a67f00;background:#fdf6e3;border:1px solid #f0e0a8;border-radius:8px;padding:8px 12px;margin-bottom:14px}
 .kpi-ic{font-size:15px;margin-bottom:8px}
 .kpis-v2 .kpi{position:relative;background:var(--card);border:1px solid var(--border);border-left-width:3px;border-left-style:solid;border-radius:0 12px 12px 0;padding:14px 16px}
 .kpis-v2 .kpi-ic{position:absolute;top:14px;right:14px;font-size:20px;margin-bottom:0}
@@ -377,7 +368,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
 .top3-list{display:flex;flex-direction:column;gap:10px}
 .top3-row{display:flex;align-items:center;gap:14px;padding:14px 16px;border:1px solid var(--border);border-radius:12px;transition:background .15s ease}
 .top3-row:hover{background:var(--card2)}
-.top3-row .badge{font-size:13px;padding:4px 10px}
+.top3-row .badge{font-size:14px;padding:4px 10px}
 .rate-tr .badge{font-size:13px;padding:4px 9px}
 .top3-rank{font-size:22px;line-height:1;flex-shrink:0;width:28px;text-align:center}
 .rate-bar-track{width:90px;height:5px;border-radius:3px;background:var(--border);overflow:hidden}
@@ -758,29 +749,34 @@ h3 .ico,.sub .ico{color:var(--muted)}
           <span><i class="dash-dot" style="background:#b5720f"></i>Sparite <b id="leg-spar">–</b></span>
           <span><i class="dash-dot" style="background:#8b8a83"></i>Mai iniziato <b id="leg-mai">–</b></span>
         </div>
-        <div class="goal-block" id="goal-nuove-card" style="display:none" onclick="event.stopPropagation()">
-          <div class="goal-block-label">Obiettivo mensile — nuove clienti</div>
-          <div class="goal-bar-wrap">
-            <div class="goal-bar"><div class="goal-bar-fill" id="goal-nuove-fill" style="width:0%"></div></div>
-            <div class="goal-bar-label" id="goal-nuove-label"></div>
-          </div>
-        </div>
       </div>
 
       <div class="dash-alert" onclick="apriListaClienti('scad')">
         <span class="dash-alert-ico"><i class="fa-solid fa-clock"></i></span>
         <div class="dash-alert-text"><b id="k-scad">–</b> clienti in scadenza nei prossimi 30 giorni <span class="dash-alert-sub" id="k-scad-d"></span></div>
-        <span class="dash-alert-chip" id="chip-rischio" style="display:none" onclick="event.stopPropagation();apriListaClienti('rischio')"><i class="fa-solid fa-triangle-exclamation"></i><b id="k-rischio">–</b> senza check da 2+ mesi</span>
+      </div>
+
+      <div class="dash-alert dash-alert-risk" id="dash-alert-rischio" style="display:none" onclick="apriListaClienti('rischio')">
+        <span class="dash-alert-ico"><i class="fa-solid fa-triangle-exclamation"></i></span>
+        <div class="dash-alert-text"><b id="k-rischio">–</b> clienti in percorso senza check da almeno 2 mesi <span class="dash-alert-sub">— possibile segnale di abbandono, da ricontattare</span></div>
+      </div>
+
+      <div class="card" id="goal-nuove-card" style="display:none;margin-bottom:16px">
+        <h3><span class="ico"><i class="fa-solid fa-bullseye"></i></span>Obiettivo mensile — nuove clienti</h3>
+        <div class="goal-bar-wrap">
+          <div class="goal-bar"><div class="goal-bar-fill" id="goal-nuove-fill" style="width:0%"></div></div>
+          <div class="goal-bar-label" id="goal-nuove-label"></div>
+        </div>
       </div>
 
       <div class="kpis kpis-v2">
         <div class="kpi kpi-green" onclick="apriListaClienti('att')"><div class="kpi-ic" style="color:#1f9d63"><i class="fa-solid fa-circle-check"></i></div><div class="l">In percorso</div><div class="v" id="k-att">–</div><div class="d" id="k-att-d"></div></div>
-        <div class="kpi kpi-gray" onclick="apriListaClienti('cong')"><div class="kpi-ic" style="color:#8b8a83"><i class="fa-solid fa-snowflake"></i></div><div class="l">Congelate</div><div class="v" id="k-cong">–</div><div class="d" id="k-cong-d"></div></div>
-        <div class="kpi kpi-gray" onclick="apriListaClienti('spar')"><div class="kpi-ic" style="color:#8b8a83"><i class="fa-solid fa-ghost"></i></div><div class="l">Sparite</div><div class="v" id="k-spar">–</div><div class="d" id="k-spar-d"></div></div>
-        <div class="kpi kpi-gray" onclick="apriListaClienti('mai')"><div class="kpi-ic" style="color:#8b8a83"><i class="fa-solid fa-hourglass-start"></i></div><div class="l">Mai iniziato</div><div class="v" id="k-mai">–</div><div class="d" id="k-mai-d"></div></div>
-        <div class="kpi kpi-blue" onclick="apriListaClienti('nuove')"><div class="kpi-ic" style="color:#2f7fd1"><i class="fa-solid fa-user-plus"></i></div><div class="l">Nuove</div><div class="v" id="k-nuove">–</div><div class="d" id="k-nuove-d"></div></div>
+        <div class="kpi kpi-blue" onclick="apriListaClienti('cong')"><div class="kpi-ic" style="color:#2f7fd1"><i class="fa-solid fa-snowflake"></i></div><div class="l">Congelate</div><div class="v" id="k-cong">–</div><div class="d" id="k-cong-d"></div></div>
+        <div class="kpi kpi-orange" onclick="apriListaClienti('spar')"><div class="kpi-ic" style="color:#b5720f"><i class="fa-solid fa-ghost"></i></div><div class="l">Sparite</div><div class="v" id="k-spar">–</div><div class="d" id="k-spar-d"></div></div>
+        <div class="kpi kpi-gray" onclick="apriListaClienti('mai')"><div class="kpi-ic" style="color:#37424f"><i class="fa-solid fa-hourglass-start"></i></div><div class="l">Mai iniziato</div><div class="v" id="k-mai">–</div><div class="d" id="k-mai-d"></div></div>
+        <div class="kpi kpi-azzurro" onclick="apriListaClienti('nuove')"><div class="kpi-ic" style="color:#0a8aa8"><i class="fa-solid fa-user-plus"></i></div><div class="l">Nuove</div><div class="v" id="k-nuove">–</div><div class="d" id="k-nuove-d"></div></div>
         <div class="kpi kpi-red" onclick="apriListaClienti('abb')"><div class="kpi-ic" style="color:#d23f3f"><i class="fa-solid fa-user-xmark"></i></div><div class="l" id="k-abb-l">Abbandonate</div><div class="v" id="k-abb">–</div><div class="d" id="k-abb-d"></div></div>
-        <div class="kpi kpi-red" onclick="apriListaClienti('nonrin')"><div class="kpi-ic" style="color:#d23f3f"><i class="fa-solid fa-calendar-xmark"></i></div><div class="l" id="k-nonrin-l">Non rinnovo</div><div class="v" id="k-nonrin">–</div><div class="d" id="k-nonrin-d"></div></div>
+        <div class="kpi kpi-purple" onclick="apriListaClienti('nonrin')"><div class="kpi-ic" style="color:#7c56d9"><i class="fa-solid fa-calendar-xmark"></i></div><div class="l" id="k-nonrin-l">Non rinnovo</div><div class="v" id="k-nonrin">–</div><div class="d" id="k-nonrin-d"></div></div>
       </div>
     </div>
 
@@ -798,17 +794,14 @@ h3 .ico,.sub .ico{color:var(--muted)}
             <div class="incbox inc-purple" onclick="apriListaClienti('incTot')"><div class="inc-ic" style="color:#7c56d9"><i class="fa-solid fa-sack-dollar"></i></div><div class="l" id="i-tot-l">Totale incassato</div><div class="v" id="i-tot">–</div><div class="d" id="i-tot-d"></div></div>
           </div>
         </div>
-        <div class="card span12">
-          <h3>Andamento incassi per mese (€)</h3>
-          <div class="chartbox"><canvas id="c-incassi-mese"></canvas></div>
-          <div class="goal-block" id="goal-incassi-card" style="display:none">
-            <div class="goal-block-label">Obiettivo mensile — incassi</div>
-            <div class="goal-bar-wrap">
-              <div class="goal-bar"><div class="goal-bar-fill" id="goal-incassi-fill" style="width:0%"></div></div>
-              <div class="goal-bar-label" id="goal-incassi-label"></div>
-            </div>
+        <div class="card span12" id="goal-incassi-card" style="display:none">
+          <h3><span class="ico"><i class="fa-solid fa-bullseye"></i></span>Obiettivo mensile — incassi</h3>
+          <div class="goal-bar-wrap">
+            <div class="goal-bar"><div class="goal-bar-fill" id="goal-incassi-fill" style="width:0%"></div></div>
+            <div class="goal-bar-label" id="goal-incassi-label"></div>
           </div>
         </div>
+        <div class="card span12"><h3>Andamento incassi per mese (€)</h3><div class="chartbox"><canvas id="c-incassi-mese"></canvas></div></div>
         <div class="card span12"><h3>Nuove clienti per mese</h3><div class="chartbox"><canvas id="c-entrate"></canvas></div></div>
       </div>
     </div>
@@ -2251,18 +2244,6 @@ function nutriBadge(s){
   const c=getCollabColor('nutri',s);
   return `<span class="badge" style="background:${c.bg};color:${c.fg}">${esc(s)}</span>`;
 }
-/* Riga collaboratore con iniziale colorata, usata nelle tabelle "per collaboratore"
-   (check/performance e abbandono) per rendere più leggibile a colpo d'occhio chi è chi
-   quando ci sono molte righe di fila. Non tocca tutBadge/trainBadge/nutriBadge, che
-   restano invariati ovunque altrove vengano usati (es. tabella clienti). */
-const COLLAB_ROLE_LABEL={TUTOR:'tutor',TRAINER:'trainer',NUTRI:'nutrizionista'};
-function collabAvatarRow(field,name){
-  if(!name) return '—';
-  const c=getCollabColor(field.toLowerCase(),name);
-  const initial=esc((name||'?').trim().charAt(0).toUpperCase()||'?');
-  const roleLabel=COLLAB_ROLE_LABEL[field]||'';
-  return `<span class="collab-avatar" style="background:${c.bg};color:${c.fg}">${initial}</span><span class="collab-namewrap"><span class="collab-name">${esc(name)}</span><span class="collab-role">${esc(roleLabel)}</span></span>`;
-}
 function vendBadge(s){
   if(!s) return '—';
   const c=getCollabColor('venditore',s);
@@ -3176,7 +3157,7 @@ function buildPerfCollabTable(){
     if(!el) return;
     const rows=allRows.filter(r=>r.field===field).sort((a,b)=>a.name.localeCompare(b.name,'it'));
     el.innerHTML=rows.map(r=>`<tr class="rate-tr">
-        <td><div class="rate-row-label">${collabAvatarRow(field,r.name)}</div></td>
+        <td><div class="rate-row-label">${collabBadgeFn[field](r.name)}</div></td>
         ${numCell(r.tot)}
         ${numCell(r.checkInserito)}
         ${numCell(r.miglioramenti)}
@@ -3767,7 +3748,7 @@ function render(){
   });
   const numCell=(n,key)=>`<td style="text-align:center;cursor:pointer" onclick="apriListaClienti('${key}')">${n}</td>`;
   const rowHtml=r=>`<tr class="rate-tr">
-      <td><div class="rate-row-label">${collabAvatarRow(r.field,r.name)}</div></td>
+      <td><div class="rate-row-label">${collabBadgeFn[r.field](r.name)}</div></td>
       <td style="text-align:center">${r.tot}</td>
       ${numCell(r.abbN,r.keyAbb)}
       ${numCell(r.nonrinN,r.keyNonrin)}
@@ -3801,9 +3782,9 @@ function render(){
   document.getElementById('k-scad').textContent=scad30;
   updateMeseWarn('mese-warn-dash',meseSel);
   updateMeseWarn('mese-warn-inc',meseSel);
-  const chipRischioEl=document.getElementById('chip-rischio');
-  if(chipRischioEl){
-    chipRischioEl.style.display=rischioA.length?'inline-flex':'none';
+  const rischioAlertEl=document.getElementById('dash-alert-rischio');
+  if(rischioAlertEl){
+    rischioAlertEl.style.display=rischioA.length?'flex':'none';
     document.getElementById('k-rischio').textContent=rischioA.length;
   }
   const obG=getObiettivi();
