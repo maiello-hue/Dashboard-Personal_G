@@ -1488,6 +1488,7 @@ async function syncFromGithub(showStatus){
       applyGnoccaSheetImport();
       applyMeseFlussoMigrationOnce();
       applyCheckJulyFixOnce();
+      applyIolandaLugFixOnce();
       applyVenditoreLug26Import();
       applyFonteMap();
       buildFilters(); buildRimbFilters(); render(); renderRimborsi();
@@ -1809,6 +1810,21 @@ function applyCheckJulyFixOnce(){
     if(r['DATA CHECK']==='01/08/2026'&&!r['_CHECK_JULY_FIX']){
       r['DATA CHECK']='31/07/2026';
       r['_CHECK_JULY_FIX']='1';
+      changed=true;
+    }
+  });
+  if(changed) saveClienti();
+}
+/* Correzione una tantum: Iolanda Mazzeo è "non rinnovo" di luglio, non di agosto.
+   Forziamo qui la sua DATA ARCHIVIAZIONE al 28/07/2026 indipendentemente da quanto
+   già presente sul dispositivo (marcata con _IOLANDA_LUG_FIX così da non ritoccarla
+   più in seguito, anche se in futuro venisse modificata di nuovo a mano). */
+function applyIolandaLugFixOnce(){
+  let changed=false;
+  DATA.forEach(r=>{
+    if(r['CLIENTE']==='Iolanda Mazzeo'&&!r['_IOLANDA_LUG_FIX']){
+      r['DATA ARCHIVIAZIONE']='28/07/2026';
+      r['_IOLANDA_LUG_FIX']='1';
       changed=true;
     }
   });
@@ -4385,6 +4401,7 @@ applyPromoEstateImport();
 applyGnoccaSheetImport();
 applyMeseFlussoMigrationOnce();
 applyCheckJulyFixOnce();
+applyIolandaLugFixOnce();
 applyVenditoreLug26Import();
 applyFonteMap();
 loadManagedLists();
