@@ -920,7 +920,7 @@
   },
   {
    "CLIENTE": "Iolanda Mazzeo",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "NON RINNOVATO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "28/07/2025",
    "FINE PERCORSO": "28/07/2026",
@@ -941,7 +941,10 @@
    "CONTRATTO": "",
    "CHECK": "",
    "RISULTATO": "",
-   "FONTE": "ORGANICO"
+   "FONTE": "ORGANICO",
+   "N FATTURA": "",
+   "VENDITORE": "",
+   "DATA ARCHIVIAZIONE": "03/08/2026"
   },
   {
    "CLIENTE": "Serena Poggioli",
@@ -24496,5 +24499,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-03T06:23:40.098Z"
+ "updatedAt": "2026-08-03T14:34:16.366Z"
 }
