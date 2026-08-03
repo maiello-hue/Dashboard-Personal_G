@@ -351,9 +351,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
 .rate-table th:first-child{text-align:left}
 .rate-row-label{display:flex;align-items:center;gap:8px;padding:12px 10px;font-size:13px;color:var(--text)}
 .collab-avatar{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;font-size:11px;font-weight:700;flex-shrink:0}
-.collab-namewrap{display:inline-flex;flex-direction:column;line-height:1.25}
 .collab-name{font-size:13px;color:var(--text)}
-.collab-role{font-size:11px;color:var(--muted)}
 .rate-row-label.tot{font-weight:600}
 .rate-group-row td{background:var(--card2);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);padding:7px 10px}
 .retention-year-label{font-size:13px}
@@ -2252,13 +2250,11 @@ function nutriBadge(s){
    (check/performance e abbandono) per rendere più leggibile a colpo d'occhio chi è chi
    quando ci sono molte righe di fila. Non tocca tutBadge/trainBadge/nutriBadge, che
    restano invariati ovunque altrove vengano usati (es. tabella clienti). */
-const COLLAB_ROLE_LABEL={TUTOR:'tutor',TRAINER:'trainer',NUTRI:'nutrizionista'};
 function collabAvatarRow(field,name){
   if(!name) return '—';
   const c=getCollabColor(field.toLowerCase(),name);
   const initial=esc((name||'?').trim().charAt(0).toUpperCase()||'?');
-  const roleLabel=COLLAB_ROLE_LABEL[field]||'';
-  return `<span class="collab-avatar" style="background:${c.bg};color:${c.fg}">${initial}</span><span class="collab-namewrap"><span class="collab-name">${esc(name)}</span><span class="collab-role">${esc(roleLabel)}</span></span>`;
+  return `<span class="collab-avatar" style="background:${c.bg};color:${c.fg}">${initial}</span><span class="collab-name">${esc(name)}</span>`;
 }
 function vendBadge(s){
   if(!s) return '—';
