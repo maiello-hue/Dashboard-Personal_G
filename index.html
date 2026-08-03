@@ -2491,7 +2491,7 @@ function distinct(field){
 }
 const EDIT_FIELDS=[
   ['N FATTURA','N° Fattura'],
-  ['STATO CLIENTE','Stato'],['PERCORSO','Percorso'],['INIZIO PERCORSO','Inizio'],['FINE PERCORSO','Fine'],
+  ['STATO CLIENTE','Stato'],['DATA ARCHIVIAZIONE','Data archiviazione'],['PERCORSO','Percorso'],['INIZIO PERCORSO','Inizio'],['FINE PERCORSO','Fine'],
   ['IMPORTO','Importo'],['METODO PAGAMENTO','Metodo pag.'],['STATO PAGAMENTO','Stato pag.'],['TIPO INCASSO','Tipo incasso'],['INCASSO','Incasso'],['DATA INCASSO','Data incasso'],
   ['TUTOR','Tutor'],['TRAINER','Trainer'],['NUTRI','Nutri'],['VENDITORE','Venditore'],['FONTE','Fonte']
 ];
@@ -3015,6 +3015,17 @@ function editFieldHtml(f,l,idPrefix,value){
   if(f==='FINE PERCORSO'){
     return `<label>${l}<input type="date" id="${idPrefix}-${f.replace(/ /g,'_')}" value="${itToIso(value)}"></label>`;
   }
+  if(f==='DATA ARCHIVIAZIONE'){
+    /* Decide in quale mese la cliente viene conteggiata nelle card "flusso
+       mensile" (Abbandonate/Non rinnovo) e nei Tassi abbandono. Di default è
+       oggi (il giorno in cui si cambia lo Stato a mano su Abbandono/Non
+       rinnovo), ma resta modificabile per chi registra con qualche giorno di
+       ritardo un cambio di stato avvenuto in realtà nel mese precedente (es.
+       percorso finito a fine mese, aggiornato in dashboard il mese dopo): così
+       non finisce conteggiata nel mese sbagliato. Ha effetto solo se lo Stato
+       è Abbandono o Non rinnovo, altrimenti viene ignorata al salvataggio. */
+    return `<label id="${idPrefix}-DATA_ARCHIVIAZIONE-wrap">${l}<input type="date" id="${idPrefix}-DATA_ARCHIVIAZIONE" value="${itToIso(value)||itToIso(todayIt())}"></label>`;
+  }
   if(f==='TIPO SCADENZA'){
     const v=tipoScadenza({['TIPO SCADENZA']:value});
     return `<label>${l}<select id="${idPrefix}-TIPO_SCADENZA" onchange="toggleNumeroRateField('${idPrefix}')">${TIPO_SCADENZA_OPTIONS.map(o=>`<option value="${o}"${v===o?' selected':''}>${o==='Trance'?'Trance (pagamento a rate)':o}</option>`).join('')}</select></label>`;
@@ -3150,7 +3161,7 @@ function readEditFieldValue(idPrefix,f){
     const customEl=document.getElementById(idKey+'__custom');
     v=customEl?customEl.value.trim():'';
   }
-  if((f==='INIZIO PERCORSO'||f==='FINE PERCORSO'||f==='DATA PROSSIMA RATA'||f==='DATA INCASSO')&&v) v=isoToIt(v);
+  if((f==='INIZIO PERCORSO'||f==='FINE PERCORSO'||f==='DATA PROSSIMA RATA'||f==='DATA INCASSO'||f==='DATA ARCHIVIAZIONE')&&v) v=isoToIt(v);
   return v;
 }
 function salvaNuovaCliente(){
@@ -3159,7 +3170,10 @@ function salvaNuovaCliente(){
   if(DATA.some(r=>r['CLIENTE'].trim().toLowerCase()===nome.toLowerCase())){ alert('Esiste già una cliente con questo nome.'); return; }
   const rec={CLIENTE:nome};
   EDIT_FIELDS.forEach(([f])=>{ rec[f]=readEditFieldValue('new',f); });
-  if(isArchiviata(rec)) rec['DATA ARCHIVIAZIONE']=todayIt();
+  /* DATA ARCHIVIAZIONE arriva già dal campo data del form (di default oggi,
+     modificabile per attribuire il flusso mensile al mese giusto): la teniamo
+     solo se lo Stato è davvero Abbandono/Non rinnovo, altrimenti la scartiamo. */
+  if(!isArchiviata(rec)) delete rec['DATA ARCHIVIAZIONE'];
   /* DATA INCASSO arriva già dal campo data del form (di default oggi, modificabile
      per registrare con ritardo un incasso di un mese precedente): la teniamo solo
      se c'è davvero un incasso, altrimenti la scartiamo. */
@@ -3986,18 +4000,15 @@ function chiudiModificaCliente(){
 function salvaClienteModal(){
   const r=DATA.find(x=>x['CLIENTE']===editingClienteName);
   if(!r) return;
-  const eraArchiviata=isArchiviata(r);
   EDIT_FIELDS.forEach(([f])=>{ r[f]=readEditFieldValue('editm',f); });
-  const oraArchiviata=isArchiviata(r);
-  if(oraArchiviata&&!eraArchiviata){
-    /* la cliente è appena passata manualmente ad Abbandono/Non rinnovo: registriamo
-       la data di oggi come "data archiviazione" per raggruppare correttamente lo Storico per mese.
-       Non è un'archiviazione automatica basata su scadenze: scatta solo quando l'utente cambia lo stato a mano. */
-    r['DATA ARCHIVIAZIONE']=todayIt();
-  } else if(!oraArchiviata&&eraArchiviata){
-    /* riattivata: la data archiviazione precedente non ha più senso */
-    delete r['DATA ARCHIVIAZIONE'];
-  }
+  /* DATA ARCHIVIAZIONE arriva già dal campo data del form qui sopra (di default
+     oggi il giorno in cui si cambia lo Stato a mano su Abbandono/Non rinnovo,
+     ma modificabile per attribuire il flusso mensile al mese giusto quando lo
+     stato viene aggiornato con qualche giorno di ritardo): la teniamo solo se
+     lo Stato è davvero Abbandono/Non rinnovo, altrimenti non ha senso e va
+     scartata (es. cliente riattivata: la data archiviazione precedente non ha
+     più senso). */
+  if(!isArchiviata(r)) delete r['DATA ARCHIVIAZIONE'];
   /* DATA INCASSO arriva già dal campo data del form qui sopra (di default oggi
      ma modificabile a mano): non la forziamo più a "oggi" a ogni salvataggio,
      così un incasso registrato con qualche giorno di ritardo può essere
