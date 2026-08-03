@@ -19248,7 +19248,7 @@
    "CONTRATTO": "SI",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "31/07/2026",
+   "DATA CHECK": "03/08/2026",
    "_CHECK_JULY_FIX": "1"
   },
   {
@@ -24502,5 +24502,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-03T16:56:16.695Z"
+ "updatedAt": "2026-08-03T16:56:23.696Z"
 }
