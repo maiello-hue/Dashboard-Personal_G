@@ -1615,10 +1615,48 @@ function csvEscapeCell(v){
   v=v==null?'':String(v);
   return /[",\n\r;]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;
 }
+function euroExportStr(n){ return '€ '+n.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+/* Raggruppa le righe dell'export per mese di INCASSO (in base a DATA INCASSO,
+   lo stesso campo usato dalla pagina Incassi), con un subtotale per mese e un
+   totale generale in fondo. Le clienti senza un incasso registrato (nessun
+   importo/data) finiscono in un gruppo a parte, così nessuna cliente viene
+   persa dall'esportazione. */
+function clientExportGroups(){
+  const cols=clientExportColumns();
+  const incIdx=cols.indexOf('INCASSO');
+  const groupsMap={};
+  const noData=[];
+  DATA.forEach(r=>{
+    const row=cols.map(c=>r[c]!=null?String(r[c]):'');
+    const d=euro(r['INCASSO'])>0?pdate(r['DATA INCASSO']):null;
+    if(d){
+      const k=mesekey(d);
+      if(!groupsMap[k]) groupsMap[k]={rows:[],total:0};
+      groupsMap[k].rows.push(row);
+      groupsMap[k].total+=euro(r['INCASSO']);
+    }else{
+      noData.push(row);
+    }
+  });
+  const monthKeys=Object.keys(groupsMap).sort();
+  const grandTotal=monthKeys.reduce((s,k)=>s+groupsMap[k].total,0);
+  return {cols,incIdx,monthKeys,groupsMap,noData,grandTotal};
+}
 function esportaClientiCSV(){
   if(!DATA.length){ alert('Nessuna cliente da esportare.'); return; }
-  const {cols,rows}=clientExportRows();
-  const lines=[cols.map(csvEscapeCell).join(',')].concat(rows.map(r=>r.map(csvEscapeCell).join(',')));
+  const {cols,incIdx,monthKeys,groupsMap,noData,grandTotal}=clientExportGroups();
+  const totRow=(label,tot)=>cols.map((c,i)=>i===0?label:(i===incIdx?euroExportStr(tot):''));
+  const lines=[cols.map(csvEscapeCell).join(',')];
+  monthKeys.forEach(k=>{
+    lines.push(csvEscapeCell(mesekeyLabel(k).toUpperCase()));
+    groupsMap[k].rows.forEach(r=>lines.push(r.map(csvEscapeCell).join(',')));
+    lines.push(totRow('Totale '+mesekeyLabel(k),groupsMap[k].total).map(csvEscapeCell).join(','));
+  });
+  if(noData.length){
+    lines.push(csvEscapeCell('SENZA INCASSO REGISTRATO'));
+    noData.forEach(r=>lines.push(r.map(csvEscapeCell).join(',')));
+  }
+  lines.push(totRow('TOTALE GENERALE INCASSATO',grandTotal).map(csvEscapeCell).join(','));
   const blob=new Blob(['﻿'+lines.join('\r\n')],{type:'text/csv;charset=utf-8;'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
@@ -1628,8 +1666,20 @@ function esportaClientiCSV(){
 function esportaClientiExcel(){
   if(!DATA.length){ alert('Nessuna cliente da esportare.'); return; }
   if(typeof XLSX==='undefined'){ alert('Libreria Excel non disponibile: verifica la connessione internet e riprova.'); return; }
-  const {cols,rows}=clientExportRows();
-  const ws=XLSX.utils.aoa_to_sheet([cols,...rows]);
+  const {cols,incIdx,monthKeys,groupsMap,noData,grandTotal}=clientExportGroups();
+  const totRow=(label,tot)=>cols.map((c,i)=>i===0?label:(i===incIdx?euroExportStr(tot):''));
+  const aoa=[cols];
+  monthKeys.forEach(k=>{
+    aoa.push([mesekeyLabel(k).toUpperCase()]);
+    groupsMap[k].rows.forEach(r=>aoa.push(r));
+    aoa.push(totRow('Totale '+mesekeyLabel(k),groupsMap[k].total));
+  });
+  if(noData.length){
+    aoa.push(['SENZA INCASSO REGISTRATO']);
+    noData.forEach(r=>aoa.push(r));
+  }
+  aoa.push(totRow('TOTALE GENERALE INCASSATO',grandTotal));
+  const ws=XLSX.utils.aoa_to_sheet(aoa);
   ws['!cols']=cols.map(()=>({wch:16}));
   const wb=XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb,ws,'Clienti');
@@ -1638,18 +1688,36 @@ function esportaClientiExcel(){
 function esportaClientiPDF(){
   if(!DATA.length){ alert('Nessuna cliente da esportare.'); return; }
   if(typeof window.jspdf==='undefined'){ alert('Libreria PDF non disponibile: verifica la connessione internet e riprova.'); return; }
-  const {cols,rows}=clientExportRows();
+  const {cols,incIdx,monthKeys,groupsMap,noData,grandTotal}=clientExportGroups();
+  const footRow=(label,tot)=>cols.map((c,i)=>i===0?label:(i===incIdx?euroExportStr(tot):''));
   const {jsPDF}=window.jspdf;
   const doc=new jsPDF({orientation:'landscape',unit:'pt',format:'a4'});
-  doc.setFontSize(12);
+  const pageW=doc.internal.pageSize.getWidth();
+  doc.setFontSize(13);
   doc.text('Elenco clienti — Personal_G ('+new Date().toLocaleDateString('it-IT')+')',20,25);
-  doc.autoTable({
-    head:[cols], body:rows, startY:35,
-    styles:{fontSize:5.5,cellPadding:2,overflow:'linebreak'},
-    headStyles:{fillColor:[224,36,94],fontSize:6},
-    margin:{left:15,right:15,top:35,bottom:15},
-    theme:'grid'
-  });
+  let y=40;
+  const addSection=(label,rows,tot)=>{
+    if(y>doc.internal.pageSize.getHeight()-60){ doc.addPage(); y=25; }
+    doc.setFontSize(10);
+    doc.setTextColor(224,36,94);
+    doc.text(label,20,y);
+    doc.setTextColor(0,0,0);
+    doc.autoTable({
+      head:[cols], body:rows, foot:[footRow('Totale',tot)], startY:y+6,
+      styles:{fontSize:5,cellPadding:1.5,overflow:'linebreak'},
+      headStyles:{fillColor:[224,36,94],fontSize:5.5},
+      footStyles:{fillColor:[240,240,240],textColor:[20,20,20],fontStyle:'bold',fontSize:5.5},
+      margin:{left:15,right:15},
+      theme:'grid'
+    });
+    y=doc.lastAutoTable.finalY+18;
+  };
+  monthKeys.forEach(k=>addSection(mesekeyLabel(k).toUpperCase()+'  —  totale incassato '+euroExportStr(groupsMap[k].total),groupsMap[k].rows,groupsMap[k].total));
+  if(noData.length) addSection('SENZA INCASSO REGISTRATO',noData,0);
+  if(y>doc.internal.pageSize.getHeight()-40){ doc.addPage(); y=30; }
+  doc.setFontSize(11);
+  doc.setTextColor(0,0,0);
+  doc.text('TOTALE GENERALE INCASSATO: '+euroExportStr(grandTotal),20,y);
   doc.save('clienti_'+new Date().toISOString().slice(0,10)+'.pdf');
 }
 
