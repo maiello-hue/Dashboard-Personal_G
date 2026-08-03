@@ -108,6 +108,12 @@ h1{font-size:22px;font-weight:500}
 .goal-bar-fill.over{background:#4f6fe0}
 .goal-bar-label{font-size:13px;color:var(--muted)}
 .mese-warn{display:flex;align-items:center;gap:8px;font-size:12px;color:#a67f00;background:#fdf6e3;border:1px solid #f0e0a8;border-radius:8px;padding:8px 12px;margin-bottom:14px}
+.check-summary-bar{display:flex;height:10px;border-radius:6px;overflow:hidden;background:var(--border);margin-bottom:12px}
+.check-summary-seg{transition:width .3s ease}
+.check-summary-legend{display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.check-summary-legend b{color:var(--text);font-weight:600}
+.check-summary-dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:5px;vertical-align:middle}
+.check-summary-escluse{margin-left:auto;color:var(--muted2)}
 .kpi-ic{font-size:15px;margin-bottom:8px}
 .kpis-v2 .kpi{position:relative;background:var(--card);border:1px solid var(--border);border-left-width:3px;border-left-style:solid;border-radius:0 12px 12px 0;padding:14px 16px}
 .kpis-v2 .kpi-ic{position:absolute;top:14px;right:14px;font-size:20px;margin-bottom:0}
@@ -1117,6 +1123,19 @@ h3 .ico,.sub .ico{color:var(--muted)}
         <select id="check-mese-select" aria-label="Mese check" onchange="setDashMese(this.value)"></select>
       </div>
       <div class="mese-warn" id="mese-warn-check" style="display:none"></div>
+      <div class="card" id="check-summary-card" style="margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">
+          <h3 style="margin:0">Riepilogo check</h3>
+          <div class="sub" id="check-summary-tot" style="margin:0"></div>
+        </div>
+        <div class="check-summary-bar"><div class="check-summary-seg" id="check-summary-seg-si" style="background:#1f9d63;width:0%"></div><div class="check-summary-seg" id="check-summary-seg-no" style="background:#d23f3f;width:0%"></div><div class="check-summary-seg" id="check-summary-seg-mancanti" style="background:#a67f00;width:0%"></div></div>
+        <div class="check-summary-legend">
+          <span><i class="check-summary-dot" style="background:#1f9d63"></i>Risultato sì <b id="check-summary-si">–</b></span>
+          <span><i class="check-summary-dot" style="background:#d23f3f"></i>Check fatto, risultato no <b id="check-summary-no">–</b></span>
+          <span><i class="check-summary-dot" style="background:#a67f00"></i>Mancanti <b id="check-summary-mancanti">–</b></span>
+          <span class="check-summary-escluse" id="check-summary-escluse-wrap" style="display:none"><b id="check-summary-escluse">–</b> escluse dal conteggio</span>
+        </div>
+      </div>
       <div class="filters">
         <input type="text" id="check-search" placeholder="Cerca cliente…" oninput="debouncedBuildCheckPage()">
       </div>
@@ -3063,6 +3082,30 @@ function buildCheckPage(){
   const meseSel=effectiveMese();
   const isCurrentMonth=meseSel===mesekey(new Date());
   updateMeseWarn('mese-warn-check',meseSel);
+  /* Riepilogo check del mese: non dipende dalla ricerca testuale (deve sempre
+     mostrare il quadro completo), ma esclude le clienti "nascoste dal
+     conteggio" per quel mese, esattamente come già fa buildPerfCollabTable. */
+  const summaryAllInPercorso=DATA.filter(r=>isInPercorso(r));
+  const summaryEscluse=summaryAllInPercorso.filter(r=>isCheckExcluded(r,meseSel));
+  const summaryRows=summaryAllInPercorso.filter(r=>!isCheckExcluded(r,meseSel));
+  const summaryTot=summaryRows.length;
+  const summarySi=summaryRows.filter(r=>checkValMese(r,'RISULTATO',meseSel).toUpperCase()==='SI').length;
+  const summaryMancanti=summaryRows.filter(r=>checkValMese(r,'CHECK',meseSel)==='').length;
+  const summaryNo=summaryTot-summarySi-summaryMancanti;
+  const summaryPct=n=>summaryTot?(n/summaryTot*100):0;
+  const segSiEl=document.getElementById('check-summary-seg-si');
+  if(segSiEl){
+    segSiEl.style.width=summaryPct(summarySi)+'%';
+    document.getElementById('check-summary-seg-no').style.width=summaryPct(summaryNo)+'%';
+    document.getElementById('check-summary-seg-mancanti').style.width=summaryPct(summaryMancanti)+'%';
+    document.getElementById('check-summary-tot').textContent=summaryTot+' client'+(summaryTot===1?'e':'i')+' in percorso';
+    document.getElementById('check-summary-si').textContent=summarySi;
+    document.getElementById('check-summary-no').textContent=summaryNo;
+    document.getElementById('check-summary-mancanti').textContent=summaryMancanti;
+    const escWrap=document.getElementById('check-summary-escluse-wrap');
+    escWrap.style.display=summaryEscluse.length?'inline':'none';
+    document.getElementById('check-summary-escluse').textContent=summaryEscluse.length;
+  }
   const q=(document.getElementById('check-search')?.value||'').trim().toLowerCase();
   const matches=r=>!q||(r['CLIENTE']||'').toLowerCase().includes(q);
   const byName=(a,b)=>(a['CLIENTE']||'').localeCompare(b['CLIENTE']||'','it');
