@@ -3584,7 +3584,7 @@ function buildRetentionTable(){
         <td class="rate-cell"><div class="rate-cell-inner"><span class="rate-pill" style="background:${c.bg};color:${c.fg}">${Math.round(pctR)}%</span></div></td>
       </tr>`;
     }).join('');
-    return `<tr class="rate-group-row"><td colspan="5">${y} — ${totYear} client${totYear===1?'e':'e'} entrate</td></tr>${rowsHtml}`;
+    return `<tr class="rate-group-row"><td colspan="5">${y} — ${totYear} client${totYear===1?'e':'i'} entrate</td></tr>${rowsHtml}`;
   }).join('');
 }
 function setRole(r){
