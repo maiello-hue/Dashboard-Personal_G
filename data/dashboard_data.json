@@ -23709,6 +23709,25 @@
    "NUTRI": "Matilde",
    "VENDITORE": "Personal_G",
    "FONTE": ""
+  },
+  {
+   "CLIENTE": "Michela Rizzitiello",
+   "N FATTURA": "",
+   "STATO CLIENTE": "IN PERCORSO",
+   "PERCORSO": "GNOCCA 12",
+   "INIZIO PERCORSO": "01/08/2026",
+   "FINE PERCORSO": "01/08/2027",
+   "IMPORTO": "588",
+   "METODO PAGAMENTO": "HeyLight",
+   "STATO PAGAMENTO": "SALDATO",
+   "TIPO INCASSO": "Nuovo Cliente",
+   "INCASSO": "588",
+   "DATA INCASSO": "01/08/2026",
+   "TUTOR": "",
+   "TRAINER": "",
+   "NUTRI": "",
+   "VENDITORE": "",
+   "FONTE": ""
   }
  ],
  "rimborsi": [
@@ -24477,5 +24496,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-03T06:22:35.101Z"
+ "updatedAt": "2026-08-03T06:23:40.098Z"
 }
