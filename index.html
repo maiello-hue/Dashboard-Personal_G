@@ -107,6 +107,7 @@ h1{font-size:22px;font-weight:500}
 .goal-bar-fill{height:100%;background:#1f9d63;border-radius:999px;transition:width .3s ease}
 .goal-bar-fill.over{background:#4f6fe0}
 .goal-bar-label{font-size:13px;color:var(--muted)}
+.mese-warn{display:flex;align-items:center;gap:8px;font-size:12px;color:#a67f00;background:#fdf6e3;border:1px solid #f0e0a8;border-radius:8px;padding:8px 12px;margin-bottom:14px}
 .kpi-ic{font-size:15px;margin-bottom:8px}
 .kpis-v2 .kpi{position:relative;background:var(--card);border:1px solid var(--border);border-left-width:3px;border-left-style:solid;border-radius:0 12px 12px 0;padding:14px 16px}
 .kpis-v2 .kpi-ic{position:absolute;top:14px;right:14px;font-size:20px;margin-bottom:0}
@@ -729,6 +730,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
       <div class="mese-sel-row filters">
         <select id="dash-mese-select" aria-label="Mese abbandoni, non rinnovo e tassi" onchange="setDashMese(this.value)"></select>
       </div>
+      <div class="mese-warn" id="mese-warn-dash" style="display:none"></div>
       <div class="dash-hero" onclick="apriListaClienti('tot')">
         <div class="dash-hero-top">
           <div><div class="l">Clienti totali</div><div class="v" id="k-tot">–</div></div>
@@ -781,6 +783,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
       <div class="mese-sel-row filters">
         <select id="inc-mese-select" aria-label="Mese incassi" onchange="setDashMese(this.value)"></select>
       </div>
+      <div class="mese-warn" id="mese-warn-inc" style="display:none"></div>
       <div class="grid">
         <div class="card span12">
           <div class="incrow">
@@ -808,6 +811,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
         <button id="an-tab-fonte" onclick="setAnalisiTab('fonte')">Fonte</button>
         <button id="an-tab-abbandono" onclick="setAnalisiTab('abbandono')">Tassi abbandono</button>
         <button id="an-tab-performance" onclick="setAnalisiTab('performance')">Tasso performance</button>
+        <button id="an-tab-retention" onclick="setAnalisiTab('retention')">Retention</button>
       </div>
 
       <div id="analisi-tab-stato" class="grid">
@@ -830,6 +834,16 @@ h3 .ico,.sub .ico{color:var(--muted)}
       <div id="analisi-tab-fonte" class="grid" style="display:none">
         <div class="card span6"><h3><span><i class="fa-solid fa-bullhorn" style="color:#e0245e"></i>Fonte clienti</span></h3><div class="chartbox"><canvas id="c-fonte"></canvas></div></div>
         <div class="card span6"><h3><span><i class="fa-solid fa-chart-line" style="color:#e0245e"></i>Fonte per mese</span></h3><div class="chartbox"><canvas id="c-fonte-mese"></canvas></div></div>
+        <div class="card span12">
+          <h3><span><i class="fa-solid fa-arrow-right-arrow-left" style="color:#e0245e"></i>Esito per fonte</span></h3>
+          <div class="sub" style="margin-bottom:10px">Non solo quante clienti arrivano da ciascuna fonte, ma anche come va a finire: percentuale ancora attiva, abbandonata o non rinnovata (su tutte le clienti mai entrate da quella fonte, storico compreso).</div>
+          <table class="rate-table">
+            <thead>
+              <tr><th>Fonte</th><th>Clienti</th><th>Attive</th><th>Abbandono</th><th>Non rinnovo</th><th>% Persa</th></tr>
+            </thead>
+            <tbody id="fonte-esito-table-body"></tbody>
+          </table>
+        </div>
         <div class="card span12">
           <h3><span><i class="fa-solid fa-list" style="color:#e0245e"></i>Elenco clienti per fonte</span></h3>
           <div class="sub" style="margin-bottom:10px">Clicca su una fonte per espandere l'elenco, suddiviso mese per mese, con il totale in fondo.</div>
@@ -906,6 +920,19 @@ h3 .ico,.sub .ico{color:var(--muted)}
           <table class="rate-table">
             <thead><tr><th>Collaboratore</th><th>Clienti</th><th>Check inserito</th><th>Miglioramenti</th><th>% Miglioramento (sul totale)</th></tr></thead>
             <tbody id="perf-nutri-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="analisi-tab-retention" class="grid" style="display:none">
+        <div class="card span12">
+          <h3><span><i class="fa-solid fa-seedling" style="color:#e0245e"></i>Retention per coorte di ingresso</span></h3>
+          <div class="sub" style="margin-bottom:10px">Delle clienti entrate in ciascun mese (primo percorso, non i rinnovi successivi), quante sono ancora attive oggi. Le coorti più recenti hanno avuto meno tempo per abbandonare: confronta coorti della stessa "età" per un paragone corretto.</div>
+          <table class="rate-table">
+            <thead>
+              <tr><th>Mese di ingresso</th><th>Clienti entrate</th><th>Ancora attive</th><th>Mesi trascorsi</th><th>% Retention</th></tr>
+            </thead>
+            <tbody id="retention-table-body"></tbody>
           </table>
         </div>
       </div>
@@ -1082,6 +1109,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
       <div class="mese-sel-row filters">
         <select id="check-mese-select" aria-label="Mese check" onchange="setDashMese(this.value)"></select>
       </div>
+      <div class="mese-warn" id="mese-warn-check" style="display:none"></div>
       <div class="filters">
         <input type="text" id="check-search" placeholder="Cerca cliente…" oninput="debouncedBuildCheckPage()">
       </div>
@@ -1422,6 +1450,49 @@ function salvaObiettiviForm(){
   saveObiettivi({incassi,nuove});
   render();
 }
+/* Log storico incassi: a differenza del campo INCASSO/DATA INCASSO su ogni
+   cliente (che viene SOVRASCRITTO a ogni rinnovo, perdendo per sempre il dato
+   del pagamento precedente), questo è un elenco che si allunga soltanto: ogni
+   incasso registrato (nuova cliente, rinnovo, modifica manuale) diventa una
+   voce a sé, così i totali mensili passati non cambiano più col tempo. Se per
+   la stessa cliente e la stessa identica data viene registrato un nuovo
+   importo (es. correzione di un errore di battitura), la voce esistente viene
+   aggiornata invece che duplicata; se la data è diversa, viene aggiunta una
+   voce nuova, preservando quella precedente. */
+const LS_INCASSI_LOG='global_incassi_log';
+function getIncassiLog(){ try{ return JSON.parse(localStorage.getItem(LS_INCASSI_LOG))||[]; }catch(e){ return []; } }
+function saveIncassiLog(log){ try{ localStorage.setItem(LS_INCASSI_LOG,JSON.stringify(log)); }catch(e){} }
+function registraIncassoLog(cliente,importo,dataIt,tipo){
+  if(!cliente||!dataIt||!(euro(importo)>0)) return;
+  const log=getIncassiLog();
+  const idx=log.findIndex(e=>e['CLIENTE']===cliente&&e['DATA INCASSO']===dataIt);
+  const entry={CLIENTE:cliente,INCASSO:String(importo),'DATA INCASSO':dataIt,'TIPO INCASSO':tipo||''};
+  if(idx>=0) log[idx]=entry; else log.push(entry);
+  saveIncassiLog(log);
+  markGhDirty();
+}
+/* Migrazione una tantum: al momento dell'introduzione del log, importa
+   l'incasso "attuale" di ogni cliente (l'unico disponibile finora) così da
+   non perdere quello che si vede già oggi. Da qui in avanti, invece, ogni
+   nuovo incasso si AGGIUNGE al log invece di sovrascrivere quello precedente,
+   quindi lo storico resta stabile anche dopo ulteriori rinnovi. Non può
+   recuperare gli incassi già persi in passato (sovrascritti prima di questa
+   modifica): quelli restano irrimediabilmente persi, ma da qui in poi non
+   succederà più. */
+function migrateIncassiLogOnce(){
+  const FLAG='incassi_log_migrated_v1';
+  if(localStorage.getItem(FLAG)) return;
+  const log=getIncassiLog();
+  DATA.forEach(r=>{
+    if(euro(r['INCASSO'])>0&&r['DATA INCASSO']){
+      const idx=log.findIndex(e=>e['CLIENTE']===r['CLIENTE']&&e['DATA INCASSO']===r['DATA INCASSO']);
+      const entry={CLIENTE:r['CLIENTE'],INCASSO:r['INCASSO'],'DATA INCASSO':r['DATA INCASSO'],'TIPO INCASSO':r['TIPO INCASSO']||''};
+      if(idx>=0) log[idx]=entry; else log.push(entry);
+    }
+  });
+  saveIncassiLog(log);
+  try{ localStorage.setItem(FLAG,'1'); }catch(e){}
+}
 function saveRimborsi(push){try{localStorage.setItem(LS_RIMBORSI,JSON.stringify(RIMB));}catch(e){alert('Impossibile salvare: memoria del browser piena o non disponibile.');} if(push!==false) scheduleGithubSync();}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
 
@@ -1502,7 +1573,7 @@ function setGhStatus(msg,isErr){
   el.style.color=isErr?'var(--red)':'var(--muted)';
 }
 function collectAllData(){
-  return {clienti:DATA,rimborsi:RIMB,ratePagate:ratePagate(),rinnovi:renAll(),updatedAt:new Date().toISOString()};
+  return {clienti:DATA,rimborsi:RIMB,ratePagate:ratePagate(),rinnovi:renAll(),incassiLog:getIncassiLog(),updatedAt:new Date().toISOString()};
 }
 function applyAllData(d){
   if(Array.isArray(d.clienti)) DATA=d.clienti;
@@ -1510,6 +1581,7 @@ function applyAllData(d){
   saveClienti(false); saveRimborsi(false);
   try{localStorage.setItem(RIMB_KEY,JSON.stringify(d.ratePagate||{}));}catch(e){}
   try{localStorage.setItem(REN_KEY,JSON.stringify(d.rinnovi||{}));}catch(e){}
+  if(Array.isArray(d.incassiLog)) saveIncassiLog(d.incassiLog);
 }
 async function pushPendingNow(){
   /* invia subito (senza debounce) i dati locali correnti a GitHub. Usata sia dal
@@ -1571,6 +1643,8 @@ async function syncFromGithub(showStatus){
       applyMeseFlussoMigrationOnce();
       applyCheckJulyFixOnce();
       applyIolandaLugFixOnce();
+      migrateIncassiLogOnce();
+migratePrimoInizioOnce();
       applyVenditoreLug26Import();
       applyFonteMap();
       buildFilters(); buildRimbFilters(); render(); renderRimborsi();
@@ -1880,6 +1954,46 @@ function applyMeseFlussoMigrationOnce(){
     if(((r['CHECK']||'').trim()!==''||(r['RISULTATO']||'').trim()!=='')&&!r['DATA CHECK']){ r['DATA CHECK']=lastMonthDayIt(); changed=true; }
   });
   if(changed) saveClienti();
+  recordMeseFlussoMigrationDateOnce();
+}
+/* Data (su QUESTO dispositivo) in cui è partita la registrazione mensile di
+   abbandoni/incassi/check: prima di questa data i mesi passati sono stati
+   "recuperati" con una data placeholder invece di quella reale dell'evento
+   (vedi commento sopra), quindi sono meno affidabili. Usata solo per mostrare
+   un avviso quando si guarda un mese precedente a questa soglia. */
+const MESE_FLUSSO_MIGRATION_DATE_KEY='mese_flusso_migration_date';
+function recordMeseFlussoMigrationDateOnce(){
+  try{ if(!localStorage.getItem(MESE_FLUSSO_MIGRATION_DATE_KEY)) localStorage.setItem(MESE_FLUSSO_MIGRATION_DATE_KEY,todayIt()); }catch(e){}
+}
+function getMeseFlussoMigrationMese(){
+  try{ const d=pdate(localStorage.getItem(MESE_FLUSSO_MIGRATION_DATE_KEY)); return d?mesekey(d):null; }catch(e){ return null; }
+}
+/* Migrazione una tantum: per le clienti già presenti prima dell'introduzione
+   di _PRIMO_INIZIO lo valorizziamo con l'INIZIO PERCORSO attuale (l'unico
+   disponibile). Per chi ha già rinnovato almeno una volta prima di questa
+   modifica non sarà il vero primo ingresso ma l'inizio dell'ultimo ciclo: è un
+   limite dei dati esistenti che non si può recuperare, ma da qui in avanti il
+   campo resta corretto per sempre, senza essere più toccato dai rinnovi. */
+function migratePrimoInizioOnce(){
+  const FLAG='primo_inizio_migrated_v1';
+  if(localStorage.getItem(FLAG)) return;
+  let changed=false;
+  DATA.forEach(r=>{
+    if(!r['_PRIMO_INIZIO']&&r['INIZIO PERCORSO']){ r['_PRIMO_INIZIO']=r['INIZIO PERCORSO']; changed=true; }
+  });
+  if(changed) saveClienti();
+  try{ localStorage.setItem(FLAG,'1'); }catch(e){}
+}
+function updateMeseWarn(elId,meseSel){
+  const el=document.getElementById(elId);
+  if(!el) return;
+  const migMese=getMeseFlussoMigrationMese();
+  if(migMese&&meseSel<migMese){
+    el.style.display='flex';
+    el.innerHTML=`<i class="fa-solid fa-triangle-exclamation"></i><span>I dati di questo mese potrebbero essere incompleti: su questo dispositivo la registrazione mensile di abbandoni/incassi/check è partita da ${esc(mesekeyLabel(migMese))} in poi.</span>`;
+  }else{
+    el.style.display='none';
+  }
 }
 /* Correzione una tantum: la primissima versione della migrazione qui sopra assegnava
    erroneamente ai check legacy la data di oggi invece del mese scorso, facendoli
@@ -2931,6 +3045,7 @@ function buildCheckPage(){
   if(!el) return;
   const meseSel=effectiveMese();
   const isCurrentMonth=meseSel===mesekey(new Date());
+  updateMeseWarn('mese-warn-check',meseSel);
   const q=(document.getElementById('check-search')?.value||'').trim().toLowerCase();
   const matches=r=>!q||(r['CLIENTE']||'').toLowerCase().includes(q);
   const byName=(a,b)=>(a['CLIENTE']||'').localeCompare(b['CLIENTE']||'','it');
@@ -3291,6 +3406,12 @@ function salvaNuovaCliente(){
   if(DATA.some(r=>r['CLIENTE'].trim().toLowerCase()===nome.toLowerCase())){ alert('Esiste già una cliente con questo nome.'); return; }
   const rec={CLIENTE:nome};
   EDIT_FIELDS.forEach(([f])=>{ rec[f]=readEditFieldValue('new',f); });
+  /* _PRIMO_INIZIO fissa per sempre il mese di ingresso reale (usato solo per la
+     coorte di retention): a differenza di INIZIO PERCORSO, che viene aggiornato
+     a ogni rinnovo, questo campo va scritto una volta sola alla creazione e mai
+     più toccato, così una cliente che rinnova resta nella coorte del suo primo
+     ingresso invece di "diventarne una nuova" ogni volta che rinnova. */
+  rec['_PRIMO_INIZIO']=rec['INIZIO PERCORSO']||'';
   /* DATA ARCHIVIAZIONE arriva già dal campo data del form (di default oggi,
      modificabile per attribuire il flusso mensile al mese giusto): la teniamo
      solo se lo Stato è davvero Abbandono/Non rinnovo, altrimenti la scartiamo. */
@@ -3300,6 +3421,7 @@ function salvaNuovaCliente(){
      se c'è davvero un incasso, altrimenti la scartiamo. */
   if(euro(rec['INCASSO'])<=0) delete rec['DATA INCASSO'];
   DATA.push(rec);
+  registraIncassoLog(rec['CLIENTE'],rec['INCASSO'],rec['DATA INCASSO'],rec['TIPO INCASSO']);
   saveClienti();
   toggleAddCliente(false);
   /* Senza questo reset la nuova cliente poteva restare invisibile: se era attivo
@@ -3394,6 +3516,67 @@ function buildFonteReport(allRows){
     </div>`;
   }).join('');
 }
+/* Per ciascuna fonte: non solo quante clienti sono arrivate (già mostrato sopra),
+   ma anche come sono andate a finire — storico compreso, non solo il mese
+   selezionato — per capire quale canale porta le clienti che restano più a
+   lungo, non solo quello che ne porta di più. */
+function buildFonteEsitoTable(allRows){
+  const el=document.getElementById('fonte-esito-table-body');
+  if(!el) return;
+  const rowsHtml=FONTE_KEYS.map(f=>{
+    const rows=allRows.filter(r=>r['FONTE']===f);
+    const tot=rows.length;
+    const attive=rows.filter(r=>!isArchiviata(r)).length;
+    const abb=rows.filter(r=>(r['STATO CLIENTE']||'').toUpperCase().startsWith('ABBANDONAT')).length;
+    const nonrin=rows.filter(r=>(r['STATO CLIENTE']||'').toUpperCase().startsWith('NON RINNOVATO')).length;
+    const pctPersa=tot?(abb+nonrin)/tot*100:0;
+    const c=pctPersa<=20?{bg:'#eaf7ef',fg:'#1f9d63'}:pctPersa<=40?{bg:'#faf1e2',fg:'#b5720f'}:{bg:'#fbebeb',fg:'#d23f3f'};
+    return `<tr class="rate-tr" style="cursor:pointer" onclick="apriListaCampo('FONTE','${f}','Fonte: ${esc(FONTE_LABELS[f])}')">
+      <td><div class="rate-row-label"><span class="fonte-dot" style="background:${FONTE_COLORS[f]}"></span>${esc(FONTE_LABELS[f])}</div></td>
+      <td style="text-align:center">${tot}</td>
+      <td style="text-align:center">${attive}</td>
+      <td style="text-align:center">${abb}</td>
+      <td style="text-align:center">${nonrin}</td>
+      <td class="rate-cell"><div class="rate-cell-inner"><span class="rate-pill" style="background:${c.bg};color:${c.fg}">${Math.round(pctPersa)}%</span></div></td>
+    </tr>`;
+  }).join('');
+  el.innerHTML=rowsHtml||'<tr><td colspan="6" class="sub">Nessuna cliente con fonte registrata.</td></tr>';
+}
+/* Coorte di retention: raggruppa per mese di PRIMO ingresso (_PRIMO_INIZIO,
+   con fallback su INIZIO PERCORSO per le clienti non ancora migrate) e mostra
+   quante di quella coorte sono ancora attive oggi. Non è un vero storico
+   mese-per-mese (richiederebbe uno storico degli stati passati che i dati non
+   hanno), ma una "fotografia" onesta e verificabile: quante clienti di ogni
+   coorte sono sopravvissute fino ad oggi. */
+function buildRetentionTable(){
+  const el=document.getElementById('retention-table-body');
+  if(!el) return;
+  const now=new Date();
+  const groups={};
+  DATA.forEach(r=>{
+    const raw=r['_PRIMO_INIZIO']||r['INIZIO PERCORSO'];
+    const d=pdate(raw);
+    if(!d) return;
+    const k=mesekey(d);
+    if(!groups[k]) groups[k]={tot:0,attive:0,cohortDate:new Date(d.getFullYear(),d.getMonth(),1)};
+    groups[k].tot++;
+    if(!isArchiviata(r)) groups[k].attive++;
+  });
+  const keys=Object.keys(groups).sort().reverse();
+  el.innerHTML=keys.length?keys.map(k=>{
+    const g=groups[k];
+    const mesiTrascorsi=(now.getFullYear()-g.cohortDate.getFullYear())*12+(now.getMonth()-g.cohortDate.getMonth());
+    const pctR=g.tot?g.attive/g.tot*100:0;
+    const c=pctR>=70?{bg:'#eaf7ef',fg:'#1f9d63'}:pctR>=40?{bg:'#faf1e2',fg:'#b5720f'}:{bg:'#fbebeb',fg:'#d23f3f'};
+    return `<tr class="rate-tr">
+      <td><div class="rate-row-label">${esc(mesekeyLabel(k))}</div></td>
+      <td style="text-align:center">${g.tot}</td>
+      <td style="text-align:center">${g.attive}</td>
+      <td style="text-align:center">${mesiTrascorsi}</td>
+      <td class="rate-cell"><div class="rate-cell-inner"><span class="rate-pill" style="background:${c.bg};color:${c.fg}">${Math.round(pctR)}%</span></div></td>
+    </tr>`;
+  }).join(''):'<tr><td colspan="5" class="sub">Nessuna cliente con data di ingresso registrata.</td></tr>';
+}
 function setRole(r){
   role=r;
   ['TUTOR','TRAINER','NUTRI'].forEach(x=>document.getElementById('rt-'+x).classList.toggle('on',x===r));
@@ -3409,7 +3592,7 @@ function setAbbCompRole(r){
 let analisiTab='stato';
 function setAnalisiTab(t){
   analisiTab=t;
-  ['stato','fonte','abbandono','performance'].forEach(x=>{
+  ['stato','fonte','abbandono','performance','retention'].forEach(x=>{
     document.getElementById('an-tab-'+x).classList.toggle('on',x===t);
     document.getElementById('analisi-tab-'+x).style.display=(x===t?'grid':'none');
   });
@@ -3576,6 +3759,8 @@ function render(){
   document.getElementById('k-nuove').textContent=nuoveA.length;
   document.getElementById('k-nuove-d').innerHTML=brk(nuoveA)+' · '+fmtPct(pct(nuoveA.length,totA.length))+' del totale'+trendHtml(nuoveA.length,prevNuoveA.length,false);
   document.getElementById('k-scad').textContent=scad30;
+  updateMeseWarn('mese-warn-dash',meseSel);
+  updateMeseWarn('mese-warn-inc',meseSel);
   const rischioAlertEl=document.getElementById('dash-alert-rischio');
   if(rischioAlertEl){
     rischioAlertEl.style.display=rischioA.length?'flex':'none';
@@ -3607,14 +3792,17 @@ function render(){
   const isRinT=r=>tipo(r).includes('rinnovo'), isRicT=r=>tipo(r).includes('ricorrente');
   const isAltT=r=>!isRinT(r)&&!isRicT(r)&&euro(r['INCASSO'])>0;
   /* Gli incassi mostrati sono SOLO quelli del mese selezionato (di default il mese
-     corrente): si basano su DATA INCASSO, valorizzata in automatico quando inserisci/
-     modifichi manualmente l'importo in Incasso. Gli incassi restano comunque per
-     sempre in DATA: si può sempre rivedere un mese passato dal menu a tendina. */
+     corrente), letti dal log storico incassi (getIncassiLog) e non più dal singolo
+     campo INCASSO/DATA INCASSO di ogni cliente: quel campo viene sovrascritto a ogni
+     rinnovo e da solo non basta a ricostruire correttamente i mesi passati. Il log
+     invece si allunga soltanto, quindi i totali dei mesi già chiusi restano stabili
+     anche dopo ulteriori rinnovi delle stesse clienti. */
+  const incLog=getIncassiLog();
   const incMese=r=>euro(r['INCASSO'])>0&&inMese(r,'DATA INCASSO',meseSel);
   const prevIncMese=r=>euro(r['INCASSO'])>0&&inMese(r,'DATA INCASSO',prevMese);
   const setInc=(id,f,label)=>{
-    const rs=allRows.filter(r=>incMese(r)&&f(r));
-    const prevSum=allRows.filter(r=>prevIncMese(r)&&f(r)).reduce((s,r)=>s+euro(r['INCASSO']),0);
+    const rs=incLog.filter(r=>incMese(r)&&f(r));
+    const prevSum=incLog.filter(r=>prevIncMese(r)&&f(r)).reduce((s,r)=>s+euro(r['INCASSO']),0);
     const currSum=rs.reduce((s,r)=>s+euro(r['INCASSO']),0);
     document.getElementById(id).textContent=fmtEuro2(currSum);
     document.getElementById(id+'-d').innerHTML=rs.length+' '+label+trendHtml(currSum,prevSum,false);
@@ -3622,14 +3810,14 @@ function render(){
   setInc('i-rin',isRinT,'clienti con tag rinnovo');
   setInc('i-ric',isRicT,'clienti con tag ricorrente');
   setInc('i-alt',isAltT,'nuovi clienti');
-  const incTotRows=allRows.filter(incMese);
+  const incTotRows=incLog.filter(incMese);
   const incTotSum=incTotRows.reduce((s,r)=>s+euro(r['INCASSO']),0);
-  const prevIncTotSum=allRows.filter(prevIncMese).reduce((s,r)=>s+euro(r['INCASSO']),0);
+  const prevIncTotSum=incLog.filter(prevIncMese).reduce((s,r)=>s+euro(r['INCASSO']),0);
   document.getElementById('i-tot').textContent=fmtEuro2(incTotSum);
   document.getElementById('i-tot-d').innerHTML=incTotRows.length+' incassi registrati'+trendHtml(incTotSum,prevIncTotSum,false);
-  KPI_LISTS.incRin=allRows.filter(r=>incMese(r)&&isRinT(r));
-  KPI_LISTS.incRic=allRows.filter(r=>incMese(r)&&isRicT(r));
-  KPI_LISTS.incAlt=allRows.filter(r=>incMese(r)&&isAltT(r));
+  KPI_LISTS.incRin=incLog.filter(r=>incMese(r)&&isRinT(r));
+  KPI_LISTS.incRic=incLog.filter(r=>incMese(r)&&isRicT(r));
+  KPI_LISTS.incAlt=incLog.filter(r=>incMese(r)&&isAltT(r));
   KPI_LISTS.incTot=incTotRows;
   const goalIncassiCard=document.getElementById('goal-incassi-card');
   if(goalIncassiCard){
@@ -3713,6 +3901,8 @@ function render(){
     options:{...common,scales:{x:gridOpt,y:{...gridOpt,beginAtZero:true}}}});
 
   buildFonteReport(allRows);
+  buildFonteEsitoTable(allRows);
+  buildRetentionTable();
   }
   if(currentPage==='compensi'){
     buildCompensi();
@@ -3731,7 +3921,7 @@ function render(){
      grafico sopra, che conta solo il NUMERO di nuove clienti): si basa su
      DATA INCASSO/INCASSO, esattamente come le card in cima alla pagina. */
   const byMEuro={};
-  allRows.forEach(r=>{ const d=pdate(r['DATA INCASSO']); const v=euro(r['INCASSO']); if(d&&v>0){ const k=mesekey(d); byMEuro[k]=(byMEuro[k]||0)+v; } });
+  getIncassiLog().forEach(r=>{ const d=pdate(r['DATA INCASSO']); const v=euro(r['INCASSO']); if(d&&v>0){ const k=mesekey(d); byMEuro[k]=(byMEuro[k]||0)+v; } });
   const keysE=Object.keys(byMEuro).sort();
   mkChart('c-incassi-mese',{type:'bar',data:{labels:keysE.map(k=>MESI_SHORT[+k.slice(5)-1]+' '+k.slice(2,4)),datasets:[{data:keysE.map(k=>+byMEuro[k].toFixed(2)),backgroundColor:'#7c56d9',borderRadius:6}]},options:{...common,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'€ '+c.parsed.y.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2})}}},scales:{x:gridOpt,y:{...gridOpt,beginAtZero:true,ticks:{...gridOpt.ticks,callback:v=>'€'+v}}}}});
   }
@@ -4215,6 +4405,7 @@ function salvaClienteModal(){
      attribuito al mese in cui è davvero avvenuto invece che a quello in cui
      è stato digitato in dashboard. La teniamo solo se c'è davvero un incasso. */
   if(euro(r['INCASSO'])<=0) delete r['DATA INCASSO'];
+  registraIncassoLog(r['CLIENTE'],r['INCASSO'],r['DATA INCASSO'],r['TIPO INCASSO']);
   saveClienti();
   chiudiModificaCliente();
   buildFilters(); render();
@@ -4309,6 +4500,7 @@ function salvaRinnovaAbbonamento(){
   r['INCASSO']=incasso;
   r['TIPO INCASSO']='Rinnovo';
   if(euro(incasso)>0) r['DATA INCASSO']=isoToIt(dataIso); else delete r['DATA INCASSO'];
+  registraIncassoLog(r['CLIENTE'],r['INCASSO'],r['DATA INCASSO'],r['TIPO INCASSO']);
   /* Il rinnovo fa partire un nuovo ciclo: aggiorniamo inizio/fine percorso in
      base alla data del rinnovo e alla durata del percorso scelto, così la
      cliente esce subito dall'elenco "Rinnovi da gestire" (che si basa su
@@ -4586,6 +4778,8 @@ applyGnoccaSheetImport();
 applyMeseFlussoMigrationOnce();
 applyCheckJulyFixOnce();
 applyIolandaLugFixOnce();
+migrateIncassiLogOnce();
+migratePrimoInizioOnce();
 applyVenditoreLug26Import();
 applyFonteMap();
 loadManagedLists();
