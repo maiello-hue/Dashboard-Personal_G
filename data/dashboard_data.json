@@ -944,7 +944,8 @@
    "FONTE": "ORGANICO",
    "N FATTURA": "",
    "VENDITORE": "",
-   "DATA ARCHIVIAZIONE": "03/08/2026"
+   "DATA ARCHIVIAZIONE": "28/07/2026",
+   "_IOLANDA_LUG_FIX": "1"
   },
   {
    "CLIENTE": "Serena Poggioli",
@@ -24499,5 +24500,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-03T14:34:16.366Z"
+ "updatedAt": "2026-08-03T16:39:30.505Z"
 }
