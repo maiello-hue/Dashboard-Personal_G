@@ -23690,6 +23690,25 @@
    "NUTRI": "Nicole",
    "VENDITORE": "",
    "FONTE": "ADV"
+  },
+  {
+   "CLIENTE": "Elisa Borchi",
+   "N FATTURA": "",
+   "STATO CLIENTE": "IN PERCORSO",
+   "PERCORSO": "6 mesi + 6 Gnocca",
+   "INIZIO PERCORSO": "01/08/2026",
+   "FINE PERCORSO": "01/08/2027",
+   "IMPORTO": "1850,82",
+   "METODO PAGAMENTO": "HeyLight",
+   "STATO PAGAMENTO": "SALDATO",
+   "TIPO INCASSO": "Nuovo Cliente",
+   "INCASSO": "1850,82",
+   "DATA INCASSO": "01/08/2026",
+   "TUTOR": "Andrea",
+   "TRAINER": "Matteo",
+   "NUTRI": "Matilde",
+   "VENDITORE": "Personal_G",
+   "FONTE": ""
   }
  ],
  "rimborsi": [
@@ -24458,5 +24477,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-02T17:31:47.223Z"
+ "updatedAt": "2026-08-03T06:22:35.101Z"
 }
