@@ -20635,10 +20635,11 @@
    "€ TRAINER": "€ 17,00",
    "€ NUTRI": "€ 12,00",
    "CONTRATTO": "SI",
-   "CHECK": "",
-   "RISULTATO": "",
+   "CHECK": "SI",
+   "RISULTATO": "SI",
    "FONTE": "ADV",
-   "CHECK_ESCLUSA": "SI"
+   "CHECK_ESCLUSA": "SI",
+   "DATA CHECK": "03/08/2026"
   },
   {
    "CLIENTE": "Michela Sari",
@@ -24500,5 +24501,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-03T16:55:48.180Z"
+ "updatedAt": "2026-08-03T16:55:58.197Z"
 }
