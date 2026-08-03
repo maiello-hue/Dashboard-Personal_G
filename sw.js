@@ -5,8 +5,8 @@
    salvata) anche offline. Le chiamate verso GitHub e verso i CDN esterni
    (Chart.js, Font Awesome) NON vengono intercettate: passano dritte alla
    rete come sempre, per non interferire con la sincronizzazione dei dati. */
-const CACHE_NAME='personal-g-dash-v1';
-const APP_SHELL=['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png','./apple-touch-icon.png'];
+const CACHE_NAME='personal-g-dash-v2';
+const APP_SHELL=['./','./index.html','./manifest.json?v=2','./icon-192.png?v=2','./icon-512.png?v=2','./apple-touch-icon.png?v=2'];
 
 self.addEventListener('install',e=>{
   e.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(APP_SHELL)).catch(()=>{}));
