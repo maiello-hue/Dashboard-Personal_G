@@ -367,12 +367,16 @@ h3 .ico,.sub .ico{color:var(--muted)}
 .rate-cell:hover{background:var(--card2)}
 .rate-cell-inner{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:90px}
 .rate-pill{display:inline-block;padding:3px 11px;border-radius:999px;font-size:14px;font-weight:600}
-.top3-list{display:flex;flex-direction:column;gap:10px}
-.top3-row{display:flex;align-items:center;gap:14px;padding:14px 16px;border:1px solid var(--border);border-radius:12px;transition:background .15s ease}
+.top3-list{border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.top3-row{display:flex;align-items:center;gap:14px;padding:12px 16px;border-bottom:1px solid var(--border);transition:background .15s ease}
+.top3-row:last-child{border-bottom:none}
 .top3-row:hover{background:var(--card2)}
 .top3-row .badge{font-size:14px;padding:4px 10px}
 .rate-tr .badge{font-size:13px;padding:4px 9px}
-.top3-rank{font-size:22px;line-height:1;flex-shrink:0;width:28px;text-align:center}
+.top3-rank{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;font-size:12px;font-weight:700;line-height:1;flex-shrink:0;color:#fff}
+.top3-rank-1{background:#c99a2e}
+.top3-rank-2{background:#9aa0a6}
+.top3-rank-3{background:#b5720f}
 .rate-bar-track{width:90px;height:5px;border-radius:3px;background:var(--border);overflow:hidden}
 .rate-bar-fill{height:100%;border-radius:3px;transition:width .2s ease}
 .rate-sub{font-size:11px;color:var(--muted2)}
@@ -3190,7 +3194,6 @@ function buildPerfCollabTable(){
   ]},options:{...common,scales:{x:gridOpt,y:{...gridOpt,beginAtZero:true,ticks:{...gridOpt.ticks,callback:v=>v+'%'}}},plugins:{...common.plugins,tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.formattedValue+'%'}}},onHover:cursorHover,onClick:(evt,els)=>{if(!els.length)return;const i=els[0].index;apriListaCampo(sorted[i].field,sorted[i].name,sorted[i].name);}}});
   const top3El=document.getElementById('perf-top3');
   if(top3El){
-    const RANK_ICON=['🥇','🥈','🥉'];
     const top3Pool=allRows.filter(r=>r.field===perfCompRole&&!r.hidePct&&!r.excludeTop3).sort((a,b)=>b.migRate-a.migRate||b.tot-a.tot);
     const top3=top3Pool.slice(0,3);
     const forcedIn=top3Pool.filter(r=>isTop3Forced(r.field,r.name));
@@ -3204,7 +3207,7 @@ function buildPerfCollabTable(){
     top3El.innerHTML=top3.length?top3.map((r,i)=>{
       const c=perfColor(r.migRate);
       return `<div class="top3-row" style="cursor:pointer" onclick="apriListaCampo('${perfCompRole}','${jsEsc(r.name)}','${jsEsc(r.name)}')">
-        <span class="top3-rank top3-rank-${i+1}">${RANK_ICON[i]}</span>
+        <span class="top3-rank top3-rank-${i+1}">${i+1}</span>
         <div class="rate-row-label" style="flex:1">${collabBadgeFn[perfCompRole](r.name)}</div>
         <span class="rate-pill" style="background:${c.bg};color:${c.fg}">${fmtPct(r.migRate)}</span>
       </div>`;
@@ -3878,12 +3881,11 @@ function render(){
   const abbCompRows=collabSorted.filter(r=>r.field===abbCompRole);
   const abbTop3El=document.getElementById('abbandono-top3');
   if(abbTop3El){
-    const RANK_ICON=['🥇','🥈','🥉'];
     const abbTop3=abbCompRows.filter(r=>!r.hidePct).sort((a,b)=>a.totRate-b.totRate).slice(0,3);
     abbTop3El.innerHTML=abbTop3.length?abbTop3.map((r,i)=>{
       const c=rateColor(r.totRate);
       return `<div class="top3-row" style="cursor:pointer" onclick="apriListaClienti('${r.keyTot}')">
-        <span class="top3-rank top3-rank-${i+1}">${RANK_ICON[i]}</span>
+        <span class="top3-rank top3-rank-${i+1}">${i+1}</span>
         <div class="rate-row-label" style="flex:1">${collabBadgeFn[r.field](r.name)}</div>
         <span class="rate-pill" style="background:${c.bg};color:${c.fg}">${fmtPct(r.totRate)}</span>
       </div>`;
