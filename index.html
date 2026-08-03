@@ -96,6 +96,17 @@ h1{font-size:22px;font-weight:500}
 .dash-alert-text{font-size:13px;color:var(--text)}
 .dash-alert-text b{font-weight:700}
 .dash-alert-sub{color:var(--muted2);margin-left:4px}
+.dash-alert-risk{border-left-color:#d23f3f}
+.dash-alert-risk .dash-alert-ico{color:#d23f3f}
+.trend-badge{display:inline-block;font-size:11px;font-weight:600;padding:2px 6px;border-radius:6px;white-space:nowrap;vertical-align:middle}
+.trend-good{background:#eaf7ef;color:#1f9d63}
+.trend-bad{background:#fbebeb;color:#d23f3f}
+.trend-flat{background:var(--card2);color:var(--muted)}
+.goal-bar-wrap{display:flex;flex-direction:column;gap:8px}
+.goal-bar{height:14px;border-radius:999px;background:var(--card2);overflow:hidden}
+.goal-bar-fill{height:100%;background:#1f9d63;border-radius:999px;transition:width .3s ease}
+.goal-bar-fill.over{background:#4f6fe0}
+.goal-bar-label{font-size:13px;color:var(--muted)}
 .kpi-ic{font-size:15px;margin-bottom:8px}
 .kpis-v2 .kpi{position:relative;background:var(--card);border:1px solid var(--border);border-left-width:3px;border-left-style:solid;border-radius:0 12px 12px 0;padding:14px 16px}
 .kpis-v2 .kpi-ic{position:absolute;top:14px;right:14px;font-size:20px;margin-bottom:0}
@@ -742,6 +753,19 @@ h3 .ico,.sub .ico{color:var(--muted)}
         <div class="dash-alert-text"><b id="k-scad">–</b> clienti in scadenza nei prossimi 30 giorni <span class="dash-alert-sub" id="k-scad-d"></span></div>
       </div>
 
+      <div class="dash-alert dash-alert-risk" id="dash-alert-rischio" style="display:none" onclick="apriListaClienti('rischio')">
+        <span class="dash-alert-ico"><i class="fa-solid fa-triangle-exclamation"></i></span>
+        <div class="dash-alert-text"><b id="k-rischio">–</b> clienti in percorso senza check da almeno 2 mesi <span class="dash-alert-sub">— possibile segnale di abbandono, da ricontattare</span></div>
+      </div>
+
+      <div class="card" id="goal-nuove-card" style="display:none;margin-bottom:16px">
+        <h3><span class="ico"><i class="fa-solid fa-bullseye"></i></span>Obiettivo mensile — nuove clienti</h3>
+        <div class="goal-bar-wrap">
+          <div class="goal-bar"><div class="goal-bar-fill" id="goal-nuove-fill" style="width:0%"></div></div>
+          <div class="goal-bar-label" id="goal-nuove-label"></div>
+        </div>
+      </div>
+
       <div class="kpis kpis-v2">
         <div class="kpi kpi-green" onclick="apriListaClienti('att')"><div class="kpi-ic" style="color:#1f9d63"><i class="fa-solid fa-circle-check"></i></div><div class="l">In percorso</div><div class="v" id="k-att">–</div><div class="d" id="k-att-d"></div></div>
         <div class="kpi kpi-blue" onclick="apriListaClienti('cong')"><div class="kpi-ic" style="color:#2f7fd1"><i class="fa-solid fa-snowflake"></i></div><div class="l">Congelate</div><div class="v" id="k-cong">–</div><div class="d" id="k-cong-d"></div></div>
@@ -766,7 +790,15 @@ h3 .ico,.sub .ico{color:var(--muted)}
             <div class="incbox inc-purple" onclick="apriListaClienti('incTot')"><div class="inc-ic" style="color:#7c56d9"><i class="fa-solid fa-sack-dollar"></i></div><div class="l" id="i-tot-l">Totale incassato</div><div class="v" id="i-tot">–</div><div class="d" id="i-tot-d"></div></div>
           </div>
         </div>
-        <div class="card span12"><h3>Nuove entrate per mese</h3><div class="chartbox"><canvas id="c-entrate"></canvas></div></div>
+        <div class="card span12" id="goal-incassi-card" style="display:none">
+          <h3><span class="ico"><i class="fa-solid fa-bullseye"></i></span>Obiettivo mensile — incassi</h3>
+          <div class="goal-bar-wrap">
+            <div class="goal-bar"><div class="goal-bar-fill" id="goal-incassi-fill" style="width:0%"></div></div>
+            <div class="goal-bar-label" id="goal-incassi-label"></div>
+          </div>
+        </div>
+        <div class="card span12"><h3>Andamento incassi per mese (€)</h3><div class="chartbox"><canvas id="c-incassi-mese"></canvas></div></div>
+        <div class="card span12"><h3>Nuove clienti per mese</h3><div class="chartbox"><canvas id="c-entrate"></canvas></div></div>
       </div>
     </div>
 
@@ -779,6 +811,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
       </div>
 
       <div id="analisi-tab-stato" class="grid">
+        <div class="card span12"><h3><span><i class="fa-solid fa-coins" style="color:#e0245e"></i>Valore cliente</span></h3><div class="kpis kpis-v2" id="ltv-kpis"></div></div>
         <div class="card span4"><h3><span><i class="fa-solid fa-user-group" style="color:#e0245e"></i>Stato clienti</span></h3><div class="chartbox"><canvas id="c-stato"></canvas></div></div>
         <div class="card span4"><h3><span><i class="fa-solid fa-route" style="color:#e0245e"></i>Percorsi scelti</span></h3><div class="chartbox"><canvas id="c-percorso"></canvas></div></div>
         <div class="card span4"><h3><span><i class="fa-solid fa-credit-card" style="color:#e0245e"></i>Metodi di pagamento</span></h3><div class="chartbox"><canvas id="c-metodo"></canvas></div></div>
@@ -1088,6 +1121,18 @@ h3 .ico,.sub .ico{color:var(--muted)}
       </div>
 
       <div class="card" style="max-width:640px;margin-top:16px">
+        <h3><span class="ico"><i class="fa-solid fa-bullseye"></i></span>Obiettivi mensili</h3>
+        <div class="sub" style="margin-bottom:10px">Imposta un obiettivo ricorrente ogni mese: viene confrontato con il mese scelto in Dashboard/Incassi. Lascia a 0 per nascondere la barra di progresso corrispondente.</div>
+        <div class="editbar">
+          <label>Obiettivo incassi mensili (€)<input type="number" id="ob-incassi" min="0" step="50"></label>
+          <label>Obiettivo nuove clienti al mese<input type="number" id="ob-nuove" min="0" step="1"></label>
+        </div>
+        <div class="editbar-actions">
+          <button class="btn" onclick="salvaObiettiviForm()"><span class="ico"><svg viewBox="0 0 16 16"><path d="M3 3h7.5l2.5 2.5V13H3z"/><path d="M5 3v3h5V3"/><path d="M5.3 9H10.7V13H5.3z"/></svg></span>Salva obiettivi</button>
+        </div>
+      </div>
+
+      <div class="card" style="max-width:640px;margin-top:16px">
         <h3><span class="ico"><svg viewBox="0 0 16 16"><path d="M8 2.5v7.5M5 7l3 3 3-3"/><path d="M3 13h10"/></svg></span>Esporta elenco clienti</h3>
         <div class="sub" style="margin-bottom:10px">Esporta l'elenco completo delle clienti, con tutti i dati associati, nel formato che preferisci.</div>
         <div class="editbar-actions" style="flex-wrap:wrap">
@@ -1205,6 +1250,29 @@ let catFilter='all';
    passato scegliendolo dal menu a tendina. */
 let dashMese=null;
 function mesekey(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); }
+/* Chiave del mese precedente rispetto a quello passato (formato YYYY-MM):
+   usata per confrontare le KPI del mese selezionato con quello prima, senza
+   dover ricalcolare da capo tutte le liste già filtrate per mese. */
+function prevMeseKey(k){
+  const [y,m]=k.split('-').map(Number);
+  return mesekey(new Date(y,m-2,1));
+}
+/* Piccola etichetta "▲/▼ N%" da affiancare a una KPI per mostrarne la
+   variazione rispetto al mese precedente. "invert" va messo a true per le
+   metriche dove un aumento è un fatto negativo (es. abbandono, non rinnovo):
+   in quel caso i colori verde/rosso si invertono di conseguenza. Se entrambi
+   i valori sono zero non mostra nulla (nessuna variazione da segnalare); se il
+   mese precedente era zero ma quello attuale no, mostra "nuovo" invece di una
+   percentuale (che sarebbe infinita/poco leggibile). */
+function trendHtml(curr,prev,invert){
+  if(!prev&&!curr) return '';
+  if(!prev) return ` · <span class="trend-badge ${invert?'trend-bad':'trend-good'}">▲ nuovo</span>`;
+  const delta=(curr-prev)/prev*100;
+  const up=delta>0.5, down=delta<-0.5;
+  const cls=!up&&!down?'trend-flat':((up&&!invert)||(down&&invert)?'trend-good':'trend-bad');
+  const arrow=up?'▲':down?'▼':'—';
+  return ` · <span class="trend-badge ${cls}">${arrow} ${Math.abs(delta).toFixed(0)}%</span>`;
+}
 function mesekeyLabel(k){
   if(k==='_nodata') return 'Non specificato';
   const [y,m]=k.split('-');
@@ -1342,6 +1410,18 @@ function toggleMobileSidebar(show){
 
 /* ---------- persistenza locale ---------- */
 function saveClienti(push){try{localStorage.setItem(LS_CLIENTI,JSON.stringify(DATA));}catch(e){alert('Impossibile salvare: memoria del browser piena o non disponibile.');} if(push!==false) scheduleGithubSync();}
+/* Obiettivi mensili ricorrenti (incassi €, nuove clienti): stessi due valori
+   ogni mese, confrontati con qualsiasi mese selezionato in Dashboard/Incassi.
+   Salvati solo su questo dispositivo, come le altre impostazioni personali. */
+const LS_OBIETTIVI='global_obiettivi_mensili';
+function getObiettivi(){ try{ return JSON.parse(localStorage.getItem(LS_OBIETTIVI))||{}; }catch(e){ return {}; } }
+function saveObiettivi(o){ try{ localStorage.setItem(LS_OBIETTIVI,JSON.stringify(o)); }catch(e){} }
+function salvaObiettiviForm(){
+  const incassi=Math.max(0,parseFloat(document.getElementById('ob-incassi').value)||0);
+  const nuove=Math.max(0,parseInt(document.getElementById('ob-nuove').value)||0);
+  saveObiettivi({incassi,nuove});
+  render();
+}
 function saveRimborsi(push){try{localStorage.setItem(LS_RIMBORSI,JSON.stringify(RIMB));}catch(e){alert('Impossibile salvare: memoria del browser piena o non disponibile.');} if(push!==false) scheduleGithubSync();}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
 
@@ -2366,6 +2446,10 @@ function removeVenditoriNonValidiOnce(){
 
 /* ---------- pannello impostazioni unificato: colori + elenchi ---------- */
 function buildSettingsPanel(){
+  const ob=getObiettivi();
+  const obIncassiEl=document.getElementById('ob-incassi'), obNuoveEl=document.getElementById('ob-nuove');
+  if(obIncassiEl) obIncassiEl.value=ob.incassi||'';
+  if(obNuoveEl) obNuoveEl.value=ob.nuove||'';
   const el=document.getElementById('settings-panel-body');
   if(!el) return;
   const tagGroups={};
@@ -2815,6 +2899,25 @@ function checkToggleGroupHtml(cliente,field,label,currentVal,editable){
   </span>`;
 }
 function isInPercorso(r){ return (r['STATO CLIENTE']||'').trim().toUpperCase()==='IN PERCORSO'; }
+/* Quanti mesi di calendario sono passati dall'ultimo check registrato (DATA
+   CHECK, che tiene sempre e solo la data dell'ultimo check inserito, sia esso
+   di questo mese o di mesi fa). Se non è mai stato inserito alcun check
+   restituisce un numero molto alto, così da essere comunque considerata "a
+   rischio" se la cliente non è nuova. */
+function mesiSenzaCheck(r){
+  const d=pdate(r['DATA CHECK']);
+  if(!d) return 999;
+  const now=new Date();
+  return (now.getFullYear()-d.getFullYear())*12+(now.getMonth()-d.getMonth());
+}
+/* "Cliente a rischio": in percorso, non appena entrata (le clienti nuove non
+   hanno ancora avuto il tempo materiale di ricevere un check, stessa regola
+   usata per il conteggio dei check del mese) e senza check da almeno 2 mesi.
+   È un segnale di allarme anticipato, prima che diventi un abbandono/non
+   rinnovo vero e proprio. */
+function isARischio(r){
+  return isInPercorso(r)&&!isNewThisMonth(r)&&mesiSenzaCheck(r)>=2;
+}
 /* Valore di CHECK/RISULTATO "per il mese scelto": se il check è stato inserito
    in un mese diverso da quello che si sta guardando, si considera come non
    ancora fatto per quel mese (stesso principio di DATA INCASSO per gli
@@ -3321,6 +3424,7 @@ function render(){
   buildMeseOptions();
   const meseSel=effectiveMese();
   const meseLbl=mesekeyLabel(meseSel);
+  const prevMese=prevMeseKey(meseSel);
 
   const fSt=s=>allRows.filter(r=>(r['STATO CLIENTE']||'').toUpperCase().startsWith(s));
   const brk=arr=>{const g=arr.filter(isGnocca).length;return `${arr.length-g} premium · ${g} gnocca`;};
@@ -3346,13 +3450,25 @@ function render(){
      Chi rinnova ottiene anch'essa un nuovo INIZIO PERCORSO (nuovo ciclo) ma non è
      una cliente nuova: va esclusa qui, resta comunque conteggiata in "In percorso". */
   const nuoveA=allRows.filter(r=>inMese(r,'INIZIO PERCORSO',meseSel)&&!(r['TIPO INCASSO']||'').toLowerCase().includes('rinnovo'));
+  /* Stessi identici calcoli di totA/nuoveA/abbA/nonrinA ma per il mese precedente
+     a quello selezionato: servono solo per il confronto "▲/▼ N%" mostrato
+     accanto alle KPI, non per nient'altro (non vanno in KPI_LISTS). Le KPI
+     "In percorso/Congelate/Sparite/Mai iniziato" invece riflettono lo STATO
+     ATTUALE della cliente e non hanno un equivalente storico per mese passato
+     (l'app non tiene uno storico degli stati), quindi qui non c'è nulla con
+     cui confrontarle in modo corretto. */
+  const prevTotA=allRows.filter(r=>!isArchiviata(r)&&finoAMese(r,'INIZIO PERCORSO',prevMese));
+  const prevNuoveA=allRows.filter(r=>inMese(r,'INIZIO PERCORSO',prevMese)&&!(r['TIPO INCASSO']||'').toLowerCase().includes('rinnovo'));
+  const prevAbbA=abbAAll.filter(r=>inMese(r,'DATA ARCHIVIAZIONE',prevMese));
+  const prevNonrinA=nonrinAAll.filter(r=>inMese(r,'DATA ARCHIVIAZIONE',prevMese));
   const scadA=allRows.filter(r=>{const d=pdate(r['FINE PERCORSO']);return d&&d>=now&&d<=in30&&r['STATO CLIENTE']==='IN PERCORSO';});
+  const rischioA=allRows.filter(isARischio);
   const scad30=scadA.length, brkScad=brk(scadA);
   const premiumRows=allRows.filter(r=>!isGnocca(r)), gnoccaRows=allRows.filter(isGnocca);
   const abbPremiumA=abbA.filter(r=>!isGnocca(r)), abbGnoccaA=abbA.filter(isGnocca);
   const nonrinPremiumA=nonrinA.filter(r=>!isGnocca(r)), nonrinGnoccaA=nonrinA.filter(isGnocca);
   const totPremiumA=abbPremiumA.concat(nonrinPremiumA), totGnoccaA=abbGnoccaA.concat(nonrinGnoccaA);
-  KPI_LISTS={tot:totA,att:attA,cong:congA,abb:abbA,spar:sparA,nonrin:nonrinA,mai:maiA,scad:scadA,nuove:nuoveA,
+  KPI_LISTS={tot:totA,att:attA,cong:congA,abb:abbA,spar:sparA,nonrin:nonrinA,mai:maiA,scad:scadA,nuove:nuoveA,rischio:rischioA,
     abbPremium:abbPremiumA,abbGnocca:abbGnoccaA,nonrinPremium:nonrinPremiumA,nonrinGnocca:nonrinGnoccaA,
     abbTotPremium:totPremiumA,abbTotGnocca:totGnoccaA};
   const pct=(n,d)=>d?(n/d*100):0;
@@ -3444,22 +3560,38 @@ function render(){
   document.getElementById('collab-abbandono-table-body').innerHTML=collabTableHtml||'<tr><td colspan="6" class="sub">Nessun collaboratore con clienti assegnate.</td></tr>';
   }
   document.getElementById('k-tot').textContent=totA.length;
-  document.getElementById('k-tot-d').textContent=brk(totA);
+  document.getElementById('k-tot-d').innerHTML=brk(totA)+trendHtml(totA.length,prevTotA.length,false);
   document.getElementById('k-att').textContent=att;
   document.getElementById('k-att-d').textContent=brk(attA);
   document.getElementById('k-cong').textContent=congA.length;
   document.getElementById('k-cong-d').textContent=brk(congA);
   document.getElementById('k-nonrin').textContent=nonrinA.length;
-  document.getElementById('k-nonrin-d').textContent=brk(nonrinA);
+  document.getElementById('k-nonrin-d').innerHTML=brk(nonrinA)+trendHtml(nonrinA.length,prevNonrinA.length,true);
   document.getElementById('k-abb').textContent=abbA.length;
-  document.getElementById('k-abb-d').textContent=brk(abbA);
+  document.getElementById('k-abb-d').innerHTML=brk(abbA)+trendHtml(abbA.length,prevAbbA.length,true);
   document.getElementById('k-spar').textContent=sparA.length;
   document.getElementById('k-spar-d').textContent=brk(sparA);
   document.getElementById('k-mai').textContent=maiA.length;
   document.getElementById('k-mai-d').textContent=brk(maiA);
   document.getElementById('k-nuove').textContent=nuoveA.length;
-  document.getElementById('k-nuove-d').textContent=brk(nuoveA)+' · '+fmtPct(pct(nuoveA.length,totA.length))+' del totale';
+  document.getElementById('k-nuove-d').innerHTML=brk(nuoveA)+' · '+fmtPct(pct(nuoveA.length,totA.length))+' del totale'+trendHtml(nuoveA.length,prevNuoveA.length,false);
   document.getElementById('k-scad').textContent=scad30;
+  const rischioAlertEl=document.getElementById('dash-alert-rischio');
+  if(rischioAlertEl){
+    rischioAlertEl.style.display=rischioA.length?'flex':'none';
+    document.getElementById('k-rischio').textContent=rischioA.length;
+  }
+  const obG=getObiettivi();
+  const goalNuoveCard=document.getElementById('goal-nuove-card');
+  if(goalNuoveCard){
+    if(obG.nuove>0){
+      goalNuoveCard.style.display='';
+      const pctN=Math.min(100,nuoveA.length/obG.nuove*100);
+      document.getElementById('goal-nuove-fill').style.width=pctN+'%';
+      document.getElementById('goal-nuove-fill').classList.toggle('over',nuoveA.length>=obG.nuove);
+      document.getElementById('goal-nuove-label').textContent=nuoveA.length+' di '+obG.nuove+' clienti ('+Math.round(pctN)+'%)'+(nuoveA.length>=obG.nuove?' — obiettivo raggiunto! 🎉':'')+' — '+meseLbl;
+    }else goalNuoveCard.style.display='none';
+  }
   const totBarD=totA.length||1;
   document.getElementById('bar-att').style.width=(attA.length/totBarD*100)+'%';
   document.getElementById('bar-cong').style.width=(congA.length/totBarD*100)+'%';
@@ -3479,21 +3611,37 @@ function render(){
      modifichi manualmente l'importo in Incasso. Gli incassi restano comunque per
      sempre in DATA: si può sempre rivedere un mese passato dal menu a tendina. */
   const incMese=r=>euro(r['INCASSO'])>0&&inMese(r,'DATA INCASSO',meseSel);
+  const prevIncMese=r=>euro(r['INCASSO'])>0&&inMese(r,'DATA INCASSO',prevMese);
   const setInc=(id,f,label)=>{
     const rs=allRows.filter(r=>incMese(r)&&f(r));
-    document.getElementById(id).textContent=fmtEuro2(rs.reduce((s,r)=>s+euro(r['INCASSO']),0));
-    document.getElementById(id+'-d').textContent=rs.length+' '+label;
+    const prevSum=allRows.filter(r=>prevIncMese(r)&&f(r)).reduce((s,r)=>s+euro(r['INCASSO']),0);
+    const currSum=rs.reduce((s,r)=>s+euro(r['INCASSO']),0);
+    document.getElementById(id).textContent=fmtEuro2(currSum);
+    document.getElementById(id+'-d').innerHTML=rs.length+' '+label+trendHtml(currSum,prevSum,false);
   };
   setInc('i-rin',isRinT,'clienti con tag rinnovo');
   setInc('i-ric',isRicT,'clienti con tag ricorrente');
   setInc('i-alt',isAltT,'nuovi clienti');
   const incTotRows=allRows.filter(incMese);
-  document.getElementById('i-tot').textContent=fmtEuro2(incTotRows.reduce((s,r)=>s+euro(r['INCASSO']),0));
-  document.getElementById('i-tot-d').textContent=incTotRows.length+' incassi registrati';
+  const incTotSum=incTotRows.reduce((s,r)=>s+euro(r['INCASSO']),0);
+  const prevIncTotSum=allRows.filter(prevIncMese).reduce((s,r)=>s+euro(r['INCASSO']),0);
+  document.getElementById('i-tot').textContent=fmtEuro2(incTotSum);
+  document.getElementById('i-tot-d').innerHTML=incTotRows.length+' incassi registrati'+trendHtml(incTotSum,prevIncTotSum,false);
   KPI_LISTS.incRin=allRows.filter(r=>incMese(r)&&isRinT(r));
   KPI_LISTS.incRic=allRows.filter(r=>incMese(r)&&isRicT(r));
   KPI_LISTS.incAlt=allRows.filter(r=>incMese(r)&&isAltT(r));
   KPI_LISTS.incTot=incTotRows;
+  const goalIncassiCard=document.getElementById('goal-incassi-card');
+  if(goalIncassiCard){
+    const obI=getObiettivi();
+    if(obI.incassi>0){
+      goalIncassiCard.style.display='';
+      const pctI=Math.min(100,incTotSum/obI.incassi*100);
+      document.getElementById('goal-incassi-fill').style.width=pctI+'%';
+      document.getElementById('goal-incassi-fill').classList.toggle('over',incTotSum>=obI.incassi);
+      document.getElementById('goal-incassi-label').textContent=fmtEuro2(incTotSum)+' di '+fmtEuro2(obI.incassi)+' ('+Math.round(pctI)+'%)'+(incTotSum>=obI.incassi?' — obiettivo raggiunto! 🎉':'')+' — '+meseLbl;
+    }else goalIncassiCard.style.display='none';
+  }
 
   const common={plugins:{legend:{align:'center',labels:{color:'#63625c',font:{size:11},boxWidth:8,usePointStyle:true,pointStyle:'circle',padding:14}}},maintainAspectRatio:false};
   const gridOpt={grid:{color:'#e4e3dd'},ticks:{color:'#63625c',font:{size:11}}};
@@ -3519,6 +3667,22 @@ function render(){
         <span class="rate-pill" style="background:${c.bg};color:${c.fg}">${fmtPct(r.totRate)}</span>
       </div>`;
     }).join(''):'<div class="sub">Nessun collaboratore con clienti assegnate.</div>';
+  }
+
+  /* Valore medio cliente: importo medio del percorso (campo IMPORTO) su tutte
+     le clienti che ne hanno uno registrato, indipendentemente dallo stato
+     attuale (storico compreso). È un valore "a pacchetto attuale", non un vero
+     valore storico cumulato di tutti i rinnovi di ciascuna cliente (che
+     richiederebbe uno storico delle transazioni non presente nei dati). */
+  const ltvRows=allRows.filter(r=>euro(r['IMPORTO'])>0);
+  const ltvTotale=ltvRows.reduce((s,r)=>s+euro(r['IMPORTO']),0);
+  const ltvMedio=ltvRows.length?ltvTotale/ltvRows.length:0;
+  const ltvEl=document.getElementById('ltv-kpis');
+  if(ltvEl){
+    ltvEl.innerHTML=`
+      <div class="kpi kpi-purple"><div class="kpi-ic" style="color:#7c56d9"><i class="fa-solid fa-coins"></i></div><div class="l">Valore medio cliente</div><div class="v">${fmtEuro2(ltvMedio)}</div><div class="d">${ltvRows.length} client${ltvRows.length===1?'e':'e'} con importo registrato</div></div>
+      <div class="kpi kpi-green"><div class="kpi-ic" style="color:#1f9d63"><i class="fa-solid fa-sack-dollar"></i></div><div class="l">Valore totale portafoglio</div><div class="v">${fmtEuro2(ltvTotale)}</div><div class="d">somma di tutti gli importi registrati</div></div>
+    `;
   }
 
   const st=countBy(allRows,'STATO CLIENTE');
@@ -3563,6 +3727,13 @@ function render(){
   allRows.forEach(r=>{const d=pdate(r['INIZIO PERCORSO']);if(d){const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');byM[k]=(byM[k]||0)+1;}});
   const keys=Object.keys(byM).sort();
   mkChart('c-entrate',{type:'line',data:{labels:keys.map(k=>MESI_SHORT[+k.slice(5)-1]+' '+k.slice(2,4)),datasets:[{data:keys.map(k=>byM[k]),borderColor:'#4f6fe0',backgroundColor:'rgba(79,111,224,.12)',fill:true,tension:.35,pointRadius:3,pointBackgroundColor:'#4f6fe0'}]},options:{...common,plugins:{legend:{display:false}},scales:{x:gridOpt,y:{...gridOpt,beginAtZero:true}}}});
+  /* Andamento reale degli incassi in euro mese per mese (a differenza del
+     grafico sopra, che conta solo il NUMERO di nuove clienti): si basa su
+     DATA INCASSO/INCASSO, esattamente come le card in cima alla pagina. */
+  const byMEuro={};
+  allRows.forEach(r=>{ const d=pdate(r['DATA INCASSO']); const v=euro(r['INCASSO']); if(d&&v>0){ const k=mesekey(d); byMEuro[k]=(byMEuro[k]||0)+v; } });
+  const keysE=Object.keys(byMEuro).sort();
+  mkChart('c-incassi-mese',{type:'bar',data:{labels:keysE.map(k=>MESI_SHORT[+k.slice(5)-1]+' '+k.slice(2,4)),datasets:[{data:keysE.map(k=>+byMEuro[k].toFixed(2)),backgroundColor:'#7c56d9',borderRadius:6}]},options:{...common,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'€ '+c.parsed.y.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2})}}},scales:{x:gridOpt,y:{...gridOpt,beginAtZero:true,ticks:{...gridOpt.ticks,callback:v=>'€'+v}}}}});
   }
 
   if(currentPage==='analisi'){
@@ -3956,7 +4127,7 @@ function toggleExp(i){
   expanded.has(name)?expanded.delete(name):expanded.add(name);
   render();
 }
-const KPI_LABELS={tot:'Clienti totali',att:'In percorso',cong:'Congelate',abb:'Abbandonate',spar:'Sparite',nonrin:'Non rinnovo',mai:'Mai iniziato',nuove:'Nuove',scad:'In scadenza 30gg',incRin:'Rinnovo percorsi',incRic:'Ricorrenti',incAlt:'Nuovo cliente',incTot:'Totale incassato',abbPremium:'Abbandono Premium',abbGnocca:'Abbandono Gnocca',nonrinPremium:'Non rinnovo Premium',nonrinGnocca:'Non rinnovo Gnocca',abbTotPremium:'Abbandono totale Premium',abbTotGnocca:'Abbandono totale Gnocca'};
+const KPI_LABELS={tot:'Clienti totali',att:'In percorso',cong:'Congelate',abb:'Abbandonate',spar:'Sparite',nonrin:'Non rinnovo',mai:'Mai iniziato',nuove:'Nuove',scad:'In scadenza 30gg',rischio:'Clienti a rischio (senza check da 2+ mesi)',incRin:'Rinnovo percorsi',incRic:'Ricorrenti',incAlt:'Nuovo cliente',incTot:'Totale incassato',abbPremium:'Abbandono Premium',abbGnocca:'Abbandono Gnocca',nonrinPremium:'Non rinnovo Premium',nonrinGnocca:'Non rinnovo Gnocca',abbTotPremium:'Abbandono totale Premium',abbTotGnocca:'Abbandono totale Gnocca'};
 const INC_KPI_KEYS=new Set(['incRin','incRic','incAlt','incTot']);
 function apriListaClienti(key){
   const rows=[...(KPI_LISTS[key]||[])].sort((a,b)=>a['CLIENTE'].localeCompare(b['CLIENTE'],'it'));
@@ -3967,6 +4138,17 @@ function apriListaClienti(key){
       return `<div class="kpi-list-row kpi-list-row-amt">
         <span style="flex:1;min-width:160px">${esc(r['CLIENTE'])}</span>
         <span class="count" style="min-width:110px;text-align:right;font-weight:700;color:var(--text)">€ ${imp}</span>
+      </div>`;
+    }).join(''):'<div class="sub">Nessuna cliente in questa categoria.</div>';
+  }else if(key==='rischio'){
+    document.getElementById('kpi-list-body').innerHTML=rows.length?rows.map(r=>{
+      const d=pdate(r['DATA CHECK']);
+      const lastStr=d?fdate(d):'mai';
+      return `<div class="kpi-list-row">
+        <span style="flex:1;min-width:160px">${esc(r['CLIENTE'])}</span>
+        ${statoBadge(r['STATO CLIENTE'])}
+        ${percBadge(r['PERCORSO'])}
+        <span class="count" style="min-width:130px;text-align:right">ultimo check: ${lastStr}</span>
       </div>`;
     }).join(''):'<div class="sub">Nessuna cliente in questa categoria.</div>';
   }else{
