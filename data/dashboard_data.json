@@ -9805,9 +9805,10 @@
    "€ TRAINER": "€ 17,00",
    "€ NUTRI": "€ 12,00",
    "CONTRATTO": "",
-   "CHECK": "",
-   "RISULTATO": "",
-   "FONTE": "ORGANICO"
+   "CHECK": "SI",
+   "RISULTATO": "SI",
+   "FONTE": "ORGANICO",
+   "DATA CHECK": "03/08/2026"
   },
   {
    "CLIENTE": "Alice Francesca Vio Genova",
@@ -24502,5 +24503,5 @@
    "st": "rin"
   }
  },
- "updatedAt": "2026-08-03T16:56:23.696Z"
+ "updatedAt": "2026-08-03T16:56:35.564Z"
 }
