@@ -1603,7 +1603,7 @@ function clientExportColumns(){
     'CHECK','RISULTATO','DATA CHECK','DATA ARCHIVIAZIONE'];
   const present=base.filter(k=>DATA.some(r=>k in r));
   const extra=new Set();
-  DATA.forEach(r=>Object.keys(r).forEach(k=>{ if(!base.includes(k)) extra.add(k); }));
+  DATA.forEach(r=>Object.keys(r).forEach(k=>{ if(!base.includes(k)&&!k.startsWith('_')) extra.add(k); }));
   return present.concat([...extra].sort((a,b)=>a.localeCompare(b,'it')));
 }
 function clientExportRows(){
