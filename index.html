@@ -352,6 +352,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
 .rate-row-label{display:flex;align-items:center;gap:8px;padding:12px 10px;font-size:13px;color:var(--text)}
 .rate-row-label.tot{font-weight:600}
 .rate-group-row td{background:var(--card2);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);padding:7px 10px}
+.retention-year-label{font-size:13px}
 .storico-group-row{cursor:pointer}
 .storico-group-row:hover td{background:var(--surface-2, var(--card2))}
 .storico-group-row .storico-group-arrow{display:inline-block;width:14px;color:var(--muted)}
@@ -3578,8 +3579,8 @@ function buildRetentionTable(){
     const yearKeys=keys.filter(k=>k.slice(0,4)===y);
     const totYear=yearKeys.reduce((s,k)=>s+groups[k].tot,0);
     const isOpen=retentionYearsOpen.has(y);
-    const header=`<tr class="rate-group-row" style="cursor:pointer" onclick="toggleRetentionYear('${y}')">
-      <td colspan="5"><span class="fonte-caret" style="margin-right:6px">${isOpen?'▾':'▸'}</span>${y} — ${totYear} client${totYear===1?'e':'i'} entrate</td>
+    const header=`<tr class="rate-group-row retention-year-row" style="cursor:pointer" onclick="toggleRetentionYear('${y}')">
+      <td colspan="5"><span class="fonte-caret" style="margin-right:6px">${isOpen?'▾':'▸'}</span><span class="retention-year-label">${y}</span></td>
     </tr>`;
     const rowsHtml=isOpen?yearKeys.map(k=>{
       const g=groups[k];
