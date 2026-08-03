@@ -15164,10 +15164,11 @@
    "€ TRAINER": "€ 17,00",
    "€ NUTRI": "€ 12,00",
    "CONTRATTO": "SI",
-   "CHECK": "",
-   "RISULTATO": "",
+   "CHECK": "SI",
+   "RISULTATO": "SI",
    "FONTE": "ADV",
-   "_PRIMO_INIZIO": "30/03/2026"
+   "_PRIMO_INIZIO": "30/03/2026",
+   "DATA CHECK": "03/08/2026"
   },
   {
    "CLIENTE": "Teresa Zavelle De Louvigny",
@@ -25967,5 +25968,5 @@
    "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
- "updatedAt": "2026-08-03T18:05:28.004Z"
+ "updatedAt": "2026-08-03T21:30:30.856Z"
 }
