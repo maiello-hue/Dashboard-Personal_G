@@ -17351,7 +17351,7 @@
   },
   {
    "CLIENTE": "Francesca Ceccaroni",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "CONGELATO",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "05/05/2026",
    "FINE PERCORSO": "05/11/2026",
@@ -17375,7 +17375,9 @@
    "FONTE": "ADV",
    "DATA CHECK": "31/07/2026",
    "_CHECK_JULY_FIX": "1",
-   "_PRIMO_INIZIO": "05/05/2026"
+   "_PRIMO_INIZIO": "05/05/2026",
+   "N FATTURA": "",
+   "VENDITORE": ""
   },
   {
    "CLIENTE": "Camilla Coveri",
@@ -25969,5 +25971,5 @@
    "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
- "updatedAt": "2026-08-04T13:45:57.648Z"
+ "updatedAt": "2026-08-04T13:46:13.246Z"
 }
