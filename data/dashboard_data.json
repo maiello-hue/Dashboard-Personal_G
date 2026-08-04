@@ -17424,7 +17424,7 @@
   },
   {
    "CLIENTE": "Michela Reale",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "CONGELATO",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "05/05/2026",
    "FINE PERCORSO": "05/11/2026",
@@ -17446,7 +17446,9 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "ADV",
-   "_PRIMO_INIZIO": "05/05/2026"
+   "_PRIMO_INIZIO": "05/05/2026",
+   "N FATTURA": "",
+   "VENDITORE": ""
   },
   {
    "CLIENTE": "Sveva Menichetti",
@@ -26111,5 +26113,5 @@
    "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
- "updatedAt": "2026-08-04T19:17:07.664Z"
+ "updatedAt": "2026-08-04T19:19:28.697Z"
 }
