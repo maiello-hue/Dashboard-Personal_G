@@ -2824,7 +2824,7 @@ function tipoScadBadge(tipo){
 const FONTE_OPTIONS=['ADV','ORGANICO','INSTAGRAM','REFERRAL'];
 const FONTE_KEYS=['ADV','ORGANICO','INSTAGRAM','REFERRAL'];
 const FONTE_LABELS={'ADV':'ADV','ORGANICO':'Organico','INSTAGRAM':'Instagram','REFERRAL':'Referral'};
-const FONTE_COLORS={'ADV':'#4f6fe0','ORGANICO':'#1f9d63','INSTAGRAM':'#d1568c','REFERRAL':'#b5720f','(vuoto)':'#a8a7a0'};
+const FONTE_COLORS={'ADV':'#e0245e','ORGANICO':'#18181a','INSTAGRAM':'#63625c','REFERRAL':'#8b8a83','(vuoto)':'#cfcec6'};
 const METODO_COLORS={'HeyLight':'#d23f3f','PagoDIL':'#e0b400','Scalapay':'#b57edc','PayPal':'#0c3d78','Qomodo':'#1f9d63','Bonifico':'#2f9bd6','EVA':'#7c56d9','(vuoto)':'#a8a7a0'};
 let fonteExpanded=new Set();
 let fonteMonthExpanded=new Set();
@@ -3300,8 +3300,8 @@ function buildPerfCollabTable(){
   const cursorHover=(evt,elements)=>{evt.native.target.style.cursor=elements.length?'pointer':'default';};
   const sorted=['TUTOR','TRAINER','NUTRI'].flatMap(field=>allRows.filter(r=>r.field===field).sort((a,b)=>a.name.localeCompare(b.name,'it')));
   mkChart('c-perf-rate',{type:'bar',data:{labels:sorted.map(r=>r.name),datasets:[
-    {label:'% Check inserito',data:sorted.map(r=>+r.checkRate.toFixed(1)),backgroundColor:'#4f6fe0',borderRadius:6},
-    {label:'% Miglioramento',data:sorted.map(r=>+r.migRate.toFixed(1)),backgroundColor:'#1f9d63',borderRadius:6}
+    {label:'% Check inserito',data:sorted.map(r=>+r.checkRate.toFixed(1)),backgroundColor:'#18181a',borderRadius:6},
+    {label:'% Miglioramento',data:sorted.map(r=>+r.migRate.toFixed(1)),backgroundColor:'#e0245e',borderRadius:6}
   ]},options:{...common,scales:{x:gridOpt,y:{...gridOpt,beginAtZero:true,ticks:{...gridOpt.ticks,callback:v=>v+'%'}}},plugins:{...common.plugins,tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.formattedValue+'%'}}},onHover:cursorHover,onClick:(evt,els)=>{if(!els.length)return;const i=els[0].index;apriListaCampo(sorted[i].field,sorted[i].name,sorted[i].name);}}});
   const top3El=document.getElementById('perf-top3');
   if(top3El){
@@ -3985,9 +3985,9 @@ function render(){
   if(currentPage==='analisi'){
   const collabSorted=['TUTOR','TRAINER','NUTRI'].flatMap(field=>collabRateRows.filter(r=>r.field===field).sort((a,b)=>a.name.localeCompare(b.name,'it')));
   mkChart('c-abbandono-rate',{type:'bar',data:{labels:collabSorted.map(r=>r.name),datasets:[
-    {label:'Abbandono',data:collabSorted.map(r=>+r.abbRate.toFixed(1)),backgroundColor:'#d23f3f',borderRadius:6},
-    {label:'Non rinnovo',data:collabSorted.map(r=>+r.nonrinRate.toFixed(1)),backgroundColor:'#b5720f',borderRadius:6},
-    {label:'Totale',data:collabSorted.map(r=>+r.totRate.toFixed(1)),backgroundColor:'#7c56d9',borderRadius:6}
+    {label:'Abbandono',data:collabSorted.map(r=>+r.abbRate.toFixed(1)),backgroundColor:'#18181a',borderRadius:6},
+    {label:'Non rinnovo',data:collabSorted.map(r=>+r.nonrinRate.toFixed(1)),backgroundColor:'#8b8a83',borderRadius:6},
+    {label:'Totale',data:collabSorted.map(r=>+r.totRate.toFixed(1)),backgroundColor:'#e0245e',borderRadius:6}
   ]},options:{...common,scales:{x:gridOpt,y:{...gridOpt,beginAtZero:true,ticks:{...gridOpt.ticks,callback:v=>v+'%'}}},plugins:{...common.plugins,tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.formattedValue+'%'}}},onHover:cursorHover,onClick:(evt,els)=>{if(!els.length)return;const i=els[0].index;apriListaCampo(collabSorted[i].field,collabSorted[i].name,collabSorted[i].name);}}});
   const abbCompRows=collabSorted.filter(r=>r.field===abbCompRole);
   const abbTop3El=document.getElementById('abbandono-top3');
