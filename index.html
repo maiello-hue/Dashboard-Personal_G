@@ -1128,11 +1128,11 @@ h3 .ico,.sub .ico{color:var(--muted)}
           <h3 style="margin:0">Riepilogo check</h3>
           <div class="sub" id="check-summary-tot" style="margin:0"></div>
         </div>
-        <div class="check-summary-bar"><div class="check-summary-seg" id="check-summary-seg-si" style="background:#1f9d63;width:0%"></div><div class="check-summary-seg" id="check-summary-seg-no" style="background:#d23f3f;width:0%"></div><div class="check-summary-seg" id="check-summary-seg-mancanti" style="background:#a67f00;width:0%"></div></div>
+        <div class="check-summary-bar"><div class="check-summary-seg" id="check-summary-seg-inserito" style="background:#2f7fd1;width:0%"></div><div class="check-summary-seg" id="check-summary-seg-si" style="background:#1f9d63;width:0%"></div><div class="check-summary-seg" id="check-summary-seg-no" style="background:#d23f3f;width:0%"></div></div>
         <div class="check-summary-legend">
+          <span><i class="check-summary-dot" style="background:#2f7fd1"></i>Check inserito <b id="check-summary-inserito">–</b></span>
           <span><i class="check-summary-dot" style="background:#1f9d63"></i>Risultato sì <b id="check-summary-si">–</b></span>
-          <span><i class="check-summary-dot" style="background:#d23f3f"></i>Check fatto, risultato no <b id="check-summary-no">–</b></span>
-          <span><i class="check-summary-dot" style="background:#a67f00"></i>Mancanti <b id="check-summary-mancanti">–</b></span>
+          <span><i class="check-summary-dot" style="background:#d23f3f"></i>Risultato no <b id="check-summary-no">–</b></span>
           <span class="check-summary-escluse" id="check-summary-escluse-wrap" style="display:none"><b id="check-summary-escluse">–</b> escluse dal conteggio</span>
         </div>
       </div>
@@ -3089,19 +3089,28 @@ function buildCheckPage(){
   const summaryEscluse=summaryAllInPercorso.filter(r=>isCheckExcluded(r,meseSel));
   const summaryRows=summaryAllInPercorso.filter(r=>!isCheckExcluded(r,meseSel));
   const summaryTot=summaryRows.length;
+  /* Tre voci indipendenti richieste in barra: risultato sì/no sono un sottoinsieme
+     di "check inserito" (si inserisce un risultato solo dopo aver fatto il check),
+     quindi "Check inserito" qui rappresenta chi ha il check fatto ma senza ancora
+     un risultato segnato — la parte non colorata della barra è chi non ha ancora
+     nessun check inserito questo mese. */
   const summarySi=summaryRows.filter(r=>checkValMese(r,'RISULTATO',meseSel).toUpperCase()==='SI').length;
-  const summaryMancanti=summaryRows.filter(r=>checkValMese(r,'CHECK',meseSel)==='').length;
-  const summaryNo=summaryTot-summarySi-summaryMancanti;
+  const summaryNo=summaryRows.filter(r=>checkValMese(r,'RISULTATO',meseSel).toUpperCase()==='NO').length;
+  const summaryInserito=summaryRows.filter(r=>{
+    const c=checkValMese(r,'CHECK',meseSel);
+    const ris=checkValMese(r,'RISULTATO',meseSel).toUpperCase();
+    return c!==''&&ris!=='SI'&&ris!=='NO';
+  }).length;
   const summaryPct=n=>summaryTot?(n/summaryTot*100):0;
-  const segSiEl=document.getElementById('check-summary-seg-si');
-  if(segSiEl){
-    segSiEl.style.width=summaryPct(summarySi)+'%';
+  const segInseritoEl=document.getElementById('check-summary-seg-inserito');
+  if(segInseritoEl){
+    segInseritoEl.style.width=summaryPct(summaryInserito)+'%';
+    document.getElementById('check-summary-seg-si').style.width=summaryPct(summarySi)+'%';
     document.getElementById('check-summary-seg-no').style.width=summaryPct(summaryNo)+'%';
-    document.getElementById('check-summary-seg-mancanti').style.width=summaryPct(summaryMancanti)+'%';
     document.getElementById('check-summary-tot').textContent=summaryTot+' client'+(summaryTot===1?'e':'i')+' in percorso';
+    document.getElementById('check-summary-inserito').textContent=summaryInserito;
     document.getElementById('check-summary-si').textContent=summarySi;
     document.getElementById('check-summary-no').textContent=summaryNo;
-    document.getElementById('check-summary-mancanti').textContent=summaryMancanti;
     const escWrap=document.getElementById('check-summary-escluse-wrap');
     escWrap.style.display=summaryEscluse.length?'inline':'none';
     document.getElementById('check-summary-escluse').textContent=summaryEscluse.length;
