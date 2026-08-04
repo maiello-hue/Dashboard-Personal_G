@@ -457,7 +457,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
 .rate-tr{border-bottom:1px solid var(--border)}
 .rate-tr:last-child{border-bottom:none}
 .rate-tr.tot{border-top:1px solid var(--border-strong)}
-.row-icon-actions{display:flex;gap:8px;margin-left:auto}
+.row-icon-actions{display:flex;align-items:center;gap:8px;margin-left:auto}
 .icon-btn{width:28px;height:28px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--border-strong);background:var(--card);color:var(--muted);border-radius:8px;cursor:pointer;transition:background .15s ease,opacity .15s ease}
 .icon-btn .ico{margin-right:0}
 .icon-btn:hover{background:var(--card2)}
@@ -470,7 +470,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
 .pill-btn .ico svg{width:11px;height:11px}
 .pill-btn:hover{background:var(--card2);color:var(--text)}
 .pill-btn.danger:hover{background:#fcebeb;color:#791f1f;border-color:#f3d9d9}
-select.pill-btn{-webkit-appearance:none;appearance:none;padding-right:24px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23767c8a' d='M4 6l4 4 4-4z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;background-size:10px}
+select.pill-btn{-webkit-appearance:none;appearance:none;height:28px;padding-right:24px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23767c8a' d='M4 6l4 4 4-4z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;background-size:10px}
 select.pill-btn:focus{outline:none;border-color:var(--border-strong)}
 .modal-overlay{position:fixed;inset:0;background:rgba(15,15,14,.5);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px}
 .modal-card{background:var(--card);border-radius:14px;padding:22px 24px;max-width:680px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.3)}
@@ -4746,10 +4746,10 @@ function renderTable(rows){
         <span class="detail-item" title="Risultato">${DI.star}${esc(r['RISULTATO']||'—')}</span>
         <span class="row-icon-actions" onclick="event.stopPropagation()">
           <select class="pill-btn" title="Cambia stato cliente" onchange="cambiaStatoCliente('${jsEsc(r['CLIENTE'])}',this.value)">${statoOpts.map(o=>`<option value="${esc(o)}"${(r['STATO CLIENTE']||'')===o?' selected':''}>${esc(statoLabel(o))}</option>`).join('')}</select>
-          <button class="pill-btn" title="Modifica" onclick="apriModificaCliente('${jsEsc(r['CLIENTE'])}')">${ic('edit')}Modifica</button>
-          <button class="pill-btn" title="Rinnova abbonamento / imposta pagamento a rate" onclick="apriRinnovaAbbonamento('${jsEsc(r['CLIENTE'])}')">${ic('sync')}Rinnova</button>
-          ${catFilter==='storico'?`<button class="pill-btn" title="Rimborsa" onclick="apriRimborsaCliente('${jsEsc(r['CLIENTE'])}')">${ic('undo')}Rimborsa</button>`:''}
-          <button class="pill-btn danger" title="Elimina cliente" onclick="eliminaCliente('${jsEsc(r['CLIENTE'])}')">${ic('trash')}Elimina</button>
+          <button class="icon-btn" title="Modifica" onclick="apriModificaCliente('${jsEsc(r['CLIENTE'])}')">${ic('edit')}</button>
+          <button class="icon-btn" title="Rinnova abbonamento / imposta pagamento a rate" onclick="apriRinnovaAbbonamento('${jsEsc(r['CLIENTE'])}')">${ic('sync')}</button>
+          ${catFilter==='storico'?`<button class="icon-btn" title="Rimborsa" onclick="apriRimborsaCliente('${jsEsc(r['CLIENTE'])}')">${ic('undo')}</button>`:''}
+          <button class="icon-btn danger" title="Elimina cliente" onclick="eliminaCliente('${jsEsc(r['CLIENTE'])}')">${ic('trash')}</button>
         </span>`;
     const arch=pdate(r['DATA ARCHIVIAZIONE']);
     return {r,i,ini,fin,arch,prog,pctVal,pctCls,finTxt,finLabel,scad,renBadge,detailInner};
