@@ -8988,7 +8988,7 @@
   },
   {
    "CLIENTE": "Monia Lerose",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "NON RINNOVATO",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "19/01/2026",
    "FINE PERCORSO": "19/08/2026",
@@ -9010,7 +9010,10 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "ADV",
-   "_PRIMO_INIZIO": "19/01/2026"
+   "_PRIMO_INIZIO": "19/01/2026",
+   "N FATTURA": "",
+   "DATA ARCHIVIAZIONE": "04/08/2026",
+   "VENDITORE": ""
   },
   {
    "CLIENTE": "Alessandra Tripi",
@@ -25944,5 +25947,5 @@
    "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
- "updatedAt": "2026-08-04T13:41:04.417Z"
+ "updatedAt": "2026-08-04T13:41:30.729Z"
 }
