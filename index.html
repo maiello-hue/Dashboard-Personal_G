@@ -280,6 +280,9 @@ h1{font-size:22px;font-weight:500}
 #clienti-table td[data-label="Avanzamento"]{padding-left:4px}
 #clienti-table th[onclick*="FINE PERCORSO"]{padding-right:4px}
 #clienti-table th[onclick*="_PROG"]{padding-left:4px}
+#ltv-kpis .kpi-purple,#ltv-kpis .kpi-green{border-left-color:var(--text)}
+#ltv-kpis .kpi-purple .v,#ltv-kpis .kpi-green .v{color:var(--text)}
+#page-analisi .card h3{font-weight:300;font-size:17px}
 .icon-btn.primary.active{background:var(--accent);border-color:var(--accent)}
 .badge{display:inline-block;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:500;white-space:nowrap}
 .b-inpercorso{background:var(--tag-b-inpercorso-bg,#e1f5ee);color:var(--tag-b-inpercorso-fg,#085041)}
@@ -4008,8 +4011,8 @@ function render(){
   const ltvEl=document.getElementById('ltv-kpis');
   if(ltvEl){
     ltvEl.innerHTML=`
-      <div class="kpi kpi-purple"><div class="kpi-ic" style="color:#7c56d9"><i class="fa-solid fa-coins"></i></div><div class="l">Valore medio cliente</div><div class="v">${fmtEuro2(ltvMedio)}</div><div class="d">${ltvRows.length} client${ltvRows.length===1?'e':'e'} con importo registrato</div></div>
-      <div class="kpi kpi-green"><div class="kpi-ic" style="color:#1f9d63"><i class="fa-solid fa-sack-dollar"></i></div><div class="l">Valore totale portafoglio</div><div class="v">${fmtEuro2(ltvTotale)}</div><div class="d">somma di tutti gli importi registrati</div></div>
+      <div class="kpi kpi-purple"><div class="kpi-ic" style="color:var(--text)"><i class="fa-solid fa-coins"></i></div><div class="l">Valore medio cliente</div><div class="v">${fmtEuro2(ltvMedio)}</div><div class="d">${ltvRows.length} client${ltvRows.length===1?'e':'e'} con importo registrato</div></div>
+      <div class="kpi kpi-green"><div class="kpi-ic" style="color:var(--text)"><i class="fa-solid fa-sack-dollar"></i></div><div class="l">Valore totale portafoglio</div><div class="v">${fmtEuro2(ltvTotale)}</div><div class="d">somma di tutti gli importi registrati</div></div>
     `;
   }
 
