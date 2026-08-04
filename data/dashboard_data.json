@@ -24697,13 +24697,13 @@
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "6 mesi + 6 Gnocca",
    "INIZIO PERCORSO": "01/08/2026",
-   "FINE PERCORSO": "01/08/2026",
+   "FINE PERCORSO": "01/08/2027",
    "IMPORTO": "1850,82",
    "METODO PAGAMENTO": "HeyLight",
    "STATO PAGAMENTO": "SALDATO",
    "TIPO INCASSO": "Nuovo Cliente",
    "INCASSO": "1850,82",
-   "DATA INCASSO": "04/08/2026",
+   "DATA INCASSO": "01/08/2026",
    "TUTOR": "Margherita",
    "TRAINER": "Niccolò",
    "NUTRI": "Vanessa",
@@ -26038,7 +26038,13 @@
    "INCASSO": "1668",
    "DATA INCASSO": "03/08/2026",
    "TIPO INCASSO": "Nuovo Cliente"
+  },
+  {
+   "CLIENTE": "Francesca Tognarelli",
+   "INCASSO": "1850,82",
+   "DATA INCASSO": "01/08/2026",
+   "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
- "updatedAt": "2026-08-04T13:52:13.243Z"
+ "updatedAt": "2026-08-04T13:52:45.919Z"
 }
