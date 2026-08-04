@@ -1601,7 +1601,7 @@
   },
   {
    "CLIENTE": "Chiara Dionisi",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "CONGELATO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "11/09/2025",
    "FINE PERCORSO": "11/09/2026",
@@ -1622,7 +1622,10 @@
    "CONTRATTO": "SI",
    "CHECK": "",
    "RISULTATO": "",
-   "_PRIMO_INIZIO": "11/09/2025"
+   "_PRIMO_INIZIO": "11/09/2025",
+   "N FATTURA": "",
+   "VENDITORE": "",
+   "FONTE": ""
   },
   {
    "CLIENTE": "Rosanna De Rosa",
@@ -5150,7 +5153,7 @@
   },
   {
    "CLIENTE": "Lucianella Leuci",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "CONGELATO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "16/11/2025",
    "FINE PERCORSO": "16/11/2026",
@@ -5171,7 +5174,10 @@
    "CONTRATTO": "",
    "CHECK": "",
    "RISULTATO": "",
-   "_PRIMO_INIZIO": "16/11/2025"
+   "_PRIMO_INIZIO": "16/11/2025",
+   "N FATTURA": "",
+   "VENDITORE": "",
+   "FONTE": ""
   },
   {
    "CLIENTE": "Valeria Aneri",
@@ -25975,5 +25981,5 @@
    "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
- "updatedAt": "2026-08-04T13:47:07.980Z"
+ "updatedAt": "2026-08-04T13:47:39.798Z"
 }
