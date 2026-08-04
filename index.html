@@ -274,8 +274,12 @@ h1{font-size:22px;font-weight:500}
 #page-clienti .fv2-search-btn{font-weight:500}
 #page-clienti .fv2-row .fv2-field:not(.fv2-search-field){align-items:center}
 #page-clienti .fv2-row .fv2-field:not(.fv2-search-field) .fv2-label{text-align:center}
-#clienti-table td{font-weight:300;padding-left:5px;padding-right:5px}
-#clienti-table th{font-weight:500;padding-left:5px;padding-right:5px}
+#clienti-table td{font-weight:300;padding-left:12px;padding-right:12px}
+#clienti-table th{font-weight:500;padding-left:12px;padding-right:12px}
+#clienti-table td[data-label="Fine"]{padding-right:4px}
+#clienti-table td[data-label="Avanzamento"]{padding-left:4px}
+#clienti-table th[onclick*="FINE PERCORSO"]{padding-right:4px}
+#clienti-table th[onclick*="_PROG"]{padding-left:4px}
 .icon-btn.primary.active{background:var(--accent);border-color:var(--accent)}
 .badge{display:inline-block;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:500;white-space:nowrap}
 .b-inpercorso{background:var(--tag-b-inpercorso-bg,#e1f5ee);color:var(--tag-b-inpercorso-fg,#085041)}
