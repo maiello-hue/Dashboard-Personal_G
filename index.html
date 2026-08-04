@@ -1587,7 +1587,7 @@ function getIncassiLog(){
   try{ _incassiLogCache=JSON.parse(localStorage.getItem(LS_INCASSI_LOG))||[]; }catch(e){ _incassiLogCache=[]; }
   return _incassiLogCache;
 }
-function saveIncassiLog(log){ _incassiLogCache=log; try{ localStorage.setItem(LS_INCASSI_LOG,JSON.stringify(log)); }catch(e){} }
+function saveIncassiLog(log){ _incassiLogCache=log; try{ localStorage.setItem(LS_INCASSI_LOG,JSON.stringify(log)); }catch(e){ alert('Impossibile salvare: memoria del browser piena o non disponibile.'); } }
 function registraIncassoLog(cliente,importo,dataIt,tipo){
   if(!cliente||!dataIt||!(euro(importo)>0)) return;
   const log=getIncassiLog();
@@ -2532,7 +2532,7 @@ const debouncedBuildCheckPage=debounce(()=>buildCheckPage(),220);
 const REN_KEY='global_rinnovi';
 const REN_STATI={da:['Da contattare','rs-da'],con:['Contattata','rs-con'],rin:['Rinnovata','rs-rin'],no:['Non rinnova','rs-no']};
 function renAll(){try{return JSON.parse(localStorage.getItem(REN_KEY)||'{}');}catch(e){return {};}}
-function renSave(a){try{localStorage.setItem(REN_KEY,JSON.stringify(a));}catch(e){}}
+function renSave(a){try{localStorage.setItem(REN_KEY,JSON.stringify(a));}catch(e){alert('Impossibile salvare: memoria del browser piena o non disponibile.');}}
 function renSet(name,field,val){const a=renAll();a[name]=a[name]||{};a[name][field]=val;renSave(a);scheduleGithubSync();if(field==='st')render();}
 
 /* ---------- badge colorati ---------- */
@@ -3085,16 +3085,51 @@ const METODO_COLORS={'HeyLight':'#d23f3f','PagoDIL':'#e0b400','Scalapay':'#b57ed
 let fonteExpanded=new Set();
 let fonteMonthExpanded=new Set();
 let compensiExpanded=new Set();
+/* ---------- lettura sicura di dati locali "secondari" (non sincronizzati su
+   GitHub: correzioni manuali, rate segnate come pagate/incassate, ecc.) ----------
+   A differenza di clienti/rimborsi (vedi initData/DATA_LOAD_ERROR più sopra),
+   qui non c'è un file remoto da cui recuperare in automatico: se uno di questi
+   JSON in localStorage si corrompe, il dato è perso per davvero. Prima veniva
+   ignorato in silenzio (si ripartiva da vuoto senza che nessuno se ne accorgesse);
+   ora un JSON.parse fallito genera un avviso visibile, mostrato una sola volta
+   per ciascuna chiave anche se la funzione viene richiamata più volte. */
+const _warnedCorruptKeys=new Set();
+function safeJsonParse(raw,key,label){
+  if(!raw) return null; /* niente salvato: stato normale, non è un errore */
+  try{ return JSON.parse(raw); }
+  catch(e){
+    if(!_warnedCorruptKeys.has(key)){ _warnedCorruptKeys.add(key); warnLocalOverrideCorrupted(label); }
+    return null;
+  }
+}
+let _overrideCorruptLabels=[];
+function warnLocalOverrideCorrupted(label){
+  if(!_overrideCorruptLabels.includes(label)) _overrideCorruptLabels.push(label);
+  const msg='<b>Attenzione:</b> '+esc(_overrideCorruptLabels.join(', '))+' salvate su questo dispositivo non si sono caricate correttamente e sono state azzerate (non sincronizzate su GitHub, quindi non recuperabili in automatico). Puoi reinserirle quando serve. '
+    +'<button onclick="hideOverrideCorruptBanner()" style="margin-left:10px;padding:4px 10px;border-radius:6px;border:1px solid #fff;background:transparent;color:#fff;cursor:pointer">Ho capito</button>';
+  let el=document.getElementById('override-corrupt-banner');
+  if(el){ el.innerHTML=msg; return; }
+  el=document.createElement('div');
+  el.id='override-corrupt-banner';
+  el.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99997;background:#7a5a10;color:#fff;padding:12px 20px;font-family:Inter,sans-serif;font-size:13px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.3)';
+  el.innerHTML=msg;
+  document.body.prepend(el);
+  document.body.style.paddingTop=(parseInt(document.body.style.paddingTop||'0',10)+50)+'px';
+}
+function hideOverrideCorruptBanner(){
+  const el=document.getElementById('override-corrupt-banner');
+  if(el){ document.body.style.paddingTop=Math.max(0,(parseInt(document.body.style.paddingTop||'0',10)-50))+'px'; el.remove(); }
+  _overrideCorruptLabels=[];
+}
+
 const COMP_RATES={tutor:{base:15,tierAt:null,tierRate:null},trainer:{base:17,tierAt:101,tierRate:24},nutri:{base:12,tierAt:101,tierRate:20}};
 const LS_COMP_OVERRIDES='comp_overrides_v1';
 let COMP_OVERRIDES={tutor:{},trainer:{},nutri:{}};
 function loadCompOverrides(){
-  try{
-    const saved=JSON.parse(localStorage.getItem(LS_COMP_OVERRIDES));
-    if(saved&&typeof saved==='object'){
-      ['tutor','trainer','nutri'].forEach(k=>{ if(saved[k]) COMP_OVERRIDES[k]=saved[k]; });
-    }
-  }catch(e){}
+  const saved=safeJsonParse(localStorage.getItem(LS_COMP_OVERRIDES),LS_COMP_OVERRIDES,'le correzioni manuali ai compensi');
+  if(saved&&typeof saved==='object'){
+    ['tutor','trainer','nutri'].forEach(k=>{ if(saved[k]) COMP_OVERRIDES[k]=saved[k]; });
+  }
 }
 function saveCompOverrides(){ try{ localStorage.setItem(LS_COMP_OVERRIDES,JSON.stringify(COMP_OVERRIDES)); }catch(e){} }
 function setCompOverride(role,name,value){
@@ -3213,10 +3248,8 @@ let provvigioniExpanded=new Set();
 const LS_STORNO_INC='storno_incassi_v1';
 let STORNO_INC={};
 function loadStornoInc(){
-  try{
-    const saved=JSON.parse(localStorage.getItem(LS_STORNO_INC));
-    if(saved&&typeof saved==='object') STORNO_INC=saved;
-  }catch(e){}
+  const saved=safeJsonParse(localStorage.getItem(LS_STORNO_INC),LS_STORNO_INC,'gli storni sugli incassi inseriti manualmente');
+  if(saved&&typeof saved==='object') STORNO_INC=saved;
 }
 function saveStornoInc(){ try{ localStorage.setItem(LS_STORNO_INC,JSON.stringify(STORNO_INC)); }catch(e){} }
 function stornoIncKey(r){ return (r['CLIENTE']||'')+'|'+(r['DATA INCASSO']||''); }
@@ -3235,10 +3268,8 @@ function setStornoIncasso(cliente,dataIncasso,value,key){
 const LS_PROV_OVERRIDES='prov_overrides_v1';
 let PROV_OVERRIDES={};
 function loadProvOverrides(){
-  try{
-    const saved=JSON.parse(localStorage.getItem(LS_PROV_OVERRIDES));
-    if(saved&&typeof saved==='object') PROV_OVERRIDES=saved;
-  }catch(e){}
+  const saved=safeJsonParse(localStorage.getItem(LS_PROV_OVERRIDES),LS_PROV_OVERRIDES,'le correzioni manuali alle provvigioni');
+  if(saved&&typeof saved==='object') PROV_OVERRIDES=saved;
 }
 function saveProvOverrides(){ try{ localStorage.setItem(LS_PROV_OVERRIDES,JSON.stringify(PROV_OVERRIDES)); }catch(e){} }
 function setProvOverride(cliente,value){
@@ -4613,12 +4644,12 @@ function tranceInstsOf(r){
   return out;
 }
 const TRANCE_KEY='global_trance_pagate';
-function trancePagate(){try{return JSON.parse(localStorage.getItem(TRANCE_KEY)||'{}');}catch(e){return {};}}
+function trancePagate(){return safeJsonParse(localStorage.getItem(TRANCE_KEY),TRANCE_KEY,'le rate segnate come incassate')||{};}
 function tranceKey(it){return it.r['CLIENTE']+'|'+it.date.toISOString().slice(0,10)+'|'+it.i;}
 function tranceToggle(k){
   const a=trancePagate();
   a[k]?delete a[k]:a[k]=1;
-  try{localStorage.setItem(TRANCE_KEY,JSON.stringify(a));}catch(e){}
+  try{localStorage.setItem(TRANCE_KEY,JSON.stringify(a));}catch(e){alert('Impossibile salvare: memoria del browser piena o non disponibile.');}
   scheduleGithubSync();
   render();
 }
@@ -5029,11 +5060,11 @@ function instsOf(r){
   return out;
 }
 const RIMB_KEY='global_rate_pagate';
-function ratePagate(){try{return JSON.parse(localStorage.getItem(RIMB_KEY)||'{}');}catch(e){return {};}}
+function ratePagate(){return safeJsonParse(localStorage.getItem(RIMB_KEY),RIMB_KEY,'le rate dei rimborsi segnate come pagate')||{};}
 function rataToggle(k){
   const a=ratePagate();
   a[k]?delete a[k]:a[k]=1;
-  try{localStorage.setItem(RIMB_KEY,JSON.stringify(a));}catch(e){}
+  try{localStorage.setItem(RIMB_KEY,JSON.stringify(a));}catch(e){alert('Impossibile salvare: memoria del browser piena o non disponibile.');}
   scheduleGithubSync();
   renderRimborsi();
 }
