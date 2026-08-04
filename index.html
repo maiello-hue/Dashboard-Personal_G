@@ -1239,6 +1239,13 @@ h3 .ico,.sub .ico{color:var(--muted)}
           <input type="file" id="import-nuovi-file" accept=".json" style="display:none" onchange="importaNuoviClienti(event)">
         </div>
         <div class="sub" style="margin-top:8px">"Aggiungi clienti da file" unisce nuove clienti a quelle già presenti (senza sostituire nulla); "Importa backup" invece sostituisce integralmente i dati attuali.</div>
+        <div class="sub" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+          Oltre a questo, mentre GitHub è connesso viene salvata automaticamente una copia dei dati una volta al giorno, separata da quella "viva": resta lì anche se qualcosa va storto dopo, per gli ultimi 30 giorni.
+        </div>
+        <div class="editbar-actions" style="margin-top:8px">
+          <button class="btn ghost" id="backup-now-btn" onclick="creaBackupOra()"><span class="ico"><svg viewBox="0 0 16 16"><path d="M3 3h7.5l2.5 2.5V13H3z"/><path d="M5 3v3h5V3"/><path d="M5.3 9H10.7V13H5.3z"/></svg></span>Crea backup ora</button>
+        </div>
+        <div class="sub" id="backup-status" style="margin-top:6px"></div>
       </div>
 
       <div class="card" style="max-width:640px;margin-top:16px">
@@ -1514,7 +1521,7 @@ function showPage(p){
   document.getElementById('page-compensi').style.display=(p==='compensi')?'block':'none';
   document.getElementById('page-check').style.display=(p==='check')?'block':'none';
   document.getElementById('page-impostazioni').style.display=(p==='impostazioni')?'block':'none';
-  if(p==='impostazioni') fillGhForm();
+  if(p==='impostazioni'){ fillGhForm(); refreshBackupStatus(); }
   const MOBILE_PRIMARY=['dashboard','clienti','analisi','compensi'];
   const MOBILE_MORE=['incassi','rinnovi','rimborsi','check','impostazioni'];
   MOBILE_PRIMARY.forEach(x=>{ const el=document.getElementById('mnav-'+x); if(el) el.classList.toggle('on',x===p); });
@@ -1874,6 +1881,95 @@ window.addEventListener('beforeunload',()=>{
     pushPendingNow();
   }
 });
+
+/* ============================================================
+   Backup automatico — oltre al file "vivo" (dashboard_data.json,
+   sempre sovrascritto con l'ultima versione), una volta al giorno
+   salviamo anche un'istantanea a parte in data/backups/, che nessun
+   salvataggio successivo tocca più. Serve come rete di sicurezza
+   indipendente da tutto il resto: anche se un bug, un conflitto
+   risolto per errore o un localStorage corrotto danneggiassero il
+   file vivo, resta un punto da cui tornare indietro. Le istantanee
+   più vecchie di BACKUP_RETENTION_DAYS vengono rimosse in automatico
+   per non far crescere la repository all'infinito. Un backup fallito
+   non deve mai interrompere il normale utilizzo della dashboard. */
+const BACKUP_DIR='data/backups/';
+const BACKUP_RETENTION_DAYS=30;
+const LS_AUTO_BACKUP_DATE='auto_backup_last_date_v1';
+function todayIso(){ return new Date().toISOString().slice(0,10); }
+function lastAutoBackupDate(){ try{ return localStorage.getItem(LS_AUTO_BACKUP_DATE); }catch(e){ return null; } }
+async function ghPutBackupFile(obj,dateStr){
+  const s=ghSettings();
+  const path=BACKUP_DIR+'backup_'+dateStr+'.json';
+  let sha=null;
+  try{
+    const res=await fetch('https://api.github.com/repos/'+encodeURIComponent(s.owner)+'/'+encodeURIComponent(s.repo)+'/contents/'+path+'?ref='+encodeURIComponent(s.branch||'main'),{headers:ghHeaders()});
+    if(res.ok){ const j=await res.json(); sha=j.sha; }
+  }catch(e){}
+  const body={message:'Backup automatico '+dateStr,content:b64encode(JSON.stringify(obj,null,1)),branch:s.branch||'main'};
+  if(sha) body.sha=sha;
+  const res=await fetch('https://api.github.com/repos/'+encodeURIComponent(s.owner)+'/'+encodeURIComponent(s.repo)+'/contents/'+path,{
+    method:'PUT',headers:{...ghHeaders(),'Content-Type':'application/json'},body:JSON.stringify(body)
+  });
+  if(!res.ok){ const t=await res.text(); throw new Error('backup fallito ('+res.status+'): '+t.slice(0,180)); }
+}
+async function cleanupOldBackups(){
+  const s=ghSettings();
+  try{
+    const res=await fetch('https://api.github.com/repos/'+encodeURIComponent(s.owner)+'/'+encodeURIComponent(s.repo)+'/contents/'+BACKUP_DIR+'?ref='+encodeURIComponent(s.branch||'main'),{headers:ghHeaders()});
+    if(!res.ok) return; /* cartella non ancora creata al primo giro, o errore: niente da pulire */
+    const files=await res.json();
+    if(!Array.isArray(files)) return;
+    const cutoff=new Date(); cutoff.setDate(cutoff.getDate()-BACKUP_RETENTION_DAYS);
+    for(const f of files){
+      const m=f.name.match(/^backup_(\d{4}-\d{2}-\d{2})\.json$/);
+      if(!m) continue;
+      const d=new Date(m[1]+'T00:00:00');
+      if(d<cutoff){
+        try{
+          await fetch('https://api.github.com/repos/'+encodeURIComponent(s.owner)+'/'+encodeURIComponent(s.repo)+'/contents/'+f.path,{
+            method:'DELETE',headers:{...ghHeaders(),'Content-Type':'application/json'},
+            body:JSON.stringify({message:'Rimozione backup automatico scaduto ('+m[1]+')',sha:f.sha,branch:s.branch||'main'})
+          });
+        }catch(e){ /* una cancellazione fallita non blocca le altre: si ritenterà al prossimo giro */ }
+      }
+    }
+  }catch(e){}
+}
+/* Chiamata a ogni avvio e a ogni giro del controllo periodico: esce subito se il
+   backup di oggi è già stato fatto (da questo o da un altro dispositivo, tramite
+   il controllo diretto su GitHub più sotto), quindi il costo di chiamarla spesso
+   è minimo. force=true (bottone manuale in Impostazioni) salta il controllo data. */
+async function maybeCreateAutoBackup(force){
+  if(!ghConfigured()) return false;
+  if(DATA_LOAD_ERROR) return false; /* non salviamo un'istantanea di dati sospetti */
+  const today=todayIso();
+  if(!force && lastAutoBackupDate()===today) return false;
+  try{
+    const payload=collectAllData();
+    await ghPutBackupFile(payload,today);
+    try{ localStorage.setItem(LS_AUTO_BACKUP_DATE,today); }catch(e){}
+    cleanupOldBackups();
+    refreshBackupStatus();
+    return true;
+  }catch(e){
+    return false;
+  }
+}
+async function creaBackupOra(){
+  const btn=document.getElementById('backup-now-btn');
+  if(btn){ btn.disabled=true; btn.textContent='Backup in corso…'; }
+  const ok=await maybeCreateAutoBackup(true);
+  if(btn){ btn.disabled=false; btn.innerHTML=ic('save')+'Crea backup ora'; }
+  if(!ok) alert('Backup non riuscito: controlla la connessione o la configurazione GitHub.');
+}
+function refreshBackupStatus(){
+  const el=document.getElementById('backup-status');
+  if(!el) return;
+  if(!ghConfigured()){ el.textContent='Backup automatico disponibile solo con GitHub connesso.'; return; }
+  const last=lastAutoBackupDate();
+  el.textContent=last?('Ultimo backup automatico: '+fdate(new Date(last+'T00:00:00'))+' · conservati '+BACKUP_RETENTION_DAYS+' giorni.'):'Nessun backup automatico ancora effettuato su questo dispositivo.';
+}
 
 /* ---------- pagina impostazioni GitHub ---------- */
 function fillGhForm(){
@@ -5166,9 +5262,9 @@ buildSettingsPanel();
 const VALID_PAGES=['dashboard','clienti','incassi','analisi','rinnovi','rimborsi','compensi','check','impostazioni'];
 let savedPage=null; try{savedPage=localStorage.getItem(LAST_PAGE_KEY);}catch(e){}
 showPage(VALID_PAGES.includes(savedPage)?savedPage:'dashboard');
-if(ghConfigured()){ setGhStatus(ic('sync')+'Connessione a GitHub…'); syncFromGithub(true); }
+if(ghConfigured()){ setGhStatus(ic('sync')+'Connessione a GitHub…'); syncFromGithub(true).then(()=>maybeCreateAutoBackup()); }
 else { setGhStatus('Non connesso a GitHub — dati solo su questo dispositivo'); }
-setInterval(()=>syncFromGithub(false), 30*1000);
+setInterval(()=>syncFromGithub(false).then(()=>maybeCreateAutoBackup()), 30*1000);
 
 /* renderTable() ora costruisce solo la versione (tabella desktop o schede
    mobile) effettivamente visibile in base alla larghezza dello schermo: se si
