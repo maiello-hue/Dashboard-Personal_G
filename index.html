@@ -495,6 +495,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
 #check-mese-select{background:#18181a;color:#fff;border:none;border-radius:999px;padding:4px 12px;font-size:11px;font-weight:600;cursor:pointer}
 #page-check .card h3{font-weight:300;font-size:17px}
 #page-check #check-search{font-weight:300}
+#page-impostazioni .card h3{font-weight:300;font-size:17px;justify-content:flex-start}
 #page-incassi .card h3{font-weight:300;font-size:17px}
 .rata-item{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
 .rata-item:last-child{border:none}
@@ -1208,7 +1209,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
 
     <div id="page-impostazioni" style="display:none">
       <div class="card" style="max-width:640px">
-        <h3><span class="ico"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.1"/><path d="M13.3 9.2a5 5 0 0 0 0-2.4l1.3-1-1.2-2.1-1.6.5a5 5 0 0 0-2-1.2L9.5 1.5H6.5l-.3 1.5a5 5 0 0 0-2 1.2l-1.6-.5-1.2 2.1 1.3 1a5 5 0 0 0 0 2.4l-1.3 1 1.2 2.1 1.6-.5a5 5 0 0 0 2 1.2l.3 1.5h3l.3-1.5a5 5 0 0 0 2-1.2l1.6.5 1.2-2.1z"/></svg></span>Sincronizzazione con GitHub</h3>
+        <h3><span class="ico" style="color:var(--accent)"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.1"/><path d="M13.3 9.2a5 5 0 0 0 0-2.4l1.3-1-1.2-2.1-1.6.5a5 5 0 0 0-2-1.2L9.5 1.5H6.5l-.3 1.5a5 5 0 0 0-2 1.2l-1.6-.5-1.2 2.1 1.3 1a5 5 0 0 0 0 2.4l-1.3 1 1.2 2.1 1.6-.5a5 5 0 0 0 2 1.2l.3 1.5h3l.3-1.5a5 5 0 0 0 2-1.2l1.6.5 1.2-2.1z"/></svg></span>Sincronizzazione con GitHub</h3>
         <div class="sub" style="margin-bottom:10px">
           Collega questo dispositivo a una repository GitHub privata per avere gli stessi dati (clienti e rimborsi) su tutti i dispositivi. Il token resta salvato solo nel browser di questo dispositivo.
         </div>
@@ -1239,7 +1240,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
       </div>
 
       <div class="card" style="max-width:640px;margin-top:16px">
-        <h3><span class="ico"><i class="fa-solid fa-bullseye"></i></span>Obiettivi mensili</h3>
+        <h3><span class="ico" style="color:var(--accent)"><i class="fa-solid fa-bullseye"></i></span>Obiettivi mensili</h3>
         <div class="sub" style="margin-bottom:10px">Imposta un obiettivo ricorrente ogni mese: viene confrontato con il mese scelto in Dashboard/Incassi. Lascia a 0 per nascondere la barra di progresso corrispondente.</div>
         <div class="editbar">
           <label>Obiettivo incassi mensili (€)<input type="number" id="ob-incassi" min="0" step="50"></label>
@@ -1251,7 +1252,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
       </div>
 
       <div class="card" style="max-width:640px;margin-top:16px">
-        <h3><span class="ico"><svg viewBox="0 0 16 16"><path d="M8 2.5v7.5M5 7l3 3 3-3"/><path d="M3 13h10"/></svg></span>Esporta elenco clienti</h3>
+        <h3><span class="ico" style="color:var(--accent)"><svg viewBox="0 0 16 16"><path d="M8 2.5v7.5M5 7l3 3 3-3"/><path d="M3 13h10"/></svg></span>Esporta elenco clienti</h3>
         <div class="sub" style="margin-bottom:10px">Esporta l'elenco completo delle clienti, con tutti i dati associati, nel formato che preferisci.</div>
         <div class="editbar-actions" style="flex-wrap:wrap">
           <button class="btn ghost" onclick="esportaClientiExcel()"><span class="ico"><svg viewBox="0 0 16 16"><path d="M8 2.5v7.5M5 7l3 3 3-3"/><path d="M3 13h10"/></svg></span>Esporta Excel</button>
