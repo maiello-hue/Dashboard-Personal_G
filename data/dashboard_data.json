@@ -18731,7 +18731,7 @@
   },
   {
    "CLIENTE": "Simona Mandolini",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "ABBANDONATO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "21/05/2026",
    "FINE PERCORSO": "21/05/2027",
@@ -18753,7 +18753,10 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "INSTAGRAM",
-   "_PRIMO_INIZIO": "21/05/2026"
+   "_PRIMO_INIZIO": "21/05/2026",
+   "N FATTURA": "",
+   "DATA ARCHIVIAZIONE": "04/08/2026",
+   "VENDITORE": ""
   },
   {
    "CLIENTE": "Sara Del Vecchio",
@@ -26054,5 +26057,5 @@
    "TIPO INCASSO": "Rinnovo"
   }
  ],
- "updatedAt": "2026-08-04T13:54:14.710Z"
+ "updatedAt": "2026-08-04T16:20:03.917Z"
 }
