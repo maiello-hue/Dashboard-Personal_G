@@ -4274,19 +4274,28 @@ function render(){
   const prevIncMese=r=>euro(r['INCASSO'])>0&&inMese(r,'DATA INCASSO',prevMese);
   const setInc=(id,f,label)=>{
     const rs=incLog.filter(r=>incMese(r)&&f(r));
+    /* Il conteggio mostrato ("N nuovi clienti" ecc.) esclude le righe che uno
+       storno ha azzerato del tutto (netIncasso 0): non è più un incasso vero e
+       proprio, quindi non deve più contare. Uno storno parziale invece lascia
+       la riga contata (resta un incasso reale, solo di importo minore) — solo
+       l'importo in euro si riduce, non il numero. La lista che si apre al clic
+       (KPI_LISTS) resta invariata: mostra comunque tutte le righe, storno
+       incluso, così restano visibili e modificabili anche quelle azzerate. */
+    const rsCount=rs.filter(r=>netIncasso(r)>0).length;
     const prevSum=incLog.filter(r=>prevIncMese(r)&&f(r)).reduce((s,r)=>s+netIncasso(r),0);
     const currSum=rs.reduce((s,r)=>s+netIncasso(r),0);
     document.getElementById(id).textContent=fmtEuro2(currSum);
-    document.getElementById(id+'-d').innerHTML=rs.length+' '+label+trendHtml(currSum,prevSum,false);
+    document.getElementById(id+'-d').innerHTML=rsCount+' '+label+trendHtml(currSum,prevSum,false);
   };
   setInc('i-rin',isRinT,'clienti con tag rinnovo');
   setInc('i-ric',isRicT,'clienti con tag ricorrente');
   setInc('i-alt',isAltT,'nuovi clienti');
   const incTotRows=incLog.filter(incMese);
+  const incTotCount=incTotRows.filter(r=>netIncasso(r)>0).length;
   const incTotSum=incTotRows.reduce((s,r)=>s+netIncasso(r),0);
   const prevIncTotSum=incLog.filter(prevIncMese).reduce((s,r)=>s+netIncasso(r),0);
   document.getElementById('i-tot').textContent=fmtEuro2(incTotSum);
-  document.getElementById('i-tot-d').innerHTML=incTotRows.length+' incassi registrati'+trendHtml(incTotSum,prevIncTotSum,false);
+  document.getElementById('i-tot-d').innerHTML=incTotCount+' incassi registrati'+trendHtml(incTotSum,prevIncTotSum,false);
   KPI_LISTS.incRin=incLog.filter(r=>incMese(r)&&isRinT(r));
   KPI_LISTS.incRic=incLog.filter(r=>incMese(r)&&isRicT(r));
   KPI_LISTS.incAlt=incLog.filter(r=>incMese(r)&&isAltT(r));
