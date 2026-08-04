@@ -1128,11 +1128,11 @@ h3 .ico,.sub .ico{color:var(--muted)}
           <h3 style="margin:0">Riepilogo check</h3>
           <div class="sub" id="check-summary-tot" style="margin:0"></div>
         </div>
-        <div class="check-summary-bar"><div class="check-summary-seg" id="check-summary-seg-si" style="background:#1f9d63;width:0%"></div><div class="check-summary-seg" id="check-summary-seg-no" style="background:#d23f3f;width:0%"></div><div class="check-summary-seg" id="check-summary-seg-inserito" style="background:#8b8a83;width:0%"></div></div>
+        <div class="check-summary-bar"><div class="check-summary-seg" id="check-summary-seg-si" style="background:#1f9d63;width:0%"></div><div class="check-summary-seg" id="check-summary-seg-no" style="background:#d23f3f;width:0%"></div><div class="check-summary-seg" id="check-summary-seg-inserito" style="background:#c7c6bf;width:0%"></div></div>
         <div class="check-summary-legend">
           <span><i class="check-summary-dot" style="background:#1f9d63"></i>Risultato sì <b id="check-summary-si">–</b></span>
           <span><i class="check-summary-dot" style="background:#d23f3f"></i>Risultato no <b id="check-summary-no">–</b></span>
-          <span><i class="check-summary-dot" style="background:#8b8a83"></i>Check mancanti <b id="check-summary-inserito">–</b></span>
+          <span><i class="check-summary-dot" style="background:#c7c6bf"></i>Check mancanti <b id="check-summary-inserito">–</b></span>
           <span class="check-summary-escluse" id="check-summary-escluse-wrap" style="display:none"><b id="check-summary-escluse">–</b> escluse dal conteggio</span>
         </div>
       </div>
@@ -3083,12 +3083,18 @@ function buildCheckPage(){
   const isCurrentMonth=meseSel===mesekey(new Date());
   updateMeseWarn('mese-warn-check',meseSel);
   /* Riepilogo check del mese: non dipende dalla ricerca testuale (deve sempre
-     mostrare il quadro completo), ma esclude le clienti "nascoste dal
-     conteggio" per quel mese, esattamente come già fa buildPerfCollabTable. */
-  const summaryAllInPercorso=DATA.filter(r=>isInPercorso(r));
-  const summaryEscluse=summaryAllInPercorso.filter(r=>isCheckExcluded(r,meseSel));
+     mostrare il quadro completo), conta solo le clienti Premium (Gnocca esclusa
+     dal calcolo) ed esclude le clienti "nascoste dal conteggio" per quel mese,
+     esattamente come già fa buildPerfCollabTable. */
+  const summaryAllInPercorso=DATA.filter(r=>isInPercorso(r)&&!isGnocca(r));
   const summaryRows=summaryAllInPercorso.filter(r=>!isCheckExcluded(r,meseSel));
   const summaryTot=summaryRows.length;
+  /* "Escluse dal conteggio" mostra solo l'esclusione manuale (occhio barrato) di
+     QUESTO mese: essendo legata a CHECK_ESCLUSA_MESE===meseSel, si azzera da sola
+     a ogni nuovo mese senza bisogno di azzerarla a mano (stesso principio di
+     DATA CHECK/DATA INCASSO). Le clienti "nuove questo mese" restano escluse dal
+     conteggio del bar ma non vengono contate qui, perché non è una scelta manuale. */
+  const summaryEscluse=summaryAllInPercorso.filter(r=>(r['CHECK_ESCLUSA']||'').trim().toUpperCase()==='SI'&&r['CHECK_ESCLUSA_MESE']===meseSel);
   /* Tre voci in barra: "Check mancanti" = check non ancora inserito questo mese,
      Risultato sì/no = esito segnato tra chi il check l'ha già fatto. La parte non
      colorata della barra è chi ha il check fatto ma senza ancora un risultato
