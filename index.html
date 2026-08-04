@@ -90,14 +90,14 @@ h1{font-size:22px;font-weight:500}
 .dash-legend{display:flex;gap:16px;margin-top:10px;font-size:12px;color:var(--muted);flex-wrap:wrap}
 .dash-legend b{color:var(--text);font-weight:600}
 .dash-dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:5px;vertical-align:middle}
-.dash-alert{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-left:3px solid #a67f00;border-radius:0 12px 12px 0;padding:12px 16px;margin-bottom:16px;cursor:pointer;transition:filter .1s}
+.dash-alert{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-left:3px solid var(--text);border-radius:0 12px 12px 0;padding:12px 16px;margin-bottom:16px;cursor:pointer;transition:filter .1s}
 .dash-alert:hover{filter:brightness(.97)}
-.dash-alert-ico{color:#a67f00;font-size:16px;display:flex;flex-shrink:0}
+.dash-alert-ico{color:var(--accent);font-size:16px;display:flex;flex-shrink:0}
 .dash-alert-text{font-size:13px;color:var(--text)}
 .dash-alert-text b{font-weight:700}
 .dash-alert-sub{color:var(--muted2);margin-left:4px}
-.dash-alert-risk{border-left-color:#d23f3f}
-.dash-alert-risk .dash-alert-ico{color:#d23f3f}
+.dash-alert-risk{border-left-color:var(--text)}
+.dash-alert-risk .dash-alert-ico{color:var(--accent)}
 .trend-badge{display:inline-block;font-size:11px;font-weight:600;padding:2px 6px;border-radius:6px;white-space:nowrap;vertical-align:middle}
 .trend-good{background:#eaf7ef;color:#1f9d63}
 .trend-bad{background:#fbebeb;color:#d23f3f}
@@ -126,6 +126,10 @@ h1{font-size:22px;font-weight:500}
 .kpis-v2 .kpi-purple{border-left-color:#7c56d9}
 .kpis-v2 .kpi-azzurro{border-left-color:#0a8aa8}
 .kpis-v2 .kpi-yellow{border-left-color:#a67f00}
+#page-dashboard .kpis-v2 .kpi-green{border-left-color:var(--accent)}
+#page-dashboard .kpis-v2 .kpi-blue,#page-dashboard .kpis-v2 .kpi-orange,#page-dashboard .kpis-v2 .kpi-gray,#page-dashboard .kpis-v2 .kpi-red,#page-dashboard .kpis-v2 .kpi-purple{border-left-color:var(--text)}
+#page-dashboard .kpis-v2 .kpi-azzurro{border-left-color:var(--accent)}
+#page-dashboard .kpis-v2 .kpi-green .v,#page-dashboard .kpis-v2 .kpi-azzurro .v{color:var(--accent)}
 @media(max-width:760px){
   .dash-hero{padding:14px}
   .dash-hero-top .v{font-size:26px}
@@ -799,13 +803,13 @@ h3 .ico,.sub .ico{color:var(--muted)}
       </div>
 
       <div class="kpis kpis-v2">
-        <div class="kpi kpi-green" onclick="apriListaClienti('att')"><div class="kpi-ic" style="color:#1f9d63"><i class="fa-solid fa-circle-check"></i></div><div class="l">In percorso</div><div class="v" id="k-att">–</div><div class="d" id="k-att-d"></div></div>
-        <div class="kpi kpi-blue" onclick="apriListaClienti('cong')"><div class="kpi-ic" style="color:#2f7fd1"><i class="fa-solid fa-snowflake"></i></div><div class="l">Congelate</div><div class="v" id="k-cong">–</div><div class="d" id="k-cong-d"></div></div>
-        <div class="kpi kpi-orange" onclick="apriListaClienti('spar')"><div class="kpi-ic" style="color:#b5720f"><i class="fa-solid fa-ghost"></i></div><div class="l">Sparite</div><div class="v" id="k-spar">–</div><div class="d" id="k-spar-d"></div></div>
-        <div class="kpi kpi-gray" onclick="apriListaClienti('mai')"><div class="kpi-ic" style="color:#37424f"><i class="fa-solid fa-hourglass-start"></i></div><div class="l">Mai iniziato</div><div class="v" id="k-mai">–</div><div class="d" id="k-mai-d"></div></div>
-        <div class="kpi kpi-azzurro" onclick="apriListaClienti('nuove')"><div class="kpi-ic" style="color:#0a8aa8"><i class="fa-solid fa-user-plus"></i></div><div class="l">Nuove</div><div class="v" id="k-nuove">–</div><div class="d" id="k-nuove-d"></div></div>
-        <div class="kpi kpi-red" onclick="apriListaClienti('abb')"><div class="kpi-ic" style="color:#d23f3f"><i class="fa-solid fa-user-xmark"></i></div><div class="l" id="k-abb-l">Abbandonate</div><div class="v" id="k-abb">–</div><div class="d" id="k-abb-d"></div></div>
-        <div class="kpi kpi-purple" onclick="apriListaClienti('nonrin')"><div class="kpi-ic" style="color:#7c56d9"><i class="fa-solid fa-calendar-xmark"></i></div><div class="l" id="k-nonrin-l">Non rinnovo</div><div class="v" id="k-nonrin">–</div><div class="d" id="k-nonrin-d"></div></div>
+        <div class="kpi kpi-green" onclick="apriListaClienti('att')"><div class="kpi-ic" style="color:var(--accent)"><i class="fa-solid fa-circle-check"></i></div><div class="l">In percorso</div><div class="v" id="k-att">–</div><div class="d" id="k-att-d"></div></div>
+        <div class="kpi kpi-blue" onclick="apriListaClienti('cong')"><div class="kpi-ic" style="color:var(--text)"><i class="fa-solid fa-snowflake"></i></div><div class="l">Congelate</div><div class="v" id="k-cong">–</div><div class="d" id="k-cong-d"></div></div>
+        <div class="kpi kpi-orange" onclick="apriListaClienti('spar')"><div class="kpi-ic" style="color:var(--text)"><i class="fa-solid fa-ghost"></i></div><div class="l">Sparite</div><div class="v" id="k-spar">–</div><div class="d" id="k-spar-d"></div></div>
+        <div class="kpi kpi-gray" onclick="apriListaClienti('mai')"><div class="kpi-ic" style="color:var(--text)"><i class="fa-solid fa-hourglass-start"></i></div><div class="l">Mai iniziato</div><div class="v" id="k-mai">–</div><div class="d" id="k-mai-d"></div></div>
+        <div class="kpi kpi-azzurro" onclick="apriListaClienti('nuove')"><div class="kpi-ic" style="color:var(--accent)"><i class="fa-solid fa-user-plus"></i></div><div class="l">Nuove</div><div class="v" id="k-nuove">–</div><div class="d" id="k-nuove-d"></div></div>
+        <div class="kpi kpi-red" onclick="apriListaClienti('abb')"><div class="kpi-ic" style="color:var(--text)"><i class="fa-solid fa-user-xmark"></i></div><div class="l" id="k-abb-l">Abbandonate</div><div class="v" id="k-abb">–</div><div class="d" id="k-abb-d"></div></div>
+        <div class="kpi kpi-purple" onclick="apriListaClienti('nonrin')"><div class="kpi-ic" style="color:var(--text)"><i class="fa-solid fa-calendar-xmark"></i></div><div class="l" id="k-nonrin-l">Non rinnovo</div><div class="v" id="k-nonrin">–</div><div class="d" id="k-nonrin-d"></div></div>
       </div>
     </div>
 
