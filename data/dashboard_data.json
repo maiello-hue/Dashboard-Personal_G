@@ -21876,7 +21876,7 @@
   },
   {
    "CLIENTE": "Eleonora Del Conte",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "CONGELATO",
    "PERCORSO": "PROMO ESTATE",
    "INIZIO PERCORSO": "22/06/2026",
    "FINE PERCORSO": "22/09/2026",
@@ -21897,7 +21897,10 @@
    "CONTRATTO": "",
    "CHECK": "",
    "RISULTATO": "",
-   "_PRIMO_INIZIO": "22/06/2026"
+   "_PRIMO_INIZIO": "22/06/2026",
+   "N FATTURA": "",
+   "VENDITORE": "",
+   "FONTE": ""
   },
   {
    "CLIENTE": "Alice Risaliti",
@@ -25929,5 +25932,5 @@
    "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
- "updatedAt": "2026-08-04T13:28:28.977Z"
+ "updatedAt": "2026-08-04T13:38:54.250Z"
 }
