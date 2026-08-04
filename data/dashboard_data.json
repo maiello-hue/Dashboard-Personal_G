@@ -21852,7 +21852,7 @@
   },
   {
    "CLIENTE": "Valentina Vetrugno",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "CONGELATO",
    "PERCORSO": "6 mesi + 6 Gnocca",
    "INIZIO PERCORSO": "22/06/2026",
    "FINE PERCORSO": "22/06/2027",
@@ -21874,7 +21874,9 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "ADV",
-   "_PRIMO_INIZIO": "22/06/2026"
+   "_PRIMO_INIZIO": "22/06/2026",
+   "N FATTURA": "",
+   "VENDITORE": ""
   },
   {
    "CLIENTE": "Veronika Borsetto",
@@ -24688,6 +24690,26 @@
    "VENDITORE": "",
    "FONTE": "",
    "_PRIMO_INIZIO": "01/08/2026"
+  },
+  {
+   "CLIENTE": "Francesca Tognarelli",
+   "N FATTURA": "",
+   "STATO CLIENTE": "IN PERCORSO",
+   "PERCORSO": "6 mesi + 6 Gnocca",
+   "INIZIO PERCORSO": "01/08/2026",
+   "FINE PERCORSO": "01/08/2026",
+   "IMPORTO": "1850,82",
+   "METODO PAGAMENTO": "HeyLight",
+   "STATO PAGAMENTO": "SALDATO",
+   "TIPO INCASSO": "Nuovo Cliente",
+   "INCASSO": "1850,82",
+   "DATA INCASSO": "04/08/2026",
+   "TUTOR": "Margherita",
+   "TRAINER": "Niccolò",
+   "NUTRI": "Vanessa",
+   "VENDITORE": "Personal_G",
+   "FONTE": "",
+   "_PRIMO_INIZIO": "01/08/2026"
   }
  ],
  "rimborsi": [
@@ -25984,7 +26006,13 @@
    "INCASSO": "588",
    "DATA INCASSO": "01/08/2026",
    "TIPO INCASSO": "Nuovo Cliente"
+  },
+  {
+   "CLIENTE": "Francesca Tognarelli",
+   "INCASSO": "1850,82",
+   "DATA INCASSO": "04/08/2026",
+   "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
- "updatedAt": "2026-08-04T13:48:12.998Z"
+ "updatedAt": "2026-08-04T13:50:56.968Z"
 }
