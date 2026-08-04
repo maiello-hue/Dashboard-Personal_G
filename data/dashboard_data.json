@@ -2101,7 +2101,9 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "ADV",
-   "_PRIMO_INIZIO": "17/09/2025"
+   "_PRIMO_INIZIO": "17/09/2025",
+   "CHECK_ESCLUSA": "SI",
+   "CHECK_ESCLUSA_MESE": "2026-08"
   },
   {
    "CLIENTE": "Lisa Busia",
@@ -26057,5 +26059,5 @@
    "TIPO INCASSO": "Rinnovo"
   }
  ],
- "updatedAt": "2026-08-04T16:20:03.917Z"
+ "updatedAt": "2026-08-04T19:06:12.848Z"
 }
