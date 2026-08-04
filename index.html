@@ -971,26 +971,9 @@ h3 .ico,.sub .ico{color:var(--muted)}
         <div class="card span12">
           <h3><span><i class="fa-solid fa-circle-info" style="color:#e0245e"></i>Tasso di performance per collaboratore</span></h3>
           <div class="sub" style="margin-bottom:10px">Calcolato solo sulle clienti con stato "In percorso". Per ciascun collaboratore: clienti assegnate, quante hanno un check inserito, quante hanno un miglioramento (Risultato = Sì) e la percentuale di miglioramento sul totale delle clienti. Divisa per categoria, i venditori non sono inclusi.</div>
-        </div>
-        <div class="card span12">
-          <h3><span><i class="fa-solid fa-user" style="color:#e0245e"></i>Tutor</span></h3>
           <table class="rate-table">
             <thead><tr><th>Collaboratore</th><th>Clienti</th><th>Check inserito</th><th>Miglioramenti</th><th>% Miglioramento (sul totale)</th></tr></thead>
-            <tbody id="perf-tutor-table-body"></tbody>
-          </table>
-        </div>
-        <div class="card span12">
-          <h3><span><i class="fa-solid fa-dumbbell" style="color:#e0245e"></i>Trainer</span></h3>
-          <table class="rate-table">
-            <thead><tr><th>Collaboratore</th><th>Clienti</th><th>Check inserito</th><th>Miglioramenti</th><th>% Miglioramento (sul totale)</th></tr></thead>
-            <tbody id="perf-trainer-table-body"></tbody>
-          </table>
-        </div>
-        <div class="card span12">
-          <h3><span><i class="fa-solid fa-apple-whole" style="color:#e0245e"></i>Nutrizioniste</span></h3>
-          <table class="rate-table">
-            <thead><tr><th>Collaboratore</th><th>Clienti</th><th>Check inserito</th><th>Miglioramenti</th><th>% Miglioramento (sul totale)</th></tr></thead>
-            <tbody id="perf-nutri-table-body"></tbody>
+            <tbody id="perf-collab-table-body"></tbody>
           </table>
         </div>
       </div>
@@ -3234,7 +3217,8 @@ function buildPerfCollabTable(){
   };
   const numCell=n=>`<td style="text-align:center">${n}</td>`;
   const collabBadgeFn={TUTOR:tutBadge,TRAINER:trainBadge,NUTRI:nutriBadge};
-  const elId={TUTOR:'perf-tutor-table-body',TRAINER:'perf-trainer-table-body',NUTRI:'perf-nutri-table-body'};
+  const PERF_ROLE_LABEL={TUTOR:'Tutor',TRAINER:'Trainer',NUTRI:'Nutrizionista'};
+  const PERF_ROLE_ICON={TUTOR:'fa-user',TRAINER:'fa-dumbbell',NUTRI:'fa-apple-whole'};
   const normName=s=>(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');
   const PERF_TUTOR_EXCLUDE=new Set(['duccio','personalg','martina']);
   /* Eccezioni manuali: per questi collaboratori, in un mese specifico, la % di
@@ -3279,18 +3263,22 @@ function buildPerfCollabTable(){
       allRows.push({field,name,tot:assigned.length,checkInserito,checkRate,miglioramenti,migRate,hidePct,excludeTop3});
     });
   });
-  ['TUTOR','TRAINER','NUTRI'].forEach(field=>{
-    const el=document.getElementById(elId[field]);
-    if(!el) return;
-    const rows=allRows.filter(r=>r.field===field).sort((a,b)=>a.name.localeCompare(b.name,'it'));
-    el.innerHTML=rows.map(r=>`<tr class="rate-tr">
-        <td><div class="rate-row-label">${collabAvatarRow(field,r.name)}</div></td>
-        ${numCell(r.tot)}
-        ${numCell(r.checkInserito)}
-        ${numCell(r.miglioramenti)}
-        ${r.hidePct?'<td class="rate-cell"><div class="rate-cell-inner"><span class="rate-pill" style="background:var(--card2);color:var(--muted)">—</span></div></td>':pctCell(r.migRate)}
-      </tr>`).join('')||'<tr><td colspan="5" class="sub">Nessun collaboratore con clienti assegnate.</td></tr>';
-  });
+  const perfCollabEl=document.getElementById('perf-collab-table-body');
+  if(perfCollabEl){
+    let perfCollabHtml='';
+    ['TUTOR','TRAINER','NUTRI'].forEach(field=>{
+      const rows=allRows.filter(r=>r.field===field).sort((a,b)=>a.name.localeCompare(b.name,'it'));
+      if(!rows.length) return;
+      perfCollabHtml+=`<tr class="rate-group-row"><td colspan="5"><i class="fa-solid ${PERF_ROLE_ICON[field]}" style="color:#e0245e;margin-right:8px"></i>${PERF_ROLE_LABEL[field]}</td></tr>`+rows.map(r=>`<tr class="rate-tr">
+          <td><div class="rate-row-label">${collabAvatarRow(field,r.name)}</div></td>
+          ${numCell(r.tot)}
+          ${numCell(r.checkInserito)}
+          ${numCell(r.miglioramenti)}
+          ${r.hidePct?'<td class="rate-cell"><div class="rate-cell-inner"><span class="rate-pill" style="background:var(--card2);color:var(--muted)">—</span></div></td>':pctCell(r.migRate)}
+        </tr>`).join('');
+    });
+    perfCollabEl.innerHTML=perfCollabHtml||'<tr><td colspan="5" class="sub">Nessun collaboratore con clienti assegnate.</td></tr>';
+  }
   /* grafici interattivi (Chart.js): confronto % check inserito / % miglioramento
      per collaboratore, e composizione dei miglioramenti per categoria scelta. */
   if(typeof Chart==='undefined'||!document.getElementById('c-perf-rate')) return;
