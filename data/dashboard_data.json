@@ -3679,7 +3679,7 @@
   },
   {
    "CLIENTE": "Francesca Cavaliere",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "CONGELATO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "25/10/2025",
    "FINE PERCORSO": "25/10/2026",
@@ -3700,7 +3700,10 @@
    "CONTRATTO": "",
    "CHECK": "",
    "RISULTATO": "",
-   "_PRIMO_INIZIO": "25/10/2025"
+   "_PRIMO_INIZIO": "25/10/2025",
+   "N FATTURA": "",
+   "VENDITORE": "",
+   "FONTE": ""
   },
   {
    "CLIENTE": "Sofia Del Taglia (Lorenza Ugolini)",
@@ -20820,7 +20823,7 @@
   },
   {
    "CLIENTE": "Elisabetta Superti",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "CONGELATO",
    "PERCORSO": "6 mesi + 6 Gnocca",
    "INIZIO PERCORSO": "15/06/2026",
    "FINE PERCORSO": "15/06/2027",
@@ -20844,7 +20847,9 @@
    "FONTE": "ADV",
    "DATA CHECK": "31/07/2026",
    "_CHECK_JULY_FIX": "1",
-   "_PRIMO_INIZIO": "15/06/2026"
+   "_PRIMO_INIZIO": "15/06/2026",
+   "N FATTURA": "",
+   "VENDITORE": ""
   },
   {
    "CLIENTE": "Desiree Cusumano",
@@ -25981,5 +25986,5 @@
    "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
- "updatedAt": "2026-08-04T13:47:39.798Z"
+ "updatedAt": "2026-08-04T13:48:12.998Z"
 }
