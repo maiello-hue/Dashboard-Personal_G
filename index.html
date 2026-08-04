@@ -1629,6 +1629,87 @@ function migrateIncassiLogOnce(){
   saveIncassiLog(log);
   try{ localStorage.setItem(FLAG,'1'); }catch(e){}
 }
+/* Registro storico degli eventi di archiviazione (cliente diventata Abbandonato
+   o Non rinnovato): a differenza del campo DATA ARCHIVIAZIONE sulla scheda
+   cliente (che viene cancellato se la cliente torna "In percorso" o cambia
+   ancora stato), questo registro non viene MAI sovrascritto né cancellato da
+   cambi di stato successivi — solo aggiunto (o aggiornato sull'ultimo evento
+   della stessa cliente se è solo una riclassificazione, vedi upsertArchivioLog).
+   I report mensili di Analisi (abbandoni/non rinnovi del mese) leggono da qui:
+   così cambiare lo stato di una cliente in un mese non altera più i numeri di
+   un mese passato già chiuso. Stesso pattern già usato per il log incassi. */
+const LS_ARCHIVIO_LOG='archivio_log_v1';
+let _archivioLogCache=null;
+function getArchivioLog(){
+  if(_archivioLogCache) return _archivioLogCache;
+  try{ _archivioLogCache=JSON.parse(localStorage.getItem(LS_ARCHIVIO_LOG))||[]; }catch(e){ _archivioLogCache=[]; }
+  return _archivioLogCache;
+}
+function saveArchivioLog(log){ _archivioLogCache=log; try{ localStorage.setItem(LS_ARCHIVIO_LOG,JSON.stringify(log)); }catch(e){ alert('Impossibile salvare: memoria del browser piena o non disponibile.'); } }
+/* Chiamata quando una cliente diventa Abbandonato/Non rinnovo. Se era già
+   archiviata (es. si passa solo da un tipo di archiviazione all'altro sulla
+   stessa data, senza mai essere tornata "In percorso" nel mezzo) aggiorna
+   l'ultimo evento registrato per questa cliente invece di crearne uno nuovo,
+   così non si duplicano eventi per quella che resta la stessa archiviazione.
+   Se non era archiviata (nuovo episodio, anche dopo una precedente riattivazione)
+   ne registra uno nuovo, a sé stante. */
+function upsertArchivioLog(cliente,stato,dataIt,eraArchiviata){
+  if(!cliente||!dataIt) return;
+  const log=getArchivioLog();
+  if(eraArchiviata){
+    for(let i=log.length-1;i>=0;i--){
+      if(log[i]['CLIENTE']===cliente){ log[i]['STATO']=stato; log[i]['DATA']=dataIt; saveArchivioLog(log); return; }
+    }
+  }
+  log.push({CLIENTE:cliente,STATO:stato,DATA:dataIt});
+  saveArchivioLog(log);
+}
+/* Migrazione una tantum: al momento dell'introduzione del registro, importa
+   come primo evento l'archiviazione "attuale" di ogni cliente già archiviata
+   (l'unica informazione disponibile finora), così da non perdere quella che
+   si vede già oggi. Non può recuperare episodi di archiviazione già persi in
+   passato (chi era stata archiviata e poi riattivata prima di questa modifica):
+   quelli restano irrimediabilmente non tracciati, ma da qui in avanti ogni
+   nuovo episodio resta stabile per sempre, anche dopo ulteriori cambi di stato. */
+function migrateArchivioLogOnce(){
+  const FLAG='archivio_log_migrated_v1';
+  if(localStorage.getItem(FLAG)) return;
+  const log=getArchivioLog();
+  DATA.forEach(r=>{
+    if(isArchiviata(r)&&r['DATA ARCHIVIAZIONE']){
+      const exists=log.some(e=>e['CLIENTE']===r['CLIENTE']&&e['DATA']===r['DATA ARCHIVIAZIONE']);
+      if(!exists) log.push({CLIENTE:r['CLIENTE'],STATO:r['STATO CLIENTE'],DATA:r['DATA ARCHIVIAZIONE']});
+    }
+  });
+  saveArchivioLog(log);
+  try{ localStorage.setItem(FLAG,'1'); }catch(e){}
+}
+/* Restituisce le clienti con un episodio di archiviazione di tipo statoPrefix
+   (es. 'ABBANDONAT' o 'NON RINNOVATO') registrato nel mese meseSel secondo
+   archivioLog — non secondo lo stato attuale della cliente, che nel frattempo
+   può essere cambiato di nuovo. Usata al posto del vecchio filtro diretto su
+   STATO CLIENTE + DATA ARCHIVIAZIONE, che cambiava retroattivamente i numeri
+   di un mese passato ogni volta che lo stato veniva aggiornato di nuovo in un
+   mese successivo. Una stessa cliente conta una sola volta anche con più
+   eventi nello stesso mese (es. riclassificata più volte nello stesso mese).
+   Se la cliente non esiste più in DATA (non dovrebbe succedere: le clienti
+   non vengono mai davvero rimosse da un cambio di stato) si mostra comunque
+   una riga minima con i soli dati registrati nel log, per non far sparire
+   silenziosamente l'episodio dal conteggio. */
+function archivioRowsForMese(statoPrefix,meseSel){
+  const log=getArchivioLog();
+  const seen=new Set();
+  const out=[];
+  log.forEach(e=>{
+    if(!(e['STATO']||'').toUpperCase().startsWith(statoPrefix)) return;
+    if(!inMese(e,'DATA',meseSel)) return;
+    if(seen.has(e['CLIENTE'])) return;
+    seen.add(e['CLIENTE']);
+    const rec=DATA.find(x=>x['CLIENTE']===e['CLIENTE']);
+    out.push(rec||{CLIENTE:e['CLIENTE'],'STATO CLIENTE':e['STATO']});
+  });
+  return out;
+}
 function saveRimborsi(push){try{localStorage.setItem(LS_RIMBORSI,JSON.stringify(RIMB));}catch(e){alert('Impossibile salvare: memoria del browser piena o non disponibile.');} if(push!==false) scheduleGithubSync();}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
 
@@ -1734,7 +1815,7 @@ function setGhStatus(msg,isErr){
   el.style.color=isErr?'var(--red)':'var(--muted)';
 }
 function collectAllData(){
-  return {clienti:DATA,rimborsi:RIMB,ratePagate:ratePagate(),rinnovi:renAll(),incassiLog:getIncassiLog(),updatedAt:new Date().toISOString()};
+  return {clienti:DATA,rimborsi:RIMB,ratePagate:ratePagate(),rinnovi:renAll(),incassiLog:getIncassiLog(),archivioLog:getArchivioLog(),updatedAt:new Date().toISOString()};
 }
 function applyAllData(d){
   if(Array.isArray(d.clienti)) DATA=d.clienti;
@@ -1751,6 +1832,7 @@ function applyAllData(d){
   try{localStorage.setItem(RIMB_KEY,JSON.stringify(d.ratePagate||{}));}catch(e){}
   try{localStorage.setItem(REN_KEY,JSON.stringify(d.rinnovi||{}));}catch(e){}
   if(Array.isArray(d.incassiLog)) saveIncassiLog(d.incassiLog);
+  if(Array.isArray(d.archivioLog)) saveArchivioLog(d.archivioLog);
 }
 async function pushPendingNow(force){
   /* invia subito (senza debounce) i dati locali correnti a GitHub. Usata sia dal
@@ -1849,6 +1931,7 @@ async function syncFromGithub(showStatus){
       applyCheckJulyFixOnce();
       applyIolandaLugFixOnce();
       migrateIncassiLogOnce();
+      migrateArchivioLogOnce();
 migratePrimoInizioOnce();
       applyVenditoreLug26Import();
       applyFonteMap();
@@ -3977,13 +4060,20 @@ function eliminaCliente(nome){
    se il nuovo stato è di tipo Abbandono/Non rinnovo la valorizza a oggi (solo
    se non c'era già una data, per non spostare quella reale se si passa da un
    tipo di archiviazione all'altro), altrimenti la rimuove — così una cliente
-   riportata "In percorso" non resta agganciata a una vecchia archiviazione. */
+   riportata "In percorso" non resta agganciata a una vecchia archiviazione.
+   Il campo DATA ARCHIVIAZIONE sulla scheda resta "vivo" (rispecchia solo lo
+   stato attuale), ma ogni episodio di archiviazione viene anche registrato
+   in modo permanente in archivioLog (upsertArchivioLog): i report mensili
+   passati leggono da lì, quindi cambiare stato ora non altera più i numeri
+   di un mese già chiuso. */
 function cambiaStatoCliente(nome,nuovoStato){
   const r=DATA.find(x=>x['CLIENTE']===nome);
   if(!r||!nuovoStato||r['STATO CLIENTE']===nuovoStato) return;
+  const eraArchiviata=isArchiviata(r);
   r['STATO CLIENTE']=nuovoStato;
   if(isArchiviata(r)){
     if(!r['DATA ARCHIVIAZIONE']) r['DATA ARCHIVIAZIONE']=todayIt();
+    upsertArchivioLog(nome,nuovoStato,r['DATA ARCHIVIAZIONE'],eraArchiviata);
   } else {
     delete r['DATA ARCHIVIAZIONE'];
   }
@@ -4179,13 +4269,15 @@ function render(){
   const fSt=s=>allRows.filter(r=>(r['STATO CLIENTE']||'').toUpperCase().startsWith(s));
   const brk=arr=>{const g=arr.filter(isGnocca).length;return `${arr.length-g} premium · ${g} gnocca`;};
   const attA=fSt('IN PERCORSO'), congA=fSt('CONGELATO').concat(fSt('SOSPES')),
-        nonrinAAll=fSt('NON RINNOVATO'), abbAAll=fSt('ABBANDONAT'), sparA=fSt('SPARIT'), maiA=fSt('MAI INIZIATO');
+        sparA=fSt('SPARIT'), maiA=fSt('MAI INIZIATO');
   /* Abbandonate/Non rinnovo (card, tassi) rappresentano il flusso DEL MESE selezionato
-     (di default il mese corrente): si basano su DATA ARCHIVIAZIONE, valorizzata in automatico
-     solo quando si cambia manualmente lo Stato Cliente. Le clienti restano comunque per
-     sempre in DATA/Storico: qui si filtra solo la vista, non i dati. */
-  const nonrinA=nonrinAAll.filter(r=>inMese(r,'DATA ARCHIVIAZIONE',meseSel));
-  const abbA=abbAAll.filter(r=>inMese(r,'DATA ARCHIVIAZIONE',meseSel));
+     (di default il mese corrente): letti da archivioLog (l'episodio storico di
+     archiviazione), non dallo stato attuale della cliente — così un cambio di
+     stato successivo (anche in un mese diverso) non altera più i numeri di un
+     mese passato già chiuso. Le clienti restano comunque per sempre in
+     DATA/Storico: qui si filtra solo la vista, non i dati. */
+  const nonrinA=archivioRowsForMese('NON RINNOVATO',meseSel);
+  const abbA=archivioRowsForMese('ABBANDONAT',meseSel);
   const att=attA.length;
   /* "Clienti totali" esclude le Abbandonate e le Non rinnovate: rappresenta il
      parco clienti attuale (attive + congelate + sparite + mai iniziato), non
@@ -4209,8 +4301,8 @@ function render(){
      cui confrontarle in modo corretto. */
   const prevTotA=allRows.filter(r=>!isArchiviata(r)&&finoAMese(r,'INIZIO PERCORSO',prevMese));
   const prevNuoveA=allRows.filter(r=>inMese(r,'INIZIO PERCORSO',prevMese)&&!(r['TIPO INCASSO']||'').toLowerCase().includes('rinnovo'));
-  const prevAbbA=abbAAll.filter(r=>inMese(r,'DATA ARCHIVIAZIONE',prevMese));
-  const prevNonrinA=nonrinAAll.filter(r=>inMese(r,'DATA ARCHIVIAZIONE',prevMese));
+  const prevAbbA=archivioRowsForMese('ABBANDONAT',prevMese);
+  const prevNonrinA=archivioRowsForMese('NON RINNOVATO',prevMese);
   const scadA=allRows.filter(r=>{const d=pdate(r['FINE PERCORSO']);return d&&d>=now&&d<=in30&&r['STATO CLIENTE']==='IN PERCORSO';});
   const rischioA=allRows.filter(isARischio);
   const scad30=scadA.length, brkScad=brk(scadA);
@@ -4252,8 +4344,11 @@ function render(){
 
   const collabBadgeFn={TUTOR:tutBadge,TRAINER:trainBadge,NUTRI:nutriBadge};
   const collabRoleLabel={TUTOR:'Tutor',TRAINER:'Trainer',NUTRI:'Nutrizionista'};
-  const isAbb=r=>(r['STATO CLIENTE']||'').toUpperCase().startsWith('ABBANDONAT')&&inMese(r,'DATA ARCHIVIAZIONE',meseSel);
-  const isNonrin=r=>(r['STATO CLIENTE']||'').toUpperCase().startsWith('NON RINNOVATO')&&inMese(r,'DATA ARCHIVIAZIONE',meseSel);
+  /* Stessa fonte (archivioLog, via abbA/nonrinA già calcolate sopra) usata per
+     la ripartizione per collaboratore qui sotto, non più lo stato attuale. */
+  const abbSetMese=new Set(abbA.map(x=>x['CLIENTE'])), nonrinSetMese=new Set(nonrinA.map(x=>x['CLIENTE']));
+  const isAbb=r=>abbSetMese.has(r['CLIENTE']);
+  const isNonrin=r=>nonrinSetMese.has(r['CLIENTE']);
   /* Le sezioni qui sotto marcate "solo pagina X" ricalcolano tabelle/grafici
      piuttosto pesanti (cicli su tutti i collaboratori × tutte le clienti,
      costruzione di HTML per grafici Chart.js) che servono SOLO quando quella
@@ -4999,15 +5094,19 @@ function chiudiModificaCliente(){
 function salvaClienteModal(){
   const r=DATA.find(x=>x['CLIENTE']===editingClienteName);
   if(!r) return;
+  const eraArchiviata=isArchiviata(r);
   EDIT_FIELDS.forEach(([f])=>{ r[f]=readEditFieldValue('editm',f); });
   /* DATA ARCHIVIAZIONE arriva già dal campo data del form qui sopra (di default
      oggi il giorno in cui si cambia lo Stato a mano su Abbandono/Non rinnovo,
      ma modificabile per attribuire il flusso mensile al mese giusto quando lo
      stato viene aggiornato con qualche giorno di ritardo): la teniamo solo se
      lo Stato è davvero Abbandono/Non rinnovo, altrimenti non ha senso e va
-     scartata (es. cliente riattivata: la data archiviazione precedente non ha
-     più senso). */
+     scartata sulla scheda (es. cliente riattivata: la data archiviazione
+     precedente non ha più senso lì). L'episodio resta comunque registrato per
+     sempre in archivioLog (usato dai report mensili passati), che non viene
+     toccato da questa cancellazione. */
   if(!isArchiviata(r)) delete r['DATA ARCHIVIAZIONE'];
+  else if(r['DATA ARCHIVIAZIONE']) upsertArchivioLog(r['CLIENTE'],r['STATO CLIENTE'],r['DATA ARCHIVIAZIONE'],eraArchiviata);
   /* DATA INCASSO arriva già dal campo data del form qui sopra (di default oggi
      ma modificabile a mano): non la forziamo più a "oggi" a ogni salvataggio,
      così un incasso registrato con qualche giorno di ritardo può essere
@@ -5390,6 +5489,7 @@ applyMeseFlussoMigrationOnce();
 applyCheckJulyFixOnce();
 applyIolandaLugFixOnce();
 migrateIncassiLogOnce();
+migrateArchivioLogOnce();
 migratePrimoInizioOnce();
 applyVenditoreLug26Import();
 applyFonteMap();
