@@ -291,7 +291,7 @@
   },
   {
    "CLIENTE": "Laura Gandini",
-   "STATO CLIENTE": "CONGELATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "05/03/2025",
    "FINE PERCORSO": "05/03/2026",
@@ -313,9 +313,7 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "INSTAGRAM",
-   "_PRIMO_INIZIO": "05/03/2025",
-   "N FATTURA": "",
-   "VENDITORE": ""
+   "_PRIMO_INIZIO": "05/03/2025"
   },
   {
    "CLIENTE": "Valeria Campolo",
@@ -1070,15 +1068,15 @@
   {
    "CLIENTE": "Romina Bertaccini",
    "STATO CLIENTE": "IN PERCORSO",
-   "PERCORSO": "6 mesi + 6 Gnocca",
-   "INIZIO PERCORSO": "04/08/2026",
-   "FINE PERCORSO": "04/08/2027",
-   "IMPORTO": "€ 1164",
-   "METODO PAGAMENTO": "HeyLight",
+   "PERCORSO": "12 mesi",
+   "INIZIO PERCORSO": "08/08/2025",
+   "FINE PERCORSO": "08/08/2026",
+   "IMPORTO": "€ 1.698,00",
+   "METODO PAGAMENTO": "PagoDIL",
    "STATO PAGAMENTO": "SALDATO",
-   "TIPO INCASSO": "Rinnovo",
+   "TIPO INCASSO": "",
    "N° FATTURA": "",
-   "INCASSO": "1164",
+   "INCASSO": "",
    "RIMBORSO": "",
    "TUTOR": "Giulia",
    "TRAINER": "Marco",
@@ -1091,9 +1089,7 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "INSTAGRAM",
-   "_PRIMO_INIZIO": "08/08/2025",
-   "TIPO SCADENZA": "Rinnovo",
-   "DATA INCASSO": "04/08/2026"
+   "_PRIMO_INIZIO": "08/08/2025"
   },
   {
    "CLIENTE": "Cristina Bianco",
@@ -1145,7 +1141,7 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "INSTAGRAM",
-   "DATA CHECK": "03/08/2026",
+   "DATA CHECK": "31/07/2026",
    "_CHECK_JULY_FIX": "1",
    "_PRIMO_INIZIO": "12/08/2025"
   },
@@ -1207,7 +1203,7 @@
   },
   {
    "CLIENTE": "Jessica Venturi",
-   "STATO CLIENTE": "NON RINNOVATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "22/08/2025",
    "FINE PERCORSO": "22/08/2026",
@@ -1229,10 +1225,7 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "ORGANICO",
-   "_PRIMO_INIZIO": "22/08/2025",
-   "N FATTURA": "",
-   "DATA ARCHIVIAZIONE": "04/08/2026",
-   "VENDITORE": ""
+   "_PRIMO_INIZIO": "22/08/2025"
   },
   {
    "CLIENTE": "Vita Nigro",
@@ -1263,7 +1256,7 @@
   },
   {
    "CLIENTE": "Federica Lattanzi",
-   "STATO CLIENTE": "NON RINNOVATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "25/08/2025",
    "FINE PERCORSO": "25/08/2026",
@@ -1284,11 +1277,7 @@
    "CONTRATTO": "",
    "CHECK": "",
    "RISULTATO": "",
-   "_PRIMO_INIZIO": "25/08/2025",
-   "N FATTURA": "",
-   "DATA ARCHIVIAZIONE": "04/08/2026",
-   "VENDITORE": "",
-   "FONTE": ""
+   "_PRIMO_INIZIO": "25/08/2025"
   },
   {
    "CLIENTE": "Ivana Monaco",
@@ -1603,7 +1592,7 @@
   },
   {
    "CLIENTE": "Chiara Dionisi",
-   "STATO CLIENTE": "CONGELATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "11/09/2025",
    "FINE PERCORSO": "11/09/2026",
@@ -1624,10 +1613,7 @@
    "CONTRATTO": "SI",
    "CHECK": "",
    "RISULTATO": "",
-   "_PRIMO_INIZIO": "11/09/2025",
-   "N FATTURA": "",
-   "VENDITORE": "",
-   "FONTE": ""
+   "_PRIMO_INIZIO": "11/09/2025"
   },
   {
    "CLIENTE": "Rosanna De Rosa",
@@ -2101,9 +2087,7 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "ADV",
-   "_PRIMO_INIZIO": "17/09/2025",
-   "CHECK_ESCLUSA": "SI",
-   "CHECK_ESCLUSA_MESE": "2026-08"
+   "_PRIMO_INIZIO": "17/09/2025"
   },
   {
    "CLIENTE": "Lisa Busia",
@@ -3683,7 +3667,7 @@
   },
   {
    "CLIENTE": "Francesca Cavaliere",
-   "STATO CLIENTE": "CONGELATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "25/10/2025",
    "FINE PERCORSO": "25/10/2026",
@@ -3704,10 +3688,7 @@
    "CONTRATTO": "",
    "CHECK": "",
    "RISULTATO": "",
-   "_PRIMO_INIZIO": "25/10/2025",
-   "N FATTURA": "",
-   "VENDITORE": "",
-   "FONTE": ""
+   "_PRIMO_INIZIO": "25/10/2025"
   },
   {
    "CLIENTE": "Sofia Del Taglia (Lorenza Ugolini)",
@@ -5160,7 +5141,7 @@
   },
   {
    "CLIENTE": "Lucianella Leuci",
-   "STATO CLIENTE": "CONGELATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "16/11/2025",
    "FINE PERCORSO": "16/11/2026",
@@ -5181,10 +5162,7 @@
    "CONTRATTO": "",
    "CHECK": "",
    "RISULTATO": "",
-   "_PRIMO_INIZIO": "16/11/2025",
-   "N FATTURA": "",
-   "VENDITORE": "",
-   "FONTE": ""
+   "_PRIMO_INIZIO": "16/11/2025"
   },
   {
    "CLIENTE": "Valeria Aneri",
@@ -5468,7 +5446,7 @@
   },
   {
    "CLIENTE": "Roberta Perrone",
-   "STATO CLIENTE": "CONGELATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "18/11/2025",
    "FINE PERCORSO": "18/11/2026",
@@ -5491,10 +5469,7 @@
    "RISULTATO": "SI",
    "DATA CHECK": "31/07/2026",
    "_CHECK_JULY_FIX": "1",
-   "_PRIMO_INIZIO": "18/11/2025",
-   "N FATTURA": "",
-   "VENDITORE": "",
-   "FONTE": ""
+   "_PRIMO_INIZIO": "18/11/2025"
   },
   {
    "CLIENTE": "Silvia Marzoli",
@@ -7272,7 +7247,7 @@
   },
   {
    "CLIENTE": "Barbara Cagnazzo",
-   "STATO CLIENTE": "NON RINNOVATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "4 mesi",
    "INIZIO PERCORSO": "23/12/2025",
    "FINE PERCORSO": "23/04/2026",
@@ -7294,10 +7269,7 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "ADV",
-   "_PRIMO_INIZIO": "23/12/2025",
-   "N FATTURA": "",
-   "DATA ARCHIVIAZIONE": "04/08/2026",
-   "VENDITORE": ""
+   "_PRIMO_INIZIO": "23/12/2025"
   },
   {
    "CLIENTE": "Francesca Di Laura",
@@ -7378,7 +7350,7 @@
   },
   {
    "CLIENTE": "Chiara Di Carlo",
-   "STATO CLIENTE": "NON RINNOVATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "24/12/2025",
    "FINE PERCORSO": "24/06/2026",
@@ -7399,11 +7371,7 @@
    "CONTRATTO": "",
    "CHECK": "",
    "RISULTATO": "",
-   "_PRIMO_INIZIO": "24/12/2025",
-   "N FATTURA": "",
-   "DATA ARCHIVIAZIONE": "04/08/2026",
-   "VENDITORE": "",
-   "FONTE": ""
+   "_PRIMO_INIZIO": "24/12/2025"
   },
   {
    "CLIENTE": "Barbara Michelagnoli",
@@ -7584,7 +7552,7 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "03/08/2026",
+   "DATA CHECK": "31/07/2026",
    "_CHECK_JULY_FIX": "1",
    "_PRIMO_INIZIO": "29/12/2025"
   },
@@ -8555,7 +8523,7 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "03/08/2026",
+   "DATA CHECK": "31/07/2026",
    "_CHECK_JULY_FIX": "1",
    "_PRIMO_INIZIO": "12/01/2026"
   },
@@ -9016,7 +8984,7 @@
   },
   {
    "CLIENTE": "Monia Lerose",
-   "STATO CLIENTE": "NON RINNOVATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "19/01/2026",
    "FINE PERCORSO": "19/08/2026",
@@ -9038,10 +9006,7 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "ADV",
-   "_PRIMO_INIZIO": "19/01/2026",
-   "N FATTURA": "",
-   "DATA ARCHIVIAZIONE": "04/08/2026",
-   "VENDITORE": ""
+   "_PRIMO_INIZIO": "19/01/2026"
   },
   {
    "CLIENTE": "Alessandra Tripi",
@@ -10046,7 +10011,7 @@
   },
   {
    "CLIENTE": "Martina Bolandini",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "CONGELATO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "29/01/2026",
    "FINE PERCORSO": "29/01/2027",
@@ -10068,9 +10033,7 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "ORGANICO",
-   "_PRIMO_INIZIO": "29/01/2026",
-   "N FATTURA": "",
-   "VENDITORE": ""
+   "_PRIMO_INIZIO": "29/01/2026"
   },
   {
    "CLIENTE": "Erica Tutone (Susanna Zecchini)",
@@ -10230,10 +10193,9 @@
    "€ TRAINER": "€ 17,00",
    "€ NUTRI": "€ 12,00",
    "CONTRATTO": "",
-   "CHECK": "SI",
-   "RISULTATO": "SI",
+   "CHECK": "",
+   "RISULTATO": "",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "03/08/2026",
    "_PRIMO_INIZIO": "30/01/2026"
   },
   {
@@ -10530,7 +10492,7 @@
   },
   {
    "CLIENTE": "Rebecca Ceredi",
-   "STATO CLIENTE": "NON RINNOVATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "04/02/2026",
    "FINE PERCORSO": "04/08/2026",
@@ -10554,10 +10516,7 @@
    "FONTE": "ADV",
    "DATA CHECK": "31/07/2026",
    "_CHECK_JULY_FIX": "1",
-   "_PRIMO_INIZIO": "04/02/2026",
-   "N FATTURA": "",
-   "DATA ARCHIVIAZIONE": "04/08/2026",
-   "VENDITORE": ""
+   "_PRIMO_INIZIO": "04/02/2026"
   },
   {
    "CLIENTE": "Simona Mugnaini",
@@ -10743,7 +10702,7 @@
   },
   {
    "CLIENTE": "Nancy Fraccalvieri",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "SPARITA",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "05/02/2026",
    "FINE PERCORSO": "05/02/2027",
@@ -10765,9 +10724,7 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "ADV",
-   "_PRIMO_INIZIO": "05/02/2026",
-   "N FATTURA": "",
-   "VENDITORE": ""
+   "_PRIMO_INIZIO": "05/02/2026"
   },
   {
    "CLIENTE": "Mariarosaria Lerro",
@@ -10843,10 +10800,9 @@
    "€ TRAINER": "€ 17,00",
    "€ NUTRI": "€ 12,00",
    "CONTRATTO": "",
-   "CHECK": "SI",
-   "RISULTATO": "SI",
+   "CHECK": "",
+   "RISULTATO": "",
    "FONTE": "ADV",
-   "DATA CHECK": "03/08/2026",
    "_PRIMO_INIZIO": "06/02/2026"
   },
   {
@@ -11006,7 +10962,7 @@
   },
   {
    "CLIENTE": "Eleonora Padovan",
-   "STATO CLIENTE": "NON RINNOVATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "08/02/2026",
    "FINE PERCORSO": "08/08/2026",
@@ -11028,10 +10984,7 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "ADV",
-   "_PRIMO_INIZIO": "08/02/2026",
-   "N FATTURA": "",
-   "DATA ARCHIVIAZIONE": "04/08/2026",
-   "VENDITORE": ""
+   "_PRIMO_INIZIO": "08/02/2026"
   },
   {
    "CLIENTE": "Stefania Rossi",
@@ -11906,7 +11859,7 @@
   },
   {
    "CLIENTE": "Alessia Perini",
-   "STATO CLIENTE": "CONGELATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "18/02/2026",
    "FINE PERCORSO": "18/02/2027",
@@ -11928,9 +11881,7 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "ORGANICO",
-   "_PRIMO_INIZIO": "18/02/2026",
-   "N FATTURA": "",
-   "VENDITORE": ""
+   "_PRIMO_INIZIO": "18/02/2026"
   },
   {
    "CLIENTE": "Sara Bagagli",
@@ -13162,7 +13113,7 @@
   },
   {
    "CLIENTE": "Angela Anselmetti",
-   "STATO CLIENTE": "ABBANDONATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "03/03/2026",
    "FINE PERCORSO": "03/03/2027",
@@ -13186,10 +13137,7 @@
    "FONTE": "INSTAGRAM",
    "DATA CHECK": "31/07/2026",
    "_CHECK_JULY_FIX": "1",
-   "_PRIMO_INIZIO": "03/03/2026",
-   "N FATTURA": "",
-   "DATA ARCHIVIAZIONE": "04/08/2026",
-   "VENDITORE": ""
+   "_PRIMO_INIZIO": "03/03/2026"
   },
   {
    "CLIENTE": "Claudia Tiberio",
@@ -14663,7 +14611,7 @@
   },
   {
    "CLIENTE": "Asia Pianigiani",
-   "STATO CLIENTE": "CONGELATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "25/03/2026",
    "FINE PERCORSO": "25/03/2027",
@@ -14685,9 +14633,7 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "ADV",
-   "_PRIMO_INIZIO": "25/03/2026",
-   "N FATTURA": "",
-   "VENDITORE": ""
+   "_PRIMO_INIZIO": "25/03/2026"
   },
   {
    "CLIENTE": "Valentina Alessi",
@@ -15216,11 +15162,10 @@
    "€ TRAINER": "€ 17,00",
    "€ NUTRI": "€ 12,00",
    "CONTRATTO": "SI",
-   "CHECK": "SI",
-   "RISULTATO": "SI",
+   "CHECK": "",
+   "RISULTATO": "",
    "FONTE": "ADV",
-   "_PRIMO_INIZIO": "30/03/2026",
-   "DATA CHECK": "03/08/2026"
+   "_PRIMO_INIZIO": "30/03/2026"
   },
   {
    "CLIENTE": "Teresa Zavelle De Louvigny",
@@ -15656,7 +15601,7 @@
   },
   {
    "CLIENTE": "Chiara Matricardi",
-   "STATO CLIENTE": "CONGELATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "07/04/2026",
    "FINE PERCORSO": "07/04/2027",
@@ -15678,9 +15623,7 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "ADV",
-   "_PRIMO_INIZIO": "07/04/2026",
-   "N FATTURA": "",
-   "VENDITORE": ""
+   "_PRIMO_INIZIO": "07/04/2026"
   },
   {
    "CLIENTE": "Grazia Ungaro",
@@ -17151,7 +17094,7 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "03/08/2026",
+   "DATA CHECK": "31/07/2026",
    "_CHECK_JULY_FIX": "1",
    "_PRIMO_INIZIO": "30/04/2026"
   },
@@ -17372,7 +17315,7 @@
   },
   {
    "CLIENTE": "Francesca Ceccaroni",
-   "STATO CLIENTE": "CONGELATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "05/05/2026",
    "FINE PERCORSO": "05/11/2026",
@@ -17396,9 +17339,7 @@
    "FONTE": "ADV",
    "DATA CHECK": "31/07/2026",
    "_CHECK_JULY_FIX": "1",
-   "_PRIMO_INIZIO": "05/05/2026",
-   "N FATTURA": "",
-   "VENDITORE": ""
+   "_PRIMO_INIZIO": "05/05/2026"
   },
   {
    "CLIENTE": "Camilla Coveri",
@@ -17428,7 +17369,7 @@
   },
   {
    "CLIENTE": "Michela Reale",
-   "STATO CLIENTE": "CONGELATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "05/05/2026",
    "FINE PERCORSO": "05/11/2026",
@@ -17450,9 +17391,7 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "ADV",
-   "_PRIMO_INIZIO": "05/05/2026",
-   "N FATTURA": "",
-   "VENDITORE": ""
+   "_PRIMO_INIZIO": "05/05/2026"
   },
   {
    "CLIENTE": "Sveva Menichetti",
@@ -17563,7 +17502,7 @@
   },
   {
    "CLIENTE": "Anna Ricco",
-   "STATO CLIENTE": "ABBANDONATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "06/05/2026",
    "FINE PERCORSO": "06/05/2027",
@@ -17587,9 +17526,7 @@
    "FONTE": "INSTAGRAM",
    "EMAIL": "",
    "VENDITORE": "",
-   "_PRIMO_INIZIO": "06/05/2026",
-   "N FATTURA": "",
-   "DATA ARCHIVIAZIONE": "04/08/2026"
+   "_PRIMO_INIZIO": "06/05/2026"
   },
   {
    "CLIENTE": "Elena Turrisi",
@@ -18015,7 +17952,7 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "INSTAGRAM",
-   "DATA CHECK": "04/08/2026",
+   "DATA CHECK": "31/07/2026",
    "_CHECK_JULY_FIX": "1",
    "_PRIMO_INIZIO": "14/05/2026"
   },
@@ -18739,7 +18676,7 @@
   },
   {
    "CLIENTE": "Simona Mandolini",
-   "STATO CLIENTE": "ABBANDONATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "21/05/2026",
    "FINE PERCORSO": "21/05/2027",
@@ -18761,10 +18698,7 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "INSTAGRAM",
-   "_PRIMO_INIZIO": "21/05/2026",
-   "N FATTURA": "",
-   "DATA ARCHIVIAZIONE": "04/08/2026",
-   "VENDITORE": ""
+   "_PRIMO_INIZIO": "21/05/2026"
   },
   {
    "CLIENTE": "Sara Del Vecchio",
@@ -18794,7 +18728,7 @@
   },
   {
    "CLIENTE": "Barbara Favero",
-   "STATO CLIENTE": "CONGELATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "22/05/2026",
    "FINE PERCORSO": "22/11/2026",
@@ -18816,9 +18750,7 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "ORGANICO",
-   "_PRIMO_INIZIO": "22/05/2026",
-   "N FATTURA": "",
-   "VENDITORE": ""
+   "_PRIMO_INIZIO": "22/05/2026"
   },
   {
    "CLIENTE": "Caterina Supini",
@@ -20071,7 +20003,7 @@
    "CONTRATTO": "SI",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "03/08/2026",
+   "DATA CHECK": "31/07/2026",
    "_CHECK_JULY_FIX": "1",
    "_PRIMO_INIZIO": "08/06/2026"
   },
@@ -20836,7 +20768,7 @@
   },
   {
    "CLIENTE": "Elisabetta Superti",
-   "STATO CLIENTE": "CONGELATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "6 mesi + 6 Gnocca",
    "INIZIO PERCORSO": "15/06/2026",
    "FINE PERCORSO": "15/06/2027",
@@ -20860,9 +20792,7 @@
    "FONTE": "ADV",
    "DATA CHECK": "31/07/2026",
    "_CHECK_JULY_FIX": "1",
-   "_PRIMO_INIZIO": "15/06/2026",
-   "N FATTURA": "",
-   "VENDITORE": ""
+   "_PRIMO_INIZIO": "15/06/2026"
   },
   {
    "CLIENTE": "Desiree Cusumano",
@@ -21515,11 +21445,10 @@
    "€ TRAINER": "€ 17,00",
    "€ NUTRI": "€ 12,00",
    "CONTRATTO": "SI",
-   "CHECK": "SI",
-   "RISULTATO": "SI",
+   "CHECK": "",
+   "RISULTATO": "",
    "FONTE": "ADV",
    "CHECK_ESCLUSA": "SI",
-   "DATA CHECK": "03/08/2026",
    "_PRIMO_INIZIO": "19/06/2026"
   },
   {
@@ -21865,7 +21794,7 @@
   },
   {
    "CLIENTE": "Valentina Vetrugno",
-   "STATO CLIENTE": "CONGELATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "6 mesi + 6 Gnocca",
    "INIZIO PERCORSO": "22/06/2026",
    "FINE PERCORSO": "22/06/2027",
@@ -21887,9 +21816,7 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "ADV",
-   "_PRIMO_INIZIO": "22/06/2026",
-   "N FATTURA": "",
-   "VENDITORE": ""
+   "_PRIMO_INIZIO": "22/06/2026"
   },
   {
    "CLIENTE": "Veronika Borsetto",
@@ -21945,7 +21872,7 @@
   },
   {
    "CLIENTE": "Eleonora Del Conte",
-   "STATO CLIENTE": "CONGELATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "PROMO ESTATE",
    "INIZIO PERCORSO": "22/06/2026",
    "FINE PERCORSO": "22/09/2026",
@@ -21966,10 +21893,7 @@
    "CONTRATTO": "",
    "CHECK": "",
    "RISULTATO": "",
-   "_PRIMO_INIZIO": "22/06/2026",
-   "N FATTURA": "",
-   "VENDITORE": "",
-   "FONTE": ""
+   "_PRIMO_INIZIO": "22/06/2026"
   },
   {
    "CLIENTE": "Alice Risaliti",
@@ -24489,6 +24413,25 @@
    "_PRIMO_INIZIO": "29/07/2026"
   },
   {
+   "CLIENTE": "Ginevra Versari",
+   "STATO CLIENTE": "IN PERCORSO",
+   "PERCORSO": "6 mesi + 6 Gnocca",
+   "INIZIO PERCORSO": "27/07/2026",
+   "FINE PERCORSO": "27/07/2027",
+   "IMPORTO": "1850,82",
+   "METODO PAGAMENTO": "HeyLight",
+   "STATO PAGAMENTO": "SALDATO",
+   "TIPO INCASSO": "Nuovo Cliente",
+   "INCASSO": "1850,82",
+   "TUTOR": "Andrea",
+   "TRAINER": "Niccolò",
+   "NUTRI": "Sofia",
+   "VENDITORE": "Salvatore",
+   "FONTE": "REFERRAL",
+   "DATA INCASSO": "30/07/2026",
+   "_PRIMO_INIZIO": "27/07/2026"
+  },
+  {
    "CLIENTE": "Vittoria Franzero",
    "STATO CLIENTE": "MAI INIZIATO",
    "PERCORSO": "6 mesi + 6 Gnocca",
@@ -24685,6 +24628,26 @@
    "_PRIMO_INIZIO": "22/01/2026"
   },
   {
+   "CLIENTE": "Elisa Borchi",
+   "N FATTURA": "",
+   "STATO CLIENTE": "IN PERCORSO",
+   "PERCORSO": "6 mesi + 6 Gnocca",
+   "INIZIO PERCORSO": "01/08/2026",
+   "FINE PERCORSO": "01/08/2027",
+   "IMPORTO": "1850,82",
+   "METODO PAGAMENTO": "HeyLight",
+   "STATO PAGAMENTO": "SALDATO",
+   "TIPO INCASSO": "Nuovo Cliente",
+   "INCASSO": "1850,82",
+   "DATA INCASSO": "01/08/2026",
+   "TUTOR": "Andrea",
+   "TRAINER": "Matteo",
+   "NUTRI": "Matilde",
+   "VENDITORE": "Personal_G",
+   "FONTE": "",
+   "_PRIMO_INIZIO": "01/08/2026"
+  },
+  {
    "CLIENTE": "Michela Rizzitiello",
    "N FATTURA": "",
    "STATO CLIENTE": "IN PERCORSO",
@@ -24703,86 +24666,6 @@
    "VENDITORE": "",
    "FONTE": "",
    "_PRIMO_INIZIO": "01/08/2026"
-  },
-  {
-   "CLIENTE": "Francesca Tognarelli",
-   "N FATTURA": "",
-   "STATO CLIENTE": "IN PERCORSO",
-   "PERCORSO": "6 mesi + 6 Gnocca",
-   "INIZIO PERCORSO": "01/08/2026",
-   "FINE PERCORSO": "01/08/2027",
-   "IMPORTO": "1850,82",
-   "METODO PAGAMENTO": "HeyLight",
-   "STATO PAGAMENTO": "SALDATO",
-   "TIPO INCASSO": "Nuovo Cliente",
-   "INCASSO": "1850,82",
-   "DATA INCASSO": "01/08/2026",
-   "TUTOR": "Margherita",
-   "TRAINER": "Niccolò",
-   "NUTRI": "Vanessa",
-   "VENDITORE": "Personal_G",
-   "FONTE": "",
-   "_PRIMO_INIZIO": "01/08/2026"
-  },
-  {
-   "CLIENTE": "Annalisa Guarriello",
-   "N FATTURA": "",
-   "STATO CLIENTE": "IN PERCORSO",
-   "PERCORSO": "6 mesi + 6 Gnocca",
-   "INIZIO PERCORSO": "03/08/2026",
-   "FINE PERCORSO": "03/08/2027",
-   "IMPORTO": "1668",
-   "METODO PAGAMENTO": "HeyLight",
-   "STATO PAGAMENTO": "SALDATO",
-   "TIPO INCASSO": "Nuovo Cliente",
-   "INCASSO": "1668",
-   "DATA INCASSO": "03/08/2026",
-   "TUTOR": "Andrea",
-   "TRAINER": "Federica",
-   "NUTRI": "",
-   "VENDITORE": "Personal_G",
-   "FONTE": "",
-   "_PRIMO_INIZIO": "03/08/2026"
-  },
-  {
-   "CLIENTE": "Solange Elizabeth Garcia Ycaza",
-   "N FATTURA": "",
-   "STATO CLIENTE": "IN PERCORSO",
-   "PERCORSO": "6 mesi + 6 Gnocca",
-   "INIZIO PERCORSO": "04/08/2026",
-   "FINE PERCORSO": "04/08/2027",
-   "IMPORTO": "1850,82",
-   "METODO PAGAMENTO": "HeyLight",
-   "STATO PAGAMENTO": "SALDATO",
-   "TIPO INCASSO": "Nuovo Cliente",
-   "INCASSO": "1850,82",
-   "DATA INCASSO": "04/08/2026",
-   "TUTOR": "Andrea",
-   "TRAINER": "Marco",
-   "NUTRI": "Sofia",
-   "VENDITORE": "Personal_G",
-   "FONTE": "",
-   "_PRIMO_INIZIO": "04/08/2026"
-  },
-  {
-   "CLIENTE": "Gloria Bani",
-   "N FATTURA": "",
-   "STATO CLIENTE": "IN PERCORSO",
-   "PERCORSO": "12 mesi",
-   "INIZIO PERCORSO": "04/08/2026",
-   "FINE PERCORSO": "04/08/2027",
-   "IMPORTO": "1428",
-   "METODO PAGAMENTO": "HeyLight",
-   "STATO PAGAMENTO": "SALDATO",
-   "TIPO INCASSO": "Nuovo Cliente",
-   "INCASSO": "1428",
-   "DATA INCASSO": "04/08/2026",
-   "TUTOR": "",
-   "TRAINER": "Fiorenzo",
-   "NUTRI": "",
-   "VENDITORE": "Personal_G",
-   "FONTE": "",
-   "_PRIMO_INIZIO": "04/08/2026"
   }
  ],
  "rimborsi": [
@@ -25526,7 +25409,7 @@
  },
  "rinnovi": {
   "Romina Bertaccini": {
-   "st": "rin"
+   "st": "da"
   },
   "Iolanda Mazzeo": {
    "st": "con"
@@ -26079,43 +25962,7 @@
    "INCASSO": "588",
    "DATA INCASSO": "01/08/2026",
    "TIPO INCASSO": "Nuovo Cliente"
-  },
-  {
-   "CLIENTE": "Francesca Tognarelli",
-   "INCASSO": "1850,82",
-   "DATA INCASSO": "04/08/2026",
-   "TIPO INCASSO": "Nuovo Cliente"
-  },
-  {
-   "CLIENTE": "Annalisa Guarriello",
-   "INCASSO": "1668",
-   "DATA INCASSO": "03/08/2026",
-   "TIPO INCASSO": "Nuovo Cliente"
-  },
-  {
-   "CLIENTE": "Francesca Tognarelli",
-   "INCASSO": "1850,82",
-   "DATA INCASSO": "01/08/2026",
-   "TIPO INCASSO": "Nuovo Cliente"
-  },
-  {
-   "CLIENTE": "Romina Bertaccini",
-   "INCASSO": "1164",
-   "DATA INCASSO": "04/08/2026",
-   "TIPO INCASSO": "Rinnovo"
-  },
-  {
-   "CLIENTE": "Solange Elizabeth Garcia Ycaza",
-   "INCASSO": "1850,82",
-   "DATA INCASSO": "04/08/2026",
-   "TIPO INCASSO": "Nuovo Cliente"
-  },
-  {
-   "CLIENTE": "Gloria Bani",
-   "INCASSO": "1428",
-   "DATA INCASSO": "04/08/2026",
-   "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
- "updatedAt": "2026-08-04T19:22:56.249Z"
+ "updatedAt": "2026-08-04T20:13:54.272Z"
 }
