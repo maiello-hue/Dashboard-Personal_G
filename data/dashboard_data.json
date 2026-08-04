@@ -2622,7 +2622,7 @@
   {
    "CLIENTE": "Tania Giuntoli",
    "STATO CLIENTE": "IN PERCORSO",
-   "PERCORSO": "12 mesi",
+   "PERCORSO": "ALL LIFE LONG",
    "INIZIO PERCORSO": "02/10/2025",
    "FINE PERCORSO": "02/10/2026",
    "IMPORTO": "€ 1.875,00",
@@ -2642,7 +2642,10 @@
    "CONTRATTO": "",
    "CHECK": "",
    "RISULTATO": "",
-   "_PRIMO_INIZIO": "02/10/2025"
+   "_PRIMO_INIZIO": "02/10/2025",
+   "N FATTURA": "",
+   "VENDITORE": "",
+   "FONTE": ""
   },
   {
    "CLIENTE": "Caterina Sottani",
@@ -25964,5 +25967,5 @@
    "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
- "updatedAt": "2026-08-04T20:13:54.272Z"
+ "updatedAt": "2026-08-04T20:25:00.018Z"
 }
