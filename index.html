@@ -1356,6 +1356,15 @@ const LS_CLIENTI='global_clienti_v1', LS_RIMBORSI='global_rimborsi_v1';
 const MESI=['GENNAIO','FEBBRAIO','MARZO','APRILE','MAGGIO','GIUGNO','LUGLIO','AGOSTO','SETTEMBRE','OTTOBRE','NOVEMBRE','DICEMBRE'];
 const MESI_SHORT=['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
 let DATA=[], RIMB=[], charts={}, role='TUTOR', abbCompRole='TUTOR', sortKey='INIZIO PERCORSO', sortDir=-1, expanded=new Set();
+/* Paginazione dell'elenco clienti principale (vista "Tutte", quella senza
+   raggruppamento per mese): senza questo limite, con migliaia di clienti la
+   tabella/le schede venivano ricostruite per intero a ogni modifica, anche
+   minima. Si riparte da CLIENT_LIST_PAGE ogni volta che cambia filtro,
+   ricerca o ordinamento (vedi renderTable), così l'utente vede sempre i primi
+   risultati pertinenti invece di un elenco troncato a metà su un filtro nuovo. */
+const CLIENT_LIST_PAGE=150;
+let clientListShown=CLIENT_LIST_PAGE;
+let _clientListSig=null;
 /* Diventa true se il caricamento dei dati clienti e/o rimborsi da questo
    dispositivo fallisce (localStorage corrotto/illeggibile): finché resta true
    blocchiamo il salvataggio automatico su GitHub (per non sovrascrivere la
@@ -1559,8 +1568,19 @@ function salvaObiettiviForm(){
    aggiornata invece che duplicata; se la data è diversa, viene aggiunta una
    voce nuova, preservando quella precedente. */
 const LS_INCASSI_LOG='global_incassi_log';
-function getIncassiLog(){ try{ return JSON.parse(localStorage.getItem(LS_INCASSI_LOG))||[]; }catch(e){ return []; } }
-function saveIncassiLog(log){ try{ localStorage.setItem(LS_INCASSI_LOG,JSON.stringify(log)); }catch(e){} }
+/* Cache in memoria: il log storico incassi viene letto molte volte per ogni
+   render() (KPI, grafici, elenchi), e a 2000+ clienti il JSON.parse ripetuto
+   dell'intero storico a ogni chiamata diventa il costo più facile da evitare.
+   getIncassiLog() ora legge da localStorage una sola volta e riusa sempre lo
+   stesso array finché non viene richiamata saveIncassiLog() (che aggiorna sia
+   la cache che il localStorage insieme, così restano sempre allineati). */
+let _incassiLogCache=null;
+function getIncassiLog(){
+  if(_incassiLogCache) return _incassiLogCache;
+  try{ _incassiLogCache=JSON.parse(localStorage.getItem(LS_INCASSI_LOG))||[]; }catch(e){ _incassiLogCache=[]; }
+  return _incassiLogCache;
+}
+function saveIncassiLog(log){ _incassiLogCache=log; try{ localStorage.setItem(LS_INCASSI_LOG,JSON.stringify(log)); }catch(e){} }
 function registraIncassoLog(cliente,importo,dataIt,tipo){
   if(!cliente||!dataIt||!(euro(importo)>0)) return;
   const log=getIncassiLog();
@@ -3271,7 +3291,12 @@ function buildCheckPage(){
   const gnoccaRows=DATA.filter(r=>isInPercorso(r)&&isGnocca(r)&&matches(r)).sort(byName);
   const sectionHtml=(title,rows)=>{
     const open=q?true:checkSectionsExpanded.has(title);
-    const rowsHtml=rows.map(r=>{
+    /* Le righe si costruiscono solo se la sezione è davvero aperta (o durante una
+       ricerca, che deve mostrare i risultati). Prima venivano generate sempre,
+       anche a sezione chiusa (solo nascoste via CSS): con centinaia/migliaia di
+       clienti "in percorso" era lavoro sprecato a ogni singolo aggiornamento
+       della pagina Check. */
+    const rowsHtml=open?(rows.map(r=>{
       const cliente=r['CLIENTE'];
       const manualExcl=(r['CHECK_ESCLUSA']||'').trim().toUpperCase()==='SI'&&r['CHECK_ESCLUSA_MESE']===meseSel;
       /* Niente più etichetta testuale tra parentesi né testo affievolito per le
@@ -3287,8 +3312,8 @@ function buildCheckPage(){
         <span class="check-col-toggle">${checkSegHtml(cliente,'CHECK',checkValMese(r,'CHECK',meseSel),isCurrentMonth)}</span>
         <span class="check-col-toggle">${checkSegHtml(cliente,'RISULTATO',checkValMese(r,'RISULTATO',meseSel),isCurrentMonth)}</span>
       </div>`;
-    }).join('')||`<div class="sub">${q?'Nessuna cliente trovata.':'Nessuna cliente in questa categoria.'}</div>`;
-    const headerHtml=rows.length?`<div class="check-header-row">
+    }).join('')||`<div class="sub">${q?'Nessuna cliente trovata.':'Nessuna cliente in questa categoria.'}</div>`):'';
+    const headerHtml=open&&rows.length?`<div class="check-header-row">
       <span class="check-col-name"></span>
       <span class="check-col-eye"></span>
       <span class="check-col-toggle">Check</span>
@@ -4536,6 +4561,12 @@ function renderTable(rows){
      quella davvero visibile; l'altra si aggiorna comunque al prossimo giro
      utile (cambio pagina o resize, vedi listener più sotto). */
   const isMobileView=window.matchMedia('(max-width:600px)').matches;
+  /* Se cambia filtro categoria, ricerca o ordinamento, la paginazione riparte
+     da capo: altrimenti dopo aver premuto "Mostra altri" su un elenco e poi
+     cambiato filtro si rischiava di vedere un numero di righe che non
+     corrispondeva più a nulla di intuitivo per l'utente. */
+  const listSig=catFilter+'|'+sortKey+'|'+sortDir+'|'+(document.getElementById('f-search')?.value||'');
+  if(listSig!==_clientListSig){ _clientListSig=listSig; clientListShown=CLIENT_LIST_PAGE; }
   if(catFilter==='storico'){
     /* Storico raggruppato per mese di fine percorso: ogni gruppo parte chiuso,
        l'elenco delle clienti compare solo al clic sull'intestazione del mese. */
@@ -4553,10 +4584,26 @@ function renderTable(rows){
       return header+body;
     }).join('')||'<div class="sub">Nessuna cliente in Storico.</div>';
   } else {
-    if(!isMobileView) document.getElementById('tbody').innerHTML=rowsCalc.map(desktopRowHtml).join('');
-    if(isMobileView&&ccList) ccList.innerHTML=rowsCalc.map(mobileCardHtml).join('');
+    /* Vista senza raggruppamento (default "Tutte"/Premium/Gnocca): è quella che a
+       2000+ clienti rischia di generare migliaia di righe DOM in un colpo solo a
+       ogni modifica. Mostriamo solo le prime clientListShown e un bottone
+       "Mostra altri" per le restanti, invece di costruirle tutte comunque. */
+    const visibleCalc=rowsCalc.slice(0,clientListShown);
+    const remaining=rowsCalc.length-visibleCalc.length;
+    if(!isMobileView){
+      const loadMoreRow=remaining>0?`<tr><td colspan="10" style="text-align:center;padding:16px"><button class="btn ghost" onclick="mostraAltriClienti()">Mostra altri ${Math.min(remaining,CLIENT_LIST_PAGE)} (${remaining} rimanenti)</button></td></tr>`:'';
+      document.getElementById('tbody').innerHTML=visibleCalc.map(desktopRowHtml).join('')+loadMoreRow;
+    }
+    if(isMobileView&&ccList){
+      const loadMoreCard=remaining>0?`<div style="text-align:center;padding:16px"><button class="btn ghost" onclick="mostraAltriClienti()">Mostra altri ${Math.min(remaining,CLIENT_LIST_PAGE)} (${remaining} rimanenti)</button></div>`:'';
+      ccList.innerHTML=visibleCalc.map(mobileCardHtml).join('')+loadMoreCard;
+    }
   }
   window._sorted=sorted;
+}
+function mostraAltriClienti(){
+  clientListShown+=CLIENT_LIST_PAGE;
+  render();
 }
 function toggleExp(i){
   const name=window._sorted[i]['CLIENTE'];
