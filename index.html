@@ -461,6 +461,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
 .row-icon-actions .icon-btn:not(.danger){color:var(--text)}
 .row-icon-actions select.pill-btn{font-weight:300}
 .row-icon-actions .icon-btn{width:34px;height:34px;border-radius:50%;border-color:var(--border)}
+.row-icon-actions .icon-btn .ico i{font-size:15px}
 .icon-btn{width:28px;height:28px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--border-strong);background:var(--card);color:var(--muted);border-radius:8px;cursor:pointer;transition:background .15s ease,opacity .15s ease}
 .icon-btn .ico{margin-right:0}
 .icon-btn:hover{background:var(--card2)}
@@ -4749,10 +4750,10 @@ function renderTable(rows){
         <span class="detail-item" title="Risultato">${DI.star}${esc(r['RISULTATO']||'—')}</span>
         <span class="row-icon-actions" onclick="event.stopPropagation()">
           <select class="pill-btn" title="Cambia stato cliente" onchange="cambiaStatoCliente('${jsEsc(r['CLIENTE'])}',this.value)">${statoOpts.map(o=>`<option value="${esc(o)}"${(r['STATO CLIENTE']||'')===o?' selected':''}>${esc(statoLabel(o))}</option>`).join('')}</select>
-          <button class="icon-btn" title="Modifica" onclick="apriModificaCliente('${jsEsc(r['CLIENTE'])}')">${ic('edit')}</button>
-          <button class="icon-btn" title="Rinnova abbonamento / imposta pagamento a rate" onclick="apriRinnovaAbbonamento('${jsEsc(r['CLIENTE'])}')">${ic('sync')}</button>
-          ${catFilter==='storico'?`<button class="icon-btn" title="Rimborsa" onclick="apriRimborsaCliente('${jsEsc(r['CLIENTE'])}')">${ic('undo')}</button>`:''}
-          <button class="icon-btn danger" title="Elimina cliente" onclick="eliminaCliente('${jsEsc(r['CLIENTE'])}')">${ic('trash')}</button>
+          <button class="icon-btn" title="Modifica" onclick="apriModificaCliente('${jsEsc(r['CLIENTE'])}')"><span class="ico"><i class="fa-solid fa-pen"></i></span></button>
+          <button class="icon-btn" title="Rinnova abbonamento / imposta pagamento a rate" onclick="apriRinnovaAbbonamento('${jsEsc(r['CLIENTE'])}')"><span class="ico"><i class="fa-solid fa-rotate-right"></i></span></button>
+          ${catFilter==='storico'?`<button class="icon-btn" title="Rimborsa" onclick="apriRimborsaCliente('${jsEsc(r['CLIENTE'])}')"><span class="ico"><i class="fa-solid fa-rotate-left"></i></span></button>`:''}
+          <button class="icon-btn danger" title="Elimina cliente" onclick="eliminaCliente('${jsEsc(r['CLIENTE'])}')"><span class="ico"><i class="fa-solid fa-trash"></i></span></button>
         </span>`;
     const arch=pdate(r['DATA ARCHIVIAZIONE']);
     return {r,i,ini,fin,arch,prog,pctVal,pctCls,finTxt,finLabel,scad,renBadge,detailInner};
