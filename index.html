@@ -54,7 +54,10 @@ h1{font-size:22px;font-weight:500}
 .sidebar-close-btn{display:none;position:absolute;top:12px;right:12px;background:var(--card2);border:none;color:var(--muted);width:30px;height:30px;border-radius:50%;font-size:15px;cursor:pointer;align-items:center;justify-content:center}
 .sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(15,15,14,.5);z-index:999;opacity:0;transition:opacity .25s ease}
 .sidebar-backdrop.open{display:block;opacity:1}
-.topbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px}
+.topbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;background:#18181a;border-radius:16px;padding:16px 22px}
+.topbar h1{color:#fff;font-weight:300}
+.topbar .sub{color:#8b8a83}
+.hamburger-btn{color:#fff}
 .btn{background:var(--text);color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:400;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:opacity .15s ease}
 .btn:hover{opacity:.88}
 .btn.ghost{background:var(--card2);border:1px solid var(--border-strong);color:var(--text)}
@@ -83,7 +86,10 @@ h1{font-size:22px;font-weight:500}
 .dash-hero:hover{filter:brightness(.98);box-shadow:0 2px 8px rgba(0,0,0,.06)}
 .dash-hero-top{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px;margin-bottom:14px}
 .dash-hero-top .l{font-size:13px;color:var(--muted);font-weight:400}
-.dash-hero-top .v{font-size:32px;font-weight:500;margin-top:4px}
+.dash-hero-top .v{font-size:40px;font-weight:300;margin-top:4px}
+.dash-hero-goal{border-top:1px solid var(--border);margin-top:14px;padding-top:12px}
+.dash-hero-goal h3{font-size:11px;color:var(--muted2);text-transform:uppercase;letter-spacing:.4px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+#goal-nuove-fill{background:var(--accent)}
 .dash-hero-top .d{font-size:12px;color:var(--muted2)}
 .dash-bar{display:flex;height:10px;border-radius:6px;overflow:hidden;background:var(--border)}
 .dash-bar-seg{transition:width .3s ease}
@@ -137,6 +143,8 @@ h1{font-size:22px;font-weight:500}
   .dash-alert{padding:10px 12px}
 }
 .mese-sel-row{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+#page-dashboard .mese-sel-row{justify-content:flex-end}
+#dash-mese-select{background:#18181a;color:#fff;border:none;border-radius:999px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer}
 .fonte-section{border:1px solid var(--border);border-radius:10px;margin-top:10px;overflow:hidden}
 .fonte-section:first-child{margin-top:0}
 .fonte-section-head{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;cursor:pointer;background:var(--card2);font-size:14px;font-weight:500;transition:background .12s ease}
@@ -771,16 +779,23 @@ h3 .ico,.sub .ico{color:var(--muted)}
           <div class="d" id="k-tot-d"></div>
         </div>
         <div class="dash-bar" id="dash-bar">
-          <div class="dash-bar-seg" id="bar-att" style="background:#1f9d63;width:0%"></div>
-          <div class="dash-bar-seg" id="bar-cong" style="background:#2f7fd1;width:0%"></div>
-          <div class="dash-bar-seg" id="bar-spar" style="background:#b5720f;width:0%"></div>
+          <div class="dash-bar-seg" id="bar-att" style="background:var(--accent);width:0%"></div>
+          <div class="dash-bar-seg" id="bar-cong" style="background:var(--text);width:0%"></div>
+          <div class="dash-bar-seg" id="bar-spar" style="background:var(--muted);width:0%"></div>
           <div class="dash-bar-seg" id="bar-mai" style="background:#8b8a83;width:0%"></div>
         </div>
         <div class="dash-legend">
-          <span><i class="dash-dot" style="background:#1f9d63"></i>In percorso <b id="leg-att">–</b></span>
-          <span><i class="dash-dot" style="background:#2f7fd1"></i>Congelate <b id="leg-cong">–</b></span>
-          <span><i class="dash-dot" style="background:#b5720f"></i>Sparite <b id="leg-spar">–</b></span>
+          <span><i class="dash-dot" style="background:var(--accent)"></i>In percorso <b id="leg-att">–</b></span>
+          <span><i class="dash-dot" style="background:var(--text)"></i>Congelate <b id="leg-cong">–</b></span>
+          <span><i class="dash-dot" style="background:var(--muted)"></i>Sparite <b id="leg-spar">–</b></span>
           <span><i class="dash-dot" style="background:#8b8a83"></i>Mai iniziato <b id="leg-mai">–</b></span>
+        </div>
+        <div class="dash-hero-goal" id="goal-nuove-card" style="display:none" onclick="event.stopPropagation()">
+          <h3><i class="fa-solid fa-bullseye"></i>Obiettivo mensile — nuove clienti</h3>
+          <div class="goal-bar-wrap">
+            <div class="goal-bar"><div class="goal-bar-fill" id="goal-nuove-fill" style="width:0%"></div></div>
+            <div class="goal-bar-label" id="goal-nuove-label"></div>
+          </div>
         </div>
       </div>
 
@@ -792,14 +807,6 @@ h3 .ico,.sub .ico{color:var(--muted)}
       <div class="dash-alert dash-alert-risk" id="dash-alert-rischio" style="display:none" onclick="apriListaClienti('rischio')">
         <span class="dash-alert-ico"><i class="fa-solid fa-triangle-exclamation"></i></span>
         <div class="dash-alert-text"><b id="k-rischio">–</b> clienti in percorso senza check da almeno 2 mesi <span class="dash-alert-sub">— possibile segnale di abbandono, da ricontattare</span></div>
-      </div>
-
-      <div class="card" id="goal-nuove-card" style="display:none;margin-bottom:16px">
-        <h3><span class="ico"><i class="fa-solid fa-bullseye"></i></span>Obiettivo mensile — nuove clienti</h3>
-        <div class="goal-bar-wrap">
-          <div class="goal-bar"><div class="goal-bar-fill" id="goal-nuove-fill" style="width:0%"></div></div>
-          <div class="goal-bar-label" id="goal-nuove-label"></div>
-        </div>
       </div>
 
       <div class="kpis kpis-v2">
