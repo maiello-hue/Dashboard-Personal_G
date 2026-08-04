@@ -5453,7 +5453,7 @@
   },
   {
    "CLIENTE": "Roberta Perrone",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "CONGELATO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "18/11/2025",
    "FINE PERCORSO": "18/11/2026",
@@ -5476,7 +5476,10 @@
    "RISULTATO": "SI",
    "DATA CHECK": "31/07/2026",
    "_CHECK_JULY_FIX": "1",
-   "_PRIMO_INIZIO": "18/11/2025"
+   "_PRIMO_INIZIO": "18/11/2025",
+   "N FATTURA": "",
+   "VENDITORE": "",
+   "FONTE": ""
   },
   {
    "CLIENTE": "Silvia Marzoli",
@@ -12474,7 +12477,7 @@
   },
   {
    "CLIENTE": "Anna Genovese",
-   "STATO CLIENTE": "CONGELATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "26/02/2026",
    "FINE PERCORSO": "26/08/2026",
@@ -12498,9 +12501,7 @@
    "FONTE": "ORGANICO",
    "DATA CHECK": "31/07/2026",
    "_CHECK_JULY_FIX": "1",
-   "_PRIMO_INIZIO": "26/02/2026",
-   "N FATTURA": "",
-   "VENDITORE": ""
+   "_PRIMO_INIZIO": "26/02/2026"
   },
   {
    "CLIENTE": "Letizia Mari",
@@ -25966,5 +25967,5 @@
    "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
- "updatedAt": "2026-08-04T13:45:23.433Z"
+ "updatedAt": "2026-08-04T13:45:41.532Z"
 }
