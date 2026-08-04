@@ -10964,7 +10964,7 @@
   },
   {
    "CLIENTE": "Eleonora Padovan",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "NON RINNOVATO",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "08/02/2026",
    "FINE PERCORSO": "08/08/2026",
@@ -10986,7 +10986,10 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "ADV",
-   "_PRIMO_INIZIO": "08/02/2026"
+   "_PRIMO_INIZIO": "08/02/2026",
+   "N FATTURA": "",
+   "DATA ARCHIVIAZIONE": "04/08/2026",
+   "VENDITORE": ""
   },
   {
    "CLIENTE": "Stefania Rossi",
@@ -13115,7 +13118,7 @@
   },
   {
    "CLIENTE": "Angela Anselmetti",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "ABBANDONATO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "03/03/2026",
    "FINE PERCORSO": "03/03/2027",
@@ -13139,7 +13142,10 @@
    "FONTE": "INSTAGRAM",
    "DATA CHECK": "31/07/2026",
    "_CHECK_JULY_FIX": "1",
-   "_PRIMO_INIZIO": "03/03/2026"
+   "_PRIMO_INIZIO": "03/03/2026",
+   "N FATTURA": "",
+   "DATA ARCHIVIAZIONE": "04/08/2026",
+   "VENDITORE": ""
   },
   {
    "CLIENTE": "Claudia Tiberio",
@@ -25934,5 +25940,5 @@
    "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
- "updatedAt": "2026-08-04T13:39:42.751Z"
+ "updatedAt": "2026-08-04T13:40:46.417Z"
 }
