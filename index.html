@@ -295,7 +295,7 @@ h1{font-size:22px;font-weight:500}
 #page-rinnovi h3:has(.scad-head){justify-content:flex-start;gap:22px}
 #page-rinnovi .scad-head{flex:1 1 auto}
 #page-rinnovi .scad-head select{margin-left:auto}
-#page-compensi .kpis-v2 .kpi-purple,#page-compensi .kpis-v2 .kpi-azzurro,#page-compensi .kpis-v2 .kpi-yellow{border-left-color:var(--text)}
+#page-compensi .kpis-v2 .kpi-purple,#page-compensi .kpis-v2 .kpi-azzurro,#page-compensi .kpis-v2 .kpi-yellow,#page-compensi .kpis-v2 .kpi-green{border-left-color:var(--text)}
 #page-compensi .kpis-v2 .kpi-gray{border-left-color:var(--accent)}
 #page-compensi .kpis-v2 .kpi-gray .v{color:var(--accent)}
 #page-compensi .card h3{font-weight:300;font-size:17px;justify-content:flex-start}
@@ -1161,7 +1161,7 @@ h3 .ico,.sub .ico{color:var(--muted)}
         <div class="card span12"><h3><span class="ico" style="color:var(--accent)"><i class="fa-solid fa-apple-whole"></i></span>Nutrizionista</h3><div id="comp-nutri"></div></div>
       </div>
 
-      <h3 style="margin:22px 0 6px">Provvigioni venditori</h3>
+      <h3 style="margin:22px 0 6px;font-weight:300;display:flex;align-items:center;gap:9px"><span class="ico" style="color:var(--accent)"><i class="fa-solid fa-user-tie"></i></span>Provvigioni venditori</h3>
       <div class="sub" style="margin-bottom:10px">
         Provvigione calcolata sulle clienti entrate nel mese scelto (data inizio percorso), in base all'incasso registrato: € 1.850,82 → € 180 · € 1.668 → € 120 · € 1.428 → € 100 · € 680 → € 60.
         Se l'incasso di una cliente non corrisponde a nessuno di questi importi la provvigione resta a € 0 e va inserita a mano sulla sua riga.
@@ -3015,7 +3015,7 @@ function buildProvvigioni(){
     const open=provvigioniExpanded.has(name);
     return `<div class="fonte-section">
       <div class="fonte-section-head" onclick="toggleProvvigioni('${jsEsc(name)}')">
-        <span>${vendBadge(name)}</span>
+        <span style="font-weight:500">${esc(name)}</span>
         <span class="count">${fmtE(nameTotal)} · ${clientiMese.length} client${clientiMese.length===1?'e':'e'} <span class="fonte-caret">${open?'▾':'▸'}</span></span>
       </div>
       <div class="fonte-section-body" style="display:${open?'block':'none'}">${rowsHtml||'<div class="sub">Nessuna cliente entrata in questo mese.</div>'}</div>
@@ -3031,8 +3031,8 @@ function buildProvvigioni(){
       const hasOverride=Object.prototype.hasOwnProperty.call(PROV_OVERRIDES,cliente);
       return s+(hasOverride?PROV_OVERRIDES[cliente]:provvigioneAuto(euro(r['INCASSO'])));
     },0);
-    return `<div class="kpi ${cls}"><div class="kpi-ic" style="color:#1f9d63"><i class="fa-solid fa-user-tie"></i></div><div class="l">${esc(name)}</div><div class="v">${fmtE(tot)}</div></div>`;
-  }).join('')+`<div class="kpi kpi-gray"><div class="kpi-ic" style="color:#37424f"><i class="fa-solid fa-sack-dollar"></i></div><div class="l">Totale provvigioni</div><div class="v">${fmtE(grandTotal)}</div></div>`;
+    return `<div class="kpi ${cls}"><div class="kpi-ic" style="color:var(--text)"><i class="fa-solid fa-user-tie"></i></div><div class="l">${esc(name)}</div><div class="v">${fmtE(tot)}</div></div>`;
+  }).join('')+`<div class="kpi kpi-gray"><div class="kpi-ic" style="color:var(--accent)"><i class="fa-solid fa-sack-dollar"></i></div><div class="l">Totale provvigioni</div><div class="v">${fmtE(grandTotal)}</div></div>`;
 }
 /* ---------- pagina Check: elenco clienti con check/risultato sì-no, per Premium/Gnocca ---------- */
 let checkSectionsExpanded=new Set(['Premium','Gnocca']);
