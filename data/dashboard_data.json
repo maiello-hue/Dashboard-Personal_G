@@ -17505,7 +17505,7 @@
   },
   {
    "CLIENTE": "Anna Ricco",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "ABBANDONATO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "06/05/2026",
    "FINE PERCORSO": "06/05/2027",
@@ -17529,7 +17529,9 @@
    "FONTE": "INSTAGRAM",
    "EMAIL": "",
    "VENDITORE": "",
-   "_PRIMO_INIZIO": "06/05/2026"
+   "_PRIMO_INIZIO": "06/05/2026",
+   "N FATTURA": "",
+   "DATA ARCHIVIAZIONE": "04/08/2026"
   },
   {
    "CLIENTE": "Elena Turrisi",
@@ -25932,5 +25934,5 @@
    "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
- "updatedAt": "2026-08-04T13:38:54.250Z"
+ "updatedAt": "2026-08-04T13:39:42.751Z"
 }
