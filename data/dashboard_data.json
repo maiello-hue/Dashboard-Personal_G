@@ -7247,7 +7247,7 @@
   },
   {
    "CLIENTE": "Barbara Cagnazzo",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "NON RINNOVATO",
    "PERCORSO": "4 mesi",
    "INIZIO PERCORSO": "23/12/2025",
    "FINE PERCORSO": "23/04/2026",
@@ -7269,7 +7269,10 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "ADV",
-   "_PRIMO_INIZIO": "23/12/2025"
+   "_PRIMO_INIZIO": "23/12/2025",
+   "N FATTURA": "",
+   "DATA ARCHIVIAZIONE": "04/08/2026",
+   "VENDITORE": ""
   },
   {
    "CLIENTE": "Francesca Di Laura",
@@ -25947,5 +25950,5 @@
    "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
- "updatedAt": "2026-08-04T13:41:30.729Z"
+ "updatedAt": "2026-08-04T13:42:20.301Z"
 }
