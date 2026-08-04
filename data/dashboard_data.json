@@ -10743,7 +10743,7 @@
   },
   {
    "CLIENTE": "Nancy Fraccalvieri",
-   "STATO CLIENTE": "SPARITA",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "05/02/2026",
    "FINE PERCORSO": "05/02/2027",
@@ -10765,7 +10765,9 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "ADV",
-   "_PRIMO_INIZIO": "05/02/2026"
+   "_PRIMO_INIZIO": "05/02/2026",
+   "N FATTURA": "",
+   "VENDITORE": ""
   },
   {
    "CLIENTE": "Mariarosaria Lerro",
@@ -26115,5 +26117,5 @@
    "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
- "updatedAt": "2026-08-04T19:21:23.703Z"
+ "updatedAt": "2026-08-04T19:22:56.249Z"
 }
