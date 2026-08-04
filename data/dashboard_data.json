@@ -10510,7 +10510,7 @@
   },
   {
    "CLIENTE": "Rebecca Ceredi",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "NON RINNOVATO",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "04/02/2026",
    "FINE PERCORSO": "04/08/2026",
@@ -10534,7 +10534,10 @@
    "FONTE": "ADV",
    "DATA CHECK": "31/07/2026",
    "_CHECK_JULY_FIX": "1",
-   "_PRIMO_INIZIO": "04/02/2026"
+   "_PRIMO_INIZIO": "04/02/2026",
+   "N FATTURA": "",
+   "DATA ARCHIVIAZIONE": "04/08/2026",
+   "VENDITORE": ""
   },
   {
    "CLIENTE": "Simona Mugnaini",
@@ -25957,5 +25960,5 @@
    "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
- "updatedAt": "2026-08-04T13:43:06.382Z"
+ "updatedAt": "2026-08-04T13:43:25.566Z"
 }
