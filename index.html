@@ -470,6 +470,8 @@ h3 .ico,.sub .ico{color:var(--muted)}
 .pill-btn .ico svg{width:11px;height:11px}
 .pill-btn:hover{background:var(--card2);color:var(--text)}
 .pill-btn.danger:hover{background:#fcebeb;color:#791f1f;border-color:#f3d9d9}
+select.pill-btn{-webkit-appearance:none;appearance:none;padding-right:24px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23767c8a' d='M4 6l4 4 4-4z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;background-size:10px}
+select.pill-btn:focus{outline:none;border-color:var(--border-strong)}
 .modal-overlay{position:fixed;inset:0;background:rgba(15,15,14,.5);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px}
 .modal-card{background:var(--card);border-radius:14px;padding:22px 24px;max-width:680px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.3)}
 .modal-card h3{font-size:15px;margin-bottom:14px}
@@ -3895,6 +3897,26 @@ function eliminaCliente(nome){
   saveClienti();
   buildFilters(); render();
 }
+/* Cambio rapido dello Stato direttamente dalla riga a scomparsa dell'elenco
+   clienti, senza dover aprire "Modifica". Replica la stessa regola già usata
+   nel form di modifica completo (salvaClienteModal) per DATA ARCHIVIAZIONE:
+   se il nuovo stato è di tipo Abbandono/Non rinnovo la valorizza a oggi (solo
+   se non c'era già una data, per non spostare quella reale se si passa da un
+   tipo di archiviazione all'altro), altrimenti la rimuove — così una cliente
+   riportata "In percorso" non resta agganciata a una vecchia archiviazione. */
+function cambiaStatoCliente(nome,nuovoStato){
+  const r=DATA.find(x=>x['CLIENTE']===nome);
+  if(!r||!nuovoStato||r['STATO CLIENTE']===nuovoStato) return;
+  r['STATO CLIENTE']=nuovoStato;
+  if(isArchiviata(r)){
+    if(!r['DATA ARCHIVIAZIONE']) r['DATA ARCHIVIAZIONE']=todayIt();
+  } else {
+    delete r['DATA ARCHIVIAZIONE'];
+  }
+  saveClienti();
+  buildFilters();
+  render();
+}
 
 /* ---------- render ---------- */
 const PALETTE=['#4f6fe0','#1f9d63','#b5720f','#d23f3f','#2f7fd1','#7c56d9','#d1568c','#a1780a','#0d7d72','#767c8a'];
@@ -4692,6 +4714,10 @@ function renderTable(rows){
     return (x<y?-1:x>y?1:0)*sortDir;
   });
   const now=new Date();
+  /* Stessa lista di opzioni già usata dal menu "Stato" nel form di modifica
+     completo (vedi selectFieldHtml/acSourceValues), calcolata una sola volta
+     per l'intero elenco invece che per ogni riga. */
+  const statoOpts=acSourceValues('STATO CLIENTE');
   document.getElementById('tcount').textContent=`(${sorted.length})`;
   const rowsCalc=sorted.map((r,i)=>{
     const ini=pdate(r['INIZIO PERCORSO']), fin=pdate(r['FINE PERCORSO']);
@@ -4719,6 +4745,7 @@ function renderTable(rows){
         <span class="detail-item" title="Check">${DI.checkbox}${esc(r['CHECK']||'—')}</span>
         <span class="detail-item" title="Risultato">${DI.star}${esc(r['RISULTATO']||'—')}</span>
         <span class="row-icon-actions" onclick="event.stopPropagation()">
+          <select class="pill-btn" title="Cambia stato cliente" onchange="cambiaStatoCliente('${jsEsc(r['CLIENTE'])}',this.value)">${statoOpts.map(o=>`<option value="${esc(o)}"${(r['STATO CLIENTE']||'')===o?' selected':''}>${esc(statoLabel(o))}</option>`).join('')}</select>
           <button class="pill-btn" title="Modifica" onclick="apriModificaCliente('${jsEsc(r['CLIENTE'])}')">${ic('edit')}Modifica</button>
           <button class="pill-btn" title="Rinnova abbonamento / imposta pagamento a rate" onclick="apriRinnovaAbbonamento('${jsEsc(r['CLIENTE'])}')">${ic('sync')}Rinnova</button>
           ${catFilter==='storico'?`<button class="pill-btn" title="Rimborsa" onclick="apriRimborsaCliente('${jsEsc(r['CLIENTE'])}')">${ic('undo')}Rimborsa</button>`:''}
