@@ -3161,7 +3161,7 @@
   },
   {
    "CLIENTE": "Marika Liburdi",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "SPARITA",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "17/10/2025",
    "FINE PERCORSO": "17/10/2026",
@@ -26366,5 +26366,5 @@
    "DATA": "31/07/2026"
   }
  ],
- "updatedAt": "2026-08-04T21:37:28.741Z"
+ "updatedAt": "2026-08-04T21:37:49.724Z"
 }
