@@ -2823,7 +2823,7 @@
   },
   {
    "CLIENTE": "Giulia Villanova",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "SPARITA",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "07/10/2025",
    "FINE PERCORSO": "07/10/2026",
@@ -26139,5 +26139,232 @@
    "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
- "updatedAt": "2026-08-04T20:52:30.032Z"
+ "archivioLog": [
+  {
+   "CLIENTE": "Federica Bordin",
+   "STATO": "NON RINNOVATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Maria Fernarda Ramello",
+   "STATO": "NON RINNOVATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Alessia Di Gennaro",
+   "STATO": "NON RINNOVATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Daniela Orlando",
+   "STATO": "NON RINNOVATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Chiara Natali",
+   "STATO": "NON RINNOVATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Iolanda Mazzeo",
+   "STATO": "NON RINNOVATO",
+   "DATA": "28/07/2026"
+  },
+  {
+   "CLIENTE": "Jessica Venturi",
+   "STATO": "NON RINNOVATO",
+   "DATA": "04/08/2026"
+  },
+  {
+   "CLIENTE": "Federica Lattanzi",
+   "STATO": "NON RINNOVATO",
+   "DATA": "04/08/2026"
+  },
+  {
+   "CLIENTE": "Elena Viola",
+   "STATO": "NON RINNOVATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Olga Incoronato",
+   "STATO": "NON RINNOVATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Giulia Medico",
+   "STATO": "ABBANDONATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Elisabetta Salustri",
+   "STATO": "NON RINNOVATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Alice Forchetti",
+   "STATO": "ABBANDONATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Barbara Cagnazzo",
+   "STATO": "NON RINNOVATO",
+   "DATA": "04/08/2026"
+  },
+  {
+   "CLIENTE": "Chiara Di Carlo",
+   "STATO": "NON RINNOVATO",
+   "DATA": "04/08/2026"
+  },
+  {
+   "CLIENTE": "Alessandra Moleri",
+   "STATO": "NON RINNOVATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Sonia Cherubini",
+   "STATO": "NON RINNOVATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Patrizia Irrera",
+   "STATO": "NON RINNOVATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Desiree Dalla Nora",
+   "STATO": "NON RINNOVATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Rosalba Lagioia",
+   "STATO": "NON RINNOVATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Chiara Cellino",
+   "STATO": "NON RINNOVATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Monia Lerose",
+   "STATO": "NON RINNOVATO",
+   "DATA": "04/08/2026"
+  },
+  {
+   "CLIENTE": "Oriana Caporali",
+   "STATO": "NON RINNOVATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Cinzia Trane",
+   "STATO": "NON RINNOVATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Giuditta Casprini",
+   "STATO": "ABBANDONATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Nicole Viale",
+   "STATO": "NON RINNOVATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Alina Mihai",
+   "STATO": "ABBANDONATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Rebecca Ceredi",
+   "STATO": "NON RINNOVATO",
+   "DATA": "04/08/2026"
+  },
+  {
+   "CLIENTE": "Eleonora Padovan",
+   "STATO": "NON RINNOVATO",
+   "DATA": "04/08/2026"
+  },
+  {
+   "CLIENTE": "Nadia Djilali",
+   "STATO": "ABBANDONATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Angela Anselmetti",
+   "STATO": "ABBANDONATO",
+   "DATA": "04/08/2026"
+  },
+  {
+   "CLIENTE": "Esmeralda Bici",
+   "STATO": "ABBANDONATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Daniela Bonechi",
+   "STATO": "NON RINNOVATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Valeria Scalia",
+   "STATO": "ABBANDONATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Claudia De Cillis",
+   "STATO": "ABBANDONATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Sara Scaramelli",
+   "STATO": "ABBANDONATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Francesca Clerici",
+   "STATO": "ABBANDONATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Nilufar Rezaieh",
+   "STATO": "ABBANDONATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Anna Ricco",
+   "STATO": "ABBANDONATO",
+   "DATA": "04/08/2026"
+  },
+  {
+   "CLIENTE": "Sara Mottola",
+   "STATO": "ABBANDONATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Simona Mandolini",
+   "STATO": "ABBANDONATO",
+   "DATA": "04/08/2026"
+  },
+  {
+   "CLIENTE": "Maristella Battafarano",
+   "STATO": "ABBANDONATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Jessica Colletti",
+   "STATO": "ABBANDONATO",
+   "DATA": "29/07/2026"
+  },
+  {
+   "CLIENTE": "Erica Innocenti",
+   "STATO": "ABBANDONATO",
+   "DATA": "31/07/2026"
+  },
+  {
+   "CLIENTE": "Annarita Garofalo",
+   "STATO": "ABBANDONATO",
+   "DATA": "31/07/2026"
+  }
+ ],
+ "updatedAt": "2026-08-04T21:37:28.741Z"
 }
