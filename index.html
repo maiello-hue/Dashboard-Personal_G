@@ -1624,6 +1624,21 @@ function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2
    ============================================================ */
 const GH_KEY='gh_settings_v1', GH_PATH='data/dashboard_data.json';
 let GH_SHA=null, GH_SYNC_TIMER=null, GH_BUSY=false, GH_LAST_UPDATED_AT=null;
+/* GH_LAST_UPDATED_AT è la "base" su cui questo dispositivo ha fatto le sue ultime
+   modifiche: se al momento di salvare scopriamo che su GitHub c'è un updatedAt
+   diverso da questo, vuol dire che un altro dispositivo ha scritto nel frattempo
+   qualcosa che qui non abbiamo ancora visto. Va salvata anche in localStorage
+   (non solo in memoria) perché altrimenti, ricaricando la pagina con modifiche
+   locali non ancora inviate (GH_DIRTY), questo controllo ripartirebbe da null e
+   non riconoscerebbe più un conflitto già in corso, sovrascrivendo alla cieca. */
+const LS_GH_LAST_UPDATED='gh_last_updated_v1';
+function setGhLastUpdated(v){ GH_LAST_UPDATED_AT=v||null; try{ v?localStorage.setItem(LS_GH_LAST_UPDATED,v):localStorage.removeItem(LS_GH_LAST_UPDATED); }catch(e){} }
+function loadGhLastUpdated(){ try{ GH_LAST_UPDATED_AT=localStorage.getItem(LS_GH_LAST_UPDATED)||null; }catch(e){ GH_LAST_UPDATED_AT=null; } }
+/* true quando pushPendingNow ha rilevato che il file remoto è cambiato rispetto
+   alla base delle modifiche locali: finché non viene risolto (vedi banner),
+   sospendiamo sia gli invii automatici sia l'applicazione automatica dei dati
+   remoti, per non far sparire in silenzio il lavoro di nessuno dei due lati. */
+let GH_CONFLICT=false;
 /* GH_DIRTY: tiene traccia di modifiche locali salvate (localStorage) ma non ancora
    inviate a GitHub. Persistito in localStorage (non solo in memoria) perché deve
    sopravvivere a un ricaricamento della pagina: se l'utente elimina/modifica una
@@ -1710,7 +1725,7 @@ function applyAllData(d){
   try{localStorage.setItem(REN_KEY,JSON.stringify(d.rinnovi||{}));}catch(e){}
   if(Array.isArray(d.incassiLog)) saveIncassiLog(d.incassiLog);
 }
-async function pushPendingNow(){
+async function pushPendingNow(force){
   /* invia subito (senza debounce) i dati locali correnti a GitHub. Usata sia dal
      timer normale di scheduleGithubSync, sia da syncFromGithub quando trova
      modifiche locali non ancora inviate (GH_DIRTY), per evitare che una lettura
@@ -1721,10 +1736,29 @@ async function pushPendingNow(){
   GH_BUSY=true;
   try{
     setGhStatus(ic('sync')+'Salvataggio su GitHub…');
+    if(!force){
+      /* Controlliamo se un altro dispositivo ha scritto un file diverso da quello
+         su cui si basano le modifiche fatte qui, PRIMA di sovrascriverlo: la
+         scrittura su GitHub (ghPutFile) da sola gestisce solo il conflitto
+         "tecnico" (sha non più valido, riprovando in automatico), non quello
+         "di significato" — cioè che i dati remoti siano nel frattempo cambiati
+         davvero. Senza questo controllo saremmo comunque "l'ultimo che scrive
+         vince", cancellando in silenzio il lavoro dell'altro dispositivo. */
+      let remote=null;
+      try{ remote=await ghGetFile(); }catch(e){ /* offline/errore di rete: non è un conflitto rilevato, si prosegue come prima */ }
+      if(remote && GH_LAST_UPDATED_AT!==null && remote.updatedAt && remote.updatedAt!==GH_LAST_UPDATED_AT){
+        GH_CONFLICT=true;
+        setGhStatus(ic('warn')+'Conflitto rilevato: salvataggio sospeso',true);
+        showGhConflictBanner();
+        return false;
+      }
+    }
     const payload=collectAllData();
     await ghPutFile(payload,'Aggiornamento dati dashboard');
-    GH_LAST_UPDATED_AT=payload.updatedAt;
+    setGhLastUpdated(payload.updatedAt);
     clearGhDirty();
+    GH_CONFLICT=false;
+    hideGhConflictBanner();
     setGhStatus(ic('check')+'Sincronizzato alle '+new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}));
     return true;
   }catch(e){
@@ -1746,9 +1780,12 @@ async function syncFromGithub(showStatus){
     clearTimeout(GH_SYNC_TIMER);
     const ok=await pushPendingNow();
     if(ok) return; /* i nostri dati sono ora anche su GitHub: niente altro da fare */
-    /* se l'invio fallisce (es. offline) continuiamo comunque a provare a leggere
-       lo stato remoto per non bloccare l'app; GH_DIRTY resta impostato e si
-       ritenterà al prossimo giro. */
+    if(GH_CONFLICT) return; /* conflitto già segnalato con un avviso in pagina: aspettiamo
+       la scelta dell'utente invece di applicare comunque i dati remoti sotto al banner,
+       che avrebbe scartato in silenzio le modifiche fatte qui. */
+    /* se l'invio fallisce per un altro motivo (es. offline) continuiamo comunque a
+       provare a leggere lo stato remoto per non bloccare l'app; GH_DIRTY resta
+       impostato e si ritenterà al prossimo giro. */
   }
   try{
     if(showStatus) setGhStatus(ic('sync')+'Sincronizzazione…');
@@ -1756,7 +1793,7 @@ async function syncFromGithub(showStatus){
     if(remote===null){
       const payload=collectAllData();
       await ghPutFile(payload,'Inizializza dati dashboard');
-      GH_LAST_UPDATED_AT=payload.updatedAt;
+      setGhLastUpdated(payload.updatedAt);
       setGhStatus(ic('check')+'Repository inizializzata su GitHub');
     } else if(remote.updatedAt&&remote.updatedAt===GH_LAST_UPDATED_AT){
       /* Nessuna modifica rispetto all'ultima volta: evita di ricostruire tabelle
@@ -1776,7 +1813,7 @@ migratePrimoInizioOnce();
       applyVenditoreLug26Import();
       applyFonteMap();
       buildFilters(); buildRimbFilters(); render(); renderRimborsi();
-      GH_LAST_UPDATED_AT=remote.updatedAt||null;
+      setGhLastUpdated(remote.updatedAt||null);
       setGhStatus(ic('check')+'Sincronizzato alle '+new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}));
     }
   }catch(e){
@@ -1789,8 +1826,44 @@ function scheduleGithubSync(){
   /* segna subito che ci sono modifiche locali da inviare: se la pagina viene
      ricaricata prima che questo timer scatti, isGhDirty() lo saprà comunque. */
   markGhDirty();
+  if(GH_CONFLICT) return; /* c'è già un conflitto da risolvere (vedi banner): non ritentiamo
+     il salvataggio automatico finché l'utente non sceglie come procedere. La modifica
+     appena fatta resta comunque segnata come "da inviare" (markGhDirty sopra), quindi
+     non va persa qualunque cosa scelga. */
   clearTimeout(GH_SYNC_TIMER);
   GH_SYNC_TIMER=setTimeout(()=>{ pushPendingNow(); },900);
+}
+/* ---------- risoluzione conflitti di sincronizzazione ---------- */
+function showGhConflictBanner(){
+  if(document.getElementById('gh-conflict-banner')) return;
+  const el=document.createElement('div');
+  el.id='gh-conflict-banner';
+  el.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99998;background:#7a5a10;color:#fff;padding:14px 20px;font-family:Inter,sans-serif;font-size:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.3)';
+  el.innerHTML='<b>Attenzione:</b> un altro dispositivo ha salvato dati più recenti su GitHub mentre qui erano in corso delle modifiche non ancora inviate. '
+    +'Per non perdere nulla, il salvataggio automatico è sospeso finché non scegli come procedere: '
+    +'<button onclick="risolviConflittoScaricaRemoto()" style="margin:8px 6px 0;padding:6px 14px;border-radius:6px;border:none;background:#fff;color:#7a5a10;font-weight:600;cursor:pointer">Scarica la versione più recente</button>'
+    +'<button onclick="risolviConflittoMantieniLocale()" style="margin:8px 0 0;padding:6px 14px;border-radius:6px;border:1px solid #fff;background:transparent;color:#fff;cursor:pointer">Mantieni le modifiche fatte qui</button>';
+  document.body.prepend(el);
+  document.body.style.paddingTop='90px';
+}
+function hideGhConflictBanner(){
+  const el=document.getElementById('gh-conflict-banner');
+  if(el){ el.remove(); if(!document.getElementById('data-load-error-banner')) document.body.style.paddingTop=''; }
+}
+/* Scarta le modifiche fatte qui e adotta la versione salvata dall'altro dispositivo. */
+async function risolviConflittoScaricaRemoto(){
+  GH_CONFLICT=false;
+  hideGhConflictBanner();
+  clearGhDirty();
+  await syncFromGithub(true);
+}
+/* Tiene le modifiche fatte qui e le sovrascrive su GitHub, sopra a quelle dell'altro
+   dispositivo (stesso comportamento di prima dell'introduzione di questo controllo:
+   una scelta esplicita dell'utente, non più automatica e silenziosa). */
+async function risolviConflittoMantieniLocale(){
+  GH_CONFLICT=false;
+  hideGhConflictBanner();
+  await pushPendingNow(true);
 }
 /* Se la pagina si chiude/ricarica mentre c'è un salvataggio in sospeso (entro i
    900ms di debounce), tentiamo comunque un invio immediato: meglio un tentativo
@@ -5071,6 +5144,7 @@ applyTutorColorResetOnce();
 loadCompOverrides();
 loadProvOverrides();
 loadStornoInc();
+loadGhLastUpdated();
 initData();
 applyLug26Import();
 applyPromoEstateImport();
