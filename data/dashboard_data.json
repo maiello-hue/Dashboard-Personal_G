@@ -12474,7 +12474,7 @@
   },
   {
    "CLIENTE": "Anna Genovese",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "CONGELATO",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "26/02/2026",
    "FINE PERCORSO": "26/08/2026",
@@ -12498,7 +12498,9 @@
    "FONTE": "ORGANICO",
    "DATA CHECK": "31/07/2026",
    "_CHECK_JULY_FIX": "1",
-   "_PRIMO_INIZIO": "26/02/2026"
+   "_PRIMO_INIZIO": "26/02/2026",
+   "N FATTURA": "",
+   "VENDITORE": ""
   },
   {
    "CLIENTE": "Letizia Mari",
@@ -25964,5 +25966,5 @@
    "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
- "updatedAt": "2026-08-04T13:45:08.700Z"
+ "updatedAt": "2026-08-04T13:45:23.433Z"
 }
