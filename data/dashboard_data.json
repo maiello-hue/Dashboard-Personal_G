@@ -1070,15 +1070,15 @@
   {
    "CLIENTE": "Romina Bertaccini",
    "STATO CLIENTE": "IN PERCORSO",
-   "PERCORSO": "12 mesi",
-   "INIZIO PERCORSO": "08/08/2025",
-   "FINE PERCORSO": "08/08/2026",
-   "IMPORTO": "€ 1.698,00",
-   "METODO PAGAMENTO": "PagoDIL",
+   "PERCORSO": "6 mesi + 6 Gnocca",
+   "INIZIO PERCORSO": "04/08/2026",
+   "FINE PERCORSO": "04/08/2027",
+   "IMPORTO": "€ 1164",
+   "METODO PAGAMENTO": "HeyLight",
    "STATO PAGAMENTO": "SALDATO",
-   "TIPO INCASSO": "",
+   "TIPO INCASSO": "Rinnovo",
    "N° FATTURA": "",
-   "INCASSO": "",
+   "INCASSO": "1164",
    "RIMBORSO": "",
    "TUTOR": "Giulia",
    "TRAINER": "Marco",
@@ -1091,7 +1091,9 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "INSTAGRAM",
-   "_PRIMO_INIZIO": "08/08/2025"
+   "_PRIMO_INIZIO": "08/08/2025",
+   "TIPO SCADENZA": "Rinnovo",
+   "DATA INCASSO": "04/08/2026"
   },
   {
    "CLIENTE": "Cristina Bianco",
@@ -25473,7 +25475,7 @@
  },
  "rinnovi": {
   "Romina Bertaccini": {
-   "st": "da"
+   "st": "rin"
   },
   "Iolanda Mazzeo": {
    "st": "con"
@@ -26044,7 +26046,13 @@
    "INCASSO": "1850,82",
    "DATA INCASSO": "01/08/2026",
    "TIPO INCASSO": "Nuovo Cliente"
+  },
+  {
+   "CLIENTE": "Romina Bertaccini",
+   "INCASSO": "1164",
+   "DATA INCASSO": "04/08/2026",
+   "TIPO INCASSO": "Rinnovo"
   }
  ],
- "updatedAt": "2026-08-04T13:52:45.919Z"
+ "updatedAt": "2026-08-04T13:54:14.710Z"
 }
