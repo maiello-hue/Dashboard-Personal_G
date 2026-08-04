@@ -3882,10 +3882,11 @@ function render(){
       ${r.hidePct?'<td class="rate-cell"><div class="rate-cell-inner"><span class="rate-pill" style="background:var(--card2);color:var(--muted)">—</span></div></td>':cell(r.totRate,r.totN,r.tot,r.keyTot)}
     </tr>`;
   let collabTableHtml='';
+  const ROLE_ICON={TUTOR:'fa-user',TRAINER:'fa-dumbbell',NUTRI:'fa-apple-whole'};
   ['TUTOR','TRAINER','NUTRI'].forEach(field=>{
     const groupRows=collabRateRows.filter(r=>r.field===field).sort((a,b)=>a.name.localeCompare(b.name,'it'));
     if(!groupRows.length) return;
-    collabTableHtml+=`<tr class="rate-group-row"><td colspan="6">${collabRoleLabel[field]}</td></tr>`+groupRows.map(rowHtml).join('');
+    collabTableHtml+=`<tr class="rate-group-row"><td colspan="6"><i class="fa-solid ${ROLE_ICON[field]}" style="color:#e0245e;margin-right:8px"></i>${collabRoleLabel[field]}</td></tr>`+groupRows.map(rowHtml).join('');
   });
   document.getElementById('collab-abbandono-table-body').innerHTML=collabTableHtml||'<tr><td colspan="6" class="sub">Nessun collaboratore con clienti assegnate.</td></tr>';
   }
