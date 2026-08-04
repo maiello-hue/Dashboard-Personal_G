@@ -24757,6 +24757,26 @@
    "VENDITORE": "Personal_G",
    "FONTE": "",
    "_PRIMO_INIZIO": "04/08/2026"
+  },
+  {
+   "CLIENTE": "Gloria Bani",
+   "N FATTURA": "",
+   "STATO CLIENTE": "IN PERCORSO",
+   "PERCORSO": "12 mesi",
+   "INIZIO PERCORSO": "04/08/2026",
+   "FINE PERCORSO": "04/08/2027",
+   "IMPORTO": "1428",
+   "METODO PAGAMENTO": "HeyLight",
+   "STATO PAGAMENTO": "SALDATO",
+   "TIPO INCASSO": "Nuovo Cliente",
+   "INCASSO": "1428",
+   "DATA INCASSO": "04/08/2026",
+   "TUTOR": "",
+   "TRAINER": "Fiorenzo",
+   "NUTRI": "",
+   "VENDITORE": "Personal_G",
+   "FONTE": "",
+   "_PRIMO_INIZIO": "04/08/2026"
   }
  ],
  "rimborsi": [
@@ -26083,7 +26103,13 @@
    "INCASSO": "1850,82",
    "DATA INCASSO": "04/08/2026",
    "TIPO INCASSO": "Nuovo Cliente"
+  },
+  {
+   "CLIENTE": "Gloria Bani",
+   "INCASSO": "1428",
+   "DATA INCASSO": "04/08/2026",
+   "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
- "updatedAt": "2026-08-04T19:11:52.547Z"
+ "updatedAt": "2026-08-04T19:17:07.664Z"
 }
