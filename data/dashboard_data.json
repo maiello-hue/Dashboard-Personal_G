@@ -24710,6 +24710,26 @@
    "VENDITORE": "Personal_G",
    "FONTE": "",
    "_PRIMO_INIZIO": "01/08/2026"
+  },
+  {
+   "CLIENTE": "Annalisa Guarriello",
+   "N FATTURA": "",
+   "STATO CLIENTE": "IN PERCORSO",
+   "PERCORSO": "6 mesi + 6 Gnocca",
+   "INIZIO PERCORSO": "03/08/2026",
+   "FINE PERCORSO": "03/08/2027",
+   "IMPORTO": "1668",
+   "METODO PAGAMENTO": "HeyLight",
+   "STATO PAGAMENTO": "SALDATO",
+   "TIPO INCASSO": "Nuovo Cliente",
+   "INCASSO": "1668",
+   "DATA INCASSO": "03/08/2026",
+   "TUTOR": "Andrea",
+   "TRAINER": "Federica",
+   "NUTRI": "",
+   "VENDITORE": "Personal_G",
+   "FONTE": "",
+   "_PRIMO_INIZIO": "03/08/2026"
   }
  ],
  "rimborsi": [
@@ -26012,7 +26032,13 @@
    "INCASSO": "1850,82",
    "DATA INCASSO": "04/08/2026",
    "TIPO INCASSO": "Nuovo Cliente"
+  },
+  {
+   "CLIENTE": "Annalisa Guarriello",
+   "INCASSO": "1668",
+   "DATA INCASSO": "03/08/2026",
+   "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
- "updatedAt": "2026-08-04T13:50:56.968Z"
+ "updatedAt": "2026-08-04T13:52:13.243Z"
 }
