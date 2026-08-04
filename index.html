@@ -1732,6 +1732,40 @@ function contavaAlMese(r,meseSel){
   const d=pdate(last);
   return !!d && mesekey(d)>meseSel;
 }
+/* Registro generale di OGNI cambio di Stato Cliente (non solo l'ingresso in
+   Abbandonato/Non rinnovo, coperto da archivioLog): ogni volta che lo Stato
+   cambia davvero si aggiunge una riga {CLIENTE,STATO,DATA}. Serve a
+   ricostruire "che stato aveva questa cliente a fine mese X" per i mesi
+   passati (vedi statoAlMese), invece di mostrare sempre lo stato di adesso
+   per Congelate/Sparite/In percorso/Mai iniziato in qualunque mese selezionato
+   — lo stesso problema già risolto per Abbandonate/Non rinnovate, esteso qui
+   a tutte le altre categorie. Comincia vuoto da qui in avanti: non c'è modo
+   di ricostruire con certezza i cambi di stato avvenuti prima dell'esistenza
+   di questo registro (nessun altro campo li registra), quindi per i mesi già
+   chiusi prima di oggi l'unica fonte affidabile resta un valore inserito a
+   mano (vedi MESE_STORICO_MANUALE più sotto). */
+const LS_STATO_LOG='stato_log_v1';
+let _statoLogCache=null;
+function getStatoLog(){
+  if(_statoLogCache) return _statoLogCache;
+  try{ _statoLogCache=JSON.parse(localStorage.getItem(LS_STATO_LOG))||[]; }catch(e){ _statoLogCache=[]; }
+  return _statoLogCache;
+}
+function saveStatoLog(log){ _statoLogCache=log; try{ localStorage.setItem(LS_STATO_LOG,JSON.stringify(log)); }catch(e){ alert('Impossibile salvare: memoria del browser piena o non disponibile.'); } }
+function registraStatoLog(cliente,stato,dataIt){
+  if(!cliente||!stato||!dataIt) return;
+  const log=getStatoLog();
+  log.push({CLIENTE:cliente,STATO:stato,DATA:dataIt});
+  saveStatoLog(log);
+}
+/* Valori storici noti per mesi già chiusi PRIMA dell'introduzione di
+   statoLog, per i quali non esiste alcun modo automatico di ricostruire il
+   dato (nessun campo con la data del cambio stato, a differenza di
+   DATA ARCHIVIAZIONE per abbandono/non rinnovo). Inseriti a mano da Marco
+   sulla base dei numeri reali di fine mese. Riguarda SOLO la vista del mese
+   indicato: non modifica alcun dato cliente né lo stato "vivo" attuale, e non
+   ha alcun effetto su altri mesi (agosto compreso). */
+const MESE_STORICO_MANUALE={'2026-07':{cong:92,spar:20}};
 function saveRimborsi(push){try{localStorage.setItem(LS_RIMBORSI,JSON.stringify(RIMB));}catch(e){alert('Impossibile salvare: memoria del browser piena o non disponibile.');} if(push!==false) scheduleGithubSync();}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
 
@@ -1837,7 +1871,7 @@ function setGhStatus(msg,isErr){
   el.style.color=isErr?'var(--red)':'var(--muted)';
 }
 function collectAllData(){
-  return {clienti:DATA,rimborsi:RIMB,ratePagate:ratePagate(),rinnovi:renAll(),incassiLog:getIncassiLog(),archivioLog:getArchivioLog(),updatedAt:new Date().toISOString()};
+  return {clienti:DATA,rimborsi:RIMB,ratePagate:ratePagate(),rinnovi:renAll(),incassiLog:getIncassiLog(),archivioLog:getArchivioLog(),statoLog:getStatoLog(),updatedAt:new Date().toISOString()};
 }
 function applyAllData(d){
   if(Array.isArray(d.clienti)) DATA=d.clienti;
@@ -1855,6 +1889,7 @@ function applyAllData(d){
   try{localStorage.setItem(REN_KEY,JSON.stringify(d.rinnovi||{}));}catch(e){}
   if(Array.isArray(d.incassiLog)) saveIncassiLog(d.incassiLog);
   if(Array.isArray(d.archivioLog)) saveArchivioLog(d.archivioLog);
+  if(Array.isArray(d.statoLog)) saveStatoLog(d.statoLog);
 }
 async function pushPendingNow(force){
   /* invia subito (senza debounce) i dati locali correnti a GitHub. Usata sia dal
@@ -4099,6 +4134,10 @@ function cambiaStatoCliente(nome,nuovoStato){
   } else {
     delete r['DATA ARCHIVIAZIONE'];
   }
+  /* Registro generale (tutte le categorie di stato, non solo l'archiviazione):
+     usato per ricostruire "che stato aveva a fine mese X" nei report passati
+     (vedi statoAlMese in render()). */
+  registraStatoLog(nome,nuovoStato,todayIt());
   saveClienti();
   buildFilters();
   render();
@@ -4288,8 +4327,28 @@ function render(){
   const meseLbl=mesekeyLabel(meseSel);
   const prevMese=prevMeseKey(meseSel);
 
-  const fSt=s=>allRows.filter(r=>(r['STATO CLIENTE']||'').toUpperCase().startsWith(s));
   const brk=arr=>{const g=arr.filter(isGnocca).length;return `${arr.length-g} premium · ${g} gnocca`;};
+  /* In percorso/Congelate/Sparite/Mai iniziato per il mese selezionato: ricostruite
+     da statoLog (che stato aveva la cliente a fine di quel mese), con ripiego
+     sullo stato attuale se non c'è ancora nessun evento registrato per lei (es.
+     non ha mai cambiato stato da quando esiste il registro, o il mese richiesto
+     è precedente all'introduzione del registro stesso). Così cambiare stato oggi
+     non altera più questi conteggi per un mese passato già chiuso — stesso
+     principio già applicato ad Abbandonate/Non rinnovate/Clienti totali. */
+  const _statoLogByClient={};
+  getStatoLog().forEach(e=>{ (_statoLogByClient[e['CLIENTE']]=_statoLogByClient[e['CLIENTE']]||[]).push(e); });
+  const statoAlMese=(r,mese)=>{
+    const evs=_statoLogByClient[r['CLIENTE']];
+    if(!evs) return (r['STATO CLIENTE']||'');
+    let best=null;
+    evs.forEach(e=>{
+      const d=pdate(e['DATA']);
+      if(!d||mesekey(d)>mese) return;
+      if(!best||d>=pdate(best['DATA'])) best=e;
+    });
+    return best?best['STATO']:(r['STATO CLIENTE']||'');
+  };
+  const fSt=s=>allRows.filter(r=>statoAlMese(r,meseSel).toUpperCase().startsWith(s));
   const attA=fSt('IN PERCORSO'), congA=fSt('CONGELATO').concat(fSt('SOSPES')),
         sparA=fSt('SPARIT'), maiA=fSt('MAI INIZIATO');
   /* Abbandonate/Non rinnovo (card, tassi) rappresentano il flusso DEL MESE selezionato
@@ -4318,11 +4377,10 @@ function render(){
   const nuoveA=allRows.filter(r=>inMese(r,'INIZIO PERCORSO',meseSel)&&!(r['TIPO INCASSO']||'').toLowerCase().includes('rinnovo'));
   /* Stessi identici calcoli di totA/nuoveA/abbA/nonrinA ma per il mese precedente
      a quello selezionato: servono solo per il confronto "▲/▼ N%" mostrato
-     accanto alle KPI, non per nient'altro (non vanno in KPI_LISTS). Le KPI
-     "In percorso/Congelate/Sparite/Mai iniziato" invece riflettono lo STATO
-     ATTUALE della cliente e non hanno un equivalente storico per mese passato
-     (l'app non tiene uno storico degli stati), quindi qui non c'è nulla con
-     cui confrontarle in modo corretto. */
+     accanto alle KPI, non per nient'altro (non vanno in KPI_LISTS). Le card
+     "In percorso/Congelate/Sparite/Mai iniziato" non mostrano una variazione
+     rispetto al mese precedente in interfaccia, quindi qui non serve un
+     prevCongA/prevSparA equivalente. */
   const prevTotA=allRows.filter(r=>finoAMese(r,'INIZIO PERCORSO',prevMese)&&contavaAlMese(r,prevMese));
   const prevNuoveA=allRows.filter(r=>inMese(r,'INIZIO PERCORSO',prevMese)&&!(r['TIPO INCASSO']||'').toLowerCase().includes('rinnovo'));
   const prevAbbA=archivioRowsForMese('ABBANDONAT',prevMese);
@@ -4433,14 +4491,20 @@ function render(){
   document.getElementById('k-tot-d').innerHTML=brk(totA)+trendHtml(totA.length,prevTotA.length,false);
   document.getElementById('k-att').textContent=att;
   document.getElementById('k-att-d').textContent=brk(attA);
-  document.getElementById('k-cong').textContent=congA.length;
-  document.getElementById('k-cong-d').textContent=brk(congA);
+  /* Per i mesi già chiusi prima dell'introduzione di statoLog, dove esiste un
+     valore inserito a mano (MESE_STORICO_MANUALE), quel numero ha la
+     precedenza sul conteggio ricostruito dai dati: è l'unica fonte affidabile
+     per quel mese. Non tocca congA/sparA (usate anche altrove, es. filtri) né
+     alcun dato cliente — è solo ciò che viene mostrato in questa card. */
+  const meseManuale=MESE_STORICO_MANUALE[meseSel];
+  document.getElementById('k-cong').textContent=meseManuale?meseManuale.cong:congA.length;
+  document.getElementById('k-cong-d').textContent=meseManuale?'dato storico registrato manualmente':brk(congA);
   document.getElementById('k-nonrin').textContent=nonrinA.length;
   document.getElementById('k-nonrin-d').innerHTML=brk(nonrinA)+trendHtml(nonrinA.length,prevNonrinA.length,true);
   document.getElementById('k-abb').textContent=abbA.length;
   document.getElementById('k-abb-d').innerHTML=brk(abbA)+trendHtml(abbA.length,prevAbbA.length,true);
-  document.getElementById('k-spar').textContent=sparA.length;
-  document.getElementById('k-spar-d').textContent=brk(sparA);
+  document.getElementById('k-spar').textContent=meseManuale?meseManuale.spar:sparA.length;
+  document.getElementById('k-spar-d').textContent=meseManuale?'dato storico registrato manualmente':brk(sparA);
   document.getElementById('k-mai').textContent=maiA.length;
   document.getElementById('k-mai-d').textContent=brk(maiA);
   document.getElementById('k-nuove').textContent=nuoveA.length;
@@ -4464,14 +4528,19 @@ function render(){
       document.getElementById('goal-nuove-label').textContent=nuoveA.length+' di '+obG.nuove+' clienti ('+Math.round(pctN)+'%)'+(nuoveA.length>=obG.nuove?' — obiettivo raggiunto! 🎉':'')+' — '+meseLbl;
     }else goalNuoveCard.style.display='none';
   }
+  /* Stessa card/legenda ma nel grafico a barre sotto: usa gli stessi numeri
+     mostrati nelle KPI qui sopra (dato storico manuale incluso per coerenza
+     visiva, altrimenti card e grafico mostrerebbero due numeri diversi per lo
+     stesso mese). */
+  const congCountBar=meseManuale?meseManuale.cong:congA.length, sparCountBar=meseManuale?meseManuale.spar:sparA.length;
   const totBarD=totA.length||1;
   document.getElementById('bar-att').style.width=(attA.length/totBarD*100)+'%';
-  document.getElementById('bar-cong').style.width=(congA.length/totBarD*100)+'%';
-  document.getElementById('bar-spar').style.width=(sparA.length/totBarD*100)+'%';
+  document.getElementById('bar-cong').style.width=(congCountBar/totBarD*100)+'%';
+  document.getElementById('bar-spar').style.width=(sparCountBar/totBarD*100)+'%';
   document.getElementById('bar-mai').style.width=(maiA.length/totBarD*100)+'%';
   document.getElementById('leg-att').textContent=attA.length;
-  document.getElementById('leg-cong').textContent=congA.length;
-  document.getElementById('leg-spar').textContent=sparA.length;
+  document.getElementById('leg-cong').textContent=congCountBar;
+  document.getElementById('leg-spar').textContent=sparCountBar;
   document.getElementById('leg-mai').textContent=maiA.length;
 
   const fmtEuro2=n=>'€ '+n.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2,useGrouping:true});
@@ -5042,6 +5111,18 @@ function toggleExp(i){
 const KPI_LABELS={tot:'Clienti totali',att:'In percorso',cong:'Congelate',abb:'Abbandonate',spar:'Sparite',nonrin:'Non rinnovo',mai:'Mai iniziato',nuove:'Nuove',scad:'In scadenza 30gg',rischio:'Clienti a rischio (senza check da 2+ mesi)',incRin:'Rinnovo percorsi',incRic:'Ricorrenti',incAlt:'Nuovo cliente',incTot:'Totale incassato',abbPremium:'Abbandono Premium',abbGnocca:'Abbandono Gnocca',nonrinPremium:'Non rinnovo Premium',nonrinGnocca:'Non rinnovo Gnocca',abbTotPremium:'Abbandono totale Premium',abbTotGnocca:'Abbandono totale Gnocca'};
 const INC_KPI_KEYS=new Set(['incRin','incRic','incAlt','incTot']);
 function apriListaClienti(key){
+  /* Per Congelate/Sparite di un mese con un valore storico inserito a mano
+     (vedi MESE_STORICO_MANUALE) non esiste un elenco nominativo affidabile:
+     l'app non teneva ancora questo storico in quel periodo. Si mostra il
+     numero (già corretto in card) ma non un elenco che potrebbe non
+     corrispondere. */
+  if((key==='cong'||key==='spar') && MESE_STORICO_MANUALE[effectiveMese()]){
+    const n=MESE_STORICO_MANUALE[effectiveMese()][key];
+    document.getElementById('kpi-list-title').textContent=(KPI_LABELS[key]||'')+' ('+n+')';
+    document.getElementById('kpi-list-body').innerHTML='<div class="sub">Per questo mese il numero ('+n+') è un dato storico registrato manualmente: l\'elenco nominativo non è disponibile perché l\'app non teneva ancora uno storico per questa categoria in quel periodo.</div>';
+    document.getElementById('kpi-list-modal').style.display='flex';
+    return;
+  }
   const rows=[...(KPI_LISTS[key]||[])].sort((a,b)=>a['CLIENTE'].localeCompare(b['CLIENTE'],'it'));
   document.getElementById('kpi-list-title').textContent=(KPI_LABELS[key]||'')+' ('+rows.length+')';
   if(INC_KPI_KEYS.has(key)){
@@ -5119,7 +5200,12 @@ function salvaClienteModal(){
   const r=DATA.find(x=>x['CLIENTE']===editingClienteName);
   if(!r) return;
   const eraArchiviata=isArchiviata(r);
+  const statoPrima=r['STATO CLIENTE'];
   EDIT_FIELDS.forEach(([f])=>{ r[f]=readEditFieldValue('editm',f); });
+  /* Registro generale (tutte le categorie di stato): stesso principio di
+     cambiaStatoCliente, usato per ricostruire "che stato aveva a fine mese X"
+     nei report passati (vedi statoAlMese in render()). */
+  if(r['STATO CLIENTE']!==statoPrima) registraStatoLog(r['CLIENTE'],r['STATO CLIENTE'],todayIt());
   /* DATA ARCHIVIAZIONE arriva già dal campo data del form qui sopra (di default
      oggi il giorno in cui si cambia lo Stato a mano su Abbandono/Non rinnovo,
      ma modificabile per attribuire il flusso mensile al mese giusto quando lo
