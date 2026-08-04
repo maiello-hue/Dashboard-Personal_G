@@ -18761,7 +18761,7 @@
   },
   {
    "CLIENTE": "Barbara Favero",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "CONGELATO",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "22/05/2026",
    "FINE PERCORSO": "22/11/2026",
@@ -18783,7 +18783,9 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "ORGANICO",
-   "_PRIMO_INIZIO": "22/05/2026"
+   "_PRIMO_INIZIO": "22/05/2026",
+   "N FATTURA": "",
+   "VENDITORE": ""
   },
   {
    "CLIENTE": "Caterina Supini",
@@ -25962,5 +25964,5 @@
    "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
- "updatedAt": "2026-08-04T13:44:51.051Z"
+ "updatedAt": "2026-08-04T13:45:08.700Z"
 }
