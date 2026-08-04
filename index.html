@@ -108,12 +108,13 @@ h1{font-size:22px;font-weight:500}
 .goal-bar-fill.over{background:#4f6fe0}
 .goal-bar-label{font-size:13px;color:var(--muted)}
 .mese-warn{display:flex;align-items:center;gap:8px;font-size:12px;color:#a67f00;background:#fdf6e3;border:1px solid #f0e0a8;border-radius:8px;padding:8px 12px;margin-bottom:14px}
-.check-summary-bar{display:flex;height:10px;border-radius:6px;overflow:hidden;background:var(--border);margin-bottom:12px}
-.check-summary-seg{transition:width .3s ease}
-.check-summary-legend{display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.check-summary-ring-row{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.check-summary-ring circle{transition:stroke-dasharray .3s ease}
+.check-summary-legend{flex:1;min-width:200px;display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--muted)}
+.check-summary-legend span{display:flex;justify-content:space-between;gap:10px}
 .check-summary-legend b{color:var(--text);font-weight:600}
 .check-summary-dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:5px;vertical-align:middle}
-.check-summary-escluse{margin-left:auto;color:var(--muted2)}
+.check-summary-escluse{color:var(--muted2);border-top:1px solid var(--border);padding-top:8px;margin-top:2px}
 .kpi-ic{font-size:15px;margin-bottom:8px}
 .kpis-v2 .kpi{position:relative;background:var(--card);border:1px solid var(--border);border-left-width:3px;border-left-style:solid;border-radius:0 12px 12px 0;padding:14px 16px}
 .kpis-v2 .kpi-ic{position:absolute;top:14px;right:14px;font-size:20px;margin-bottom:0}
@@ -1124,16 +1125,24 @@ h3 .ico,.sub .ico{color:var(--muted)}
       </div>
       <div class="mese-warn" id="mese-warn-check" style="display:none"></div>
       <div class="card" id="check-summary-card" style="margin-bottom:14px">
-        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px">
           <h3 style="margin:0">Riepilogo check</h3>
           <div class="sub" id="check-summary-tot" style="margin:0"></div>
         </div>
-        <div class="check-summary-bar"><div class="check-summary-seg" id="check-summary-seg-si" style="background:#1f9d63;width:0%"></div><div class="check-summary-seg" id="check-summary-seg-no" style="background:#d23f3f;width:0%"></div><div class="check-summary-seg" id="check-summary-seg-mancanti" style="background:#a67f00;width:0%"></div></div>
-        <div class="check-summary-legend">
-          <span><i class="check-summary-dot" style="background:#1f9d63"></i>Risultato sì <b id="check-summary-si">–</b></span>
-          <span><i class="check-summary-dot" style="background:#d23f3f"></i>Check fatto, risultato no <b id="check-summary-no">–</b></span>
-          <span><i class="check-summary-dot" style="background:#a67f00"></i>Mancanti <b id="check-summary-mancanti">–</b></span>
-          <span class="check-summary-escluse" id="check-summary-escluse-wrap" style="display:none"><b id="check-summary-escluse">–</b> escluse dal conteggio</span>
+        <div class="check-summary-ring-row">
+          <svg width="88" height="88" viewBox="0 0 36 36" class="check-summary-ring" aria-hidden="true">
+            <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--border)" stroke-width="4"/>
+            <circle cx="18" cy="18" r="15.5" fill="none" stroke="#1f9d63" stroke-width="4" id="check-summary-ring-si" stroke-dasharray="0 97.39" transform="rotate(-90 18 18)"/>
+            <circle cx="18" cy="18" r="15.5" fill="none" stroke="#d23f3f" stroke-width="4" id="check-summary-ring-no" stroke-dasharray="0 97.39" transform="rotate(-90 18 18)"/>
+            <circle cx="18" cy="18" r="15.5" fill="none" stroke="#a67f00" stroke-width="4" id="check-summary-ring-mancanti" stroke-dasharray="0 97.39" transform="rotate(-90 18 18)"/>
+            <text x="18" y="20.5" text-anchor="middle" font-size="8" font-weight="700" fill="var(--text)" id="check-summary-ring-tot">–</text>
+          </svg>
+          <div class="check-summary-legend">
+            <span><i class="check-summary-dot" style="background:#1f9d63"></i>Risultato sì <b id="check-summary-si">–</b></span>
+            <span><i class="check-summary-dot" style="background:#d23f3f"></i>Check fatto, risultato no <b id="check-summary-no">–</b></span>
+            <span><i class="check-summary-dot" style="background:#a67f00"></i>Mancanti <b id="check-summary-mancanti">–</b></span>
+            <span class="check-summary-escluse" id="check-summary-escluse-wrap" style="display:none"><b id="check-summary-escluse">–</b> escluse dal conteggio</span>
+          </div>
         </div>
       </div>
       <div class="filters">
@@ -3093,17 +3102,26 @@ function buildCheckPage(){
   const summaryMancanti=summaryRows.filter(r=>checkValMese(r,'CHECK',meseSel)==='').length;
   const summaryNo=summaryTot-summarySi-summaryMancanti;
   const summaryPct=n=>summaryTot?(n/summaryTot*100):0;
-  const segSiEl=document.getElementById('check-summary-seg-si');
-  if(segSiEl){
-    segSiEl.style.width=summaryPct(summarySi)+'%';
-    document.getElementById('check-summary-seg-no').style.width=summaryPct(summaryNo)+'%';
-    document.getElementById('check-summary-seg-mancanti').style.width=summaryPct(summaryMancanti)+'%';
+  const ringSiEl=document.getElementById('check-summary-ring-si');
+  if(ringSiEl){
+    const CIRC=2*Math.PI*15.5;
+    const segLen=n=>summaryPct(n)/100*CIRC;
+    const lenSi=segLen(summarySi), lenNo=segLen(summaryNo), lenMancanti=segLen(summaryMancanti);
+    ringSiEl.setAttribute('stroke-dasharray',lenSi.toFixed(2)+' '+(CIRC-lenSi).toFixed(2));
+    ringSiEl.setAttribute('stroke-dashoffset','0');
+    const ringNoEl=document.getElementById('check-summary-ring-no');
+    ringNoEl.setAttribute('stroke-dasharray',lenNo.toFixed(2)+' '+(CIRC-lenNo).toFixed(2));
+    ringNoEl.setAttribute('stroke-dashoffset',(-lenSi).toFixed(2));
+    const ringMancantiEl=document.getElementById('check-summary-ring-mancanti');
+    ringMancantiEl.setAttribute('stroke-dasharray',lenMancanti.toFixed(2)+' '+(CIRC-lenMancanti).toFixed(2));
+    ringMancantiEl.setAttribute('stroke-dashoffset',(-(lenSi+lenNo)).toFixed(2));
+    document.getElementById('check-summary-ring-tot').textContent=summaryTot;
     document.getElementById('check-summary-tot').textContent=summaryTot+' client'+(summaryTot===1?'e':'i')+' in percorso';
     document.getElementById('check-summary-si').textContent=summarySi;
     document.getElementById('check-summary-no').textContent=summaryNo;
     document.getElementById('check-summary-mancanti').textContent=summaryMancanti;
     const escWrap=document.getElementById('check-summary-escluse-wrap');
-    escWrap.style.display=summaryEscluse.length?'inline':'none';
+    escWrap.style.display=summaryEscluse.length?'flex':'none';
     document.getElementById('check-summary-escluse').textContent=summaryEscluse.length;
   }
   const q=(document.getElementById('check-search')?.value||'').trim().toLowerCase();
