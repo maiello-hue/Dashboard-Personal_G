@@ -1710,6 +1710,28 @@ function archivioRowsForMese(statoPrefix,meseSel){
   });
   return out;
 }
+/* Una cliente conta ancora nel totale di un mese passato (KPI "Clienti totali")
+   anche se ORA risulta archiviata (Abbandonato/Non rinnovo), purché
+   l'archiviazione sia avvenuta DOPO quel mese: fino ad allora era ancora
+   parte del parco clienti attivo. Prima si usava solo lo stato attuale, che
+   escludeva retroattivamente dal totale di un mese passato anche le clienti
+   archiviate molto dopo (es. archiviata oggi spariva anche dal totale di
+   luglio, anche se a luglio era ancora attiva). Usa l'ultimo episodio in
+   archivioLog, con ripiego sul campo DATA ARCHIVIAZIONE della scheda se il
+   registro non è ancora stato popolato per questa cliente (es. subito dopo
+   l'introduzione del registro, prima della migrazione automatica). Limite
+   noto: non tiene traccia delle riattivazioni, quindi una cliente ATTUALMENTE
+   attiva viene sempre contata anche nei mesi passati anche se nel mezzo era
+   stata temporaneamente archiviata e poi riattivata — l'app non registra la
+   data di riattivazione, solo quella di archiviazione. */
+function contavaAlMese(r,meseSel){
+  if(!isArchiviata(r)) return true;
+  const log=getArchivioLog();
+  const evs=log.filter(e=>e['CLIENTE']===r['CLIENTE']);
+  const last=evs.length?evs[evs.length-1]['DATA']:r['DATA ARCHIVIAZIONE'];
+  const d=pdate(last);
+  return !!d && mesekey(d)>meseSel;
+}
 function saveRimborsi(push){try{localStorage.setItem(LS_RIMBORSI,JSON.stringify(RIMB));}catch(e){alert('Impossibile salvare: memoria del browser piena o non disponibile.');} if(push!==false) scheduleGithubSync();}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
 
@@ -4280,12 +4302,14 @@ function render(){
   const abbA=archivioRowsForMese('ABBANDONAT',meseSel);
   const att=attA.length;
   /* "Clienti totali" esclude le Abbandonate e le Non rinnovate: rappresenta il
-     parco clienti attuale (attive + congelate + sparite + mai iniziato), non
-     lo storico completo. È inoltre cumulativa sul mese selezionato: una cliente
-     entrata dal 01 del mese successivo non deve gonfiare il totale dei mesi
-     precedenti, ma comparirci solo a partire dal proprio mese di INIZIO PERCORSO
-     (altrimenti si falsificano i dati storici, come segnalato). */
-  const totA=allRows.filter(r=>!isArchiviata(r)&&finoAMese(r,'INIZIO PERCORSO',meseSel));
+     parco clienti attivo in quel momento (attive + congelate + sparite + mai
+     iniziato). È inoltre cumulativa sul mese selezionato: una cliente entrata
+     dal 01 del mese successivo non deve gonfiare il totale dei mesi precedenti,
+     ma comparirci solo a partire dal proprio mese di INIZIO PERCORSO. Per i mesi
+     passati, una cliente archiviata SOLO dopo quel mese conta ancora (vedi
+     contavaAlMese): altrimenti archiviarla oggi la farebbe sparire anche dal
+     totale di mesi già chiusi in cui era ancora attiva, falsificando lo storico. */
+  const totA=allRows.filter(r=>finoAMese(r,'INIZIO PERCORSO',meseSel)&&contavaAlMese(r,meseSel));
   /* "Nuove" = clienti il cui INIZIO PERCORSO cade proprio nel mese selezionato
      (non cumulativo come Clienti totali): serve a capire quante nuove clienti
      sono state inserite in quel singolo mese, a prescindere dallo stato attuale.
@@ -4299,7 +4323,7 @@ function render(){
      ATTUALE della cliente e non hanno un equivalente storico per mese passato
      (l'app non tiene uno storico degli stati), quindi qui non c'è nulla con
      cui confrontarle in modo corretto. */
-  const prevTotA=allRows.filter(r=>!isArchiviata(r)&&finoAMese(r,'INIZIO PERCORSO',prevMese));
+  const prevTotA=allRows.filter(r=>finoAMese(r,'INIZIO PERCORSO',prevMese)&&contavaAlMese(r,prevMese));
   const prevNuoveA=allRows.filter(r=>inMese(r,'INIZIO PERCORSO',prevMese)&&!(r['TIPO INCASSO']||'').toLowerCase().includes('rinnovo'));
   const prevAbbA=archivioRowsForMese('ABBANDONAT',prevMese);
   const prevNonrinA=archivioRowsForMese('NON RINNOVATO',prevMese);
