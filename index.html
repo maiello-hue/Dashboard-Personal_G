@@ -274,8 +274,8 @@ h1{font-size:22px;font-weight:500}
 #page-clienti .fv2-search-btn{font-weight:500}
 #page-clienti .fv2-row .fv2-field:not(.fv2-search-field){align-items:center}
 #page-clienti .fv2-row .fv2-field:not(.fv2-search-field) .fv2-label{text-align:center}
-#clienti-table td{font-weight:300}
-#clienti-table th{font-weight:500}
+#clienti-table td{font-weight:300;padding-left:5px;padding-right:5px}
+#clienti-table th{font-weight:500;padding-left:5px;padding-right:5px}
 .icon-btn.primary.active{background:var(--accent);border-color:var(--accent)}
 .badge{display:inline-block;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:500;white-space:nowrap}
 .b-inpercorso{background:var(--tag-b-inpercorso-bg,#e1f5ee);color:var(--tag-b-inpercorso-fg,#085041)}
@@ -4351,7 +4351,7 @@ function renderTable(rows){
     if(ini&&fin){
       const pct=Math.min(100,Math.max(0,Math.round((now-ini)/(fin-ini)*100)));
       pctVal=pct;
-      const col=pct>=90?'var(--red)':pct>=75?'var(--orange)':'var(--green)';
+      const col=pct>=90?'var(--red)':pct>=75?'var(--orange)':'var(--accent)';
       pctCls=pct>=90?'cc-pill-red':pct>=75?'cc-pill-orange':'cc-pill-green';
       prog=`<span class="progress"><i style="width:${pct}%;background:${col}"></i></span> <span class="count">${pct}%</span>`;
     } else if(r['PERCORSO']==='ALL LIFE LONG') prog='<span class="count">∞</span>';
