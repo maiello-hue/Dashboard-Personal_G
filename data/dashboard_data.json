@@ -11884,7 +11884,7 @@
   },
   {
    "CLIENTE": "Alessia Perini",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "CONGELATO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "18/02/2026",
    "FINE PERCORSO": "18/02/2027",
@@ -11906,7 +11906,9 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "ORGANICO",
-   "_PRIMO_INIZIO": "18/02/2026"
+   "_PRIMO_INIZIO": "18/02/2026",
+   "N FATTURA": "",
+   "VENDITORE": ""
   },
   {
    "CLIENTE": "Sara Bagagli",
@@ -25960,5 +25962,5 @@
    "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
- "updatedAt": "2026-08-04T13:43:25.566Z"
+ "updatedAt": "2026-08-04T13:44:51.051Z"
 }
