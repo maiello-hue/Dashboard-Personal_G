@@ -291,7 +291,7 @@
   },
   {
    "CLIENTE": "Laura Gandini",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "CONGELATO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "05/03/2025",
    "FINE PERCORSO": "05/03/2026",
@@ -313,7 +313,9 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "INSTAGRAM",
-   "_PRIMO_INIZIO": "05/03/2025"
+   "_PRIMO_INIZIO": "05/03/2025",
+   "N FATTURA": "",
+   "VENDITORE": ""
   },
   {
    "CLIENTE": "Valeria Campolo",
@@ -25973,5 +25975,5 @@
    "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
- "updatedAt": "2026-08-04T13:46:28.014Z"
+ "updatedAt": "2026-08-04T13:47:07.980Z"
 }
