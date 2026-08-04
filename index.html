@@ -1356,6 +1356,12 @@ const LS_CLIENTI='global_clienti_v1', LS_RIMBORSI='global_rimborsi_v1';
 const MESI=['GENNAIO','FEBBRAIO','MARZO','APRILE','MAGGIO','GIUGNO','LUGLIO','AGOSTO','SETTEMBRE','OTTOBRE','NOVEMBRE','DICEMBRE'];
 const MESI_SHORT=['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
 let DATA=[], RIMB=[], charts={}, role='TUTOR', abbCompRole='TUTOR', sortKey='INIZIO PERCORSO', sortDir=-1, expanded=new Set();
+/* Diventa true se il caricamento dei dati clienti e/o rimborsi da questo
+   dispositivo fallisce (localStorage corrotto/illeggibile): finché resta true
+   blocchiamo il salvataggio automatico su GitHub (per non sovrascrivere la
+   copia remota buona con i dati demo di fallback) e mostriamo un banner ben
+   visibile invece di continuare in silenzio come se fosse tutto a posto. */
+let DATA_LOAD_ERROR=false;
 let KPI_LISTS={};
 /* catFilter: 'all'|'premium'|'gnocca' mostrano solo le clienti ATTIVE (Abbandono/Non
    rinnovo escluse automaticamente dall'elenco, ma sempre incluse in tutte le
@@ -1671,6 +1677,14 @@ function collectAllData(){
 function applyAllData(d){
   if(Array.isArray(d.clienti)) DATA=d.clienti;
   if(Array.isArray(d.rimborsi)) RIMB=d.rimborsi;
+  /* una sincronizzazione riuscita da GitHub è il modo previsto per uscire dallo
+     stato di errore di caricamento: se avevamo mostrato dati demo per un
+     localStorage danneggiato, da qui in poi torniamo a lavorare sui dati veri. */
+  if(DATA_LOAD_ERROR && Array.isArray(d.clienti) && d.clienti.length){
+    DATA_LOAD_ERROR=false;
+    const banner=document.getElementById('data-load-error-banner');
+    if(banner){ banner.remove(); document.body.style.paddingTop=''; }
+  }
   saveClienti(false); saveRimborsi(false);
   try{localStorage.setItem(RIMB_KEY,JSON.stringify(d.ratePagate||{}));}catch(e){}
   try{localStorage.setItem(REN_KEY,JSON.stringify(d.rinnovi||{}));}catch(e){}
@@ -1682,6 +1696,7 @@ async function pushPendingNow(){
      modifiche locali non ancora inviate (GH_DIRTY), per evitare che una lettura
      dal server sovrascriva una modifica locale appena fatta. */
   if(!ghConfigured()) return false;
+  if(DATA_LOAD_ERROR) return false; /* dati locali sospetti: non inviarli a GitHub finché non si risolve */
   if(GH_BUSY) return false;
   GH_BUSY=true;
   try{
@@ -1750,6 +1765,7 @@ migratePrimoInizioOnce();
 }
 function scheduleGithubSync(){
   if(!ghConfigured()) return;
+  if(DATA_LOAD_ERROR) return; /* dati locali sospetti: non inviarli a GitHub finché non si risolve */
   /* segna subito che ci sono modifiche locali da inviare: se la pagina viene
      ricaricata prima che questo timer scatti, isGhDirty() lo saprà comunque. */
   markGhDirty();
@@ -1790,19 +1806,61 @@ function disconnettiGithub(){
 }
 
 function initData(){
-  try{
-    const savedC=localStorage.getItem(LS_CLIENTI);
-    DATA = savedC ? JSON.parse(savedC) : SEED_CLIENTI.map(r=>({...r}));
-  }catch(e){ DATA = SEED_CLIENTI.map(r=>({...r})); }
-  if(!Array.isArray(DATA)||!DATA.length) DATA = SEED_CLIENTI.map(r=>({...r}));
-  if(!localStorage.getItem(LS_CLIENTI)) saveClienti(false);
+  const problems=[];
 
-  try{
-    const savedR=localStorage.getItem(LS_RIMBORSI);
-    RIMB = savedR ? JSON.parse(savedR) : SEED_RIMBORSI.map(r=>({...normRimb(r,r['MESE']),id:uid()}));
-  }catch(e){ RIMB = SEED_RIMBORSI.map(r=>({...normRimb(r,r['MESE']),id:uid()})); }
-  if(!Array.isArray(RIMB)) RIMB=[];
-  if(!localStorage.getItem(LS_RIMBORSI)) saveRimborsi(false);
+  const savedC=localStorage.getItem(LS_CLIENTI);
+  let parsedC=null, parseErrC=false;
+  if(savedC){
+    try{ parsedC=JSON.parse(savedC); }catch(e){ parseErrC=true; }
+  }
+  if(parseErrC || (savedC && (!Array.isArray(parsedC)||!parsedC.length))){
+    /* i dati esistono ma sono illeggibili o vuoti: NON li sovrascriviamo con i
+       dati demo (restano intatti in localStorage per un eventuale recupero
+       manuale), ma non possiamo nemmeno lavorare su dati demo senza avvisare. */
+    problems.push('clienti');
+    DATA = SEED_CLIENTI.map(r=>({...r}));
+  } else if(savedC){
+    DATA = parsedC;
+  } else {
+    DATA = SEED_CLIENTI.map(r=>({...r}));
+    saveClienti(false);
+  }
+
+  const savedR=localStorage.getItem(LS_RIMBORSI);
+  let parsedR=null, parseErrR=false;
+  if(savedR){
+    try{ parsedR=JSON.parse(savedR); }catch(e){ parseErrR=true; }
+  }
+  if(parseErrR || (savedR && !Array.isArray(parsedR))){
+    problems.push('rimborsi');
+    RIMB = SEED_RIMBORSI.map(r=>({...normRimb(r,r['MESE']),id:uid()}));
+  } else if(savedR){
+    RIMB = parsedR;
+  } else {
+    RIMB = SEED_RIMBORSI.map(r=>({...normRimb(r,r['MESE']),id:uid()}));
+    saveRimborsi(false);
+  }
+
+  if(problems.length){
+    DATA_LOAD_ERROR=true;
+    showDataLoadErrorBanner(problems);
+  }
+}
+/* Banner bloccante (non un semplice avviso che scompare da solo): resta finché
+   la pagina non viene ricaricata, per essere sicuri che l'utente lo veda prima
+   di continuare a lavorare su dati che potrebbero essere quelli demo invece dei
+   dati veri. Il salvataggio automatico su GitHub resta disattivato (vedi
+   scheduleGithubSync) finché DATA_LOAD_ERROR è true, cosí non rischiamo di
+   sovrascrivere la copia remota buona. */
+function showDataLoadErrorBanner(problems){
+  const el=document.createElement('div');
+  el.id='data-load-error-banner';
+  el.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99999;background:#791f1f;color:#fff;padding:14px 20px;font-family:Inter,sans-serif;font-size:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.3)';
+  el.innerHTML='<b>Attenzione:</b> i dati di <b>'+problems.join(' e ')+'</b> salvati su questo dispositivo non si sono caricati correttamente (file danneggiato o illeggibile). '
+    +'Per sicurezza NON è stato sovrascritto nulla e stai vedendo dati di esempio al posto dei tuoi: <b>non modificare o salvare nulla</b> finché non risolvi, altrimenti rischi di perdere i dati reali. '
+    +'Prova a ricaricare la pagina; se il problema persiste, vai su Impostazioni e sincronizza da GitHub o ripristina da un backup.';
+  document.body.prepend(el);
+  document.body.style.paddingTop='90px';
 }
 
 /* ---------- backup: esporta / importa ---------- */
