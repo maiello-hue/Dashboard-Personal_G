@@ -1641,6 +1641,16 @@ function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2
    ============================================================ */
 const GH_KEY='gh_settings_v1', GH_PATH='data/dashboard_data.json';
 let GH_SHA=null, GH_SYNC_TIMER=null, GH_BUSY=false, GH_LAST_UPDATED_AT=null;
+/* Tengono traccia di quanto questa scheda sia "aggiornata": PAGE_LOAD_AT è il
+   momento in cui la pagina è stata caricata, GH_LAST_SYNC_OK_AT l'ultima volta
+   che una sincronizzazione (lettura o scrittura) è andata a buon fine. Se una
+   scheda resta aperta per ore senza mai più sincronizzarsi con successo (rete
+   assente, o semplicemente dimenticata in un'altra finestra), avvisiamo con un
+   banner prima che l'utente riprenda a modificare dati potenzialmente vecchi:
+   vedi checkStaleTab() più sotto. Solo in memoria: non serve persisterli, sono
+   relativi a questa singola apertura della pagina. */
+const PAGE_LOAD_AT=Date.now();
+let GH_LAST_SYNC_OK_AT=null;
 /* GH_LAST_UPDATED_AT è la "base" su cui questo dispositivo ha fatto le sue ultime
    modifiche: se al momento di salvare scopriamo che su GitHub c'è un updatedAt
    diverso da questo, vuol dire che un altro dispositivo ha scritto nel frattempo
@@ -1763,7 +1773,15 @@ async function pushPendingNow(force){
          vince", cancellando in silenzio il lavoro dell'altro dispositivo. */
       let remote=null;
       try{ remote=await ghGetFile(); }catch(e){ /* offline/errore di rete: non è un conflitto rilevato, si prosegue come prima */ }
-      if(remote && GH_LAST_UPDATED_AT!==null && remote.updatedAt && remote.updatedAt!==GH_LAST_UPDATED_AT){
+      /* Prima qui si controllava solo "GH_LAST_UPDATED_AT!==null": se questo
+         dispositivo non aveva ancora una base salvata (prima sincronizzazione mai
+         riuscita, es. per una connessione debole al caricamento) il controllo
+         veniva saltato del tutto e si scriveva alla cieca sopra ai dati remoti,
+         anche se questi contenevano già lavoro reale di un altro dispositivo.
+         Ora: se il file remoto esiste ed è diverso da ciò che qui consideriamo
+         "l'ultima base nota" (nulla inclusa), non si presume che sia sicuro
+         sovrascrivere — si chiede sempre conferma. */
+      if(remote && remote.updatedAt && remote.updatedAt!==GH_LAST_UPDATED_AT){
         GH_CONFLICT=true;
         setGhStatus(ic('warn')+'Conflitto rilevato: salvataggio sospeso',true);
         showGhConflictBanner();
@@ -1775,7 +1793,9 @@ async function pushPendingNow(force){
     setGhLastUpdated(payload.updatedAt);
     clearGhDirty();
     GH_CONFLICT=false;
+    GH_LAST_SYNC_OK_AT=Date.now();
     hideGhConflictBanner();
+    hideStaleTabBanner();
     setGhStatus(ic('check')+'Sincronizzato alle '+new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}));
     return true;
   }catch(e){
@@ -1811,11 +1831,14 @@ async function syncFromGithub(showStatus){
       const payload=collectAllData();
       await ghPutFile(payload,'Inizializza dati dashboard');
       setGhLastUpdated(payload.updatedAt);
+      GH_LAST_SYNC_OK_AT=Date.now();
       setGhStatus(ic('check')+'Repository inizializzata su GitHub');
     } else if(remote.updatedAt&&remote.updatedAt===GH_LAST_UPDATED_AT){
       /* Nessuna modifica rispetto all'ultima volta: evita di ricostruire tabelle
          e grafici (operazione pesante) quando non c'è nulla di nuovo da mostrare —
          succede spesso, dato che il controllo automatico gira ogni 2 minuti. */
+      GH_LAST_SYNC_OK_AT=Date.now();
+      hideStaleTabBanner();
       if(showStatus) setGhStatus(ic('check')+'Già aggiornato ('+new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})+')');
     } else {
       applyAllData(remote);
@@ -1831,12 +1854,46 @@ migratePrimoInizioOnce();
       applyFonteMap();
       buildFilters(); buildRimbFilters(); render(); renderRimborsi();
       setGhLastUpdated(remote.updatedAt||null);
+      GH_LAST_SYNC_OK_AT=Date.now();
+      hideStaleTabBanner();
       setGhStatus(ic('check')+'Sincronizzato alle '+new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}));
     }
   }catch(e){
     setGhStatus(ic('warn')+e.message+' — dati salvati solo in locale',true);
   }
 }
+/* ---------- avviso scheda rimasta aperta troppo a lungo senza sincronizzarsi ---------- */
+const STALE_TAB_MS=2*60*60*1000; /* 2 ore: oltre questa soglia senza nessuna
+  sincronizzazione riuscita, la scheda potrebbe lavorare su dati non più
+  aggiornati (es. rimasta aperta da prima di un'altra modifica fatta altrove).
+  È esattamente lo scenario che ha causato una sovrascrittura reale: meglio
+  avvisare prima di continuare a modificare, piuttosto che scoprirlo dopo. */
+let GH_STALE_DISMISSED_AT=0;
+function checkStaleTab(){
+  if(!ghConfigured()) return;
+  const since=GH_LAST_SYNC_OK_AT||PAGE_LOAD_AT;
+  const staleFor=Date.now()-since;
+  if(staleFor>STALE_TAB_MS && Date.now()-GH_STALE_DISMISSED_AT>15*60*1000){
+    showStaleTabBanner();
+  }
+}
+function showStaleTabBanner(){
+  if(document.getElementById('gh-stale-banner')) return;
+  if(document.getElementById('gh-conflict-banner')) return; /* priorità al conflitto, già più urgente */
+  const el=document.createElement('div');
+  el.id='gh-stale-banner';
+  el.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99997;background:#1d4e8c;color:#fff;padding:14px 20px;font-family:Inter,sans-serif;font-size:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.3)';
+  el.innerHTML='Questa pagina è aperta da un po\' e non si sincronizza da tempo: prima di continuare a modificare, ricarica per essere sicuro di vedere i dati più recenti. '
+    +'<button onclick="location.reload()" style="margin:8px 6px 0;padding:6px 14px;border-radius:6px;border:none;background:#fff;color:#1d4e8c;font-weight:600;cursor:pointer">Ricarica ora</button>'
+    +'<button onclick="dismissStaleTabBanner()" style="margin:8px 0 0;padding:6px 14px;border-radius:6px;border:1px solid #fff;background:transparent;color:#fff;cursor:pointer">Ignora per ora</button>';
+  document.body.prepend(el);
+  document.body.style.paddingTop='90px';
+}
+function hideStaleTabBanner(){
+  const el=document.getElementById('gh-stale-banner');
+  if(el){ el.remove(); if(!document.getElementById('data-load-error-banner')&&!document.getElementById('gh-conflict-banner')) document.body.style.paddingTop=''; }
+}
+function dismissStaleTabBanner(){ GH_STALE_DISMISSED_AT=Date.now(); hideStaleTabBanner(); }
 function scheduleGithubSync(){
   if(!ghConfigured()) return;
   if(DATA_LOAD_ERROR) return; /* dati locali sospetti: non inviarli a GitHub finché non si risolve */
@@ -1894,29 +1951,36 @@ window.addEventListener('beforeunload',()=>{
 
 /* ============================================================
    Backup automatico — oltre al file "vivo" (dashboard_data.json,
-   sempre sovrascritto con l'ultima versione), una volta al giorno
+   sempre sovrascritto con l'ultima versione), ogni BACKUP_INTERVAL_HOURS ore
    salviamo anche un'istantanea a parte in data/backups/, che nessun
    salvataggio successivo tocca più. Serve come rete di sicurezza
    indipendente da tutto il resto: anche se un bug, un conflitto
-   risolto per errore o un localStorage corrotto danneggiassero il
-   file vivo, resta un punto da cui tornare indietro. Le istantanee
-   più vecchie di BACKUP_RETENTION_DAYS vengono rimosse in automatico
-   per non far crescere la repository all'infinito. Un backup fallito
-   non deve mai interrompere il normale utilizzo della dashboard. */
+   risolto per errore, una sovrascrittura da un dispositivo con dati vecchi
+   o un localStorage corrotto danneggiassero il file vivo, resta un punto
+   recente da cui tornare indietro (prima era una volta al giorno: dopo aver
+   visto un caso reale di dati persi nel giro di un'ora, un intervallo più
+   corto riduce quanto lavoro può andare perso anche se la prevenzione fallisce).
+   Le istantanee più vecchie di BACKUP_RETENTION_DAYS vengono rimosse in
+   automatico per non far crescere la repository all'infinito. Un backup
+   fallito non deve mai interrompere il normale utilizzo della dashboard. */
 const BACKUP_DIR='data/backups/';
-const BACKUP_RETENTION_DAYS=30;
-const LS_AUTO_BACKUP_DATE='auto_backup_last_date_v1';
-function todayIso(){ return new Date().toISOString().slice(0,10); }
-function lastAutoBackupDate(){ try{ return localStorage.getItem(LS_AUTO_BACKUP_DATE); }catch(e){ return null; } }
-async function ghPutBackupFile(obj,dateStr){
+const BACKUP_INTERVAL_HOURS=3;
+const BACKUP_RETENTION_DAYS=14;
+const LS_AUTO_BACKUP_AT='auto_backup_last_at_v1';
+function backupStamp(d){
+  const p=n=>String(n).padStart(2,'0');
+  return d.getUTCFullYear()+'-'+p(d.getUTCMonth()+1)+'-'+p(d.getUTCDate())+'_'+p(d.getUTCHours())+'-'+p(d.getUTCMinutes());
+}
+function lastAutoBackupAt(){ try{ return localStorage.getItem(LS_AUTO_BACKUP_AT); }catch(e){ return null; } }
+async function ghPutBackupFile(obj,stamp){
   const s=ghSettings();
-  const path=BACKUP_DIR+'backup_'+dateStr+'.json';
+  const path=BACKUP_DIR+'backup_'+stamp+'.json';
   let sha=null;
   try{
     const res=await fetch('https://api.github.com/repos/'+encodeURIComponent(s.owner)+'/'+encodeURIComponent(s.repo)+'/contents/'+path+'?ref='+encodeURIComponent(s.branch||'main'),{headers:ghHeaders()});
     if(res.ok){ const j=await res.json(); sha=j.sha; }
   }catch(e){}
-  const body={message:'Backup automatico '+dateStr,content:b64encode(JSON.stringify(obj,null,1)),branch:s.branch||'main'};
+  const body={message:'Backup automatico '+stamp,content:b64encode(JSON.stringify(obj,null,1)),branch:s.branch||'main'};
   if(sha) body.sha=sha;
   const res=await fetch('https://api.github.com/repos/'+encodeURIComponent(s.owner)+'/'+encodeURIComponent(s.repo)+'/contents/'+path,{
     method:'PUT',headers:{...ghHeaders(),'Content-Type':'application/json'},body:JSON.stringify(body)
@@ -1932,33 +1996,35 @@ async function cleanupOldBackups(){
     if(!Array.isArray(files)) return;
     const cutoff=new Date(); cutoff.setDate(cutoff.getDate()-BACKUP_RETENTION_DAYS);
     for(const f of files){
-      const m=f.name.match(/^backup_(\d{4}-\d{2}-\d{2})\.json$/);
+      const m=f.name.match(/^backup_(\d{4}-\d{2}-\d{2})_(\d{2})-(\d{2})\.json$/);
       if(!m) continue;
-      const d=new Date(m[1]+'T00:00:00');
+      const d=new Date(Date.UTC(+m[1].slice(0,4),+m[1].slice(5,7)-1,+m[1].slice(8,10),+m[2],+m[3]));
       if(d<cutoff){
         try{
           await fetch('https://api.github.com/repos/'+encodeURIComponent(s.owner)+'/'+encodeURIComponent(s.repo)+'/contents/'+f.path,{
             method:'DELETE',headers:{...ghHeaders(),'Content-Type':'application/json'},
-            body:JSON.stringify({message:'Rimozione backup automatico scaduto ('+m[1]+')',sha:f.sha,branch:s.branch||'main'})
+            body:JSON.stringify({message:'Rimozione backup automatico scaduto ('+m[1]+' '+m[2]+':'+m[3]+')',sha:f.sha,branch:s.branch||'main'})
           });
         }catch(e){ /* una cancellazione fallita non blocca le altre: si ritenterà al prossimo giro */ }
       }
     }
   }catch(e){}
 }
-/* Chiamata a ogni avvio e a ogni giro del controllo periodico: esce subito se il
-   backup di oggi è già stato fatto (da questo o da un altro dispositivo, tramite
-   il controllo diretto su GitHub più sotto), quindi il costo di chiamarla spesso
-   è minimo. force=true (bottone manuale in Impostazioni) salta il controllo data. */
+/* Chiamata a ogni avvio e a ogni giro del controllo periodico: esce subito se
+   sono passate meno di BACKUP_INTERVAL_HOURS ore dall'ultimo backup fatto da
+   questo dispositivo, quindi il costo di chiamarla spesso è minimo. force=true
+   (bottone manuale in Impostazioni) salta il controllo del tempo trascorso. */
 async function maybeCreateAutoBackup(force){
   if(!ghConfigured()) return false;
   if(DATA_LOAD_ERROR) return false; /* non salviamo un'istantanea di dati sospetti */
-  const today=todayIso();
-  if(!force && lastAutoBackupDate()===today) return false;
+  const lastAt=lastAutoBackupAt();
+  if(!force && lastAt && (Date.now()-new Date(lastAt).getTime())<BACKUP_INTERVAL_HOURS*3600000) return false;
   try{
+    const now=new Date();
+    const stamp=backupStamp(now);
     const payload=collectAllData();
-    await ghPutBackupFile(payload,today);
-    try{ localStorage.setItem(LS_AUTO_BACKUP_DATE,today); }catch(e){}
+    await ghPutBackupFile(payload,stamp);
+    try{ localStorage.setItem(LS_AUTO_BACKUP_AT,now.toISOString()); }catch(e){}
     cleanupOldBackups();
     refreshBackupStatus();
     return true;
@@ -1977,8 +2043,8 @@ function refreshBackupStatus(){
   const el=document.getElementById('backup-status');
   if(!el) return;
   if(!ghConfigured()){ el.textContent='Backup automatico disponibile solo con GitHub connesso.'; return; }
-  const last=lastAutoBackupDate();
-  el.textContent=last?('Ultimo backup automatico: '+fdate(new Date(last+'T00:00:00'))+' · conservati '+BACKUP_RETENTION_DAYS+' giorni.'):'Nessun backup automatico ancora effettuato su questo dispositivo.';
+  const last=lastAutoBackupAt();
+  el.textContent=last?('Ultimo backup automatico: '+fdate(new Date(last))+' alle '+new Date(last).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})+' · ogni '+BACKUP_INTERVAL_HOURS+' ore, conservati '+BACKUP_RETENTION_DAYS+' giorni.'):'Nessun backup automatico ancora effettuato su questo dispositivo.';
 }
 
 /* ---------- pagina impostazioni GitHub ---------- */
@@ -5340,6 +5406,7 @@ showPage(VALID_PAGES.includes(savedPage)?savedPage:'dashboard');
 if(ghConfigured()){ setGhStatus(ic('sync')+'Connessione a GitHub…'); syncFromGithub(true).then(()=>maybeCreateAutoBackup()); }
 else { setGhStatus('Non connesso a GitHub — dati solo su questo dispositivo'); }
 setInterval(()=>syncFromGithub(false).then(()=>maybeCreateAutoBackup()), 30*1000);
+setInterval(checkStaleTab, 5*60*1000);
 
 /* renderTable() ora costruisce solo la versione (tabella desktop o schede
    mobile) effettivamente visibile in base alla larghezza dello schermo: se si
