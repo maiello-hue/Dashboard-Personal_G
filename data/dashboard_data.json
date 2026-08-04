@@ -7350,7 +7350,7 @@
   },
   {
    "CLIENTE": "Chiara Di Carlo",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "NON RINNOVATO",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "24/12/2025",
    "FINE PERCORSO": "24/06/2026",
@@ -7371,7 +7371,11 @@
    "CONTRATTO": "",
    "CHECK": "",
    "RISULTATO": "",
-   "_PRIMO_INIZIO": "24/12/2025"
+   "_PRIMO_INIZIO": "24/12/2025",
+   "N FATTURA": "",
+   "DATA ARCHIVIAZIONE": "04/08/2026",
+   "VENDITORE": "",
+   "FONTE": ""
   },
   {
    "CLIENTE": "Barbara Michelagnoli",
@@ -25940,5 +25944,5 @@
    "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
- "updatedAt": "2026-08-04T13:40:46.417Z"
+ "updatedAt": "2026-08-04T13:41:04.417Z"
 }
