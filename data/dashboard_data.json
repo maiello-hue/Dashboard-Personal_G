@@ -15635,7 +15635,7 @@
   },
   {
    "CLIENTE": "Chiara Matricardi",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "CONGELATO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "07/04/2026",
    "FINE PERCORSO": "07/04/2027",
@@ -15657,7 +15657,9 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "ADV",
-   "_PRIMO_INIZIO": "07/04/2026"
+   "_PRIMO_INIZIO": "07/04/2026",
+   "N FATTURA": "",
+   "VENDITORE": ""
   },
   {
    "CLIENTE": "Grazia Ungaro",
@@ -25967,5 +25969,5 @@
    "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
- "updatedAt": "2026-08-04T13:45:41.532Z"
+ "updatedAt": "2026-08-04T13:45:57.648Z"
 }
