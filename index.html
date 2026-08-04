@@ -2958,6 +2958,33 @@ function provvigioneAuto(incassoVal){
   return hit?hit[1]:0;
 }
 let provvigioniExpanded=new Set();
+/* Storno incassi: permette di sottrarre un importo rimborsato dalla cifra di un
+   singolo incasso mostrata negli elenchi KPI di Incassi (Rinnovo/Ricorrenti/Nuovo
+   cliente/Totale), senza toccare il log incassi né i rimborsi registrati altrove:
+   è solo un aggiustamento di visualizzazione/conteggio, locale a questo dispositivo
+   (stesso pattern di COMP_OVERRIDES/PROV_OVERRIDES, non sincronizzato su GitHub). */
+const LS_STORNO_INC='storno_incassi_v1';
+let STORNO_INC={};
+function loadStornoInc(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(LS_STORNO_INC));
+    if(saved&&typeof saved==='object') STORNO_INC=saved;
+  }catch(e){}
+}
+function saveStornoInc(){ try{ localStorage.setItem(LS_STORNO_INC,JSON.stringify(STORNO_INC)); }catch(e){} }
+function stornoIncKey(r){ return (r['CLIENTE']||'')+'|'+(r['DATA INCASSO']||''); }
+function stornoIncFor(r){ return parseFloat(STORNO_INC[stornoIncKey(r)])||0; }
+function netIncasso(r){ return Math.max(0, euro(r['INCASSO'])-stornoIncFor(r)); }
+function setStornoIncasso(cliente,dataIncasso,value,key){
+  const v=parseFloat((value||'').toString().replace(',','.'));
+  const k=cliente+'|'+dataIncasso;
+  if(value===''||isNaN(v)||v<=0) delete STORNO_INC[k];
+  else STORNO_INC[k]=v;
+  saveStornoInc();
+  render();
+  apriListaClienti(key);
+}
+
 const LS_PROV_OVERRIDES='prov_overrides_v1';
 let PROV_OVERRIDES={};
 function loadProvOverrides(){
@@ -3964,8 +3991,8 @@ function render(){
   const prevIncMese=r=>euro(r['INCASSO'])>0&&inMese(r,'DATA INCASSO',prevMese);
   const setInc=(id,f,label)=>{
     const rs=incLog.filter(r=>incMese(r)&&f(r));
-    const prevSum=incLog.filter(r=>prevIncMese(r)&&f(r)).reduce((s,r)=>s+euro(r['INCASSO']),0);
-    const currSum=rs.reduce((s,r)=>s+euro(r['INCASSO']),0);
+    const prevSum=incLog.filter(r=>prevIncMese(r)&&f(r)).reduce((s,r)=>s+netIncasso(r),0);
+    const currSum=rs.reduce((s,r)=>s+netIncasso(r),0);
     document.getElementById(id).textContent=fmtEuro2(currSum);
     document.getElementById(id+'-d').innerHTML=rs.length+' '+label+trendHtml(currSum,prevSum,false);
   };
@@ -3973,8 +4000,8 @@ function render(){
   setInc('i-ric',isRicT,'clienti con tag ricorrente');
   setInc('i-alt',isAltT,'nuovi clienti');
   const incTotRows=incLog.filter(incMese);
-  const incTotSum=incTotRows.reduce((s,r)=>s+euro(r['INCASSO']),0);
-  const prevIncTotSum=incLog.filter(prevIncMese).reduce((s,r)=>s+euro(r['INCASSO']),0);
+  const incTotSum=incTotRows.reduce((s,r)=>s+netIncasso(r),0);
+  const prevIncTotSum=incLog.filter(prevIncMese).reduce((s,r)=>s+netIncasso(r),0);
   document.getElementById('i-tot').textContent=fmtEuro2(incTotSum);
   document.getElementById('i-tot-d').innerHTML=incTotRows.length+' incassi registrati'+trendHtml(incTotSum,prevIncTotSum,false);
   KPI_LISTS.incRin=incLog.filter(r=>incMese(r)&&isRinT(r));
@@ -4485,10 +4512,16 @@ function apriListaClienti(key){
   document.getElementById('kpi-list-title').textContent=(KPI_LABELS[key]||'')+' ('+rows.length+')';
   if(INC_KPI_KEYS.has(key)){
     document.getElementById('kpi-list-body').innerHTML=rows.length?rows.map(r=>{
-      const imp=euro(r['INCASSO']).toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2,useGrouping:true});
+      const st=stornoIncFor(r);
+      const imp=netIncasso(r).toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2,useGrouping:true});
+      const stLbl=st>0?`<span class="sub" style="margin:0;font-size:11px">storno € ${st.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>`:'';
       return `<div class="kpi-list-row kpi-list-row-amt">
-        <span style="flex:1;min-width:160px">${esc(r['CLIENTE'])}</span>
+        <span style="flex:1;min-width:160px">${esc(r['CLIENTE'])}${stLbl}</span>
         <span class="count" style="min-width:110px;text-align:right;font-weight:700;color:var(--text)">€ ${imp}</span>
+        <span style="display:flex;align-items:center;gap:4px;flex-shrink:0">
+          <span style="font-size:11px;color:var(--muted)">storno</span>
+          <input type="number" step="0.01" min="0" class="comp-rate-input" style="width:66px" value="${st||''}" placeholder="0" title="Sottrai importo rimborsato da questo incasso" onchange="setStornoIncasso('${jsEsc(r['CLIENTE'])}','${jsEsc(r['DATA INCASSO'])}',this.value,'${key}')">
+        </span>
       </div>`;
     }).join(''):'<div class="sub">Nessuna cliente in questa categoria.</div>';
   }else if(key==='rischio'){
@@ -4932,6 +4965,7 @@ loadCollabColors();
 applyTutorColorResetOnce();
 loadCompOverrides();
 loadProvOverrides();
+loadStornoInc();
 initData();
 applyLug26Import();
 applyPromoEstateImport();
