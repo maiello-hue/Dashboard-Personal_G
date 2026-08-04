@@ -1256,7 +1256,7 @@
   },
   {
    "CLIENTE": "Federica Lattanzi",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "NON RINNOVATO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "25/08/2025",
    "FINE PERCORSO": "25/08/2026",
@@ -1277,7 +1277,11 @@
    "CONTRATTO": "",
    "CHECK": "",
    "RISULTATO": "",
-   "_PRIMO_INIZIO": "25/08/2025"
+   "_PRIMO_INIZIO": "25/08/2025",
+   "N FATTURA": "",
+   "DATA ARCHIVIAZIONE": "04/08/2026",
+   "VENDITORE": "",
+   "FONTE": ""
   },
   {
    "CLIENTE": "Ivana Monaco",
@@ -25950,5 +25954,5 @@
    "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
- "updatedAt": "2026-08-04T13:42:20.301Z"
+ "updatedAt": "2026-08-04T13:42:50.100Z"
 }
