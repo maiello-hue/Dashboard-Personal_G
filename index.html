@@ -459,10 +459,14 @@ h3 .ico,.sub .ico{color:var(--muted)}
 .incbox .v{font-size:22px;font-weight:500;margin-top:6px;color:var(--text)}
 .incbox .d{font-size:12px;color:var(--muted2);margin-top:4px}
 .inc-ic{position:absolute;top:14px;right:14px;font-size:20px}
-.incbox.inc-green{border-left-color:#1f9d63}
-.incbox.inc-blue{border-left-color:#2f7fd1}
-.incbox.inc-orange{border-left-color:#b5720f}
-.incbox.inc-purple{border-left-color:#7c56d9}
+.incbox.inc-green{border-left-color:var(--text)}
+.incbox.inc-blue{border-left-color:var(--text)}
+.incbox.inc-orange{border-left-color:var(--text)}
+.incbox.inc-purple{border-left-color:var(--accent)}
+.incbox.inc-purple .v{color:var(--accent)}
+#page-incassi .mese-sel-row{justify-content:flex-end}
+#inc-mese-select{background:#18181a;color:#fff;border:none;border-radius:999px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer}
+#page-incassi .card h3{font-weight:300;font-size:17px}
 .rata-item{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
 .rata-item:last-child{border:none}
 .rata-item.paid{opacity:.5}
@@ -848,10 +852,10 @@ h3 .ico,.sub .ico{color:var(--muted)}
       <div class="grid">
         <div class="card span12">
           <div class="incrow">
-            <div class="incbox inc-green" onclick="apriListaClienti('incRin')"><div class="inc-ic" style="color:#1f9d63"><i class="fa-solid fa-rotate-right"></i></div><div class="l">Rinnovo percorsi</div><div class="v" id="i-rin">–</div><div class="d" id="i-rin-d"></div></div>
-            <div class="incbox inc-blue" onclick="apriListaClienti('incRic')"><div class="inc-ic" style="color:#2f7fd1"><i class="fa-solid fa-repeat"></i></div><div class="l">Ricorrenti</div><div class="v" id="i-ric">–</div><div class="d" id="i-ric-d"></div></div>
-            <div class="incbox inc-orange" onclick="apriListaClienti('incAlt')"><div class="inc-ic" style="color:#b5720f"><i class="fa-solid fa-user-plus"></i></div><div class="l">Nuovo cliente</div><div class="v" id="i-alt">–</div><div class="d" id="i-alt-d"></div></div>
-            <div class="incbox inc-purple" onclick="apriListaClienti('incTot')"><div class="inc-ic" style="color:#7c56d9"><i class="fa-solid fa-sack-dollar"></i></div><div class="l" id="i-tot-l">Totale incassato</div><div class="v" id="i-tot">–</div><div class="d" id="i-tot-d"></div></div>
+            <div class="incbox inc-green" onclick="apriListaClienti('incRin')"><div class="inc-ic" style="color:var(--text)"><i class="fa-solid fa-rotate-right"></i></div><div class="l">Rinnovo percorsi</div><div class="v" id="i-rin">–</div><div class="d" id="i-rin-d"></div></div>
+            <div class="incbox inc-blue" onclick="apriListaClienti('incRic')"><div class="inc-ic" style="color:var(--text)"><i class="fa-solid fa-repeat"></i></div><div class="l">Ricorrenti</div><div class="v" id="i-ric">–</div><div class="d" id="i-ric-d"></div></div>
+            <div class="incbox inc-orange" onclick="apriListaClienti('incAlt')"><div class="inc-ic" style="color:var(--text)"><i class="fa-solid fa-user-plus"></i></div><div class="l">Nuovo cliente</div><div class="v" id="i-alt">–</div><div class="d" id="i-alt-d"></div></div>
+            <div class="incbox inc-purple" onclick="apriListaClienti('incTot')"><div class="inc-ic" style="color:var(--accent)"><i class="fa-solid fa-sack-dollar"></i></div><div class="l" id="i-tot-l">Totale incassato</div><div class="v" id="i-tot">–</div><div class="d" id="i-tot-d"></div></div>
           </div>
         </div>
         <div class="card span12" id="goal-incassi-card" style="display:none">
@@ -4052,14 +4056,14 @@ function render(){
   const byM={};
   allRows.forEach(r=>{const d=pdate(r['INIZIO PERCORSO']);if(d){const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');byM[k]=(byM[k]||0)+1;}});
   const keys=Object.keys(byM).sort();
-  mkChart('c-entrate',{type:'line',data:{labels:keys.map(k=>MESI_SHORT[+k.slice(5)-1]+' '+k.slice(2,4)),datasets:[{data:keys.map(k=>byM[k]),borderColor:'#4f6fe0',backgroundColor:'rgba(79,111,224,.12)',fill:true,tension:.35,pointRadius:3,pointBackgroundColor:'#4f6fe0'}]},options:{...common,plugins:{legend:{display:false}},scales:{x:gridOpt,y:{...gridOpt,beginAtZero:true}}}});
+  mkChart('c-entrate',{type:'line',data:{labels:keys.map(k=>MESI_SHORT[+k.slice(5)-1]+' '+k.slice(2,4)),datasets:[{data:keys.map(k=>byM[k]),borderColor:'#e0245e',backgroundColor:'rgba(224,36,94,.12)',fill:true,tension:.35,pointRadius:3,pointBackgroundColor:'#e0245e'}]},options:{...common,plugins:{legend:{display:false}},scales:{x:gridOpt,y:{...gridOpt,beginAtZero:true}}}});
   /* Andamento reale degli incassi in euro mese per mese (a differenza del
      grafico sopra, che conta solo il NUMERO di nuove clienti): si basa su
      DATA INCASSO/INCASSO, esattamente come le card in cima alla pagina. */
   const byMEuro={};
   getIncassiLog().forEach(r=>{ const d=pdate(r['DATA INCASSO']); const v=euro(r['INCASSO']); if(d&&v>0){ const k=mesekey(d); byMEuro[k]=(byMEuro[k]||0)+v; } });
   const keysE=Object.keys(byMEuro).sort();
-  mkChart('c-incassi-mese',{type:'bar',data:{labels:keysE.map(k=>MESI_SHORT[+k.slice(5)-1]+' '+k.slice(2,4)),datasets:[{data:keysE.map(k=>+byMEuro[k].toFixed(2)),backgroundColor:'#7c56d9',borderRadius:6}]},options:{...common,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'€ '+c.parsed.y.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2})}}},scales:{x:gridOpt,y:{...gridOpt,beginAtZero:true,ticks:{...gridOpt.ticks,callback:v=>'€'+v}}}}});
+  mkChart('c-incassi-mese',{type:'bar',data:{labels:keysE.map(k=>MESI_SHORT[+k.slice(5)-1]+' '+k.slice(2,4)),datasets:[{data:keysE.map(k=>+byMEuro[k].toFixed(2)),backgroundColor:'#e0245e',borderRadius:6}]},options:{...common,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'€ '+c.parsed.y.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2})}}},scales:{x:gridOpt,y:{...gridOpt,beginAtZero:true,ticks:{...gridOpt.ticks,callback:v=>'€'+v}}}}});
   }
 
   if(currentPage==='analisi'){
