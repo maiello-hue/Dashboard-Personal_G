@@ -1203,7 +1203,7 @@
   },
   {
    "CLIENTE": "Jessica Venturi",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "NON RINNOVATO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "22/08/2025",
    "FINE PERCORSO": "22/08/2026",
@@ -1225,7 +1225,10 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "ORGANICO",
-   "_PRIMO_INIZIO": "22/08/2025"
+   "_PRIMO_INIZIO": "22/08/2025",
+   "N FATTURA": "",
+   "DATA ARCHIVIAZIONE": "04/08/2026",
+   "VENDITORE": ""
   },
   {
    "CLIENTE": "Vita Nigro",
@@ -25954,5 +25957,5 @@
    "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
- "updatedAt": "2026-08-04T13:42:50.100Z"
+ "updatedAt": "2026-08-04T13:43:06.382Z"
 }
