@@ -286,6 +286,10 @@ h1{font-size:22px;font-weight:500}
 #page-analisi .rate-table td{font-weight:300}
 #page-analisi .rate-group-row td{font-weight:600}
 #page-analisi .rate-row-label.tot{font-weight:600}
+#page-rimborsi .kpis-v2 .kpi-orange{border-left-color:var(--accent)}
+#page-rimborsi .kpis-v2 .kpi-green,#page-rimborsi .kpis-v2 .kpi-blue,#page-rimborsi .kpis-v2 .kpi-purple{border-left-color:var(--text)}
+#page-rimborsi .kpis-v2 .kpi-orange .v{color:var(--accent)}
+#page-rimborsi .card h3{font-weight:300;font-size:17px}
 .icon-btn.primary.active{background:var(--accent);border-color:var(--accent)}
 .badge{display:inline-block;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:500;white-space:nowrap}
 .b-inpercorso{background:var(--tag-b-inpercorso-bg,#e1f5ee);color:var(--tag-b-inpercorso-fg,#085041)}
@@ -1086,14 +1090,14 @@ h3 .ico,.sub .ico{color:var(--muted)}
 
     <div id="page-rimborsi" style="display:none">
       <div class="kpis kpis-v2">
-        <div class="kpi kpi-orange"><div class="kpi-ic" style="color:#b5720f"><i class="fa-solid fa-hand-holding-dollar"></i></div><div class="l">Da pagare questo mese</div><div class="v" id="r-mese">–</div><div class="d" id="r-mese-d"></div></div>
-        <div class="kpi kpi-green"><div class="kpi-ic" style="color:#1f9d63"><i class="fa-solid fa-circle-check"></i></div><div class="l">Rate pagate</div><div class="v" id="r-rit">–</div><div class="d" id="r-rit-d"></div></div>
-        <div class="kpi kpi-blue"><div class="kpi-ic" style="color:#2f7fd1"><i class="fa-solid fa-users"></i></div><div class="l">Rimborsi totali</div><div class="v" id="r-tot">–</div><div class="d" id="r-tot-d"></div></div>
-        <div class="kpi kpi-purple"><div class="kpi-ic" style="color:#7c56d9"><i class="fa-solid fa-rotate-left"></i></div><div class="l">Storno totale</div><div class="v" id="r-val">–</div><div class="d">somma da rimborsare</div></div>
+        <div class="kpi kpi-orange"><div class="kpi-ic" style="color:var(--accent)"><i class="fa-solid fa-hand-holding-dollar"></i></div><div class="l">Da pagare questo mese</div><div class="v" id="r-mese">–</div><div class="d" id="r-mese-d"></div></div>
+        <div class="kpi kpi-green"><div class="kpi-ic" style="color:var(--text)"><i class="fa-solid fa-circle-check"></i></div><div class="l">Rate pagate</div><div class="v" id="r-rit">–</div><div class="d" id="r-rit-d"></div></div>
+        <div class="kpi kpi-blue"><div class="kpi-ic" style="color:var(--text)"><i class="fa-solid fa-users"></i></div><div class="l">Rimborsi totali</div><div class="v" id="r-tot">–</div><div class="d" id="r-tot-d"></div></div>
+        <div class="kpi kpi-purple"><div class="kpi-ic" style="color:var(--text)"><i class="fa-solid fa-rotate-left"></i></div><div class="l">Storno totale</div><div class="v" id="r-val">–</div><div class="d">somma da rimborsare</div></div>
       </div>
       <div class="grid">
         <div class="card span12">
-          <h3><span class="ico"><svg viewBox="0 0 16 16"><rect x="2.3" y="3.3" width="11.4" height="10.4" rx="1.3"/><path d="M2.3 6.6h11.4M5.5 2v3M10.5 2v3"/></svg></span>Promemoria rate da rimborsare
+          <h3><span class="ico" style="color:var(--accent)"><svg viewBox="0 0 16 16"><rect x="2.3" y="3.3" width="11.4" height="10.4" rx="1.3"/><path d="M2.3 6.6h11.4M5.5 2v3M10.5 2v3"/></svg></span>Promemoria rate da rimborsare
             <span class="scad-head">
               <span id="r-summary" class="count"></span>
               <select id="rw-window" onchange="renderRimborsi()">
