@@ -1944,10 +1944,11 @@
    "€ TRAINER": "€ 17,00",
    "€ NUTRI": "€ 12,00",
    "CONTRATTO": "",
-   "CHECK": "",
-   "RISULTATO": "",
+   "CHECK": "SI",
+   "RISULTATO": "SI",
    "FONTE": "INSTAGRAM",
-   "_PRIMO_INIZIO": "16/09/2025"
+   "_PRIMO_INIZIO": "16/09/2025",
+   "DATA CHECK": "05/08/2026"
   },
   {
    "CLIENTE": "Patrizia Capirossi",
@@ -26469,5 +26470,5 @@
    "DATA": "05/08/2026"
   }
  ],
- "updatedAt": "2026-08-05T17:27:15.248Z"
+ "updatedAt": "2026-08-05T17:27:42.211Z"
 }
