@@ -13787,7 +13787,7 @@
   },
   {
    "CLIENTE": "Denise Di Francesco",
-   "STATO CLIENTE": "CONGELATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "13/03/2026",
    "FINE PERCORSO": "13/03/2027",
@@ -26378,7 +26378,12 @@
    "CLIENTE": "Martina Scaccialupi",
    "STATO": "CONGELATO",
    "DATA": "05/08/2026"
+  },
+  {
+   "CLIENTE": "Denise Di Francesco",
+   "STATO": "IN PERCORSO",
+   "DATA": "05/08/2026"
   }
  ],
- "updatedAt": "2026-08-05T10:12:17.657Z"
+ "updatedAt": "2026-08-05T10:12:29.125Z"
 }
