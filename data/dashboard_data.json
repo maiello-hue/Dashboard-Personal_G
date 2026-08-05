@@ -100,7 +100,7 @@
    "CONTRATTO": "SI",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "31/07/2026",
+   "DATA CHECK": "05/08/2026",
    "_CHECK_JULY_FIX": "1",
    "_PRIMO_INIZIO": "26/03/2024"
   },
@@ -26469,5 +26469,5 @@
    "DATA": "05/08/2026"
   }
  ],
- "updatedAt": "2026-08-05T17:26:23.153Z"
+ "updatedAt": "2026-08-05T17:27:15.248Z"
 }
