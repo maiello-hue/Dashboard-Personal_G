@@ -4296,20 +4296,26 @@ function buildFonteEsitoTable(allRows){
   el.innerHTML=rowsHtml||'<tr><td colspan="6" class="sub">Nessuna cliente con fonte registrata.</td></tr>';
 }
 /* Coorte di retention: raggruppa per mese di PRIMO ingresso e mostra quante
-   di quella coorte sono ancora attive oggi. Non è un vero storico mese-per-
-   mese (richiederebbe uno storico degli stati passati che i dati non hanno),
-   ma una "fotografia" onesta e verificabile: quante clienti di ogni coorte
-   sono sopravvissute fino ad oggi.
-   Il vero mese di primo ingresso viene preso, in ordine di priorità, da:
-   1) PRIMO_INGRESSO_MAP, un file di riferimento (data/primo_ingresso.json)
-      ricavato incrociando nome e INIZIO PERCORSO col foglio Google storico
-      reale (agosto 2026 + storico_mensile.json gen-lug 2026): per ogni
-      cliente prende la data più vecchia trovata tra tutti i mesi, così una
-      cliente rinnovata più volte non "ringiovanisce" ogni volta che rinnova;
-   2) _PRIMO_INIZIO, fissato una sola volta alla creazione scheda (per le
-      clienti non presenti nel foglio, es. aggiunte dopo l'import);
-   3) INIZIO PERCORSO, come ultimo fallback (aggiornato a ogni rinnovo, quindi
-      meno preciso ma meglio di niente). */
+   di quella coorte sono ancora attive oggi.
+   Il numero di "clienti entrate" per un mese viene calcolato in due modi
+   diversi a seconda che esista o meno uno storico reale importato per quel
+   mese (MESE_STORICO_SNAPSHOT, gennaio-luglio 2026):
+   - CON storico reale: si usa lo stesso identico criterio della card "Nuove"
+     di quel mese (kpiDaSnapshotMese: INIZIO PERCORSO nel mese, non rinnovo),
+     applicato al roster reale di allora. Questo è deliberato e importante:
+     una cliente entrata quel mese ma poi rimossa dai dati live (es. scheda
+     cancellata) continua a contare come "entrata", semplicemente non risulta
+     più "attiva" — altrimenti il totale del mese si riduce nel tempo anche
+     se storicamente non cambia nulla, con numeri diversi da quelli mostrati
+     sulla card "Nuove" dello stesso mese (bug segnalato dall'utente: gennaio
+     mostrava 93 invece di 117).
+   - SENZA storico reale (coorti precedenti al 2026 o il mese corrente): si
+     usa il dato live, in ordine di priorità: PRIMO_INGRESSO_MAP (file di
+     riferimento data/primo_ingresso.json, ricavato incrociando nome e
+     INIZIO PERCORSO col foglio Google reale: prende, per ogni cliente, la
+     più vecchia data trovata che non sia essa stessa un rinnovo) -> quindi
+     _PRIMO_INIZIO (fissato alla creazione scheda) -> infine INIZIO PERCORSO
+     come ultimo fallback. */
 let retentionYearsOpen=new Set();
 let PRIMO_INGRESSO_MAP={};
 function normNome(s){ return (s||'').trim().toLowerCase().replace(/\s+/g,' '); }
@@ -4328,11 +4334,26 @@ function buildRetentionTable(){
   if(!el) return;
   const now=new Date();
   const groups={};
+  const mesiConStorico=new Set(Object.keys(MESE_STORICO_SNAPSHOT||{}));
+  const liveByNome={};
+  DATA.forEach(r=>{ liveByNome[normNome(r['CLIENTE'])]=r; });
+  mesiConStorico.forEach(k=>{
+    const nuove=kpiDaSnapshotMese(MESE_STORICO_SNAPSHOT[k],k).nuove;
+    if(!nuove.length) return;
+    const [y,m]=k.split('-');
+    groups[k]={tot:0,attive:0,cohortDate:new Date(+y,+m-1,1)};
+    nuove.forEach(r=>{
+      groups[k].tot++;
+      const live=liveByNome[normNome(r['CLIENTE'])];
+      if(live&&!isArchiviata(live)) groups[k].attive++;
+    });
+  });
   DATA.forEach(r=>{
     const raw=PRIMO_INGRESSO_MAP[normNome(r['CLIENTE'])]||r['_PRIMO_INIZIO']||r['INIZIO PERCORSO'];
     const d=pdate(raw);
     if(!d) return;
     const k=mesekey(d);
+    if(mesiConStorico.has(k)) return; /* già conteggiato sopra dallo storico reale */
     if(!groups[k]) groups[k]={tot:0,attive:0,cohortDate:new Date(d.getFullYear(),d.getMonth(),1)};
     groups[k].tot++;
     if(!isArchiviata(r)) groups[k].attive++;
