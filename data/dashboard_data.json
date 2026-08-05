@@ -3680,10 +3680,11 @@
    "€ TRAINER": "€ 17,00",
    "€ NUTRI": "",
    "CONTRATTO": "",
-   "CHECK": "",
-   "RISULTATO": "",
+   "CHECK": "SI",
+   "RISULTATO": "SI",
    "FONTE": "INSTAGRAM",
-   "_PRIMO_INIZIO": "25/10/2025"
+   "_PRIMO_INIZIO": "25/10/2025",
+   "DATA CHECK": "05/08/2026"
   },
   {
    "CLIENTE": "Francesca Cavaliere",
@@ -26468,5 +26469,5 @@
    "DATA": "05/08/2026"
   }
  ],
- "updatedAt": "2026-08-05T13:29:03.703Z"
+ "updatedAt": "2026-08-05T17:26:23.153Z"
 }
