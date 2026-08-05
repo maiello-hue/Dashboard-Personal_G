@@ -922,6 +922,7 @@ select.pill-btn:focus{outline:none;border-color:var(--border-strong)}
       </div>
 
       <div id="analisi-tab-stato" class="grid">
+        <div class="card span12"><h3><span><i class="fa-solid fa-chart-line" style="color:#e0245e"></i>Andamento clienti nel tempo</span></h3><div class="chartbox"><canvas id="c-andamento-clienti"></canvas></div></div>
         <div class="card span12"><h3><span><i class="fa-solid fa-coins" style="color:#e0245e"></i>Valore cliente</span></h3><div class="kpis kpis-v2" id="ltv-kpis"></div></div>
         <div class="card span4"><h3><span><i class="fa-solid fa-user-group" style="color:#e0245e"></i>Stato clienti</span></h3><div class="chartbox"><canvas id="c-stato"></canvas></div></div>
         <div class="card span4"><h3><span><i class="fa-solid fa-route" style="color:#e0245e"></i>Percorsi scelti</span></h3><div class="chartbox"><canvas id="c-percorso"></canvas></div></div>
@@ -4777,6 +4778,29 @@ function render(){
       <div class="kpi kpi-green"><div class="kpi-ic" style="color:var(--text)"><i class="fa-solid fa-sack-dollar"></i></div><div class="l">Valore totale portafoglio</div><div class="v">${fmtEuro2(ltvTotale)}</div><div class="d">somma di tutti gli importi registrati</div></div>
     `;
   }
+
+  /* Andamento clienti nel tempo: usa lo storico reale (MESE_STORICO_SNAPSHOT,
+     gennaio-luglio 2026) con lo stesso criterio già validato per KPI e
+     Retention (kpiDaSnapshotMese), più il mese corrente calcolato sui dati
+     live. "Uscite" = Abbandonate + Non rinnovo nello stato di quel mese
+     (fotografia di quel momento, coerente col resto della dashboard: non un
+     vero conteggio di "quante sono uscite proprio in quel mese"). */
+  (function(){
+    const meseAttuale=mesekey(new Date());
+    const mesi=[...Object.keys(MESE_STORICO_SNAPSHOT||{})];
+    if(!mesi.includes(meseAttuale)) mesi.push(meseAttuale);
+    mesi.sort();
+    const serie=mesi.map(k=>{
+      const clienti=MESE_STORICO_SNAPSHOT[k]||allRows;
+      const kpi=kpiDaSnapshotMese(clienti,k);
+      return {k,tot:kpi.tot.length,nuove:kpi.nuove.length,uscite:kpi.abb.length+kpi.nonrin.length};
+    });
+    mkChart('c-andamento-clienti',{type:'line',data:{labels:serie.map(s=>mesekeyLabel(s.k)),datasets:[
+      {label:'Clienti totali',data:serie.map(s=>s.tot),borderColor:'#2a78d6',backgroundColor:'transparent',tension:0.3,yAxisID:'y'},
+      {label:'Nuove',data:serie.map(s=>s.nuove),borderColor:'#008300',backgroundColor:'transparent',tension:0.3,yAxisID:'y1'},
+      {label:'Uscite',data:serie.map(s=>s.uscite),borderColor:'#e34948',backgroundColor:'transparent',tension:0.3,yAxisID:'y1'}
+    ]},options:{...common,scales:{x:gridOpt,y:{...gridOpt,position:'left',beginAtZero:true},y1:{...gridOpt,position:'right',beginAtZero:true,grid:{display:false}}},onHover:cursorHover,onClick:(evt,els)=>{if(!els.length)return;const i=els[0].index;setDashMese(serie[i].k);showPage('dashboard');}}});
+  })();
 
   const st=countBy(allRows,'STATO CLIENTE');
   mkChart('c-stato',{type:'doughnut',data:{labels:st.map(x=>statoLabel(x[0])),datasets:[{data:st.map(x=>x[1]),backgroundColor:st.map(x=>({'IN PERCORSO':'#1f9d63','CONGELATO':'#2f7fd1','NON RINNOVATO':'#767c8a','ABBANDONATO':'#d23f3f','SPARITA':'#b5720f'}[x[0]]||'#7c56d9')),borderWidth:0}]},options:{...common,cutout:'62%',onHover:cursorHover,onClick:(evt,els)=>{if(!els.length)return;const i=els[0].index;apriListaCampo('STATO CLIENTE',st[i][0],'Stato: '+statoLabel(st[i][0]));},plugins:{...common.plugins,tooltip:pctTooltip}}});
