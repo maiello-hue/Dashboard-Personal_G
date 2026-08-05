@@ -904,7 +904,7 @@
   },
   {
    "CLIENTE": "Ainara Moreno San Miguel",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "NON RINNOVATO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "25/07/2025",
    "FINE PERCORSO": "25/07/2026",
@@ -928,7 +928,8 @@
    "FONTE": "ORGANICO",
    "DATA CHECK": "31/07/2026",
    "_CHECK_JULY_FIX": "1",
-   "_PRIMO_INIZIO": "25/07/2025"
+   "_PRIMO_INIZIO": "25/07/2025",
+   "DATA ARCHIVIAZIONE": "05/08/2026"
   },
   {
    "CLIENTE": "Debora Volpi",
@@ -26350,6 +26351,11 @@
    "CLIENTE": "Elena Bardi",
    "STATO": "ABBANDONATO",
    "DATA": "05/08/2026"
+  },
+  {
+   "CLIENTE": "Ainara Moreno San Miguel",
+   "STATO": "NON RINNOVATO",
+   "DATA": "05/08/2026"
   }
  ],
  "statoLog": [
@@ -26362,7 +26368,12 @@
    "CLIENTE": "Camilla Tabarrini",
    "STATO": "SPARITA",
    "DATA": "05/08/2026"
+  },
+  {
+   "CLIENTE": "Ainara Moreno San Miguel",
+   "STATO": "NON RINNOVATO",
+   "DATA": "05/08/2026"
   }
  ],
- "updatedAt": "2026-08-05T08:30:44.166Z"
+ "updatedAt": "2026-08-05T09:07:58.036Z"
 }
