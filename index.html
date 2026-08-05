@@ -4295,13 +4295,30 @@ function buildFonteEsitoTable(allRows){
   }).join('');
   el.innerHTML=rowsHtml||'<tr><td colspan="6" class="sub">Nessuna cliente con fonte registrata.</td></tr>';
 }
-/* Coorte di retention: raggruppa per mese di PRIMO ingresso (_PRIMO_INIZIO,
-   con fallback su INIZIO PERCORSO per le clienti non ancora migrate) e mostra
-   quante di quella coorte sono ancora attive oggi. Non è un vero storico
-   mese-per-mese (richiederebbe uno storico degli stati passati che i dati non
-   hanno), ma una "fotografia" onesta e verificabile: quante clienti di ogni
-   coorte sono sopravvissute fino ad oggi. */
+/* Coorte di retention: raggruppa per mese di PRIMO ingresso e mostra quante
+   di quella coorte sono ancora attive oggi. Non è un vero storico mese-per-
+   mese (richiederebbe uno storico degli stati passati che i dati non hanno),
+   ma una "fotografia" onesta e verificabile: quante clienti di ogni coorte
+   sono sopravvissute fino ad oggi.
+   Il vero mese di primo ingresso viene preso, in ordine di priorità, da:
+   1) PRIMO_INGRESSO_MAP, un file di riferimento (data/primo_ingresso.json)
+      ricavato incrociando nome e INIZIO PERCORSO col foglio Google storico
+      reale (agosto 2026 + storico_mensile.json gen-lug 2026): per ogni
+      cliente prende la data più vecchia trovata tra tutti i mesi, così una
+      cliente rinnovata più volte non "ringiovanisce" ogni volta che rinnova;
+   2) _PRIMO_INIZIO, fissato una sola volta alla creazione scheda (per le
+      clienti non presenti nel foglio, es. aggiunte dopo l'import);
+   3) INIZIO PERCORSO, come ultimo fallback (aggiornato a ogni rinnovo, quindi
+      meno preciso ma meglio di niente). */
 let retentionYearsOpen=new Set();
+let PRIMO_INGRESSO_MAP={};
+function normNome(s){ return (s||'').trim().toLowerCase().replace(/\s+/g,' '); }
+function caricaPrimoIngressoMap(){
+  fetch('data/primo_ingresso.json').then(r=>r.ok?r.json():{}).then(j=>{
+    PRIMO_INGRESSO_MAP=j||{};
+    if(currentPage==='analisi') buildRetentionTable();
+  }).catch(()=>{});
+}
 function toggleRetentionYear(y){
   retentionYearsOpen.has(y)?retentionYearsOpen.delete(y):retentionYearsOpen.add(y);
   buildRetentionTable();
@@ -4312,7 +4329,7 @@ function buildRetentionTable(){
   const now=new Date();
   const groups={};
   DATA.forEach(r=>{
-    const raw=r['_PRIMO_INIZIO']||r['INIZIO PERCORSO'];
+    const raw=PRIMO_INGRESSO_MAP[normNome(r['CLIENTE'])]||r['_PRIMO_INIZIO']||r['INIZIO PERCORSO'];
     const d=pdate(raw);
     if(!d) return;
     const k=mesekey(d);
@@ -5647,6 +5664,7 @@ migratePrimoInizioOnce();
 applyVenditoreLug26Import();
 applyFonteMap();
 caricaMeseStoricoSnapshot();
+caricaPrimoIngressoMap();
 loadManagedLists();
 removeVenditoriNonValidiOnce();
 buildFilters();
