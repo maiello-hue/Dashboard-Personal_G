@@ -16115,7 +16115,7 @@
   },
   {
    "CLIENTE": "Camilla Tabarrini",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "SPARITA",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "13/04/2026",
    "FINE PERCORSO": "13/10/2026",
@@ -26377,7 +26377,12 @@
    "CLIENTE": "Elena Bardi",
    "STATO": "ABBANDONATO",
    "DATA": "05/08/2026"
+  },
+  {
+   "CLIENTE": "Camilla Tabarrini",
+   "STATO": "SPARITA",
+   "DATA": "05/08/2026"
   }
  ],
- "updatedAt": "2026-08-05T08:17:37.225Z"
+ "updatedAt": "2026-08-05T08:17:48.985Z"
 }
