@@ -2817,6 +2817,54 @@ function statoBadge(s){
   const cls=k==='IN PERCORSO'?'b-inpercorso':k==='CONGELATO'?'b-congelato':k==='NON RINNOVATO'?'b-nonrinnovato':k==='ABBANDONATO'?'b-abbandonato':k==='SPARITA'?'b-sparita':k==='MAI INIZIATO'?'b-maiiniziato':'b-altro';
   return `<span class="badge ${cls}">${statoLabel(s)}</span>`;
 }
+/* Timeline "Storico stati" nella scheda cliente espansa: mostra, in ordine
+   cronologico, il primo ingresso (da PRIMO_INGRESSO_MAP/_PRIMO_INIZIO/INIZIO
+   PERCORSO) seguito da ogni cambio di stato registrato in statoLog per quella
+   cliente. Palette a 3 colori richiesta esplicitamente: verde per In percorso
+   e Riattivata, azzurro per Sospesa, rosso per Abbandono/Non rinnovo. Gli
+   stati residuali (Sparita, Mai iniziato) restano grigi, non essendo stati
+   specificati. Se manca del tutto lo storico (nessun evento e nessuna data di
+   ingresso nota) la sezione non viene mostrata. */
+function statoTimelineColor(stato){
+  const k=(stato||'').toUpperCase();
+  if(k.startsWith('IN PERCORSO')) return '#008300';
+  if(k.startsWith('CONGELATO')||k.startsWith('SOSPES')) return '#2a78d6';
+  if(k.startsWith('ABBANDONAT')||k.startsWith('NON RINNOVATO')) return '#e34948';
+  return '#8b8a83';
+}
+function buildTimelineStatiHtml(r){
+  const nome=r['CLIENTE'];
+  const rawIngresso=PRIMO_INGRESSO_MAP[normNome(nome)]||r['_PRIMO_INIZIO']||r['INIZIO PERCORSO'];
+  const dIngresso=pdate(rawIngresso);
+  const eventi=getStatoLog().filter(e=>e['CLIENTE']===nome).slice().sort((a,b)=>(pdate(a['DATA'])||0)-(pdate(b['DATA'])||0));
+  const items=[];
+  if(dIngresso) items.push({stato:'IN PERCORSO',data:rawIngresso,label:'In percorso · primo ingresso'});
+  let prevStato=dIngresso?'IN PERCORSO':null;
+  eventi.forEach(e=>{
+    const nuovoStato=(e['STATO']||'').toUpperCase();
+    const isReattivata=nuovoStato.startsWith('IN PERCORSO')&&prevStato&&!prevStato.toUpperCase().startsWith('IN PERCORSO');
+    items.push({stato:e['STATO'],data:e['DATA'],label:isReattivata?'Riattivata, in percorso':statoLabel(e['STATO'])});
+    prevStato=e['STATO'];
+  });
+  if(!items.length) return '';
+  const rowsHtml=items.map((it,idx)=>{
+    const isLast=idx===items.length-1;
+    return `<div style="display:flex;gap:10px">
+      <div style="display:flex;flex-direction:column;align-items:center">
+        <div style="width:7px;height:7px;border-radius:50%;background:${statoTimelineColor(it.stato)};flex-shrink:0;margin-top:5px"></div>
+        ${isLast?'':'<div style="width:1px;flex:1;background:var(--border);min-height:22px"></div>'}
+      </div>
+      <div style="padding-bottom:${isLast?'0':'12px'}">
+        <p style="font-size:13px;margin:0;color:var(--text)">${esc(it.label)}</p>
+        <p style="font-size:12px;color:var(--muted2);margin:2px 0 0">${esc(it.data)}</p>
+      </div>
+    </div>`;
+  }).join('');
+  return `<div style="width:100%;padding-top:12px;margin-top:8px;border-top:1px solid var(--border)">
+    <p style="font-size:12px;font-weight:600;color:var(--text);margin:0 0 10px">Storico stati</p>
+    <div style="padding-left:2px">${rowsHtml}</div>
+  </div>`;
+}
 function percBadge(s){
   if(!s) return '—';
   const k=s.toUpperCase();
@@ -5105,7 +5153,8 @@ function renderTable(rows){
           <button class="icon-btn" title="Rinnova abbonamento / imposta pagamento a rate" onclick="apriRinnovaAbbonamento('${jsEsc(r['CLIENTE'])}')"><span class="ico"><i class="fa-solid fa-rotate-right"></i></span></button>
           ${catFilter==='storico'?`<button class="icon-btn" title="Rimborsa" onclick="apriRimborsaCliente('${jsEsc(r['CLIENTE'])}')"><span class="ico"><i class="fa-solid fa-rotate-left"></i></span></button>`:''}
           <button class="icon-btn danger" title="Elimina cliente" onclick="eliminaCliente('${jsEsc(r['CLIENTE'])}')"><span class="ico"><i class="fa-solid fa-trash"></i></span></button>
-        </span>`;
+        </span>
+        ${expanded.has(r['CLIENTE'])?buildTimelineStatiHtml(r):''}`;
     const arch=pdate(r['DATA ARCHIVIAZIONE']);
     return {r,i,ini,fin,arch,prog,pctVal,pctCls,finTxt,finLabel,scad,renBadge,detailInner};
   });
