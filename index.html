@@ -1758,14 +1758,62 @@ function registraStatoLog(cliente,stato,dataIt){
   log.push({CLIENTE:cliente,STATO:stato,DATA:dataIt});
   saveStatoLog(log);
 }
-/* Valori storici noti per mesi già chiusi PRIMA dell'introduzione di
-   statoLog, per i quali non esiste alcun modo automatico di ricostruire il
-   dato (nessun campo con la data del cambio stato, a differenza di
-   DATA ARCHIVIAZIONE per abbandono/non rinnovo). Inseriti a mano da Marco
-   sulla base dei numeri reali di fine mese. Riguarda SOLO la vista del mese
-   indicato: non modifica alcun dato cliente né lo stato "vivo" attuale, e non
-   ha alcun effetto su altri mesi (agosto compreso). */
-const MESE_STORICO_MANUALE={'2026-07':{cong:92,spar:20}};
+/* ============================================================
+   Storico mensile reale (snapshot) — importato da un export esterno con lo
+   stato di ogni cliente a fine di ciascun mese, da gennaio 2026 in poi
+   (fonte: foglio Google fornito da Marco, verificato mese per mese prima
+   dell'import). A differenza della ricostruzione automatica sopra
+   (statoLog/archivioLog, affidabile solo per i cambi avvenuti DA QUANDO
+   esistono questi registri), questo è un dato storico VERO: ha sempre la
+   precedenza sulla ricostruzione quando disponibile per il mese selezionato.
+   Vive in un file separato (data/storico_mensile.json, sola lettura) per non
+   appesantire questo file con centinaia di clienti per ogni mese; viene
+   caricato una sola volta all'avvio. Non modifica in alcun modo i dati
+   correnti (DATA/localStorage): è solo una fonte aggiuntiva per i report dei
+   mesi passati coperti dall'import. */
+let MESE_STORICO_SNAPSHOT={};
+function caricaMeseStoricoSnapshot(){
+  fetch('data/storico_mensile.json').then(r=>r.ok?r.json():{}).then(j=>{
+    MESE_STORICO_SNAPSHOT=j||{};
+    if(currentPage==='dashboard'||currentPage==='analisi') render();
+  }).catch(()=>{});
+}
+/* Come isGnocca, ma valuta il percorso misto "N mesi + M Gnocca" rispetto
+   alla FINE del mese storico richiesto invece che rispetto ad oggi: usata
+   solo per gli snapshot mensili importati, dove il confine premium/gnocca va
+   giudicato con la data di quel momento passato, non quella attuale. */
+function isGnoccaAlMese(r,meseSel){
+  const perc=r['PERCORSO']||'';
+  if(GNOCCA_PERCORSI_ESPLICITI.includes(perc.toUpperCase())) return true;
+  if(typeof GNOCCA_SHEET_CLIENTI_NOMI!=='undefined' && GNOCCA_SHEET_CLIENTI_NOMI.includes((r['CLIENTE']||'').trim().toUpperCase())) return true;
+  if(!/gnocca/i.test(perc)) return false;
+  const m=perc.match(/(\d+)\s*mes[ei]/i);
+  const premiumMonths=m?parseInt(m[1],10):0;
+  const ini=pdate(r['INIZIO PERCORSO']);
+  if(!premiumMonths||!ini) return true;
+  const [y,mo]=meseSel.split('-').map(Number);
+  const fineMese=new Date(y,mo,0);
+  return fineMese>=addMonths(ini,premiumMonths);
+}
+/* Ricostruisce l'intero set di KPI del mese (Clienti totali/In percorso/
+   Congelate/Sparite/Mai iniziato/Abbandonate/Non rinnovo/Nuove) da uno
+   snapshot mensile reale, con la stessa identica logica di classificazione
+   usata altrove nell'app per lo stato attuale (isArchiviata, ecc.), applicata
+   però ai dati COSÌ COM'ERANO in quel mese invece che a quelli di adesso. */
+function kpiDaSnapshotMese(clienti,meseSel){
+  const isArch=r=>{const s=(r['STATO CLIENTE']||'').toUpperCase();return s.startsWith('ABBANDONAT')||s.startsWith('NON RINNOVATO');};
+  const fSt=s=>clienti.filter(r=>(r['STATO CLIENTE']||'').toUpperCase().startsWith(s));
+  return {
+    tot:clienti.filter(r=>!isArch(r)),
+    att:fSt('IN PERCORSO'),
+    cong:fSt('CONGELATO').concat(fSt('SOSPES')),
+    spar:fSt('SPARIT'),
+    mai:fSt('MAI INIZIATO'),
+    abb:fSt('ABBANDONAT'),
+    nonrin:fSt('NON RINNOVATO'),
+    nuove:clienti.filter(r=>{const d=pdate(r['INIZIO PERCORSO']);return d&&mesekey(d)===meseSel&&!(r['TIPO INCASSO']||'').toLowerCase().includes('rinnovo');})
+  };
+}
 function saveRimborsi(push){try{localStorage.setItem(LS_RIMBORSI,JSON.stringify(RIMB));}catch(e){alert('Impossibile salvare: memoria del browser piena o non disponibile.');} if(push!==false) scheduleGithubSync();}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
 
@@ -4327,14 +4375,21 @@ function render(){
   const meseLbl=mesekeyLabel(meseSel);
   const prevMese=prevMeseKey(meseSel);
 
-  const brk=arr=>{const g=arr.filter(isGnocca).length;return `${arr.length-g} premium · ${g} gnocca`;};
-  /* In percorso/Congelate/Sparite/Mai iniziato per il mese selezionato: ricostruite
-     da statoLog (che stato aveva la cliente a fine di quel mese), con ripiego
-     sullo stato attuale se non c'è ancora nessun evento registrato per lei (es.
-     non ha mai cambiato stato da quando esiste il registro, o il mese richiesto
-     è precedente all'introduzione del registro stesso). Così cambiare stato oggi
-     non altera più questi conteggi per un mese passato già chiuso — stesso
-     principio già applicato ad Abbandonate/Non rinnovate/Clienti totali. */
+  /* Se per il mese selezionato (o quello precedente, per i confronti "▲/▼")
+     esiste uno snapshot mensile REALE importato (vedi MESE_STORICO_SNAPSHOT
+     più sopra), ha sempre la precedenza su qualunque ricostruzione: è un dato
+     verificato, non stimato. La ricostruzione automatica sotto (statoLog/
+     archivioLog/contavaAlMese) resta come fallback per i mesi non coperti
+     dall'import (di norma il mese corrente e quelli futuri). */
+  const kSel=MESE_STORICO_SNAPSHOT[meseSel]?kpiDaSnapshotMese(MESE_STORICO_SNAPSHOT[meseSel],meseSel):null;
+  const kPrev=MESE_STORICO_SNAPSHOT[prevMese]?kpiDaSnapshotMese(MESE_STORICO_SNAPSHOT[prevMese],prevMese):null;
+  const brk=(arr,mese)=>{const g=arr.filter(r=>mese?isGnoccaAlMese(r,mese):isGnocca(r)).length;return `${arr.length-g} premium · ${g} gnocca`;};
+  /* In percorso/Congelate/Sparite/Mai iniziato per il mese selezionato: se non
+     c'è uno snapshot reale, ricostruite da statoLog (che stato aveva la cliente
+     a fine di quel mese), con ripiego sullo stato attuale se non c'è ancora
+     nessun evento registrato per lei. Così cambiare stato oggi non altera più
+     questi conteggi per un mese passato già chiuso — stesso principio già
+     applicato ad Abbandonate/Non rinnovate/Clienti totali. */
   const _statoLogByClient={};
   getStatoLog().forEach(e=>{ (_statoLogByClient[e['CLIENTE']]=_statoLogByClient[e['CLIENTE']]||[]).push(e); });
   const statoAlMese=(r,mese)=>{
@@ -4349,42 +4404,46 @@ function render(){
     return best?best['STATO']:(r['STATO CLIENTE']||'');
   };
   const fSt=s=>allRows.filter(r=>statoAlMese(r,meseSel).toUpperCase().startsWith(s));
-  const attA=fSt('IN PERCORSO'), congA=fSt('CONGELATO').concat(fSt('SOSPES')),
-        sparA=fSt('SPARIT'), maiA=fSt('MAI INIZIATO');
+  const attA=kSel?kSel.att:fSt('IN PERCORSO'),
+        congA=kSel?kSel.cong:fSt('CONGELATO').concat(fSt('SOSPES')),
+        sparA=kSel?kSel.spar:fSt('SPARIT'),
+        maiA=kSel?kSel.mai:fSt('MAI INIZIATO');
   /* Abbandonate/Non rinnovo (card, tassi) rappresentano il flusso DEL MESE selezionato
-     (di default il mese corrente): letti da archivioLog (l'episodio storico di
-     archiviazione), non dallo stato attuale della cliente — così un cambio di
-     stato successivo (anche in un mese diverso) non altera più i numeri di un
-     mese passato già chiuso. Le clienti restano comunque per sempre in
-     DATA/Storico: qui si filtra solo la vista, non i dati. */
-  const nonrinA=archivioRowsForMese('NON RINNOVATO',meseSel);
-  const abbA=archivioRowsForMese('ABBANDONAT',meseSel);
+     (di default il mese corrente): se non c'è uno snapshot reale, lette da
+     archivioLog (l'episodio storico di archiviazione), non dallo stato attuale
+     della cliente — così un cambio di stato successivo (anche in un mese
+     diverso) non altera più i numeri di un mese passato già chiuso. Le clienti
+     restano comunque per sempre in DATA/Storico: qui si filtra solo la vista,
+     non i dati. */
+  const nonrinA=kSel?kSel.nonrin:archivioRowsForMese('NON RINNOVATO',meseSel);
+  const abbA=kSel?kSel.abb:archivioRowsForMese('ABBANDONAT',meseSel);
   const att=attA.length;
   /* "Clienti totali" esclude le Abbandonate e le Non rinnovate: rappresenta il
      parco clienti attivo in quel momento (attive + congelate + sparite + mai
-     iniziato). È inoltre cumulativa sul mese selezionato: una cliente entrata
-     dal 01 del mese successivo non deve gonfiare il totale dei mesi precedenti,
-     ma comparirci solo a partire dal proprio mese di INIZIO PERCORSO. Per i mesi
-     passati, una cliente archiviata SOLO dopo quel mese conta ancora (vedi
-     contavaAlMese): altrimenti archiviarla oggi la farebbe sparire anche dal
-     totale di mesi già chiusi in cui era ancora attiva, falsificando lo storico. */
-  const totA=allRows.filter(r=>finoAMese(r,'INIZIO PERCORSO',meseSel)&&contavaAlMese(r,meseSel));
+     iniziato). Con uno snapshot reale è già esattamente il roster di quel mese,
+     nessun'altra elaborazione necessaria. Senza snapshot, è cumulativa sul mese
+     selezionato: una cliente entrata dal 01 del mese successivo non deve
+     gonfiare il totale dei mesi precedenti, ma comparirci solo a partire dal
+     proprio mese di INIZIO PERCORSO; una cliente archiviata SOLO dopo quel mese
+     conta ancora (vedi contavaAlMese), altrimenti archiviarla oggi la farebbe
+     sparire anche dal totale di mesi già chiusi in cui era ancora attiva. */
+  const totA=kSel?kSel.tot:allRows.filter(r=>finoAMese(r,'INIZIO PERCORSO',meseSel)&&contavaAlMese(r,meseSel));
   /* "Nuove" = clienti il cui INIZIO PERCORSO cade proprio nel mese selezionato
      (non cumulativo come Clienti totali): serve a capire quante nuove clienti
      sono state inserite in quel singolo mese, a prescindere dallo stato attuale.
      Chi rinnova ottiene anch'essa un nuovo INIZIO PERCORSO (nuovo ciclo) ma non è
      una cliente nuova: va esclusa qui, resta comunque conteggiata in "In percorso". */
-  const nuoveA=allRows.filter(r=>inMese(r,'INIZIO PERCORSO',meseSel)&&!(r['TIPO INCASSO']||'').toLowerCase().includes('rinnovo'));
+  const nuoveA=kSel?kSel.nuove:allRows.filter(r=>inMese(r,'INIZIO PERCORSO',meseSel)&&!(r['TIPO INCASSO']||'').toLowerCase().includes('rinnovo'));
   /* Stessi identici calcoli di totA/nuoveA/abbA/nonrinA ma per il mese precedente
      a quello selezionato: servono solo per il confronto "▲/▼ N%" mostrato
      accanto alle KPI, non per nient'altro (non vanno in KPI_LISTS). Le card
      "In percorso/Congelate/Sparite/Mai iniziato" non mostrano una variazione
      rispetto al mese precedente in interfaccia, quindi qui non serve un
      prevCongA/prevSparA equivalente. */
-  const prevTotA=allRows.filter(r=>finoAMese(r,'INIZIO PERCORSO',prevMese)&&contavaAlMese(r,prevMese));
-  const prevNuoveA=allRows.filter(r=>inMese(r,'INIZIO PERCORSO',prevMese)&&!(r['TIPO INCASSO']||'').toLowerCase().includes('rinnovo'));
-  const prevAbbA=archivioRowsForMese('ABBANDONAT',prevMese);
-  const prevNonrinA=archivioRowsForMese('NON RINNOVATO',prevMese);
+  const prevTotA=kPrev?kPrev.tot:allRows.filter(r=>finoAMese(r,'INIZIO PERCORSO',prevMese)&&contavaAlMese(r,prevMese));
+  const prevNuoveA=kPrev?kPrev.nuove:allRows.filter(r=>inMese(r,'INIZIO PERCORSO',prevMese)&&!(r['TIPO INCASSO']||'').toLowerCase().includes('rinnovo'));
+  const prevAbbA=kPrev?kPrev.abb:archivioRowsForMese('ABBANDONAT',prevMese);
+  const prevNonrinA=kPrev?kPrev.nonrin:archivioRowsForMese('NON RINNOVATO',prevMese);
   const scadA=allRows.filter(r=>{const d=pdate(r['FINE PERCORSO']);return d&&d>=now&&d<=in30&&r['STATO CLIENTE']==='IN PERCORSO';});
   const rischioA=allRows.filter(isARischio);
   const scad30=scadA.length, brkScad=brk(scadA);
@@ -4488,27 +4547,21 @@ function render(){
   document.getElementById('collab-abbandono-table-body').innerHTML=collabTableHtml||'<tr><td colspan="6" class="sub">Nessun collaboratore con clienti assegnate.</td></tr>';
   }
   document.getElementById('k-tot').textContent=totA.length;
-  document.getElementById('k-tot-d').innerHTML=brk(totA)+trendHtml(totA.length,prevTotA.length,false);
+  document.getElementById('k-tot-d').innerHTML=brk(totA,meseSel)+trendHtml(totA.length,prevTotA.length,false);
   document.getElementById('k-att').textContent=att;
-  document.getElementById('k-att-d').textContent=brk(attA);
-  /* Per i mesi già chiusi prima dell'introduzione di statoLog, dove esiste un
-     valore inserito a mano (MESE_STORICO_MANUALE), quel numero ha la
-     precedenza sul conteggio ricostruito dai dati: è l'unica fonte affidabile
-     per quel mese. Non tocca congA/sparA (usate anche altrove, es. filtri) né
-     alcun dato cliente — è solo ciò che viene mostrato in questa card. */
-  const meseManuale=MESE_STORICO_MANUALE[meseSel];
-  document.getElementById('k-cong').textContent=meseManuale?meseManuale.cong:congA.length;
-  document.getElementById('k-cong-d').textContent=meseManuale?'dato storico registrato manualmente':brk(congA);
+  document.getElementById('k-att-d').textContent=brk(attA,meseSel);
+  document.getElementById('k-cong').textContent=congA.length;
+  document.getElementById('k-cong-d').textContent=brk(congA,meseSel);
   document.getElementById('k-nonrin').textContent=nonrinA.length;
-  document.getElementById('k-nonrin-d').innerHTML=brk(nonrinA)+trendHtml(nonrinA.length,prevNonrinA.length,true);
+  document.getElementById('k-nonrin-d').innerHTML=brk(nonrinA,meseSel)+trendHtml(nonrinA.length,prevNonrinA.length,true);
   document.getElementById('k-abb').textContent=abbA.length;
-  document.getElementById('k-abb-d').innerHTML=brk(abbA)+trendHtml(abbA.length,prevAbbA.length,true);
-  document.getElementById('k-spar').textContent=meseManuale?meseManuale.spar:sparA.length;
-  document.getElementById('k-spar-d').textContent=meseManuale?'dato storico registrato manualmente':brk(sparA);
+  document.getElementById('k-abb-d').innerHTML=brk(abbA,meseSel)+trendHtml(abbA.length,prevAbbA.length,true);
+  document.getElementById('k-spar').textContent=sparA.length;
+  document.getElementById('k-spar-d').textContent=brk(sparA,meseSel);
   document.getElementById('k-mai').textContent=maiA.length;
-  document.getElementById('k-mai-d').textContent=brk(maiA);
+  document.getElementById('k-mai-d').textContent=brk(maiA,meseSel);
   document.getElementById('k-nuove').textContent=nuoveA.length;
-  document.getElementById('k-nuove-d').innerHTML=brk(nuoveA)+' · '+fmtPct(pct(nuoveA.length,totA.length))+' del totale'+trendHtml(nuoveA.length,prevNuoveA.length,false);
+  document.getElementById('k-nuove-d').innerHTML=brk(nuoveA,meseSel)+' · '+fmtPct(pct(nuoveA.length,totA.length))+' del totale'+trendHtml(nuoveA.length,prevNuoveA.length,false);
   document.getElementById('k-scad').textContent=scad30;
   updateMeseWarn('mese-warn-dash',meseSel);
   updateMeseWarn('mese-warn-inc',meseSel);
@@ -4528,19 +4581,14 @@ function render(){
       document.getElementById('goal-nuove-label').textContent=nuoveA.length+' di '+obG.nuove+' clienti ('+Math.round(pctN)+'%)'+(nuoveA.length>=obG.nuove?' — obiettivo raggiunto! 🎉':'')+' — '+meseLbl;
     }else goalNuoveCard.style.display='none';
   }
-  /* Stessa card/legenda ma nel grafico a barre sotto: usa gli stessi numeri
-     mostrati nelle KPI qui sopra (dato storico manuale incluso per coerenza
-     visiva, altrimenti card e grafico mostrerebbero due numeri diversi per lo
-     stesso mese). */
-  const congCountBar=meseManuale?meseManuale.cong:congA.length, sparCountBar=meseManuale?meseManuale.spar:sparA.length;
   const totBarD=totA.length||1;
   document.getElementById('bar-att').style.width=(attA.length/totBarD*100)+'%';
-  document.getElementById('bar-cong').style.width=(congCountBar/totBarD*100)+'%';
-  document.getElementById('bar-spar').style.width=(sparCountBar/totBarD*100)+'%';
+  document.getElementById('bar-cong').style.width=(congA.length/totBarD*100)+'%';
+  document.getElementById('bar-spar').style.width=(sparA.length/totBarD*100)+'%';
   document.getElementById('bar-mai').style.width=(maiA.length/totBarD*100)+'%';
   document.getElementById('leg-att').textContent=attA.length;
-  document.getElementById('leg-cong').textContent=congCountBar;
-  document.getElementById('leg-spar').textContent=sparCountBar;
+  document.getElementById('leg-cong').textContent=congA.length;
+  document.getElementById('leg-spar').textContent=sparA.length;
   document.getElementById('leg-mai').textContent=maiA.length;
 
   const fmtEuro2=n=>'€ '+n.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2,useGrouping:true});
@@ -5111,18 +5159,6 @@ function toggleExp(i){
 const KPI_LABELS={tot:'Clienti totali',att:'In percorso',cong:'Congelate',abb:'Abbandonate',spar:'Sparite',nonrin:'Non rinnovo',mai:'Mai iniziato',nuove:'Nuove',scad:'In scadenza 30gg',rischio:'Clienti a rischio (senza check da 2+ mesi)',incRin:'Rinnovo percorsi',incRic:'Ricorrenti',incAlt:'Nuovo cliente',incTot:'Totale incassato',abbPremium:'Abbandono Premium',abbGnocca:'Abbandono Gnocca',nonrinPremium:'Non rinnovo Premium',nonrinGnocca:'Non rinnovo Gnocca',abbTotPremium:'Abbandono totale Premium',abbTotGnocca:'Abbandono totale Gnocca'};
 const INC_KPI_KEYS=new Set(['incRin','incRic','incAlt','incTot']);
 function apriListaClienti(key){
-  /* Per Congelate/Sparite di un mese con un valore storico inserito a mano
-     (vedi MESE_STORICO_MANUALE) non esiste un elenco nominativo affidabile:
-     l'app non teneva ancora questo storico in quel periodo. Si mostra il
-     numero (già corretto in card) ma non un elenco che potrebbe non
-     corrispondere. */
-  if((key==='cong'||key==='spar') && MESE_STORICO_MANUALE[effectiveMese()]){
-    const n=MESE_STORICO_MANUALE[effectiveMese()][key];
-    document.getElementById('kpi-list-title').textContent=(KPI_LABELS[key]||'')+' ('+n+')';
-    document.getElementById('kpi-list-body').innerHTML='<div class="sub">Per questo mese il numero ('+n+') è un dato storico registrato manualmente: l\'elenco nominativo non è disponibile perché l\'app non teneva ancora uno storico per questa categoria in quel periodo.</div>';
-    document.getElementById('kpi-list-modal').style.display='flex';
-    return;
-  }
   const rows=[...(KPI_LISTS[key]||[])].sort((a,b)=>a['CLIENTE'].localeCompare(b['CLIENTE'],'it'));
   document.getElementById('kpi-list-title').textContent=(KPI_LABELS[key]||'')+' ('+rows.length+')';
   if(INC_KPI_KEYS.has(key)){
@@ -5603,6 +5639,7 @@ migrateArchivioLogOnce();
 migratePrimoInizioOnce();
 applyVenditoreLug26Import();
 applyFonteMap();
+caricaMeseStoricoSnapshot();
 loadManagedLists();
 removeVenditoriNonValidiOnce();
 buildFilters();
