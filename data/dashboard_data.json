@@ -24827,6 +24827,26 @@
    "VENDITORE": "Peppe",
    "FONTE": "",
    "_PRIMO_INIZIO": "05/08/2026"
+  },
+  {
+   "CLIENTE": "Doriana Cafazzo",
+   "N FATTURA": "",
+   "STATO CLIENTE": "IN PERCORSO",
+   "PERCORSO": "6 mesi + 6 Gnocca",
+   "INIZIO PERCORSO": "05/08/2026",
+   "FINE PERCORSO": "05/08/2027",
+   "IMPORTO": "1850,82",
+   "METODO PAGAMENTO": "HeyLight",
+   "STATO PAGAMENTO": "SALDATO",
+   "TIPO INCASSO": "Nuovo Cliente",
+   "INCASSO": "1850,82",
+   "DATA INCASSO": "05/08/2026",
+   "TUTOR": "Andrea",
+   "TRAINER": "Federica",
+   "NUTRI": "Sofia",
+   "VENDITORE": "Personal_G",
+   "FONTE": "",
+   "_PRIMO_INIZIO": "05/08/2026"
   }
  ],
  "rimborsi": [
@@ -26171,6 +26191,12 @@
    "INCASSO": "1850,82",
    "DATA INCASSO": "05/08/2026",
    "TIPO INCASSO": "Nuovo Cliente"
+  },
+  {
+   "CLIENTE": "Doriana Cafazzo",
+   "INCASSO": "1850,82",
+   "DATA INCASSO": "05/08/2026",
+   "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
  "archivioLog": [
@@ -26442,5 +26468,5 @@
    "DATA": "05/08/2026"
   }
  ],
- "updatedAt": "2026-08-05T12:28:48.429Z"
+ "updatedAt": "2026-08-05T13:29:03.703Z"
 }
