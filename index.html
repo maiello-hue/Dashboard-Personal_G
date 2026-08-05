@@ -585,6 +585,12 @@ select.pill-btn:focus{outline:none;border-color:var(--border-strong)}
   #logo-pg{width:32px !important;height:32px !important;border-radius:8px !important}
   h1{font-size:17px}
   .topbar .sub{font-size:12px}
+  /* La riga di tab (Analisi: "Tasso performance"/"Retention"…, Clienti:
+     "Tutte"/"Premium"/…) sta appena sotto la topbar. Essendo la topbar
+     "sticky" (resta fissa scorrendo), col solo scroll questa riga finiva
+     nascosta dietro di lei — la rendiamo sticky anche lei, agganciata subito
+     sotto, così resta sempre visibile e cliccabile invece di sparire. */
+  #page-analisi > .roletabs,#page-clienti > .roletabs{position:sticky;background:var(--bg);z-index:70;padding:6px 0 4px;margin-top:-4px}
   .grid{gap:10px}
   .card{padding:12px;border-radius:10px}
   .kpis{grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}
@@ -5776,6 +5782,24 @@ buildRimbFilters();
 render();
 renderRimborsi();
 buildSettingsPanel();
+/* Tiene la riga di tab (Analisi/Clienti) agganciata subito sotto la topbar
+   sticky, qualunque sia l'altezza reale di quest'ultima (varia leggermente
+   in base al testo di stato "Connessione a GitHub…"/"Già aggiornato" e alla
+   presenza del notch su iPhone). getComputedStyle risolve env(...) in px. */
+function syncRoleTabsStickyOffset(){
+  const tb=document.querySelector('.topbar');
+  if(!tb) return;
+  const stickyTop=parseFloat(getComputedStyle(tb).top)||0;
+  const offset=stickyTop+tb.getBoundingClientRect().height;
+  document.querySelectorAll('#page-analisi > .roletabs,#page-clienti > .roletabs').forEach(el=>{
+    el.style.top=offset+'px';
+  });
+}
+window.addEventListener('resize',syncRoleTabsStickyOffset);
+window.addEventListener('orientationchange',syncRoleTabsStickyOffset);
+window.addEventListener('pageshow',syncRoleTabsStickyOffset);
+syncRoleTabsStickyOffset();
+setTimeout(syncRoleTabsStickyOffset,600);
 const VALID_PAGES=['dashboard','clienti','incassi','analisi','rinnovi','rimborsi','compensi','check','impostazioni'];
 let savedPage=null; try{savedPage=localStorage.getItem(LAST_PAGE_KEY);}catch(e){}
 showPage(VALID_PAGES.includes(savedPage)?savedPage:'dashboard');
