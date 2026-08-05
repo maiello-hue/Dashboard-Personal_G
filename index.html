@@ -67,6 +67,14 @@ h1{font-size:22px;font-weight:500}
 .hamburger-btn{display:none;background:none;border:none;color:var(--text);font-size:19px;cursor:pointer;padding:8px 10px;border-radius:8px;flex-shrink:0}
 .hamburger-btn:hover{background:var(--card2)}
 .sidebar-close-btn{display:none;position:absolute;top:12px;right:12px;background:var(--card2);border:none;color:var(--muted);width:30px;height:30px;border-radius:50%;font-size:15px;cursor:pointer;align-items:center;justify-content:center}
+/* Sul drawer mobile (sidebar a tutta altezza, fissata a top:0) il pulsante di
+   chiusura e l'etichetta "Navigazione" devono restare sotto il notch/status
+   bar: senza sommare env(safe-area-inset-top) qui, il padding-top:56px del
+   drawer non basta più ora che la pagina si estende sotto la barra di stato
+   (viewport-fit=cover), e i primi elementi finiscono nascosti dietro di essa. */
+@media(max-width:900px){
+  .sidebar-close-btn{top:calc(12px + env(safe-area-inset-top))}
+}
 .sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(15,15,14,.5);z-index:999;opacity:0;transition:opacity .25s ease}
 .sidebar-backdrop.open{display:block;opacity:1}
 .topbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;background:#18181a;border-radius:16px;padding:16px 22px}
@@ -553,7 +561,7 @@ select.pill-btn:focus{outline:none;border-color:var(--border-strong)}
     position:fixed;top:0;left:0;width:82%;max-width:300px;height:100vh;height:100dvh;
     border-radius:0 18px 18px 0;box-shadow:0 0 40px rgba(0,0,0,.25);
     transform:translateX(-100%);transition:transform .28s ease;
-    z-index:1000;overflow-y:auto;padding-top:56px;
+    z-index:1000;overflow-y:auto;padding-top:calc(56px + env(safe-area-inset-top));
   }
   .sidebar.open{transform:translateX(0)}
   .content{width:100%}
@@ -2086,7 +2094,7 @@ function showStaleTabBanner(){
   if(document.getElementById('gh-conflict-banner')) return; /* priorità al conflitto, già più urgente */
   const el=document.createElement('div');
   el.id='gh-stale-banner';
-  el.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99997;background:#1d4e8c;color:#fff;padding:14px 20px;font-family:Inter,sans-serif;font-size:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.3)';
+  el.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99997;background:#1d4e8c;color:#fff;padding:14px 20px;padding-top:calc(14px + env(safe-area-inset-top));font-family:Inter,sans-serif;font-size:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.3)';
   el.innerHTML='Questa pagina è aperta da un po\' e non si sincronizza da tempo: prima di continuare a modificare, ricarica per essere sicuro di vedere i dati più recenti. '
     +'<button onclick="location.reload()" style="margin:8px 6px 0;padding:6px 14px;border-radius:6px;border:none;background:#fff;color:#1d4e8c;font-weight:600;cursor:pointer">Ricarica ora</button>'
     +'<button onclick="dismissStaleTabBanner()" style="margin:8px 0 0;padding:6px 14px;border-radius:6px;border:1px solid #fff;background:transparent;color:#fff;cursor:pointer">Ignora per ora</button>';
@@ -2116,7 +2124,7 @@ function showGhConflictBanner(){
   if(document.getElementById('gh-conflict-banner')) return;
   const el=document.createElement('div');
   el.id='gh-conflict-banner';
-  el.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99998;background:#7a5a10;color:#fff;padding:14px 20px;font-family:Inter,sans-serif;font-size:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.3)';
+  el.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99998;background:#7a5a10;color:#fff;padding:14px 20px;padding-top:calc(14px + env(safe-area-inset-top));font-family:Inter,sans-serif;font-size:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.3)';
   el.innerHTML='<b>Attenzione:</b> un altro dispositivo ha salvato dati più recenti su GitHub mentre qui erano in corso delle modifiche non ancora inviate. '
     +'Per non perdere nulla, il salvataggio automatico è sospeso finché non scegli come procedere: '
     +'<button onclick="risolviConflittoScaricaRemoto()" style="margin:8px 6px 0;padding:6px 14px;border-radius:6px;border:none;background:#fff;color:#7a5a10;font-weight:600;cursor:pointer">Scarica la versione più recente</button>'
@@ -2324,7 +2332,7 @@ function initData(){
 function showDataLoadErrorBanner(problems){
   const el=document.createElement('div');
   el.id='data-load-error-banner';
-  el.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99999;background:#791f1f;color:#fff;padding:14px 20px;font-family:Inter,sans-serif;font-size:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.3)';
+  el.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99999;background:#791f1f;color:#fff;padding:14px 20px;padding-top:calc(14px + env(safe-area-inset-top));font-family:Inter,sans-serif;font-size:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.3)';
   el.innerHTML='<b>Attenzione:</b> i dati di <b>'+problems.join(' e ')+'</b> salvati su questo dispositivo non si sono caricati correttamente (file danneggiato o illeggibile). '
     +'Per sicurezza NON è stato sovrascritto nulla e stai vedendo dati di esempio al posto dei tuoi: <b>non modificare o salvare nulla</b> finché non risolvi, altrimenti rischi di perdere i dati reali. '
     +'Prova a ricaricare la pagina; se il problema persiste, vai su Impostazioni e sincronizza da GitHub o ripristina da un backup.';
@@ -3439,7 +3447,7 @@ function warnLocalOverrideCorrupted(label){
   if(el){ el.innerHTML=msg; return; }
   el=document.createElement('div');
   el.id='override-corrupt-banner';
-  el.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99997;background:#7a5a10;color:#fff;padding:12px 20px;font-family:Inter,sans-serif;font-size:13px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.3)';
+  el.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99997;background:#7a5a10;color:#fff;padding:12px 20px;padding-top:calc(12px + env(safe-area-inset-top));font-family:Inter,sans-serif;font-size:13px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.3)';
   el.innerHTML=msg;
   document.body.prepend(el);
   document.body.style.paddingTop=(parseInt(document.body.style.paddingTop||'0',10)+50)+'px';
