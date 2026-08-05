@@ -1455,6 +1455,12 @@ function buildMeseOptions(){
       if(d) keys.add(mesekey(d));
     });
   });
+  /* Includi anche tutti i mesi per cui abbiamo uno storico reale importato
+     (gennaio-luglio 2026), altrimenti il selettore mostra solo agosto e
+     luglio anche se lo storico di gennaio-giugno esiste ed è pronto. */
+  if(typeof MESE_STORICO_SNAPSHOT!=='undefined'){
+    Object.keys(MESE_STORICO_SNAPSHOT).forEach(k=>keys.add(k));
+  }
   const opts=[...keys].sort().reverse().map(k=>`<option value="${k}"${k===sel?' selected':''}>${mesekeyLabel(k)}</option>`).join('');
   ['dash-mese-select','inc-mese-select','prov-mese-select','check-mese-select'].forEach(id=>{
     const el=document.getElementById(id);
@@ -1775,6 +1781,7 @@ let MESE_STORICO_SNAPSHOT={};
 function caricaMeseStoricoSnapshot(){
   fetch('data/storico_mensile.json').then(r=>r.ok?r.json():{}).then(j=>{
     MESE_STORICO_SNAPSHOT=j||{};
+    buildMeseOptions();
     if(currentPage==='dashboard'||currentPage==='analisi') render();
   }).catch(()=>{});
 }
