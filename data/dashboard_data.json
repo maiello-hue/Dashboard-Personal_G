@@ -15446,7 +15446,7 @@
   },
   {
    "CLIENTE": "Denise Cremone",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "CONGELATO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "02/04/2026",
    "FINE PERCORSO": "02/04/2027",
@@ -26468,7 +26468,12 @@
    "CLIENTE": "Maria Cristina Bosco",
    "STATO": "CONGELATO",
    "DATA": "05/08/2026"
+  },
+  {
+   "CLIENTE": "Denise Cremone",
+   "STATO": "CONGELATO",
+   "DATA": "05/08/2026"
   }
  ],
- "updatedAt": "2026-08-05T17:27:42.211Z"
+ "updatedAt": "2026-08-05T17:59:33.257Z"
 }
