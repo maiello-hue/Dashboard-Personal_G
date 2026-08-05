@@ -20602,7 +20602,7 @@
   },
   {
    "CLIENTE": "Maria Cristina Bosco",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "CONGELATO",
    "PERCORSO": "6 mesi + 6 Gnocca",
    "INIZIO PERCORSO": "12/06/2026",
    "FINE PERCORSO": "12/06/2027",
@@ -26435,7 +26435,12 @@
    "CLIENTE": "Denise Di Francesco",
    "STATO": "IN PERCORSO",
    "DATA": "05/08/2026"
+  },
+  {
+   "CLIENTE": "Maria Cristina Bosco",
+   "STATO": "CONGELATO",
+   "DATA": "05/08/2026"
   }
  ],
- "updatedAt": "2026-08-05T11:24:53.219Z"
+ "updatedAt": "2026-08-05T12:28:48.429Z"
 }
