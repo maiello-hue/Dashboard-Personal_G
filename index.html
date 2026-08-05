@@ -577,8 +577,14 @@ select.pill-btn:focus{outline:none;border-color:var(--border-strong)}
   body{padding:10px;padding-bottom:0;padding-top:calc(10px + env(safe-area-inset-top))}
   .app-shell{gap:0}
   .content{padding-bottom:16px}
-  .topbar{margin-bottom:14px;position:sticky;top:env(safe-area-inset-top);background:var(--bg);z-index:80;padding:4px 0 8px;margin-left:-10px;margin-right:-10px;padding-left:10px;padding-right:10px}
-  h1{font-size:19px}
+  .topbar{margin-bottom:10px;position:sticky;top:env(safe-area-inset-top);background:var(--bg);z-index:80;padding:3px 0 6px;margin-left:-10px;margin-right:-10px;padding-left:10px;padding-right:10px}
+  /* Il logo nella topbar (52px su desktop) viene ridotto in mobile: la barra
+     sticky in cima resta fissa mentre si scorre, quindi più è alta più a lungo
+     copre i pulsanti/contenuti appena sotto — qui la teniamo compatta. */
+  .topbar > div:first-child{gap:8px !important}
+  #logo-pg{width:32px !important;height:32px !important;border-radius:8px !important}
+  h1{font-size:17px}
+  .topbar .sub{font-size:12px}
   .grid{gap:10px}
   .card{padding:12px;border-radius:10px}
   .kpis{grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}
