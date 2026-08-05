@@ -17242,7 +17242,7 @@
   },
   {
    "CLIENTE": "Elena Bardi",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "ABBANDONATO",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "04/05/2026",
    "FINE PERCORSO": "04/11/2026",
@@ -17264,7 +17264,8 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "ADV",
-   "_PRIMO_INIZIO": "04/05/2026"
+   "_PRIMO_INIZIO": "04/05/2026",
+   "DATA ARCHIVIAZIONE": "05/08/2026"
   },
   {
    "CLIENTE": "Carlotta Fabbretti",
@@ -26364,7 +26365,19 @@
    "CLIENTE": "Annarita Garofalo",
    "STATO": "ABBANDONATO",
    "DATA": "31/07/2026"
+  },
+  {
+   "CLIENTE": "Elena Bardi",
+   "STATO": "ABBANDONATO",
+   "DATA": "05/08/2026"
   }
  ],
- "updatedAt": "2026-08-04T21:39:27.928Z"
+ "statoLog": [
+  {
+   "CLIENTE": "Elena Bardi",
+   "STATO": "ABBANDONATO",
+   "DATA": "05/08/2026"
+  }
+ ],
+ "updatedAt": "2026-08-05T08:17:37.225Z"
 }
