@@ -601,6 +601,11 @@ select.pill-btn:focus{outline:none;border-color:var(--border-strong)}
   .topbar > div:first-child{gap:8px !important}
   #logo-pg{width:32px !important;height:32px !important;border-radius:8px !important}
   h1{font-size:17px}
+  /* Su desktop la topbar ha sfondo scuro (#18181a) e il titolo è bianco per
+     contrasto; su mobile lo sfondo diventa invece chiaro (var(--bg)) ma il
+     bianco non veniva mai corretto, quindi il titolo risultava quasi
+     invisibile ("sbiadito"). Qui lo scuriamo solo per il contesto mobile. */
+  .topbar h1{color:var(--text)}
   .topbar .sub{font-size:12px}
   /* La riga di tab (Analisi: "Tasso performance"/"Retention"…, Clienti:
      "Tutte"/"Premium"/…) resta invece fissa appena sotto il notch: essendo
