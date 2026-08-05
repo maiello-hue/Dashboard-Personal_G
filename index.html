@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Dashboard Clienti - Personal_G</title>
 <!-- PWA: rende la dashboard installabile su telefono/desktop (icona propria,
      apertura a schermo intero, funzionamento offline di base). -->
@@ -36,7 +36,7 @@
    ignorano user-scalable=no: touch-action:manipulation è il modo affidabile
    per disattivare davvero i gesti di zoom, senza impedire lo scroll normale. */
 html,body{touch-action:manipulation;overscroll-behavior:none}
-body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;padding:20px;min-height:100vh}
+body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;padding:20px;padding-top:calc(20px + env(safe-area-inset-top));min-height:100vh}
 /* Riempie di nero l'area sotto la status bar (notch) quando l'app è installata
    su iPhone: apple-mobile-web-app-status-bar-style=black-translucent rende la
    status bar trasparente, quindi ciò che sta "sotto" (questo div) è quello che
@@ -566,10 +566,10 @@ select.pill-btn:focus{outline:none;border-color:var(--border-strong)}
      che devono scorrere (tablewrap, rate-table) lo fanno comunque al loro
      interno, non sono influenzate da questa regola. */
   html,body{overflow-x:hidden}
-  body{padding:10px;padding-bottom:0}
+  body{padding:10px;padding-bottom:0;padding-top:calc(10px + env(safe-area-inset-top))}
   .app-shell{gap:0}
   .content{padding-bottom:16px}
-  .topbar{margin-bottom:14px;position:sticky;top:0;background:var(--bg);z-index:80;padding:4px 0 8px;margin-left:-10px;margin-right:-10px;padding-left:10px;padding-right:10px}
+  .topbar{margin-bottom:14px;position:sticky;top:env(safe-area-inset-top);background:var(--bg);z-index:80;padding:4px 0 8px;margin-left:-10px;margin-right:-10px;padding-left:10px;padding-right:10px}
   h1{font-size:19px}
   .grid{gap:10px}
   .card{padding:12px;border-radius:10px}
