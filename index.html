@@ -280,10 +280,6 @@ h1{font-size:22px;font-weight:500}
 #clienti-table td[data-label="Avanzamento"]{padding-left:4px}
 #clienti-table th[onclick*="FINE PERCORSO"]{padding-right:4px}
 #clienti-table th[onclick*="_PROG"]{padding-left:4px}
-#ltv-kpis .kpi-purple,#ltv-kpis .kpi-green{border-left-color:var(--text)}
-#ltv-kpis .kpi-purple .v,#ltv-kpis .kpi-green .v{color:var(--text)}
-#ltv-kpis .kpi .v{font-weight:300}
-#ltv-kpis .kpi .l{font-weight:400}
 #page-analisi .card h3{font-weight:300;font-size:17px}
 #page-analisi .rate-table td{font-weight:300}
 #page-analisi .rate-group-row td{font-weight:600}
@@ -923,7 +919,6 @@ select.pill-btn:focus{outline:none;border-color:var(--border-strong)}
 
       <div id="analisi-tab-stato" class="grid">
         <div class="card span12"><h3><span><i class="fa-solid fa-chart-line" style="color:#e0245e"></i>Andamento clienti nel tempo</span></h3><div class="chartbox"><canvas id="c-andamento-clienti"></canvas></div></div>
-        <div class="card span12"><h3><span><i class="fa-solid fa-coins" style="color:#e0245e"></i>Valore cliente</span></h3><div class="kpis kpis-v2" id="ltv-kpis"></div></div>
         <div class="card span4"><h3><span><i class="fa-solid fa-user-group" style="color:#e0245e"></i>Stato clienti</span></h3><div class="chartbox"><canvas id="c-stato"></canvas></div></div>
         <div class="card span4"><h3><span><i class="fa-solid fa-route" style="color:#e0245e"></i>Percorsi scelti</span></h3><div class="chartbox"><canvas id="c-percorso"></canvas></div></div>
         <div class="card span4"><h3><span><i class="fa-solid fa-credit-card" style="color:#e0245e"></i>Metodi di pagamento</span></h3><div class="chartbox"><canvas id="c-metodo"></canvas></div></div>
@@ -4761,22 +4756,6 @@ function render(){
         <span class="rate-pill" style="background:${c.bg};color:${c.fg}">${fmtPct(r.totRate)}</span>
       </div>`;
     }).join(''):'<div class="sub">Nessun collaboratore con clienti assegnate.</div>';
-  }
-
-  /* Valore medio cliente: importo medio del percorso (campo IMPORTO) su tutte
-     le clienti che ne hanno uno registrato, indipendentemente dallo stato
-     attuale (storico compreso). È un valore "a pacchetto attuale", non un vero
-     valore storico cumulato di tutti i rinnovi di ciascuna cliente (che
-     richiederebbe uno storico delle transazioni non presente nei dati). */
-  const ltvRows=allRows.filter(r=>euro(r['IMPORTO'])>0);
-  const ltvTotale=ltvRows.reduce((s,r)=>s+euro(r['IMPORTO']),0);
-  const ltvMedio=ltvRows.length?ltvTotale/ltvRows.length:0;
-  const ltvEl=document.getElementById('ltv-kpis');
-  if(ltvEl){
-    ltvEl.innerHTML=`
-      <div class="kpi kpi-purple"><div class="kpi-ic" style="color:var(--text)"><i class="fa-solid fa-coins"></i></div><div class="l">Valore medio cliente</div><div class="v">${fmtEuro2(ltvMedio)}</div><div class="d">${ltvRows.length} client${ltvRows.length===1?'e':'e'} con importo registrato</div></div>
-      <div class="kpi kpi-green"><div class="kpi-ic" style="color:var(--text)"><i class="fa-solid fa-sack-dollar"></i></div><div class="l">Valore totale portafoglio</div><div class="v">${fmtEuro2(ltvTotale)}</div><div class="d">somma di tutti gli importi registrati</div></div>
-    `;
   }
 
   /* Andamento clienti nel tempo: usa lo storico reale (MESE_STORICO_SNAPSHOT,
