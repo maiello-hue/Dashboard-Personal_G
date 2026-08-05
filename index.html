@@ -5792,6 +5792,22 @@ if('serviceWorker' in navigator){
 ['gesturestart','gesturechange','gestureend'].forEach(ev=>{
   document.addEventListener(ev,e=>e.preventDefault());
 });
+/* Rete di sicurezza principale: gli eventi "gesture*" sono un'estensione
+   proprietaria WebKit non sempre affidabile (soprattutto nelle app aggiunte
+   alla schermata Home), mentre bloccare il touchmove quando ci sono due o
+   più dita è la tecnica che funziona in modo affidabile ovunque. Deve essere
+   registrato con {passive:false}, altrimenti preventDefault() viene
+   silenziosamente ignorato dai browser che rendono passivi questi eventi
+   di default per non rallentare lo scroll. */
+document.addEventListener('touchmove',e=>{
+  if(e.touches.length>1) e.preventDefault();
+},{passive:false});
+let _lastTapAt=0;
+document.addEventListener('touchend',e=>{
+  const now=Date.now();
+  if(now-_lastTapAt<=300) e.preventDefault();
+  _lastTapAt=now;
+},{passive:false});
 
 /* le pillole dei filtri (ricerca/select) si "illuminano" per un istante al clic, come le voci del menu.
    Per i <select> il flash va agganciato a change/blur (non a mousedown/click), altrimenti resta
