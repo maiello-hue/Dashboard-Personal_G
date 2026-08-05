@@ -24787,6 +24787,26 @@
    "FONTE": "REFERRAL",
    "DATA INCASSO": "30/07/2026",
    "_PRIMO_INIZIO": "27/07/2026"
+  },
+  {
+   "CLIENTE": "Laura Meli",
+   "N FATTURA": "",
+   "STATO CLIENTE": "IN PERCORSO",
+   "PERCORSO": "6 mesi + 6 Gnocca",
+   "INIZIO PERCORSO": "05/08/2026",
+   "FINE PERCORSO": "05/08/2027",
+   "IMPORTO": "1668",
+   "METODO PAGAMENTO": "HeyLight",
+   "STATO PAGAMENTO": "SALDATO",
+   "TIPO INCASSO": "Nuovo Cliente",
+   "INCASSO": "1668",
+   "DATA INCASSO": "05/08/2026",
+   "TUTOR": "Manuela",
+   "TRAINER": "Gianmiki",
+   "NUTRI": "",
+   "VENDITORE": "Personal_G",
+   "FONTE": "",
+   "_PRIMO_INIZIO": "05/08/2026"
   }
  ],
  "rimborsi": [
@@ -26119,6 +26139,12 @@
    "INCASSO": "1428",
    "DATA INCASSO": "04/08/2026",
    "TIPO INCASSO": "Nuovo Cliente"
+  },
+  {
+   "CLIENTE": "Laura Meli",
+   "INCASSO": "1668",
+   "DATA INCASSO": "05/08/2026",
+   "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
  "archivioLog": [
@@ -26385,5 +26411,5 @@
    "DATA": "05/08/2026"
   }
  ],
- "updatedAt": "2026-08-05T10:12:29.125Z"
+ "updatedAt": "2026-08-05T11:23:59.403Z"
 }
