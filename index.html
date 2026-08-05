@@ -4848,9 +4848,13 @@ function render(){
   mkChart('c-entrate',{type:'line',data:{labels:keys.map(k=>MESI_SHORT[+k.slice(5)-1]+' '+k.slice(2,4)),datasets:[{data:keys.map(k=>byM[k]),borderColor:'#e0245e',backgroundColor:'rgba(224,36,94,.12)',fill:true,tension:.35,pointRadius:3,pointBackgroundColor:'#e0245e'}]},options:{...common,plugins:{legend:{display:false}},scales:{x:gridOpt,y:{...gridOpt,beginAtZero:true}}}});
   /* Andamento reale degli incassi in euro mese per mese (a differenza del
      grafico sopra, che conta solo il NUMERO di nuove clienti): si basa su
-     DATA INCASSO/INCASSO, esattamente come le card in cima alla pagina. */
+     DATA INCASSO/INCASSO, esattamente come le card in cima alla pagina.
+     Usa netIncasso(r) invece dell'INCASSO lordo, così uno storno inserito
+     dalla pagina Compensi (sottrazione di un importo rimborsato da un
+     incasso) si riflette subito anche qui, invece di continuare a mostrare
+     la cifra piena come se lo storno non fosse mai avvenuto. */
   const byMEuro={};
-  getIncassiLog().forEach(r=>{ const d=pdate(r['DATA INCASSO']); const v=euro(r['INCASSO']); if(d&&v>0){ const k=mesekey(d); byMEuro[k]=(byMEuro[k]||0)+v; } });
+  getIncassiLog().forEach(r=>{ const d=pdate(r['DATA INCASSO']); const v=netIncasso(r); if(d&&v>0){ const k=mesekey(d); byMEuro[k]=(byMEuro[k]||0)+v; } });
   const keysE=Object.keys(byMEuro).sort();
   mkChart('c-incassi-mese',{type:'bar',data:{labels:keysE.map(k=>MESI_SHORT[+k.slice(5)-1]+' '+k.slice(2,4)),datasets:[{data:keysE.map(k=>+byMEuro[k].toFixed(2)),backgroundColor:'#e0245e',borderRadius:6}]},options:{...common,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'€ '+c.parsed.y.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2})}}},scales:{x:gridOpt,y:{...gridOpt,beginAtZero:true,ticks:{...gridOpt.ticks,callback:v=>'€'+v}}}}});
   }
