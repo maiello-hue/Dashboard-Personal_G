@@ -24871,6 +24871,26 @@
    "VENDITORE": "Personal_G",
    "FONTE": "",
    "_PRIMO_INIZIO": "06/08/2026"
+  },
+  {
+   "CLIENTE": "Ilaria Giusti",
+   "N FATTURA": "",
+   "STATO CLIENTE": "IN PERCORSO",
+   "PERCORSO": "6 mesi + 6 Gnocca",
+   "INIZIO PERCORSO": "06/08/2026",
+   "FINE PERCORSO": "06/08/2027",
+   "IMPORTO": "1850,82",
+   "METODO PAGAMENTO": "HeyLight",
+   "STATO PAGAMENTO": "SALDATO",
+   "TIPO INCASSO": "Nuovo Cliente",
+   "INCASSO": "1850,82",
+   "DATA INCASSO": "06/08/2026",
+   "TUTOR": "Manuela",
+   "TRAINER": "Matteo",
+   "NUTRI": "Sofia",
+   "VENDITORE": "Personal_G",
+   "FONTE": "",
+   "_PRIMO_INIZIO": "06/08/2026"
   }
  ],
  "rimborsi": [
@@ -26236,6 +26256,12 @@
    "INCASSO": "1428",
    "DATA INCASSO": "06/08/2026",
    "TIPO INCASSO": "Rinnovo"
+  },
+  {
+   "CLIENTE": "Ilaria Giusti",
+   "INCASSO": "1850,82",
+   "DATA INCASSO": "06/08/2026",
+   "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
  "archivioLog": [
@@ -26522,5 +26548,5 @@
    "DATA": "06/08/2026"
   }
  ],
- "updatedAt": "2026-08-06T14:55:37.072Z"
+ "updatedAt": "2026-08-06T15:07:15.006Z"
 }
