@@ -24891,26 +24891,6 @@
    "VENDITORE": "Personal_G",
    "FONTE": "",
    "_PRIMO_INIZIO": "06/08/2026"
-  },
-  {
-   "CLIENTE": "Lorenza Botticelli",
-   "N FATTURA": "",
-   "STATO CLIENTE": "IN PERCORSO",
-   "PERCORSO": "6 mesi + 6 Gnocca",
-   "INIZIO PERCORSO": "06/08/2026",
-   "FINE PERCORSO": "06/08/2027",
-   "IMPORTO": "1850,82",
-   "METODO PAGAMENTO": "HeyLight",
-   "STATO PAGAMENTO": "SALDATO",
-   "TIPO INCASSO": "Nuovo Cliente",
-   "INCASSO": "1850,82",
-   "DATA INCASSO": "06/08/2026",
-   "TUTOR": "Manuela",
-   "TRAINER": "Matteo",
-   "NUTRI": "",
-   "VENDITORE": "Personal_G",
-   "FONTE": "",
-   "_PRIMO_INIZIO": "06/08/2026"
   }
  ],
  "rimborsi": [
@@ -26574,5 +26554,5 @@
    "DATA": "06/08/2026"
   }
  ],
- "updatedAt": "2026-08-06T15:08:11.786Z"
+ "updatedAt": "2026-08-06T16:53:30.305Z"
 }
