@@ -24815,7 +24815,7 @@
   {
    "CLIENTE": "Federica Codetti",
    "N FATTURA": "",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "MAI INIZIATO",
    "PERCORSO": "6 mesi + 6 Gnocca",
    "INIZIO PERCORSO": "05/08/2026",
    "FINE PERCORSO": "05/08/2027",
@@ -26515,7 +26515,12 @@
    "CLIENTE": "Francesca Tognarelli",
    "STATO": "MAI INIZIATO",
    "DATA": "06/08/2026"
+  },
+  {
+   "CLIENTE": "Federica Codetti",
+   "STATO": "MAI INIZIATO",
+   "DATA": "06/08/2026"
   }
  ],
- "updatedAt": "2026-08-06T12:49:26.424Z"
+ "updatedAt": "2026-08-06T14:55:37.072Z"
 }
