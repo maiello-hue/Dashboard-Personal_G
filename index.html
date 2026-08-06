@@ -1296,9 +1296,9 @@ select.pill-btn:focus{outline:none;border-color:var(--border-strong)}
       </div>
 
       <div class="card" style="max-width:640px;margin-top:16px">
-        <h3><span class="ico" style="color:var(--accent)"><svg viewBox="0 0 16 16"><path d="M8 2.5v7.5M5 7l3 3 3-3"/><path d="M3 13h10"/></svg></span>Sincronizzazione con Supabase (nuovo, in prova)</h3>
+        <h3><span class="ico" style="color:var(--accent)"><svg viewBox="0 0 16 16"><path d="M8 2.5v7.5M5 7l3 3 3-3"/><path d="M3 13h10"/></svg></span>Sincronizzazione con Supabase</h3>
         <div class="sub" style="margin-bottom:10px">
-          Copia aggiuntiva dei dati su un database più moderno, in aggiunta a GitHub — che resta comunque la fonte automatica principale finché questa parte non è verificata a fondo. Accedi con email e password; se non hai ancora un account su questa dashboard, creane uno la prima volta.
+          Copia aggiuntiva dei dati su un database più moderno, in aggiunta a GitHub — che resta comunque la fonte principale. Una volta effettuato l'accesso qui sotto, ogni salvataggio viene automaticamente rispecchiato anche su Supabase, senza bisogno di premere nulla; il pulsante "Sincronizza ora" resta utile solo per forzare subito un allineamento completo (es. dopo il primo accesso).
         </div>
         <div class="editbar">
           <label>Email<input id="sb-email" type="email" placeholder="tuaemail@esempio.it"></label>
@@ -1998,9 +1998,13 @@ async function sbReplaceTable(table,rows){
     if(error) throw error;
   }
 }
-async function syncToSupabase(){
-  if(!sbClient){alert('Supabase non disponibile: ricarica la pagina e riprova.');return;}
-  if(!SB_USER){alert('Devi prima accedere con email e password (qui sopra) per poter sincronizzare su Supabase.');return;}
+async function syncToSupabase(auto){
+  /* auto=true: chiamata automatica dopo ogni salvataggio su GitHub (vedi
+     pushPendingNow). In quel caso non blocchiamo né disturbiamo l'utente con
+     alert se Supabase non è configurato o non si è ancora fatto login: si
+     salta semplicemente, e GitHub resta comunque salvato come sempre. */
+  if(!sbClient){ if(!auto) alert('Supabase non disponibile: ricarica la pagina e riprova.'); return; }
+  if(!SB_USER){ if(!auto) alert('Devi prima accedere con email e password (qui sopra) per poter sincronizzare su Supabase.'); return; }
   if(SB_BUSY) return;
   SB_BUSY=true;
   setSbStatus(ic('sync')+'Sincronizzazione su Supabase…');
@@ -2257,6 +2261,12 @@ async function pushPendingNow(force){
     hideGhConflictBanner();
     hideStaleTabBanner();
     setGhStatus(ic('check')+'Sincronizzato alle '+new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}));
+    /* In parallelo, se questo dispositivo è collegato a Supabase, rispecchiamo
+       subito anche lì lo stesso stato appena salvato su GitHub — senza
+       attendere (non deve rallentare né poter far fallire il salvataggio su
+       GitHub, che resta la fonte principale). Eventuali errori restano
+       visibili solo nello stato Supabase in Impostazioni. */
+    if(SB_USER) syncToSupabase(true).catch(e=>console.warn('Sync automatica Supabase fallita:',e));
     return true;
   }catch(e){
     setGhStatus(ic('warn')+e.message,true);
