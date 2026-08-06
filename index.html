@@ -18,6 +18,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1295,6 +1296,26 @@ select.pill-btn:focus{outline:none;border-color:var(--border-strong)}
       </div>
 
       <div class="card" style="max-width:640px;margin-top:16px">
+        <h3><span class="ico" style="color:var(--accent)"><svg viewBox="0 0 16 16"><path d="M8 2.5v7.5M5 7l3 3 3-3"/><path d="M3 13h10"/></svg></span>Sincronizzazione con Supabase (nuovo, in prova)</h3>
+        <div class="sub" style="margin-bottom:10px">
+          Copia aggiuntiva dei dati su un database più moderno, in aggiunta a GitHub — che resta comunque la fonte automatica principale finché questa parte non è verificata a fondo. Accedi con email e password; se non hai ancora un account su questa dashboard, creane uno la prima volta.
+        </div>
+        <div class="editbar">
+          <label>Email<input id="sb-email" type="email" placeholder="tuaemail@esempio.it"></label>
+          <label>Password<input id="sb-password" type="password" placeholder="••••••••"></label>
+        </div>
+        <div class="editbar-actions">
+          <button class="btn" onclick="sbSignIn()"><span class="ico"><svg viewBox="0 0 16 16"><path d="M6.5 9.5l3-3"/><path d="M7 4.6l.5-.5a2.6 2.6 0 0 1 3.7 3.7l-.5.5"/><path d="M9 11.4l-.5.5a2.6 2.6 0 0 1-3.7-3.7l.5-.5"/></svg></span>Accedi</button>
+          <button class="btn ghost" onclick="sbSignUp()">Crea account</button>
+          <button class="btn danger" onclick="sbSignOut()">Esci</button>
+        </div>
+        <div class="sub" id="sb-status" style="margin-top:8px">Non connesso a Supabase</div>
+        <div class="editbar-actions" style="margin-top:10px">
+          <button class="btn ghost" onclick="syncToSupabase()"><span class="ico"><svg viewBox="0 0 16 16"><path d="M8 2.5v7.5M5 7l3 3 3-3"/><path d="M3 13h10"/></svg></span>Sincronizza ora su Supabase</button>
+        </div>
+      </div>
+
+      <div class="card" style="max-width:640px;margin-top:16px">
         <h3>Dati e filtri</h3>
         <div class="sub" style="margin-bottom:10px">Azzera i filtri attivi sulla dashboard oppure esporta/importa una copia manuale dei tuoi dati.</div>
         <div class="editbar-actions" style="flex-wrap:wrap">
@@ -1594,7 +1615,7 @@ function showPage(p){
   document.getElementById('page-compensi').style.display=(p==='compensi')?'block':'none';
   document.getElementById('page-check').style.display=(p==='check')?'block':'none';
   document.getElementById('page-impostazioni').style.display=(p==='impostazioni')?'block':'none';
-  if(p==='impostazioni'){ fillGhForm(); refreshBackupStatus(); }
+  if(p==='impostazioni'){ fillGhForm(); refreshBackupStatus(); fillSbForm(); }
   const MOBILE_PRIMARY=['dashboard','clienti','analisi','compensi'];
   const MOBILE_MORE=['incassi','rinnovi','rimborsi','check','impostazioni'];
   MOBILE_PRIMARY.forEach(x=>{ const el=document.getElementById('mnav-'+x); if(el) el.classList.toggle('on',x===p); });
@@ -1880,6 +1901,194 @@ function kpiDaSnapshotMese(clienti,meseSel){
 }
 function saveRimborsi(push){try{localStorage.setItem(LS_RIMBORSI,JSON.stringify(RIMB));}catch(e){alert('Impossibile salvare: memoria del browser piena o non disponibile.');} if(push!==false) scheduleGithubSync();}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
+
+/* ============================================================
+   Sincronizzazione con Supabase — in aggiunta a GitHub, non lo sostituisce.
+   GitHub resta l'unica fonte automatica; Supabase viene aggiornato solo
+   quando si preme "Sincronizza ora su Supabase" in Impostazioni, finché
+   questa integrazione non è stata usata e verificata a fondo. La chiave
+   qui sotto è quella "pubblica" (anon): può stare nel codice del sito,
+   perché da sola non permette di leggere o scrivere nulla — le regole di
+   sicurezza (Row Level Security) impostate sul progetto richiedono comunque
+   un utente autenticato per ogni operazione.
+   ============================================================ */
+const SUPABASE_URL='https://tppvmvzjzevunaittvxr.supabase.co';
+const SUPABASE_ANON_KEY='sb_publishable_DCWgG6YQRbqgO8BUAvS3zQ_SQXiup9u';
+let sbClient=null, SB_USER=null, SB_BUSY=false;
+function sbInit(){
+  try{ if(window.supabase&&window.supabase.createClient) sbClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY); }catch(e){}
+}
+async function sbRestoreSession(){
+  if(!sbClient) return;
+  try{ const {data}=await sbClient.auth.getSession(); SB_USER=(data&&data.session)?data.session.user:null; }catch(e){}
+  setSbStatus();
+}
+function setSbStatus(msg,isErr){
+  const el=document.getElementById('sb-status');
+  if(!el) return;
+  if(msg){ el.innerHTML=msg; el.style.color=isErr?'var(--red)':'var(--muted)'; return; }
+  el.style.color='var(--muted)';
+  el.textContent=SB_USER?('Connesso come '+SB_USER.email):'Non connesso a Supabase';
+}
+function fillSbForm(){
+  const emailEl=document.getElementById('sb-email');
+  if(emailEl&&SB_USER&&!emailEl.value) emailEl.value=SB_USER.email;
+  setSbStatus();
+}
+async function sbSignUp(){
+  if(!sbClient){alert('Supabase non disponibile: ricarica la pagina e riprova.');return;}
+  const email=document.getElementById('sb-email').value.trim();
+  const password=document.getElementById('sb-password').value;
+  if(!email||!password){alert('Inserisci email e password.');return;}
+  const {data,error}=await sbClient.auth.signUp({email,password});
+  if(error){alert('Registrazione non riuscita: '+error.message);return;}
+  SB_USER=data.user||null;
+  setSbStatus();
+  alert('Account creato. Se la conferma via email è richiesta, apri il messaggio ricevuto e poi premi Accedi; altrimenti sei già collegato.');
+}
+async function sbSignIn(){
+  if(!sbClient){alert('Supabase non disponibile: ricarica la pagina e riprova.');return;}
+  const email=document.getElementById('sb-email').value.trim();
+  const password=document.getElementById('sb-password').value;
+  if(!email||!password){alert('Inserisci email e password.');return;}
+  const {data,error}=await sbClient.auth.signInWithPassword({email,password});
+  if(error){alert('Accesso non riuscito: '+error.message);return;}
+  SB_USER=data.user||null;
+  setSbStatus();
+}
+async function sbSignOut(){
+  if(!sbClient) return;
+  try{ await sbClient.auth.signOut(); }catch(e){}
+  SB_USER=null;
+  setSbStatus();
+}
+function sbParseDate(s){
+  if(!s) return null;
+  s=String(s).trim();
+  if(!s) return null;
+  let m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if(m) return m[3]+'-'+m[2].padStart(2,'0')+'-'+m[1].padStart(2,'0');
+  m=s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if(m) return s;
+  return null;
+}
+function sbParseMoney(s){
+  if(s===null||s===undefined||s==='') return null;
+  if(typeof s==='number') return isFinite(s)?s:null;
+  let t=String(s).replace(/€/g,'').trim();
+  if(!t) return null;
+  if(/^-?\d{1,3}(\.\d{3})*(,\d+)?$/.test(t)) t=t.replace(/\./g,'').replace(',','.');
+  else t=t.replace(',','.');
+  const n=parseFloat(t);
+  return isNaN(n)?null:n;
+}
+function sbParseInt(s){
+  if(s===null||s===undefined||s==='') return null;
+  const n=parseInt(s,10);
+  return isNaN(n)?null:n;
+}
+function sbNorm(s){ return String(s||'').trim().toLowerCase().replace(/\s+/g,' '); }
+async function sbReplaceTable(table,rows){
+  const {error:delErr}=await sbClient.from(table).delete().gte('id','00000000-0000-0000-0000-000000000000');
+  if(delErr) throw delErr;
+  for(let i=0;i<rows.length;i+=500){
+    const batch=rows.slice(i,i+500);
+    if(!batch.length) continue;
+    const {error}=await sbClient.from(table).insert(batch);
+    if(error) throw error;
+  }
+}
+async function syncToSupabase(){
+  if(!sbClient){alert('Supabase non disponibile: ricarica la pagina e riprova.');return;}
+  if(!SB_USER){alert('Devi prima accedere con email e password (qui sopra) per poter sincronizzare su Supabase.');return;}
+  if(SB_BUSY) return;
+  SB_BUSY=true;
+  setSbStatus(ic('sync')+'Sincronizzazione su Supabase…');
+  try{
+    /* clienti: aggiorna quelli già noti (stesso id di prima), crea quelli nuovi,
+       elimina su Supabase quelli non più presenti qui — gli id restano stabili
+       tra una sincronizzazione e l'altra, così le tabelle collegate continuano
+       a puntare al cliente giusto anche dopo più sincronizzazioni successive. */
+    const {data:existing,error:selErr}=await sbClient.from('clienti').select('id,cliente');
+    if(selErr) throw selErr;
+    const nameToId={};
+    (existing||[]).forEach(r=>{ nameToId[sbNorm(r.cliente)]=r.id; });
+    const localNames=new Set();
+    const clientiRows=DATA.map(c=>{
+      const norm=sbNorm(c['CLIENTE']);
+      localNames.add(norm);
+      const id=nameToId[norm]||crypto.randomUUID();
+      nameToId[norm]=id;
+      const extra={};
+      if(c['IMPORTO']) extra.IMPORTO=c['IMPORTO'];
+      if(c['DATA INCASSO']) extra['DATA INCASSO']=c['DATA INCASSO'];
+      if(c['_CHECK_JULY_FIX']) extra._CHECK_JULY_FIX=c['_CHECK_JULY_FIX'];
+      if(c['_PRIMO_INIZIO']) extra._PRIMO_INIZIO=c['_PRIMO_INIZIO'];
+      if(c['_IOLANDA_LUG_FIX']) extra._IOLANDA_LUG_FIX=c['_IOLANDA_LUG_FIX'];
+      return {
+        id, cliente:c['CLIENTE']||null, stato_cliente:c['STATO CLIENTE']||null, percorso:c['PERCORSO']||null,
+        inizio_percorso:sbParseDate(c['INIZIO PERCORSO']), fine_percorso:sbParseDate(c['FINE PERCORSO']),
+        data_archiviazione:sbParseDate(c['DATA ARCHIVIAZIONE']),
+        tutor:c['TUTOR']||null, trainer:c['TRAINER']||null, nutri:c['NUTRI']||null,
+        venditore:c['VENDITORE']||null, fonte:c['FONTE']||null, pagante:c['PAGANTE']||null, email:c['EMAIL']||null,
+        metodo_pagamento:c['METODO PAGAMENTO']||null, stato_pagamento:c['STATO PAGAMENTO']||null,
+        tipo_incasso:c['TIPO INCASSO']||null, n_fattura:c['N° FATTURA']||c['N FATTURA']||null,
+        incasso:sbParseMoney(c['INCASSO']), rimborso:sbParseMoney(c['RIMBORSO']),
+        euro_tutor:sbParseMoney(c['€ TUTOR']), euro_trainer:sbParseMoney(c['€ TRAINER']), euro_nutri:sbParseMoney(c['€ NUTRI']),
+        contratto:c['CONTRATTO']||null, tipo_scadenza:c['TIPO SCADENZA']||null,
+        check_esito:c['CHECK']||null, check_risultato:c['RISULTATO']||null, data_check:sbParseDate(c['DATA CHECK']),
+        check_esclusa:sbNorm(c['CHECK_ESCLUSA'])==='si', check_esclusa_mese:c['CHECK_ESCLUSA_MESE']||null,
+        extra:Object.keys(extra).length?extra:null
+      };
+    });
+    for(let i=0;i<clientiRows.length;i+=300){
+      const {error}=await sbClient.from('clienti').upsert(clientiRows.slice(i,i+300),{onConflict:'id'});
+      if(error) throw error;
+    }
+    const toDelete=(existing||[]).filter(r=>!localNames.has(sbNorm(r.cliente))).map(r=>r.id);
+    for(let i=0;i<toDelete.length;i+=300){
+      const {error}=await sbClient.from('clienti').delete().in('id',toDelete.slice(i,i+300));
+      if(error) throw error;
+    }
+
+    /* tabelle collegate: rispecchiano sempre lo stato attuale (come fa già
+       GitHub con l'intero file), quindi si svuotano e si riscrivono da capo
+       a ogni sincronizzazione. */
+    const incassiRows=getIncassiLog().map(x=>({cliente_id:nameToId[sbNorm(x['CLIENTE'])]||null,cliente_nome:x['CLIENTE']||null,incasso:sbParseMoney(x['INCASSO']),data_incasso:sbParseDate(x['DATA INCASSO']),tipo_incasso:x['TIPO INCASSO']||null,storno:null}));
+    const archivioRows=getArchivioLog().map(x=>({cliente_id:nameToId[sbNorm(x['CLIENTE'])]||null,cliente_nome:x['CLIENTE']||null,stato:x['STATO']||null,data:sbParseDate(x['DATA'])}));
+    const statoRows=getStatoLog().map(x=>({cliente_id:nameToId[sbNorm(x['CLIENTE'])]||null,cliente_nome:x['CLIENTE']||null,stato:x['STATO']||null,data:sbParseDate(x['DATA'])}));
+    const rimbRows=RIMB.map(r=>({cliente_id:nameToId[sbNorm(r.cliente)]||null,cliente_nome:r.cliente||null,mese:r.mese||null,percorso:r.percorso||null,acquisto:sbParseDate(r.acquisto),incasso:sbParseMoney(r.incasso),stato:r.stato||null,metodo:r.metodo||null,recesso:sbParseDate(r.recesso),nota:r.nota||null,storno:sbParseMoney(r.storno),rate:sbParseInt(r.rate),storno_tot:sbParseMoney(r.stornoTot),iban:r.iban||null,venditore:r.venditore||null}));
+    const rinnoviRows=Object.entries(renAll()).map(([name,v])=>({cliente_id:nameToId[sbNorm(name)]||null,cliente_nome:name,stato:v.st||null,nota:v.note||null}));
+    const rateRows=Object.entries(ratePagate()).map(([key,val])=>{
+      const parts=key.split('|');
+      return {cliente_id:nameToId[sbNorm(parts[0])]||null,cliente_nome:parts[0],data_riferimento:parts[1],numero_rata:sbParseInt(parts[2]),pagata:!!val};
+    });
+    await sbReplaceTable('incassi_log',incassiRows);
+    await sbReplaceTable('archivio_log',archivioRows);
+    await sbReplaceTable('stato_log',statoRows);
+    await sbReplaceTable('rimborsi',rimbRows);
+    await sbReplaceTable('rinnovi_tracking',rinnoviRows);
+    await sbReplaceTable('rate_pagate',rateRows);
+
+    /* liste gestite e obiettivo mensile */
+    const listRows=[];
+    Object.entries(MANAGED_LISTS).forEach(([cat,vals])=>(vals||[]).forEach(v=>listRows.push({categoria:cat,valore:v})));
+    await sbReplaceTable('managed_lists',listRows);
+    const ob=getObiettivi();
+    const {error:obDelErr}=await sbClient.from('obiettivi_mensili').delete().gte('id','00000000-0000-0000-0000-000000000000');
+    if(obDelErr) throw obDelErr;
+    if(ob&&(ob.incassi||ob.nuove)){
+      const {error:obErr}=await sbClient.from('obiettivi_mensili').insert([{incassi_target:ob.incassi||null,nuove_target:ob.nuove||null}]);
+      if(obErr) throw obErr;
+    }
+
+    setSbStatus(ic('check')+'Sincronizzato su Supabase alle '+new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}));
+  }catch(e){
+    setSbStatus(ic('warn')+'Errore: '+(e&&e.message?e.message:e),true);
+  }finally{
+    SB_BUSY=false;
+  }
+}
 
 /* ============================================================
    Sincronizzazione con GitHub — i dati vengono letti/scritti in
@@ -5789,6 +5998,8 @@ loadCompOverrides();
 loadProvOverrides();
 loadStornoInc();
 loadGhLastUpdated();
+sbInit();
+sbRestoreSession();
 initData();
 applyLug26Import();
 applyPromoEstateImport();
