@@ -24714,7 +24714,7 @@
   {
    "CLIENTE": "Francesca Tognarelli",
    "N FATTURA": "",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "MAI INIZIATO",
    "PERCORSO": "6 mesi + 6 Gnocca",
    "INIZIO PERCORSO": "01/08/2026",
    "FINE PERCORSO": "01/08/2027",
@@ -26473,7 +26473,12 @@
    "CLIENTE": "Denise Cremone",
    "STATO": "CONGELATO",
    "DATA": "05/08/2026"
+  },
+  {
+   "CLIENTE": "Francesca Tognarelli",
+   "STATO": "MAI INIZIATO",
+   "DATA": "06/08/2026"
   }
  ],
- "updatedAt": "2026-08-05T17:59:33.257Z"
+ "updatedAt": "2026-08-06T08:54:17.000Z"
 }
