@@ -2089,12 +2089,22 @@ function sbParseInt(s){
 }
 function sbNorm(s){ return String(s||'').trim().toLowerCase().replace(/\s+/g,' '); }
 async function sbReplaceTable(table,rows){
-  const {error:delErr}=await sbClient.from(table).delete().gte('id','00000000-0000-0000-0000-000000000000');
-  if(delErr) throw delErr;
+  /* Ordine deliberato: PRIMA si inseriscono le righe nuove, POI si cancellano
+     quelle vecchie. Se l'operazione si interrompe a meta' (rete che cade,
+     sessione scaduta, errore su un batch) il peggio che resta sono delle righe
+     duplicate — visibili e recuperabili — invece di una tabella vuota o
+     dimezzata, che era il rischio con l'ordine inverso (delete-then-insert). */
+  const {data:before,error:selErr}=await sbClient.from(table).select('id');
+  if(selErr) throw selErr;
+  const oldIds=(before||[]).map(r=>r.id);
   for(let i=0;i<rows.length;i+=500){
     const batch=rows.slice(i,i+500);
     if(!batch.length) continue;
     const {error}=await sbClient.from(table).insert(batch);
+    if(error) throw error;
+  }
+  for(let i=0;i<oldIds.length;i+=500){
+    const {error}=await sbClient.from(table).delete().in('id',oldIds.slice(i,i+500));
     if(error) throw error;
   }
 }
@@ -2752,14 +2762,16 @@ function showDataLoadErrorBanner(problems){
 
 /* ---------- backup: esporta / importa ---------- */
 function esportaBackup(){
-  const blob=new Blob([JSON.stringify({
-    clienti:DATA, rimborsi:RIMB,
-    ratePagate:JSON.parse(localStorage.getItem(RIMB_KEY)||'{}'),
-    rinnovi:JSON.parse(localStorage.getItem(REN_KEY)||'{}')
-  },null,1)],{type:'application/json'});
+  /* Usa collectAllData(): lo stesso identico payload della sincronizzazione,
+     quindi il backup contiene TUTTO (storico stati, archivio, incassi,
+     pagamenti, numeri tutor, template WhatsApp) e non solo clienti e rimborsi
+     come faceva prima — una differenza che rendeva il file inservibile come
+     vera rete di sicurezza. */
+  const blob=new Blob([JSON.stringify(collectAllData(),null,1)],{type:'application/json'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
-  a.download='backup_dashboard_'+new Date().toISOString().slice(0,10)+'.json';
+  /* data E ora nel nome: piu' backup nello stesso giorno non si sovrascrivono */
+  a.download='backup_dashboard_'+new Date().toISOString().replace(/[:.]/g,'-').slice(0,19)+'.json';
   a.click();
 }
 function importaBackup(ev){
@@ -2775,6 +2787,15 @@ function importaBackup(ev){
       saveClienti(); saveRimborsi();
       if(d.ratePagate) localStorage.setItem(RIMB_KEY,JSON.stringify(d.ratePagate));
       if(d.rinnovi) localStorage.setItem(REN_KEY,JSON.stringify(d.rinnovi));
+      /* Ripristino anche gli storici: prima venivano ignorati in lettura, quindi
+         importare un backup riportava indietro solo una parte dei dati e faceva
+         sparire in silenzio stati, archivio, incassi e pagamenti. */
+      if(Array.isArray(d.incassiLog)) saveIncassiLog(d.incassiLog);
+      if(Array.isArray(d.archivioLog)) saveArchivioLog(d.archivioLog);
+      if(Array.isArray(d.statoLog)) saveStatoLog(d.statoLog);
+      if(Array.isArray(d.payLog)){ try{localStorage.setItem(LS_PAY_LOG,JSON.stringify(d.payLog));_payLogCache=null;}catch(e){} }
+      if(d.collabPhones&&typeof d.collabPhones==='object'){ try{localStorage.setItem(COLLAB_PHONES_KEY,JSON.stringify(d.collabPhones));}catch(e){} }
+      if(typeof d.waTemplate==='string'&&d.waTemplate.trim()){ try{localStorage.setItem(WA_TEMPLATE_KEY,d.waTemplate);}catch(e){} }
       buildFilters(); buildRimbFilters(); render(); renderRimborsi();
       alert('Backup importato con successo.');
     }catch(e){ alert('File non valido: '+e.message); }
