@@ -12102,7 +12102,7 @@
   },
   {
    "CLIENTE": "Vangjola Naco",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "CONGELATO",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "23/02/2026",
    "FINE PERCORSO": "23/09/2026",
@@ -26557,6 +26557,11 @@
    "CLIENTE": "Anna Genovese",
    "STATO": "CONGELATO",
    "DATA": "07/08/2026"
+  },
+  {
+   "CLIENTE": "Vangjola Naco",
+   "STATO": "CONGELATO",
+   "DATA": "07/08/2026"
   }
  ],
  "collabPhones": {
@@ -26567,5 +26572,5 @@
   "Margherita": "3515862081"
  },
  "waTemplate": "Ciao {nome} 🌸 ecco i rinnovi da gestire questo mese:\n\n{lista}\n\nGrazie! 🫶🏻",
- "updatedAt": "2026-08-07T09:24:24.262Z"
+ "updatedAt": "2026-08-07T09:24:35.082Z"
 }
