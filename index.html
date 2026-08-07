@@ -1174,6 +1174,7 @@ select.pill-btn:focus{outline:none;border-color:var(--border-strong)}
             </span>
           </h3>
           <div id="scadenze"></div>
+          <div id="ren-whatsapp"></div>
         </div>
       </div>
     </div>
@@ -1312,6 +1313,17 @@ select.pill-btn:focus{outline:none;border-color:var(--border-strong)}
         <div class="sub" id="sb-status" style="margin-top:8px">Non connesso a Supabase</div>
         <div class="editbar-actions" style="margin-top:10px">
           <button class="btn ghost" onclick="syncToSupabase()"><span class="ico"><svg viewBox="0 0 16 16"><path d="M8 2.5v7.5M5 7l3 3 3-3"/><path d="M3 13h10"/></svg></span>Sincronizza ora su Supabase</button>
+        </div>
+      </div>
+
+      <div class="card" style="max-width:640px;margin-top:16px">
+        <h3><span class="ico" style="color:var(--accent)"><i class="fa-brands fa-whatsapp"></i></span>Numeri WhatsApp tutor</h3>
+        <div class="sub" style="margin-bottom:10px">
+          Servono per avvisare i tutor sui rinnovi da contattare (pagina “Gestione scadenze”). Inserisci il numero con prefisso internazionale, senza spazi né simboli (es. per l'Italia 39 + numero: 393331234567).
+        </div>
+        <div id="collab-phones-list"></div>
+        <div class="editbar-actions" style="margin-top:10px">
+          <button class="btn" onclick="salvaCollabPhonesForm()"><span class="ico"><svg viewBox="0 0 16 16"><path d="M3 3h7.5l2.5 2.5V13H3z"/><path d="M5 3v3h5V3"/><path d="M5.3 9H10.7V13H5.3z"/></svg></span>Salva numeri</button>
         </div>
       </div>
 
@@ -1615,7 +1627,8 @@ function showPage(p){
   document.getElementById('page-compensi').style.display=(p==='compensi')?'block':'none';
   document.getElementById('page-check').style.display=(p==='check')?'block':'none';
   document.getElementById('page-impostazioni').style.display=(p==='impostazioni')?'block':'none';
-  if(p==='impostazioni'){ fillGhForm(); refreshBackupStatus(); fillSbForm(); }
+  if(p==='impostazioni'){ fillGhForm(); refreshBackupStatus(); fillSbForm(); buildSettingsCollabPhones(); }
+  if(p==='rinnovi'){ renderRinnoviWhatsapp(); }
   const MOBILE_PRIMARY=['dashboard','clienti','analisi','compensi'];
   const MOBILE_MORE=['incassi','rinnovi','rimborsi','check','impostazioni'];
   MOBILE_PRIMARY.forEach(x=>{ const el=document.getElementById('mnav-'+x); if(el) el.classList.toggle('on',x===p); });
@@ -2197,7 +2210,7 @@ function setGhStatus(msg,isErr){
   el.style.color=isErr?'var(--red)':'var(--muted)';
 }
 function collectAllData(){
-  return {clienti:DATA,rimborsi:RIMB,ratePagate:ratePagate(),rinnovi:renAll(),incassiLog:getIncassiLog(),archivioLog:getArchivioLog(),statoLog:getStatoLog(),updatedAt:new Date().toISOString()};
+  return {clienti:DATA,rimborsi:RIMB,ratePagate:ratePagate(),rinnovi:renAll(),incassiLog:getIncassiLog(),archivioLog:getArchivioLog(),statoLog:getStatoLog(),collabPhones:getCollabPhones(),updatedAt:new Date().toISOString()};
 }
 function applyAllData(d){
   if(Array.isArray(d.clienti)) DATA=d.clienti;
@@ -2216,6 +2229,7 @@ function applyAllData(d){
   if(Array.isArray(d.incassiLog)) saveIncassiLog(d.incassiLog);
   if(Array.isArray(d.archivioLog)) saveArchivioLog(d.archivioLog);
   if(Array.isArray(d.statoLog)) saveStatoLog(d.statoLog);
+  if(d.collabPhones&&typeof d.collabPhones==='object') try{localStorage.setItem(COLLAB_PHONES_KEY,JSON.stringify(d.collabPhones));}catch(e){}
 }
 async function pushPendingNow(force){
   /* invia subito (senza debounce) i dati locali correnti a GitHub. Usata sia dal
@@ -3492,6 +3506,93 @@ function removeManagedItem(key,val){
   }
   buildFilters();
   buildSettingsPanel();
+}
+/* ---------- numeri WhatsApp dei collaboratori (per avvisi rinnovi) ----------
+   Salvati come mappa {nomeCollaboratore: numero}, sincronizzati come il resto
+   dei dati (vedi collectAllData/applyAllData) così restano coerenti su tutti i
+   dispositivi. Il numero non viene mai inviato a nessun servizio esterno: serve
+   solo a comporre localmente il link wa.me che si apre nel browser/telefono di
+   chi usa la dashboard, che è poi a premere "invia" dentro WhatsApp stesso. */
+const COLLAB_PHONES_KEY='global_collab_phones';
+function getCollabPhones(){ return safeJsonParse(localStorage.getItem(COLLAB_PHONES_KEY),COLLAB_PHONES_KEY,'i numeri WhatsApp dei collaboratori')||{}; }
+function saveCollabPhones(o){ try{localStorage.setItem(COLLAB_PHONES_KEY,JSON.stringify(o));}catch(e){alert('Impossibile salvare: memoria del browser piena o non disponibile.');} scheduleGithubSync(); }
+/* wa.me vuole solo cifre (prefisso internazionale incluso, senza + né 00). */
+function normPhoneForWa(p){
+  let d=String(p||'').replace(/[^\d+]/g,'').replace(/^\+/,'');
+  if(d.startsWith('00')) d=d.slice(2);
+  return d;
+}
+function buildSettingsCollabPhones(){
+  const el=document.getElementById('collab-phones-list');
+  if(!el) return;
+  const phones=getCollabPhones();
+  const tutors=(MANAGED_LISTS.tutor||[]).slice().sort((a,b)=>a.localeCompare(b,'it'));
+  el.innerHTML=tutors.length?tutors.map(t=>`<label style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+    <span style="min-width:120px">${esc(t)}</span>
+    <input type="tel" data-tutor="${esc(t)}" class="collab-phone-input" placeholder="es. 393331234567" value="${esc(phones[t]||'')}" style="flex:1">
+  </label>`).join(''):'<div class="sub">Nessun tutor in elenco: aggiungine uno più sopra prima di impostare i numeri.</div>';
+}
+function salvaCollabPhonesForm(){
+  const phones={};
+  document.querySelectorAll('.collab-phone-input').forEach(inp=>{
+    const v=inp.value.trim();
+    if(v) phones[inp.dataset.tutor]=v;
+  });
+  saveCollabPhones(phones);
+  renderRinnoviWhatsapp();
+  alert('Numeri salvati.');
+}
+/* Per ogni tutor, le clienti con rinnovo "da contattare" entro la finestra
+   scelta in Gestione scadenze (stessa logica di filtro usata lì, ma
+   richiamabile a sé: qui interessano solo i rinnovi veri e propri, non le
+   rate "Trance", che sono un incasso da gestire internamente e non un
+   avviso da mandare al tutor). */
+function getRinnoviDaContattarePerTutor(){
+  const winEl=document.getElementById('scad-window');
+  const win=winEl?+winEl.value:60;
+  const now=new Date(); now.setHours(0,0,0,0);
+  const inWin=new Date(now.getTime()+win*864e5);
+  const ren=renAll();
+  const stOf=r=>(ren[r['CLIENTE']]&&ren[r['CLIENTE']].st)||'da';
+  const byTutor={};
+  DATA.forEach(r=>{
+    if(tipoScadenza(r)!=='Rinnovo') return;
+    if(!['IN PERCORSO','CONGELATO','SPARITA'].includes(r['STATO CLIENTE'])) return;
+    if(stOf(r)!=='da') return;
+    const d=pdate(r['FINE PERCORSO']);
+    if(!d||d>inWin) return;
+    const t=(r['TUTOR']||'').trim();
+    if(!t) return;
+    (byTutor[t]=byTutor[t]||[]).push({r,date:d});
+  });
+  Object.values(byTutor).forEach(list=>list.sort((a,b)=>a.date-b.date));
+  return byTutor;
+}
+function waLinkPerTutor(tutor,entries){
+  const phone=normPhoneForWa(getCollabPhones()[tutor]);
+  if(!phone) return null;
+  const righe=entries.map(e=>`- ${e.r['CLIENTE']} (scade ${fdate(e.date)})`).join('\n');
+  const msg=`Ciao ${tutor}, ecco i rinnovi da gestire:\n${righe}\n\nGrazie!`;
+  return 'https://wa.me/'+phone+'?text='+encodeURIComponent(msg);
+}
+function renderRinnoviWhatsapp(){
+  const el=document.getElementById('ren-whatsapp');
+  if(!el) return;
+  const byTutor=getRinnoviDaContattarePerTutor();
+  const tutors=Object.keys(byTutor).sort((a,b)=>byTutor[b].length-byTutor[a].length);
+  if(!tutors.length){ el.innerHTML=''; return; }
+  const phones=getCollabPhones();
+  el.innerHTML='<div class="sub" style="margin:10px 0 8px">Avvisa i tutor via WhatsApp sui rinnovi ancora da contattare:</div>'+tutors.map(t=>{
+    const n=byTutor[t].length;
+    const link=waLinkPerTutor(t,byTutor[t]);
+    const hasPhone=!!normPhoneForWa(phones[t]);
+    return `<div class="scad-item" style="cursor:default">
+      <span style="flex:1;min-width:200px">${esc(t)} <span class="count">${n}</span></span>
+      ${hasPhone
+        ?`<a class="btn ghost" href="${link}" target="_blank" rel="noopener">${ic('link')}Invia WhatsApp</a>`
+        :`<span class="sub" style="font-size:12px">Numero non impostato — <a href="#" onclick="showPage('impostazioni');return false">aggiungilo in Impostazioni</a></span>`}
+    </div>`;
+  }).join('');
 }
 /* L'elenco venditori era stato popolato la prima volta anche da nomi presenti nei
    rimborsi storici (es. "Gennaro", "Martina") che non sono venditori attuali. Li
@@ -5157,6 +5258,7 @@ function render(){
     const body=isOpen?g.items.map(e=>e.type==='trance'?renderTrancheItem(e,now,isTrancePaid):renderRinnovoItem(e,now)).join(''):'';
     return header+body;
   }).join(''):'<div class="sub">'+(hide&&gestiti?ic('check')+'Tutti i rinnovi e le rate in scadenza sono stati gestiti':ic('check')+'Nessun percorso o rata in scadenza nel periodo selezionato')+'</div>';
+  renderRinnoviWhatsapp();
 
   const storicoCountEl=document.getElementById('storico-count');
   if(storicoCountEl) storicoCountEl.textContent='('+allRows.filter(isArchiviata).length+')';
