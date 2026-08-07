@@ -2777,7 +2777,7 @@
    "STATO CLIENTE": "CONGELATO",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "07/10/2025",
-   "FINE PERCORSO": "07/04/2026",
+   "FINE PERCORSO": "07/05/2026",
    "IMPORTO": "€ 1.005,00",
    "METODO PAGAMENTO": "PagoDIL",
    "STATO PAGAMENTO": "SALDATO",
@@ -26750,11 +26750,6 @@
    "CLIENTE": "Mariangela Speranza",
    "STATO": "CONGELATO",
    "DATA": "16/04/2026"
-  },
-  {
-   "CLIENTE": "Clarissa Birindelli",
-   "STATO": "CONGELATO",
-   "DATA": "04/04/2026"
   }
  ],
  "collabPhones": {
@@ -26765,5 +26760,5 @@
   "Margherita": "3515862081"
  },
  "waTemplate": "Ciao {nome} 🌸 ecco i rinnovi da gestire questo mese:\n\n{lista}\n\nGrazie! 🫶🏻",
- "updatedAt": "2026-08-07T13:23:37.892Z"
+ "updatedAt": "2026-08-07T13:24:24.175Z"
 }
