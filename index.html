@@ -1437,6 +1437,18 @@ select.pill-btn:focus{outline:none;border-color:var(--border-strong)}
   </div>
 </div>
 
+<div class="modal-overlay" id="edit-storico-modal" onclick="if(event.target===this) chiudiEditStorico()">
+  <div class="modal-card" style="max-width:480px">
+    <h3><span class="ico"><i class="fa-solid fa-clock-rotate-left"></i></span>Storico stati — <span id="edit-storico-nome"></span></h3>
+    <div id="edit-storico-list" style="max-height:55vh;overflow-y:auto;margin-top:6px"></div>
+    <div class="editbar-actions">
+      <button class="btn ghost" onclick="aggiungiVoceStorico()" style="margin-right:auto"><span class="ico"><i class="fa-solid fa-plus"></i></span>Aggiungi voce</button>
+      <button class="btn" onclick="salvaEditStorico()"><span class="ico"><svg viewBox="0 0 16 16"><path d="M3 3h7.5l2.5 2.5V13H3z"/><path d="M5 3v3h5V3"/><path d="M5.3 9H10.7V13H5.3z"/></svg></span>Salva</button>
+      <button class="btn ghost" onclick="chiudiEditStorico()">Chiudi</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="rinnova-modal" onclick="if(event.target===this) chiudiRinnovaAbbonamento()">
   <div class="modal-card">
     <h3><span class="ico"><svg viewBox="0 0 16 16"><path d="M3.3 8A4.7 4.7 0 0 1 12 5.7"/><path d="M12 2.8v3h-3"/><path d="M12.7 8A4.7 4.7 0 0 1 4 10.3"/><path d="M4 13.2v-3h3"/></svg></span>Rinnova abbonamento — <span id="rinnova-cliente-name"></span></h3>
@@ -3190,7 +3202,10 @@ function buildTimelineStatiHtml(r){
     </div>`;
   }).join('');
   return `<div style="width:100%;padding-top:12px;margin-top:8px;border-top:1px solid var(--border)">
-    <p style="font-size:12px;font-weight:600;color:var(--text);margin:0 0 10px">Storico stati</p>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <p style="font-size:12px;font-weight:600;color:var(--text);margin:0">Storico stati</p>
+      <button class="icon-btn" title="Modifica storico stati" onclick="event.stopPropagation();apriEditStorico('${jsEsc(nome)}')"><span class="ico"><i class="fa-solid fa-pen" style="font-size:11px"></i></span></button>
+    </div>
     <div style="padding-left:2px">${rowsHtml}</div>
   </div>`;
 }
@@ -5808,6 +5823,84 @@ function apriModificaCliente(nome){
 function chiudiModificaCliente(){
   document.getElementById('edit-cliente-modal').style.display='none';
   editingClienteName=null;
+}
+
+/* ── Editing storico stati ──────────────────────────────────────────────── */
+const STATI_STORICO=['IN PERCORSO','CONGELATO','NON RINNOVATO','ABBANDONATO','SPARITA','MAI INIZIATO'];
+let _editStoricoNome=null;
+let _editStoricoEntries=[];
+
+function itToInputDate(d){
+  if(!d) return '';
+  const p=d.split('/');
+  if(p.length!==3) return '';
+  return `${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`;
+}
+function inputDateToIt(d){
+  if(!d) return '';
+  const p=d.split('-');
+  if(p.length!==3) return '';
+  return `${p[2]}/${p[1]}/${p[0]}`;
+}
+function _leggiDOMStorico(){
+  _editStoricoEntries.forEach((e,i)=>{
+    const s=document.getElementById(`esl-stato-${i}`);
+    const d=document.getElementById(`esl-data-${i}`);
+    if(s) e['STATO']=s.value;
+    if(d) e['DATA']=inputDateToIt(d.value)||e['DATA'];
+  });
+}
+function _renderEditStoricoList(){
+  const container=document.getElementById('edit-storico-list');
+  if(!_editStoricoEntries.length){
+    container.innerHTML='<p style="color:var(--muted2);font-size:13px;margin:8px 0">Nessuna voce nello storico. Aggiungi una voce con il pulsante qui sotto.</p>';
+    return;
+  }
+  container.innerHTML=_editStoricoEntries.map((e,i)=>`
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+      <select id="esl-stato-${i}" style="flex:1;padding:5px 8px;border:1px solid var(--border);border-radius:6px;background:var(--card);color:var(--text);font-size:13px">
+        ${STATI_STORICO.map(s=>`<option value="${esc(s)}"${e['STATO']===s?' selected':''}>${esc(statoLabel(s)||s)}</option>`).join('')}
+      </select>
+      <input type="date" id="esl-data-${i}" value="${esc(itToInputDate(e['DATA']))}" style="padding:5px 8px;border:1px solid var(--border);border-radius:6px;background:var(--card);color:var(--text);font-size:13px">
+      <button class="icon-btn danger" title="Elimina voce" onclick="eliminaVoceStorico(${i})"><span class="ico"><i class="fa-solid fa-trash" style="font-size:11px"></i></span></button>
+    </div>
+  `).join('');
+}
+function apriEditStorico(nome){
+  _editStoricoNome=nome;
+  document.getElementById('edit-storico-nome').textContent=nome;
+  _editStoricoEntries=getStatoLog()
+    .filter(e=>e['CLIENTE']===nome)
+    .slice()
+    .sort((a,b)=>(pdate(a['DATA'])||0)-(pdate(b['DATA'])||0))
+    .map(e=>({...e}));
+  _renderEditStoricoList();
+  document.getElementById('edit-storico-modal').style.display='flex';
+}
+function chiudiEditStorico(){
+  document.getElementById('edit-storico-modal').style.display='none';
+  _editStoricoNome=null;
+  _editStoricoEntries=[];
+}
+function aggiungiVoceStorico(){
+  _leggiDOMStorico();
+  _editStoricoEntries.push({CLIENTE:_editStoricoNome,STATO:'IN PERCORSO',DATA:todayIt()});
+  _renderEditStoricoList();
+}
+function eliminaVoceStorico(i){
+  _leggiDOMStorico();
+  _editStoricoEntries.splice(i,1);
+  _renderEditStoricoList();
+}
+function salvaEditStorico(){
+  _leggiDOMStorico();
+  const nome=_editStoricoNome;
+  const altriLog=getStatoLog().filter(e=>e['CLIENTE']!==nome);
+  const mioLog=_editStoricoEntries.filter(e=>e['STATO']&&e['DATA']);
+  saveStatoLog([...altriLog,...mioLog]);
+  scheduleGithubSync();
+  chiudiEditStorico();
+  buildFilters();render();
 }
 function salvaClienteModal(){
   const r=DATA.find(x=>x['CLIENTE']===editingClienteName);
