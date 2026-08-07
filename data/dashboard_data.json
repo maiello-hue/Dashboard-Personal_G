@@ -24806,7 +24806,7 @@
    "INCASSO": "1668",
    "DATA INCASSO": "05/08/2026",
    "TUTOR": "Manuela",
-   "TRAINER": "Gianmiki",
+   "TRAINER": "Fiorenzo",
    "NUTRI": "",
    "VENDITORE": "Personal_G",
    "FONTE": "",
@@ -26562,5 +26562,5 @@
   "Margherita": "3515862081"
  },
  "waTemplate": "Ciao {nome} 🌸 ecco i rinnovi da gestire questo mese:\n\n{lista}\n\nGrazie! 🫶🏻",
- "updatedAt": "2026-08-07T09:01:26.755Z"
+ "updatedAt": "2026-08-07T09:01:51.995Z"
 }
