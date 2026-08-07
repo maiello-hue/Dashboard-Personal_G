@@ -5707,7 +5707,7 @@ function renderTable(rows){
   });
   const desktopRowHtml=({r,i,ini,prog,finTxt,detailInner})=>{
     const main=`<tr class="main" onclick="toggleExp(${i})">
-      <td data-label="Cliente"><a class="nome-link" onclick="event.stopPropagation();apriProfiloCliente('${jsEsc(r[\'CLIENTE\'])}')">${esc(r['CLIENTE'])}</a></td><td data-label="Stato">${statoBadge(r['STATO CLIENTE'])}</td><td data-label="Percorso">${percBadge(r['PERCORSO'])}</td>
+      <td data-label="Cliente"><a class="nome-link" onclick="event.stopPropagation();apriProfiloCliente('${jsEsc(r['CLIENTE'])}')">${esc(r['CLIENTE'])}</a></td><td data-label="Stato">${statoBadge(r['STATO CLIENTE'])}</td><td data-label="Percorso">${percBadge(r['PERCORSO'])}</td>
       <td data-label="Inizio">${fdate(ini)}</td><td data-label="Fine">${finTxt}</td><td data-label="Avanzamento">${prog}</td>
       <td data-label="Venditore">${vendBadge(r['VENDITORE'])}</td>
       <td data-label="Tutor">${tutBadge(r['TUTOR'])}</td><td data-label="Trainer">${trainBadge(r['TRAINER'])}</td><td data-label="Nutri">${nutriBadge(r['NUTRI'])}</td></tr>`;
@@ -5720,7 +5720,7 @@ function renderTable(rows){
       <div class="cc-row" onclick="toggleExp(${i})">
         <div class="cc-avatar" style="background:#000;color:#fff">${esc(initials(r['CLIENTE']))}</div>
         <div class="cc-main">
-          <div class="cc-name"><a class="nome-link" onclick="event.stopPropagation();apriProfiloCliente('${jsEsc(r[\'CLIENTE\'])}')">${esc(r['CLIENTE'])}</a></div>
+          <div class="cc-name"><a class="nome-link" onclick="event.stopPropagation();apriProfiloCliente('${jsEsc(r['CLIENTE'])}')">${esc(r['CLIENTE'])}</a></div>
           <div class="cc-badges">${statoBadge(r['STATO CLIENTE'])}${pctVal!==null?`<span class="cc-pill ${pctCls}">${ic('sync')}${pctVal}%</span>`:''}</div>
           <div class="cc-subrow">
             <span class="cc-info" title="Tutor">${DI.user}${esc(r['TUTOR']||'—')}</span>
