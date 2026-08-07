@@ -26625,6 +26625,11 @@
    "CLIENTE": "Giulia Gherardi",
    "STATO": "MAI INIZIATO",
    "DATA": "07/08/2026"
+  },
+  {
+   "CLIENTE": "Valeria Campolo",
+   "STATO": "CONGELATO",
+   "DATA": "07/05/2026"
   }
  ],
  "collabPhones": {
@@ -26635,5 +26640,5 @@
   "Margherita": "3515862081"
  },
  "waTemplate": "Ciao {nome} 🌸 ecco i rinnovi da gestire questo mese:\n\n{lista}\n\nGrazie! 🫶🏻",
- "updatedAt": "2026-08-07T12:50:09.351Z"
+ "updatedAt": "2026-08-07T13:10:10.665Z"
 }
