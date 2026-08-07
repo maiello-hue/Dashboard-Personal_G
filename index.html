@@ -2866,12 +2866,24 @@ function applyGnoccaSheetImport(){
    La DATA ARCHIVIAZIONE era stata registrata in agosto ma l'abbandono era avvenuto
    a luglio. Viene eseguita una sola volta per dispositivo. */
 function applyCamillaTabarriniLugFixOnce(){
-  /* Idempotente: non fa nulla se la data è già in luglio o non esiste. */
+  /* Idempotente, senza chiave localStorage: sopravvive a sync da GitHub.
+     Registra l'abbandono di Camilla Tabarrini a luglio 2026 in archivioLog. */
+  const DATA_LUG='01/07/2026';
+  const log=getArchivioLog();
+  const existing=log.find(e=>e['CLIENTE']==='Camilla Tabarrini'&&(e['STATO']||'').toUpperCase().startsWith('ABBANDONAT'));
+  let logChanged=false;
+  if(existing){
+    if((existing['DATA']||'').includes('/08/2026')){existing['DATA']=existing['DATA'].replace('/08/2026','/07/2026');logChanged=true;}
+  }else{log.push({CLIENTE:'Camilla Tabarrini',STATO:'ABBANDONATO',DATA:DATA_LUG});logChanged=true;}
+  if(logChanged)saveArchivioLog(log);
   const r=DATA.find(c=>c['CLIENTE']==='Camilla Tabarrini');
-  if(r&&(r['DATA ARCHIVIAZIONE']||'').slice(3,5)==='08'&&(r['DATA ARCHIVIAZIONE']||'').slice(6,10)==='2026'){
-    r['DATA ARCHIVIAZIONE']=r['DATA ARCHIVIAZIONE'].replace('/08/2026','/07/2026');
-    saveClienti();
+  let dataChanged=false;
+  if(r){
+    if(r['STATO CLIENTE']!=='ABBANDONATO'){r['STATO CLIENTE']='ABBANDONATO';dataChanged=true;}
+    if(!(r['DATA ARCHIVIAZIONE']||'')||(r['DATA ARCHIVIAZIONE']||'').includes('/08/2026')){r['DATA ARCHIVIAZIONE']=DATA_LUG;dataChanged=true;}
+    if(dataChanged)saveClienti();
   }
+  if(logChanged||dataChanged)scheduleGithubSync();
 }
 function applyMeseFlussoMigrationOnce(){
   let changed=false;
