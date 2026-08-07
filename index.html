@@ -3571,8 +3571,15 @@ function getRinnoviDaContattarePerTutor(){
 function waLinkPerTutor(tutor,entries){
   const phone=normPhoneForWa(getCollabPhones()[tutor]);
   if(!phone) return null;
-  const righe=entries.map(e=>`- ${e.r['CLIENTE']} (scade ${fdate(e.date)})`).join('\n');
-  const msg=`Ciao ${tutor}, ecco i rinnovi da gestire:\n${righe}\n\nGrazie!`;
+  const MESI_IT=['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+  const mesi={};
+  entries.forEach(e=>{
+    const k=e.date.getFullYear()+'-'+String(e.date.getMonth()).padStart(2,'0');
+    const label=MESI_IT[e.date.getMonth()]+' '+e.date.getFullYear();
+    (mesi[k]=mesi[k]||{label,items:[]}).items.push(e);
+  });
+  const sezioni=Object.keys(mesi).sort().map(k=>mesi[k].label+':\n'+mesi[k].items.map(e=>`- ${e.r['CLIENTE']} (scade ${fdate(e.date)})`).join('\n')).join('\n\n');
+  const msg=`Ciao ${tutor}, ecco i rinnovi da gestire:\n\n${sezioni}\n\nGrazie!`;
   return 'https://wa.me/'+phone+'?text='+encodeURIComponent(msg);
 }
 function renderRinnoviWhatsapp(){
