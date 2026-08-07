@@ -24867,8 +24867,8 @@
    "INCASSO": "1850,82",
    "DATA INCASSO": "06/08/2026",
    "TUTOR": "Andrea",
-   "TRAINER": "Marco",
-   "NUTRI": "Matilde",
+   "TRAINER": "Matteo",
+   "NUTRI": "Nicole",
    "VENDITORE": "Personal_G",
    "FONTE": "",
    "_PRIMO_INIZIO": "06/08/2026"
@@ -26641,5 +26641,5 @@
  "payLog": [],
  "collabPhones": {},
  "waTemplate": "Ciao {nome}, ecco i rinnovi da gestire:\n\n{lista}\n\nGrazie!",
- "updatedAt": "2026-08-07T21:17:12.327Z"
+ "updatedAt": "2026-08-07T21:18:06.202Z"
 }
