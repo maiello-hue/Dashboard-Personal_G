@@ -1689,7 +1689,7 @@
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "13/09/2025",
-   "FINE PERCORSO": "13/09/2026",
+   "FINE PERCORSO": "13/12/2026",
    "IMPORTO": "€ 1.850,00",
    "METODO PAGAMENTO": "PagoDIL",
    "STATO PAGAMENTO": "SALDATO",
@@ -26598,5 +26598,5 @@
   "Margherita": "3515862081"
  },
  "waTemplate": "Ciao {nome} 🌸 ecco i rinnovi da gestire questo mese:\n\n{lista}\n\nGrazie! 🫶🏻",
- "updatedAt": "2026-08-07T09:41:29.355Z"
+ "updatedAt": "2026-08-07T09:44:10.489Z"
 }
