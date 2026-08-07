@@ -24896,7 +24896,7 @@
    "CLIENTE": "Arianna Tagliaferri",
    "N FATTURA": "",
    "STATO CLIENTE": "IN PERCORSO",
-   "PERCORSO": "",
+   "PERCORSO": "6 mesi + 6 Gnocca",
    "INIZIO PERCORSO": "07/08/2026",
    "FINE PERCORSO": "07/08/2027",
    "IMPORTO": "1668",
@@ -26598,5 +26598,5 @@
   "Margherita": "3515862081"
  },
  "waTemplate": "Ciao {nome} 🌸 ecco i rinnovi da gestire questo mese:\n\n{lista}\n\nGrazie! 🫶🏻",
- "updatedAt": "2026-08-07T09:44:58.164Z"
+ "updatedAt": "2026-08-07T09:47:06.083Z"
 }
