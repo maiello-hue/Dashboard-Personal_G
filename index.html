@@ -3629,7 +3629,7 @@ function getRinnoviDaContattarePerTutor(){
   const byTutor={};
   DATA.forEach(r=>{
     if(tipoScadenza(r)!=='Rinnovo') return;
-    if(!['IN PERCORSO','CONGELATO','SPARITA'].includes(r['STATO CLIENTE'])) return;
+    if(r['STATO CLIENTE']!=='IN PERCORSO') return;
     if(stOf(r)!=='da') return;
     const d=pdate(r['FINE PERCORSO']);
     if(!d||d>inWin) return;
