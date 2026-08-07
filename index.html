@@ -1912,16 +1912,18 @@ function getPayLog(){
   try{ _payLogCache=JSON.parse(localStorage.getItem(LS_PAY_LOG))||[]; }catch(e){ _payLogCache=[]; }
   return _payLogCache;
 }
-function savePayLog(log){ _payLogCache=log; try{ localStorage.setItem(LS_PAY_LOG,JSON.stringify(log)); }catch(e){ alert('Impossibile salvare: memoria del browser piena o non disponibile.'); } }
+function savePayLog(log){ _payLogCache=log; try{ localStorage.setItem(LS_PAY_LOG,JSON.stringify(log)); if(!_applyingGhData) localStorage.setItem(LS_LOCAL_UPDATED_AT,new Date().toISOString()); }catch(e){ alert('Impossibile salvare: memoria del browser piena o non disponibile.'); } }
 
 const LS_STATO_LOG='stato_log_v1';
+const LS_LOCAL_UPDATED_AT='local_updated_at_v1';
+let _applyingGhData=false;
 let _statoLogCache=null;
 function getStatoLog(){
   if(_statoLogCache) return _statoLogCache;
   try{ _statoLogCache=JSON.parse(localStorage.getItem(LS_STATO_LOG))||[]; }catch(e){ _statoLogCache=[]; }
   return _statoLogCache;
 }
-function saveStatoLog(log){ _statoLogCache=log; try{ localStorage.setItem(LS_STATO_LOG,JSON.stringify(log)); }catch(e){ alert('Impossibile salvare: memoria del browser piena o non disponibile.'); } }
+function saveStatoLog(log){ _statoLogCache=log; try{ localStorage.setItem(LS_STATO_LOG,JSON.stringify(log)); if(!_applyingGhData) localStorage.setItem(LS_LOCAL_UPDATED_AT,new Date().toISOString()); }catch(e){ alert('Impossibile salvare: memoria del browser piena o non disponibile.'); } }
 function registraStatoLog(cliente,stato,dataIt){
   if(!cliente||!stato||!dataIt) return;
   const log=getStatoLog();
@@ -2286,6 +2288,9 @@ function collectAllData(){
   return {clienti:DATA,rimborsi:RIMB,ratePagate:ratePagate(),rinnovi:renAll(),incassiLog:getIncassiLog(),archivioLog:getArchivioLog(),statoLog:getStatoLog(),payLog:getPayLog(),collabPhones:getCollabPhones(),waTemplate:getWaMsgTemplate(),updatedAt:new Date().toISOString()};
 }
 function applyAllData(d){
+  const localUpdAt=localStorage.getItem(LS_LOCAL_UPDATED_AT)||'';
+  const ghNewer=!localUpdAt||!d.updatedAt||d.updatedAt>=localUpdAt;
+  _applyingGhData=true;
   if(Array.isArray(d.clienti)) DATA=d.clienti;
   if(Array.isArray(d.rimborsi)) RIMB=d.rimborsi;
   /* una sincronizzazione riuscita da GitHub è il modo previsto per uscire dallo
@@ -2301,10 +2306,14 @@ function applyAllData(d){
   try{localStorage.setItem(REN_KEY,JSON.stringify(d.rinnovi||{}));}catch(e){}
   if(Array.isArray(d.incassiLog)) saveIncassiLog(d.incassiLog);
   if(Array.isArray(d.archivioLog)) saveArchivioLog(d.archivioLog);
-  if(Array.isArray(d.statoLog)) saveStatoLog(d.statoLog);
+  if(ghNewer){
+    if(Array.isArray(d.statoLog)) saveStatoLog(d.statoLog);
+    if(Array.isArray(d.payLog)) try{localStorage.setItem(LS_PAY_LOG,JSON.stringify(d.payLog));_payLogCache=null;}catch(e){}
+  }
   if(d.collabPhones&&typeof d.collabPhones==='object') try{localStorage.setItem(COLLAB_PHONES_KEY,JSON.stringify(d.collabPhones));}catch(e){}
-  if(Array.isArray(d.payLog)) try{localStorage.setItem(LS_PAY_LOG,JSON.stringify(d.payLog));_payLogCache=null;}catch(e){}
   if(typeof d.waTemplate==='string'&&d.waTemplate.trim()) try{localStorage.setItem(WA_TEMPLATE_KEY,d.waTemplate);}catch(e){}
+  _applyingGhData=false;
+  if(ghNewer && d.updatedAt) try{localStorage.setItem(LS_LOCAL_UPDATED_AT,d.updatedAt);}catch(e){}
   applyCamillaTabarriniLugFixOnce(); /* correzione post-sync: se GitHub aveva ancora agosto, ripusha subito luglio */
 }
 async function pushPendingNow(force){
@@ -2346,6 +2355,7 @@ async function pushPendingNow(force){
     const payload=collectAllData();
     await ghPutFile(payload,'Aggiornamento dati dashboard');
     setGhLastUpdated(payload.updatedAt);
+    try{localStorage.setItem(LS_LOCAL_UPDATED_AT,payload.updatedAt);}catch(e){}
     clearGhDirty();
     GH_CONFLICT=false;
     GH_LAST_SYNC_OK_AT=Date.now();
