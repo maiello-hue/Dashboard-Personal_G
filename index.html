@@ -5968,16 +5968,7 @@ function apriProfiloCliente(nome){
   /* header */
   document.getElementById('profilo-avatar').textContent=initials(nome);
   document.getElementById('profilo-nome').textContent=nome;
-  const fin=pdate(r['FINE PERCORSO']);
-  const now=new Date(); now.setHours(0,0,0,0);
-  const gg=fin?Math.ceil((fin-now)/864e5):null;
-  const scad=gg!==null&&gg>=0&&gg<=30;
-  const badges=[
-    statoBadge(r['STATO CLIENTE']),
-    r['PERCORSO']?`<span class="badge b-blue">${esc(r['PERCORSO'])}</span>`:'',
-    fin?`<span class="badge ${scad?'b-red':'b-amber'}">Fine: ${fdate(fin)}</span>`:''
-  ].filter(Boolean).join('');
-  document.getElementById('profilo-badges').innerHTML=badges;
+  document.getElementById('profilo-badges').innerHTML='';
   document.getElementById('profilo-footer-info').textContent='';
   /* tab */
   switchProfiloTab('pinfo');
