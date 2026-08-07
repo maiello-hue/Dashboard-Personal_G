@@ -2005,13 +2005,23 @@ const SUPABASE_URL='https://tppvmvzjzevunaittvxr.supabase.co';
 const SUPABASE_ANON_KEY='sb_publishable_DCWgG6YQRbqgO8BUAvS3zQ_SQXiup9u';
 let sbClient=null, SB_USER=null, SB_BUSY=false;
 function sbInit(){
-  try{ if(window.supabase&&window.supabase.createClient) sbClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY); }catch(e){}
+  try{
+    if(window.supabase&&window.supabase.createClient){
+      sbClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+      /* onAuthStateChange scatta sia al caricamento della pagina (INITIAL_SESSION)
+         sia dopo login/logout, quindi SB_USER resta sempre allineato senza
+         dipendere da getSession(), che puo' fallire per race condition all'avvio
+         (il client non ha ancora finito di rileggere la sessione salvata). */
+      sbClient.auth.onAuthStateChange((event,session)=>{
+        SB_USER=session&&session.user?session.user:null;
+        setSbStatus();
+        if(SB_USER) sbMergeStatoLogFromSupabase().catch(e=>console.warn('sbMerge:',e));
+      });
+    }
+  }catch(e){}
 }
 async function sbRestoreSession(){
-  if(!sbClient) return;
-  try{ const {data}=await sbClient.auth.getSession(); SB_USER=(data&&data.session)?data.session.user:null; }catch(e){}
-  setSbStatus();
-  if(SB_USER) sbMergeStatoLogFromSupabase().catch(e=>console.warn('sbMerge:',e));
+  /* Il ripristino della sessione e' gestito da onAuthStateChange in sbInit(). */
 }
 function setSbStatus(msg,isErr){
   const el=document.getElementById('sb-status');
