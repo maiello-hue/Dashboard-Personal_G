@@ -16953,7 +16953,7 @@
   },
   {
    "CLIENTE": "Valentina Pinzauti",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "SPARITA",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "24/04/2026",
    "FINE PERCORSO": "24/04/2027",
@@ -26600,6 +26600,11 @@
    "CLIENTE": "Camilla Tabarrini",
    "STATO": "ABBANDONATO",
    "DATA": "07/08/2026"
+  },
+  {
+   "CLIENTE": "Valentina Pinzauti",
+   "STATO": "SPARITA",
+   "DATA": "07/08/2026"
   }
  ],
  "collabPhones": {
@@ -26610,5 +26615,5 @@
   "Margherita": "3515862081"
  },
  "waTemplate": "Ciao {nome} 🌸 ecco i rinnovi da gestire questo mese:\n\n{lista}\n\nGrazie! 🫶🏻",
- "updatedAt": "2026-08-07T10:48:24.618Z"
+ "updatedAt": "2026-08-07T10:50:02.153Z"
 }
