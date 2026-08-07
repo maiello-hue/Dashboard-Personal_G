@@ -26795,6 +26795,11 @@
    "CLIENTE": "Elisa Pugliese",
    "STATO": "CONGELATO",
    "DATA": "17/07/2026"
+  },
+  {
+   "CLIENTE": "Alessandra Franceschini",
+   "STATO": "CONGELATO",
+   "DATA": "16/07/2026"
   }
  ],
  "collabPhones": {
@@ -26805,5 +26810,5 @@
   "Margherita": "3515862081"
  },
  "waTemplate": "Ciao {nome} 🌸 ecco i rinnovi da gestire questo mese:\n\n{lista}\n\nGrazie! 🫶🏻",
- "updatedAt": "2026-08-07T14:20:53.072Z"
+ "updatedAt": "2026-08-07T14:21:46.383Z"
 }
