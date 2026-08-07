@@ -4364,7 +4364,8 @@ function buildPerfCollabTable(){
        dati a zero) o non rientrerebbero naturalmente nella top 3. */
   const PERF_TOP3_EXCLUDE_FROM=[{field:'TUTOR',name:'elisa',from:'2026-08'},{field:'TRAINER',name:'personalg',from:'2026-08'}];
   const PERF_PCT_HIDE_FROM=[{field:'TRAINER',name:'personalg',from:'2026-08'}];
-  const PERF_TOP3_FORCE_FROM=[{field:'TRAINER',name:'niccol',from:'2026-08'}];
+
+  const PERF_PCT_HIDE_ALWAYS=new Set(['elisa','personalg']);  const PERF_TOP3_FORCE_FROM=[{field:'TRAINER',name:'niccol',from:'2026-08'}];
   const isTop3Excluded=(field,name)=>PERF_TOP3_EXCLUDE_FROM.some(e=>e.field===field&&e.name===normName(name)&&meseSel>=e.from);
   const isPctHiddenFrom=(field,name)=>PERF_PCT_HIDE_FROM.some(e=>e.field===field&&e.name===normName(name)&&meseSel>=e.from);
   const isTop3Forced=(field,name)=>PERF_TOP3_FORCE_FROM.some(e=>e.field===field&&e.name===normName(name)&&meseSel>=e.from);
@@ -4382,7 +4383,7 @@ function buildPerfCollabTable(){
       const checkInserito=assigned.filter(r=>checkValMese(r,'CHECK',meseSel)!=='').length;
       const miglioramenti=assigned.filter(r=>checkValMese(r,'RISULTATO',meseSel).toUpperCase()==='SI').length;
       const checkRate=pct(checkInserito,assigned.length), migRate=pct(miglioramenti,assigned.length);
-      const hidePct=PERF_PCT_HIDE.has(normName(name)+'|'+meseSel)||isPctHiddenFrom(field,name);
+      const hidePct=PERF_PCT_HIDE.has(normName(name)+'|'+meseSel)||isPctHiddenFrom(field,name)||PERF_PCT_HIDE_ALWAYS.has(normName(name));
       const excludeTop3=isTop3Excluded(field,name);
       allRows.push({field,name,tot:assigned.length,checkInserito,checkRate,miglioramenti,migRate,hidePct,excludeTop3});
     });
