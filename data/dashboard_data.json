@@ -1258,7 +1258,7 @@
    "CONTRATTO": "",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "07/08/2026",
+   "DATA CHECK": "31/07/2026",
    "_CHECK_JULY_FIX": "1",
    "_PRIMO_INIZIO": "22/08/2025"
   },
@@ -1689,7 +1689,7 @@
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "13/09/2025",
-   "FINE PERCORSO": "13/12/2026",
+   "FINE PERCORSO": "13/09/2026",
    "IMPORTO": "€ 1.850,00",
    "METODO PAGAMENTO": "PagoDIL",
    "STATO PAGAMENTO": "SALDATO",
@@ -1821,7 +1821,7 @@
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "15/09/2025",
-   "FINE PERCORSO": "15/10/2026",
+   "FINE PERCORSO": "15/09/2026",
    "IMPORTO": "€ 1.213,00",
    "METODO PAGAMENTO": "Qomodo",
    "STATO PAGAMENTO": "SALDATO",
@@ -1955,7 +1955,7 @@
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "16/09/2025",
-   "FINE PERCORSO": "16/12/2026",
+   "FINE PERCORSO": "16/09/2026",
    "IMPORTO": "€ 1.850,00",
    "METODO PAGAMENTO": "PagoDIL",
    "STATO PAGAMENTO": "SALDATO",
@@ -2777,7 +2777,7 @@
    "STATO CLIENTE": "CONGELATO",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "07/10/2025",
-   "FINE PERCORSO": "07/05/2026",
+   "FINE PERCORSO": "07/04/2026",
    "IMPORTO": "€ 1.005,00",
    "METODO PAGAMENTO": "PagoDIL",
    "STATO PAGAMENTO": "SALDATO",
@@ -7672,7 +7672,7 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "07/08/2026",
+   "DATA CHECK": "31/07/2026",
    "_CHECK_JULY_FIX": "1",
    "_PRIMO_INIZIO": "30/12/2025"
   },
@@ -8598,7 +8598,7 @@
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "13/01/2026",
-   "FINE PERCORSO": "13/08/2026",
+   "FINE PERCORSO": "13/07/2026",
    "IMPORTO": "€ 1.005,00",
    "METODO PAGAMENTO": "Qomodo",
    "STATO PAGAMENTO": "OMAGGIO",
@@ -8830,7 +8830,7 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "07/08/2026",
+   "DATA CHECK": "31/07/2026",
    "_CHECK_JULY_FIX": "1",
    "_PRIMO_INIZIO": "15/01/2026"
   },
@@ -10453,7 +10453,7 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ORGANICO",
-   "DATA CHECK": "07/08/2026",
+   "DATA CHECK": "31/07/2026",
    "_CHECK_JULY_FIX": "1",
    "_PRIMO_INIZIO": "03/02/2026"
   },
@@ -12102,10 +12102,10 @@
   },
   {
    "CLIENTE": "Vangjola Naco",
-   "STATO CLIENTE": "CONGELATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "23/02/2026",
-   "FINE PERCORSO": "23/09/2026",
+   "FINE PERCORSO": "23/08/2026",
    "IMPORTO": "€ 1.005,00",
    "METODO PAGAMENTO": "PayPal",
    "STATO PAGAMENTO": "SALDATO",
@@ -12504,10 +12504,10 @@
   },
   {
    "CLIENTE": "Anna Genovese",
-   "STATO CLIENTE": "CONGELATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "26/02/2026",
-   "FINE PERCORSO": "26/09/2026",
+   "FINE PERCORSO": "26/08/2026",
    "IMPORTO": "€ 822,00",
    "METODO PAGAMENTO": "PagoDIL",
    "STATO PAGAMENTO": "SALDATO",
@@ -13569,9 +13569,9 @@
    "€ NUTRI": "€ 12,00",
    "CONTRATTO": "",
    "CHECK": "SI",
-   "RISULTATO": "SI",
+   "RISULTATO": "NO",
    "FONTE": "ADV",
-   "DATA CHECK": "07/08/2026",
+   "DATA CHECK": "31/07/2026",
    "_CHECK_JULY_FIX": "1",
    "_PRIMO_INIZIO": "10/03/2026"
   },
@@ -16143,7 +16143,7 @@
    "RISULTATO": "",
    "FONTE": "ADV",
    "_PRIMO_INIZIO": "13/04/2026",
-   "DATA ARCHIVIAZIONE": "07/07/2026"
+   "DATA ARCHIVIAZIONE": "01/07/2026"
   },
   {
    "CLIENTE": "Federica Zeni",
@@ -16953,7 +16953,7 @@
   },
   {
    "CLIENTE": "Valentina Pinzauti",
-   "STATO CLIENTE": "SPARITA",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "24/04/2026",
    "FINE PERCORSO": "24/04/2027",
@@ -16982,7 +16982,7 @@
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "4 mesi",
    "INIZIO PERCORSO": "27/04/2026",
-   "FINE PERCORSO": "27/09/2026",
+   "FINE PERCORSO": "27/08/2026",
    "IMPORTO": "€ 680,00",
    "METODO PAGAMENTO": "Scalapay",
    "STATO PAGAMENTO": "SALDATO",
@@ -17488,7 +17488,7 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "07/08/2026",
+   "DATA CHECK": "31/07/2026",
    "_CHECK_JULY_FIX": "1",
    "_PRIMO_INIZIO": "05/05/2026"
   },
@@ -17781,7 +17781,7 @@
    "CONTRATTO": "",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "07/08/2026",
+   "DATA CHECK": "31/07/2026",
    "_CHECK_JULY_FIX": "1",
    "_PRIMO_INIZIO": "10/05/2026"
   },
@@ -20525,7 +20525,7 @@
   },
   {
    "CLIENTE": "Ilaria Viti",
-   "STATO CLIENTE": "CONGELATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "6 mesi + 6 Gnocca",
    "INIZIO PERCORSO": "11/06/2026",
    "FINE PERCORSO": "11/06/2027",
@@ -22742,12 +22742,11 @@
    "€ TRAINER": "€ 17,00",
    "€ NUTRI": "€ 12,00",
    "CONTRATTO": "",
-   "CHECK": "SI",
-   "RISULTATO": "SI",
+   "CHECK": "",
+   "RISULTATO": "",
    "FONTE": "ORGANICO",
    "DATA INCASSO": "29/07/2026",
-   "_PRIMO_INIZIO": "13/07/2026",
-   "DATA CHECK": "07/08/2026"
+   "_PRIMO_INIZIO": "13/07/2026"
   },
   {
    "CLIENTE": "Rosamaria Chiarelli",
@@ -23396,7 +23395,7 @@
   },
   {
    "CLIENTE": "Tania Collura",
-   "STATO CLIENTE": "CONGELATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "6 mesi + 6 Gnocca",
    "INIZIO PERCORSO": "07/07/2026",
    "FINE PERCORSO": "07/07/2027",
@@ -24540,7 +24539,7 @@
   },
   {
    "CLIENTE": "Giulia Gherardi",
-   "STATO CLIENTE": "MAI INIZIATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "6 mesi + 6 Gnocca",
    "INIZIO PERCORSO": "30/07/2026",
    "FINE PERCORSO": "30/07/2027",
@@ -24738,7 +24737,7 @@
   {
    "CLIENTE": "Annalisa Guarriello",
    "N FATTURA": "",
-   "STATO CLIENTE": "MAI INIZIATO",
+   "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "6 mesi + 6 Gnocca",
    "INIZIO PERCORSO": "03/08/2026",
    "FINE PERCORSO": "03/08/2027",
@@ -24808,7 +24807,7 @@
    "INCASSO": "1668",
    "DATA INCASSO": "05/08/2026",
    "TUTOR": "Manuela",
-   "TRAINER": "Fiorenzo",
+   "TRAINER": "Gianmiki",
    "NUTRI": "",
    "VENDITORE": "Personal_G",
    "FONTE": "",
@@ -24827,9 +24826,9 @@
    "TIPO INCASSO": "Nuovo Cliente",
    "INCASSO": "1850,82",
    "DATA INCASSO": "05/08/2026",
-   "TUTOR": "Manuela",
-   "TRAINER": "Matteo",
-   "NUTRI": "Sofia",
+   "TUTOR": "",
+   "TRAINER": "Federica",
+   "NUTRI": "",
    "VENDITORE": "Peppe",
    "FONTE": "",
    "_PRIMO_INIZIO": "05/08/2026"
@@ -24868,8 +24867,8 @@
    "INCASSO": "1850,82",
    "DATA INCASSO": "06/08/2026",
    "TUTOR": "Andrea",
-   "TRAINER": "Matteo",
-   "NUTRI": "Nicole",
+   "TRAINER": "Marco",
+   "NUTRI": "Matilde",
    "VENDITORE": "Personal_G",
    "FONTE": "",
    "_PRIMO_INIZIO": "06/08/2026"
@@ -24893,26 +24892,6 @@
    "VENDITORE": "Personal_G",
    "FONTE": "",
    "_PRIMO_INIZIO": "06/08/2026"
-  },
-  {
-   "CLIENTE": "Arianna Tagliaferri",
-   "N FATTURA": "",
-   "STATO CLIENTE": "IN PERCORSO",
-   "PERCORSO": "6 mesi + 6 Gnocca",
-   "INIZIO PERCORSO": "07/08/2026",
-   "FINE PERCORSO": "07/08/2027",
-   "IMPORTO": "1668",
-   "METODO PAGAMENTO": "HeyLight",
-   "STATO PAGAMENTO": "SALDATO",
-   "TIPO INCASSO": "Nuovo Cliente",
-   "INCASSO": "1668",
-   "DATA INCASSO": "07/08/2026",
-   "TUTOR": "Margherita",
-   "TRAINER": "Gianmiki",
-   "NUTRI": "",
-   "VENDITORE": "Personal_G",
-   "FONTE": "",
-   "_PRIMO_INIZIO": "07/08/2026"
   }
  ],
  "rimborsi": [
@@ -26290,12 +26269,6 @@
    "INCASSO": "1850,82",
    "DATA INCASSO": "06/08/2026",
    "TIPO INCASSO": "Nuovo Cliente"
-  },
-  {
-   "CLIENTE": "Arianna Tagliaferri",
-   "INCASSO": "1668",
-   "DATA INCASSO": "07/08/2026",
-   "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
  "archivioLog": [
@@ -26537,7 +26510,7 @@
   {
    "CLIENTE": "Camilla Tabarrini",
    "STATO": "ABBANDONATO",
-   "DATA": "07/07/2026"
+   "DATA": "01/07/2026"
   }
  ],
  "statoLog": [
@@ -26585,245 +26558,10 @@
    "CLIENTE": "Federica Codetti",
    "STATO": "MAI INIZIATO",
    "DATA": "06/08/2026"
-  },
-  {
-   "CLIENTE": "Anna Genovese",
-   "STATO": "CONGELATO",
-   "DATA": "07/08/2026"
-  },
-  {
-   "CLIENTE": "Vangjola Naco",
-   "STATO": "CONGELATO",
-   "DATA": "07/08/2026"
-  },
-  {
-   "CLIENTE": "Camilla Tabarrini",
-   "STATO": "ABBANDONATO",
-   "DATA": "07/08/2026"
-  },
-  {
-   "CLIENTE": "Valentina Pinzauti",
-   "STATO": "SPARITA",
-   "DATA": "07/08/2026"
-  },
-  {
-   "CLIENTE": "Annalisa Guarriello",
-   "STATO": "MAI INIZIATO",
-   "DATA": "07/08/2026"
-  },
-  {
-   "CLIENTE": "Ilaria Viti",
-   "STATO": "CONGELATO",
-   "DATA": "07/08/2026"
-  },
-  {
-   "CLIENTE": "Tania Collura",
-   "STATO": "CONGELATO",
-   "DATA": "07/08/2026"
-  },
-  {
-   "CLIENTE": "Giulia Gherardi",
-   "STATO": "MAI INIZIATO",
-   "DATA": "07/08/2026"
-  },
-  {
-   "CLIENTE": "Valeria Campolo",
-   "STATO": "CONGELATO",
-   "DATA": "07/05/2026"
-  },
-  {
-   "CLIENTE": "Beatrice Mazzei",
-   "STATO": "CONGELATO",
-   "DATA": "07/05/2026"
-  },
-  {
-   "CLIENTE": "Chiara Boarino",
-   "STATO": "CONGELATO",
-   "DATA": "07/06/2026"
-  },
-  {
-   "CLIENTE": "Giovanna La Marca",
-   "STATO": "CONGELATO",
-   "DATA": "07/06/2026"
-  },
-  {
-   "CLIENTE": "Roberta Gianni",
-   "STATO": "CONGELATO",
-   "DATA": "07/03/2026"
-  },
-  {
-   "CLIENTE": "Carolina Ciardini",
-   "STATO": "CONGELATO",
-   "DATA": "07/07/2026"
-  },
-  {
-   "CLIENTE": "Valentina Vetrugno",
-   "STATO": "CONGELATO",
-   "DATA": "07/08/2026"
-  },
-  {
-   "CLIENTE": "Elisabetta Superti",
-   "STATO": "CONGELATO",
-   "DATA": "03/08/2026"
-  },
-  {
-   "CLIENTE": "Alessia Salmaso",
-   "STATO": "CONGELATO",
-   "DATA": "10/07/2026"
-  },
-  {
-   "CLIENTE": "Giulia Micci",
-   "STATO": "CONGELATO",
-   "DATA": "22/06/2026"
-  },
-  {
-   "CLIENTE": "Pamela Alampi",
-   "STATO": "CONGELATO",
-   "DATA": "14/07/2026"
-  },
-  {
-   "CLIENTE": "Eugenia Russo",
-   "STATO": "CONGELATO",
-   "DATA": "14/07/2026"
-  },
-  {
-   "CLIENTE": "Francesca Ceccaroni",
-   "STATO": "CONGELATO",
-   "DATA": "01/08/2026"
-  },
-  {
-   "CLIENTE": "Irene Campolmi",
-   "STATO": "CONGELATO",
-   "DATA": "23/06/2026"
-  },
-  {
-   "CLIENTE": "Valentina Camillieri",
-   "STATO": "CONGELATO",
-   "DATA": "08/06/2026"
-  },
-  {
-   "CLIENTE": "Silvia Spadoni",
-   "STATO": "CONGELATO",
-   "DATA": "01/06/2026"
-  },
-  {
-   "CLIENTE": "Chiara Matricardi",
-   "STATO": "CONGELATO",
-   "DATA": "01/08/2026"
-  },
-  {
-   "CLIENTE": "Vanessa Gabrielli",
-   "STATO": "CONGELATO",
-   "DATA": "01/07/2026"
-  },
-  {
-   "CLIENTE": "Asia Pianigiani",
-   "STATO": "CONGELATO",
-   "DATA": "01/08/2026"
-  },
-  {
-   "CLIENTE": "Gabriella La Rosa",
-   "STATO": "CONGELATO",
-   "DATA": "21/05/2026"
-  },
-  {
-   "CLIENTE": "Mary Pauline Tamodong",
-   "STATO": "CONGELATO",
-   "DATA": "01/06/2026"
-  },
-  {
-   "CLIENTE": "Marcella Bellia (Vittorio Cortese)",
-   "STATO": "CONGELATO",
-   "DATA": "01/07/2026"
-  },
-  {
-   "CLIENTE": "Eleonora Vignato",
-   "STATO": "CONGELATO",
-   "DATA": "01/06/2026"
-  },
-  {
-   "CLIENTE": "Federica Moracci",
-   "STATO": "CONGELATO",
-   "DATA": "22/05/2026"
-  },
-  {
-   "CLIENTE": "Mariangela Speranza",
-   "STATO": "CONGELATO",
-   "DATA": "16/04/2026"
-  },
-  {
-   "CLIENTE": "Clarissa Birindelli",
-   "STATO": "CONGELATO",
-   "DATA": "04/04/2026"
-  },
-  {
-   "CLIENTE": "Elena Savi",
-   "STATO": "CONGELATO",
-   "DATA": "11/05/2026"
-  },
-  {
-   "CLIENTE": "Letizia Giani",
-   "STATO": "CONGELATO",
-   "DATA": "13/03/2026"
-  },
-  {
-   "CLIENTE": "Naomi Tessitore",
-   "STATO": "CONGELATO",
-   "DATA": "07/05/2026"
-  },
-  {
-   "CLIENTE": "Chiara Benin",
-   "STATO": "CONGELATO",
-   "DATA": "02/07/2026"
-  },
-  {
-   "CLIENTE": "Francesca Maria Taurisano",
-   "STATO": "CONGELATO",
-   "DATA": "13/06/2026"
-  },
-  {
-   "CLIENTE": "Kimberly Bassanello",
-   "STATO": "CONGELATO",
-   "DATA": "27/05/2026"
-  },
-  {
-   "CLIENTE": "Valentina Pellegrini",
-   "STATO": "CONGELATO",
-   "DATA": "01/04/2026"
-  },
-  {
-   "CLIENTE": "Elisa Pugliese",
-   "STATO": "CONGELATO",
-   "DATA": "17/07/2026"
-  },
-  {
-   "CLIENTE": "Alessandra Franceschini",
-   "STATO": "CONGELATO",
-   "DATA": "16/07/2026"
-  },
-  {
-   "CLIENTE": "Cristina Corsini",
-   "STATO": "CONGELATO",
-   "DATA": "30/05/2026"
-  },
-  {
-   "CLIENTE": "Patrycja Bogdan",
-   "STATO": "CONGELATO",
-   "DATA": "25/11/2025"
-  },
-  {
-   "CLIENTE": "Angelica Villirillo",
-   "STATO": "CONGELATO",
-   "DATA": "03/02/2026"
   }
  ],
- "collabPhones": {
-  "Andrea": "3514328488",
-  "Giulia": "3312755910",
-  "Manuela": "3447236178",
-  "Mara": "3791996530",
-  "Margherita": "3515862081"
- },
- "waTemplate": "Ciao {nome} 🌸 ecco i rinnovi da gestire questo mese:\n\n{lista}\n\nGrazie! 🫶🏻",
- "updatedAt": "2026-08-07T14:23:22.901Z"
+ "payLog": [],
+ "collabPhones": {},
+ "waTemplate": "Ciao {nome}, ecco i rinnovi da gestire:\n\n{lista}\n\nGrazie!",
+ "updatedAt": "2026-08-07T15:55:13.697Z"
 }
