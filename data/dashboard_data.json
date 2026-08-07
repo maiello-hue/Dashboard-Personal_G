@@ -8598,7 +8598,7 @@
    "STATO CLIENTE": "IN PERCORSO",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "13/01/2026",
-   "FINE PERCORSO": "13/07/2026",
+   "FINE PERCORSO": "13/08/2026",
    "IMPORTO": "€ 1.005,00",
    "METODO PAGAMENTO": "Qomodo",
    "STATO PAGAMENTO": "OMAGGIO",
@@ -26572,5 +26572,5 @@
   "Margherita": "3515862081"
  },
  "waTemplate": "Ciao {nome} 🌸 ecco i rinnovi da gestire questo mese:\n\n{lista}\n\nGrazie! 🫶🏻",
- "updatedAt": "2026-08-07T09:24:35.082Z"
+ "updatedAt": "2026-08-07T09:31:13.450Z"
 }
