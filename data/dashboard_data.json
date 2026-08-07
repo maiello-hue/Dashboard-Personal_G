@@ -17488,7 +17488,7 @@
    "CHECK": "SI",
    "RISULTATO": "SI",
    "FONTE": "ADV",
-   "DATA CHECK": "31/07/2026",
+   "DATA CHECK": "07/08/2026",
    "_CHECK_JULY_FIX": "1",
    "_PRIMO_INIZIO": "05/05/2026"
   },
@@ -26610,5 +26610,5 @@
   "Margherita": "3515862081"
  },
  "waTemplate": "Ciao {nome} 🌸 ecco i rinnovi da gestire questo mese:\n\n{lista}\n\nGrazie! 🫶🏻",
- "updatedAt": "2026-08-07T10:47:53.160Z"
+ "updatedAt": "2026-08-07T10:48:24.618Z"
 }
