@@ -16143,7 +16143,7 @@
    "RISULTATO": "",
    "FONTE": "ADV",
    "_PRIMO_INIZIO": "13/04/2026",
-   "DATA ARCHIVIAZIONE": "07/08/2026"
+   "DATA ARCHIVIAZIONE": "07/07/2026"
   },
   {
    "CLIENTE": "Federica Zeni",
@@ -26609,5 +26609,5 @@
   "Margherita": "3515862081"
  },
  "waTemplate": "Ciao {nome} 🌸 ecco i rinnovi da gestire questo mese:\n\n{lista}\n\nGrazie! 🫶🏻",
- "updatedAt": "2026-08-07T09:50:55.207Z"
+ "updatedAt": "2026-08-07T10:33:15.450Z"
 }
