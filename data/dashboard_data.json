@@ -26555,8 +26555,9 @@
   }
  ],
  "collabPhones": {
+  "Andrea": "3514328488",
   "Giulia": "3312755910"
  },
  "waTemplate": "Ciao {nome} 🌸 ecco i rinnovi da gestire questo mese:\n\n{lista}\n\nGrazie! 🫶🏻",
- "updatedAt": "2026-08-07T08:57:47.339Z"
+ "updatedAt": "2026-08-07T08:59:45.447Z"
 }
