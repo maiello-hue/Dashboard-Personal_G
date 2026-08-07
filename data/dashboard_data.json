@@ -2480,7 +2480,7 @@
   },
   {
    "CLIENTE": "Sara Shuster",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "CONGELATO",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "06/08/2026",
    "FINE PERCORSO": "06/08/2027",
@@ -26558,10 +26558,15 @@
    "CLIENTE": "Federica Codetti",
    "STATO": "MAI INIZIATO",
    "DATA": "06/08/2026"
+  },
+  {
+   "CLIENTE": "Sara Shuster",
+   "STATO": "CONGELATO",
+   "DATA": "07/08/2026"
   }
  ],
  "payLog": [],
  "collabPhones": {},
  "waTemplate": "Ciao {nome}, ecco i rinnovi da gestire:\n\n{lista}\n\nGrazie!",
- "updatedAt": "2026-08-07T15:55:13.697Z"
+ "updatedAt": "2026-08-07T20:54:04.515Z"
 }
