@@ -5069,7 +5069,8 @@ function render(){
      di abbandono non va mostrata (dato non rappresentativo), ma i conteggi
      grezzi (clienti/abbandono/non rinnovo/totale) restano visibili normalmente.
      Formato chiave: "nomeNormalizzato|YYYY-MM". */
-  const ABB_PCT_HIDE=new Set(['elisa|2026-07','niccol|2026-07','personalg|2026-07']);
+  const ABB_PCT_HIDE=new Set(['niccol|2026-07']);
+  const ABB_PCT_HIDE_ALWAYS=new Set(['elisa','personalg']);
   ['TUTOR','TRAINER','NUTRI'].forEach(field=>{
     distinct(field).forEach(name=>{
       const assigned=allRows.filter(r=>r[field]===name);
@@ -5081,7 +5082,7 @@ function render(){
       KPI_LABELS[keyAbb]=name+' · Abbandono ('+collabRoleLabel[field]+')';
       KPI_LABELS[keyNonrin]=name+' · Non rinnovo ('+collabRoleLabel[field]+')';
       KPI_LABELS[keyTot]=name+' · Totale ('+collabRoleLabel[field]+')';
-      const hidePct=ABB_PCT_HIDE.has(normNameAbb(name)+'|'+meseSel);
+      const hidePct=ABB_PCT_HIDE.has(normNameAbb(name)+'|'+meseSel)||ABB_PCT_HIDE_ALWAYS.has(normNameAbb(name));
       collabRateRows.push({
         field,name,tot:assigned.length,
         abbRate:pct(abbRows.length,assigned.length),abbN:abbRows.length,keyAbb,
