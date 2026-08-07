@@ -1258,7 +1258,7 @@
    "CONTRATTO": "",
    "CHECK": "SI",
    "RISULTATO": "SI",
-   "DATA CHECK": "31/07/2026",
+   "DATA CHECK": "07/08/2026",
    "_CHECK_JULY_FIX": "1",
    "_PRIMO_INIZIO": "22/08/2025"
   },
@@ -26610,5 +26610,5 @@
   "Margherita": "3515862081"
  },
  "waTemplate": "Ciao {nome} 🌸 ecco i rinnovi da gestire questo mese:\n\n{lista}\n\nGrazie! 🫶🏻",
- "updatedAt": "2026-08-07T10:46:25.754Z"
+ "updatedAt": "2026-08-07T10:47:14.368Z"
 }
