@@ -3586,20 +3586,47 @@ function renderRinnoviWhatsapp(){
   const el=document.getElementById('ren-whatsapp');
   if(!el) return;
   const byTutor=getRinnoviDaContattarePerTutor();
-  const tutors=Object.keys(byTutor).sort((a,b)=>byTutor[b].length-byTutor[a].length);
-  if(!tutors.length){ el.innerHTML=''; return; }
+  if(!Object.keys(byTutor).length){ el.innerHTML=''; return; }
+  // Raccogli tutti i mesi disponibili tra le scadenze
+  const MESI_IT=['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+  const mesiDisp={};
+  Object.values(byTutor).forEach(arr=>arr.forEach(e=>{
+    const k=e.date.getFullYear()+'-'+String(e.date.getMonth()).padStart(2,'0');
+    mesiDisp[k]=MESI_IT[e.date.getMonth()]+' '+e.date.getFullYear();
+  }));
+  const mesiKeys=Object.keys(mesiDisp).sort();
+  // Mese selezionato: preferisci il mese corrente, altrimenti il primo disponibile
+  const now=new Date();
+  const meseCorr=now.getFullYear()+'-'+String(now.getMonth()).padStart(2,'0');
+  if(!window.__waSelMese||!mesiDisp[window.__waSelMese])
+    window.__waSelMese=mesiKeys.includes(meseCorr)?meseCorr:mesiKeys[0];
+  const selKey=window.__waSelMese;
+  // Filtra tutor che hanno rinnovi nel mese selezionato
   const phones=getCollabPhones();
-  el.innerHTML='<div class="sub" style="margin:10px 0 8px">Avvisa i tutor via WhatsApp sui rinnovi ancora da contattare:</div>'+tutors.map(t=>{
-    const n=byTutor[t].length;
-    const link=waLinkPerTutor(t,byTutor[t]);
-    const hasPhone=!!normPhoneForWa(phones[t]);
-    return `<div class="scad-item" style="cursor:default">
-      <span style="flex:1;min-width:200px">${esc(t)} <span class="count">${n}</span></span>
+  const tutorsFilt=Object.keys(byTutor).filter(t=>byTutor[t].some(e=>{
+    const k=e.date.getFullYear()+'-'+String(e.date.getMonth()).padStart(2,'0');
+    return k===selKey;
+  })).sort((a,b)=>a.localeCompare(b,'it'));
+  const opts=mesiKeys.map(k=>`<option value="${k}"${k===selKey?' selected':''}>${mesiDisp[k]}</option>`).join('');
+  el.innerHTML='<div style="display:flex;align-items:center;gap:10px;margin:10px 0 10px">'
+    +'<span class="sub">Avvisa i tutor per:</span>'
+    +'<select onchange="window.__waSelMese=this.value;renderRinnoviWhatsapp()" style="background:var(--card2);border:1px solid var(--border-strong);color:var(--text);border-radius:8px;padding:5px 8px;font-size:13px">'
+    +opts+'</select></div>'
+    +(tutorsFilt.length?tutorsFilt.map(t=>{
+      const entriesMese=byTutor[t].filter(e=>{
+        const k=e.date.getFullYear()+'-'+String(e.date.getMonth()).padStart(2,'0');
+        return k===selKey;
+      });
+      const link=waLinkPerTutor(t,entriesMese);
+      const hasPhone=!!normPhoneForWa(phones[t]);
+      return `<div class="scad-item" style="cursor:default">
+      <span style="flex:1;min-width:200px">${esc(t)} <span class="count">${entriesMese.length}</span></span>
       ${hasPhone
         ?`<a class="btn ghost" href="${link}" target="_blank" rel="noopener">${ic('link')}Invia WhatsApp</a>`
         :`<span class="sub" style="font-size:12px">Numero non impostato — <a href="#" onclick="showPage('impostazioni');return false">aggiungilo in Impostazioni</a></span>`}
     </div>`;
-  }).join('');
+    }).join('')
+    :'<div class="sub">Nessun tutor con rinnovi da contattare in questo mese.</div>');
 }
 /* L'elenco venditori era stato popolato la prima volta anche da nomi presenti nei
    rimborsi storici (es. "Gennaro", "Martina") che non sono venditori attuali. Li
