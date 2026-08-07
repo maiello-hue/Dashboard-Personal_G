@@ -24827,7 +24827,7 @@
    "TIPO INCASSO": "Nuovo Cliente",
    "INCASSO": "1850,82",
    "DATA INCASSO": "05/08/2026",
-   "TUTOR": "",
+   "TUTOR": "Manuela",
    "TRAINER": "Matteo",
    "NUTRI": "Sofia",
    "VENDITORE": "Peppe",
@@ -26620,5 +26620,5 @@
   "Margherita": "3515862081"
  },
  "waTemplate": "Ciao {nome} 🌸 ecco i rinnovi da gestire questo mese:\n\n{lista}\n\nGrazie! 🫶🏻",
- "updatedAt": "2026-08-07T12:23:56.000Z"
+ "updatedAt": "2026-08-07T12:46:33.782Z"
 }
