@@ -24932,6 +24932,26 @@
    "VENDITORE": "Personal_G",
    "FONTE": "",
    "_PRIMO_INIZIO": "07/08/2026"
+  },
+  {
+   "CLIENTE": "Gloria Ravelli",
+   "N FATTURA": "",
+   "STATO CLIENTE": "IN PERCORSO",
+   "PERCORSO": "6 mesi + 6 Gnocca",
+   "INIZIO PERCORSO": "07/08/2026",
+   "FINE PERCORSO": "07/08/2027",
+   "IMPORTO": "1668",
+   "METODO PAGAMENTO": "HeyLight",
+   "STATO PAGAMENTO": "SALDATO",
+   "TIPO INCASSO": "Nuovo Cliente",
+   "INCASSO": "1668",
+   "DATA INCASSO": "07/08/2026",
+   "TUTOR": "",
+   "TRAINER": "Marco",
+   "NUTRI": "Matilde",
+   "VENDITORE": "Personal_G",
+   "FONTE": "",
+   "_PRIMO_INIZIO": "07/08/2026"
   }
  ],
  "rimborsi": [
@@ -26321,6 +26341,12 @@
    "INCASSO": "1850,82",
    "DATA INCASSO": "07/08/2026",
    "TIPO INCASSO": "Nuovo Cliente"
+  },
+  {
+   "CLIENTE": "Gloria Ravelli",
+   "INCASSO": "1668",
+   "DATA INCASSO": "07/08/2026",
+   "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
  "archivioLog": [
@@ -26615,5 +26641,5 @@
  "payLog": [],
  "collabPhones": {},
  "waTemplate": "Ciao {nome}, ecco i rinnovi da gestire:\n\n{lista}\n\nGrazie!",
- "updatedAt": "2026-08-07T21:12:52.789Z"
+ "updatedAt": "2026-08-07T21:14:56.030Z"
 }
