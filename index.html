@@ -5021,9 +5021,9 @@ function render(){
   const fmtPct=n=>n.toLocaleString('it-IT',{minimumFractionDigits:1,maximumFractionDigits:1})+'%';
   const rateColor=p=>p<3?{bg:'#eaf7ef',fg:'#1f9d63'}:p<6?{bg:'#faf1e2',fg:'#b5720f'}:{bg:'#fbebeb',fg:'#d23f3f'};
   const abbandonoRows=[
-    ['abbandono','Tasso abbandono','#d23f3f',abbPremiumA,abbGnoccaA,'abbPremium','abbGnocca'],
-    ['nonrinnovo','Tasso non rinnovo','#b5720f',nonrinPremiumA,nonrinGnoccaA,'nonrinPremium','nonrinGnocca'],
-    ['totale','Totale','#7c56d9',totPremiumA,totGnoccaA,'abbTotPremium','abbTotGnocca']
+    ['abbandono','Tasso abbandono','#18181a',abbPremiumA,abbGnoccaA,'abbPremium','abbGnocca'],
+    ['nonrinnovo','Tasso non rinnovo','#8b8a83',nonrinPremiumA,nonrinGnoccaA,'nonrinPremium','nonrinGnocca'],
+    ['totale','Totale','#e0245e',totPremiumA,totGnoccaA,'abbTotPremium','abbTotGnocca']
   ];
   const computed=abbandonoRows.map(([key,label,dot,pRows,gRows,pKey,gKey])=>({
     key,label,dot,pKey,gKey,
