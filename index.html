@@ -5991,8 +5991,12 @@ function switchProfiloTab(tab){
 function _renderProfiloInfo(){
   const r=DATA.find(x=>x['CLIENTE']===_profiloNome);
   if(!r) return;
+  const ini=pdate(r['INIZIO PERCORSO']);
+  const fin=pdate(r['FINE PERCORSO']);
   const rows=[
-    ['Fonte', esc(r['FONTE']||'—')],
+    ['Percorso', r['PERCORSO']?`<span class="badge b-blue">${esc(r['PERCORSO'])}</span>`:'—'],
+    ['Inizio', ini?fdate(ini):'—'],
+    ['Fine', fin?fdate(fin):'—'],
     ['Contratto', r['CONTRATTO']?`<span class="badge b-green">${esc(r['CONTRATTO'])}</span>`:'—']
   ];
   document.getElementById('ppanel-pinfo').innerHTML=rows.map(([l,v])=>`<div class="profilo-row"><span class="pr-label">${l}</span><span class="pr-val">${v}</span></div>`).join('');
