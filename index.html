@@ -513,6 +513,19 @@ h3 .ico,.sub .ico{color:var(--muted)}
 select.pill-btn{-webkit-appearance:none;appearance:none;height:28px;padding-right:24px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23767c8a' d='M4 6l4 4 4-4z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;background-size:10px}
 select.pill-btn:focus{outline:none;border-color:var(--border-strong)}
 .modal-overlay{position:fixed;inset:0;background:rgba(15,15,14,.5);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px}
+.profilo-tab{background:none;border:none;border-bottom:2px solid transparent;padding:9px 16px;font-size:12px;color:var(--muted2);cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:color .12s;margin-bottom:-1px}
+.profilo-tab:hover{color:var(--text)}
+.profilo-tab.on{color:var(--text);font-weight:600;border-bottom:2px solid var(--text)}
+.ppanel{animation:ppfi .12s ease}
+@keyframes ppfi{from{opacity:0;transform:translateY(2px)}to{opacity:1;transform:none}}
+.profilo-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px}
+.profilo-row:last-child{border-bottom:none}
+.pr-label{color:var(--muted2)}
+.pr-val{font-weight:600}
+.pag-item{display:flex;align-items:center;gap:7px;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px}
+.pag-item:last-child{border-bottom:none}
+.nome-link{cursor:pointer;color:inherit;text-decoration:none;font-weight:600}
+.nome-link:hover{text-decoration:underline;color:var(--accent)}
 .modal-card{background:var(--card);border-radius:14px;padding:22px 24px;max-width:680px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.3)}
 .modal-card h3{font-size:15px;margin-bottom:14px}
 .modal-card-lg{max-width:760px;border-radius:20px;padding:30px 34px}
@@ -1437,6 +1450,31 @@ select.pill-btn:focus{outline:none;border-color:var(--border-strong)}
   </div>
 </div>
 
+<div class="modal-overlay" id="profilo-cliente-modal" onclick="if(event.target===this) chiudiProfiloCliente()">
+  <div class="modal-card" style="max-width:520px;padding:0;overflow:hidden">
+    <div id="profilo-head" style="padding:13px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px">
+      <div id="profilo-avatar" style="width:36px;height:36px;border-radius:50%;background:#000;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0"></div>
+      <div style="flex:1">
+        <div id="profilo-nome" style="font-size:14px;font-weight:600;margin-bottom:4px"></div>
+        <div id="profilo-badges" style="display:flex;gap:5px;flex-wrap:wrap"></div>
+      </div>
+      <button onclick="chiudiProfiloCliente()" style="background:none;border:none;color:var(--muted2);cursor:pointer;font-size:20px;line-height:1;padding:0 4px">&#215;</button>
+    </div>
+    <div style="display:flex;background:var(--card2);border-bottom:1px solid var(--border)">
+      <button class="profilo-tab" data-ptab="pinfo" onclick="switchProfiloTab('pinfo')"><i class="fa-solid fa-circle-info" style="font-size:11px"></i> Info</button>
+      <button class="profilo-tab" data-ptab="ppag" onclick="switchProfiloTab('ppag')"><i class="fa-solid fa-receipt" style="font-size:11px"></i> Pagamenti</button>
+      <button class="profilo-tab" data-ptab="pstorico" onclick="switchProfiloTab('pstorico')"><i class="fa-solid fa-clock-rotate-left" style="font-size:11px"></i> Storico stati</button>
+    </div>
+    <div id="ppanel-pinfo" class="ppanel" style="padding:14px 16px"></div>
+    <div id="ppanel-ppag" class="ppanel" style="padding:14px 16px;display:none"></div>
+    <div id="ppanel-pstorico" class="ppanel" style="padding:14px 16px;display:none"></div>
+    <div style="padding:10px 16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:var(--card2)">
+      <div id="profilo-footer-info" style="font-size:11px;color:var(--muted2)"></div>
+      <button class="btn ghost" onclick="chiudiProfiloCliente()">Chiudi</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="edit-storico-modal" onclick="if(event.target===this) chiudiEditStorico()">
   <div class="modal-card" style="max-width:480px">
     <h3><span class="ico"><i class="fa-solid fa-clock-rotate-left"></i></span>Storico stati — <span id="edit-storico-nome"></span></h3>
@@ -1865,6 +1903,16 @@ function contavaAlMese(r,meseSel){
    di questo registro (nessun altro campo li registra), quindi per i mesi già
    chiusi prima di oggi l'unica fonte affidabile resta un valore inserito a
    mano (vedi MESE_STORICO_MANUALE più sotto). */
+/* ---------- storico pagamenti per cliente ---------- */
+const LS_PAY_LOG='pagamenti_log_v1';
+let _payLogCache=null;
+function getPayLog(){
+  if(_payLogCache) return _payLogCache;
+  try{ _payLogCache=JSON.parse(localStorage.getItem(LS_PAY_LOG))||[]; }catch(e){ _payLogCache=[]; }
+  return _payLogCache;
+}
+function savePayLog(log){ _payLogCache=log; try{ localStorage.setItem(LS_PAY_LOG,JSON.stringify(log)); }catch(e){ alert('Impossibile salvare: memoria del browser piena o non disponibile.'); } }
+
 const LS_STATO_LOG='stato_log_v1';
 let _statoLogCache=null;
 function getStatoLog(){
@@ -2234,7 +2282,7 @@ function setGhStatus(msg,isErr){
   el.style.color=isErr?'var(--red)':'var(--muted)';
 }
 function collectAllData(){
-  return {clienti:DATA,rimborsi:RIMB,ratePagate:ratePagate(),rinnovi:renAll(),incassiLog:getIncassiLog(),archivioLog:getArchivioLog(),statoLog:getStatoLog(),collabPhones:getCollabPhones(),waTemplate:getWaMsgTemplate(),updatedAt:new Date().toISOString()};
+  return {clienti:DATA,rimborsi:RIMB,ratePagate:ratePagate(),rinnovi:renAll(),incassiLog:getIncassiLog(),archivioLog:getArchivioLog(),statoLog:getStatoLog(),payLog:getPayLog(),collabPhones:getCollabPhones(),waTemplate:getWaMsgTemplate(),updatedAt:new Date().toISOString()};
 }
 function applyAllData(d){
   if(Array.isArray(d.clienti)) DATA=d.clienti;
@@ -2254,6 +2302,7 @@ function applyAllData(d){
   if(Array.isArray(d.archivioLog)) saveArchivioLog(d.archivioLog);
   if(Array.isArray(d.statoLog)) saveStatoLog(d.statoLog);
   if(d.collabPhones&&typeof d.collabPhones==='object') try{localStorage.setItem(COLLAB_PHONES_KEY,JSON.stringify(d.collabPhones));}catch(e){}
+  if(Array.isArray(d.payLog)) try{localStorage.setItem(LS_PAY_LOG,JSON.stringify(d.payLog));_payLogCache=null;}catch(e){}
   if(typeof d.waTemplate==='string'&&d.waTemplate.trim()) try{localStorage.setItem(WA_TEMPLATE_KEY,d.waTemplate);}catch(e){}
   applyCamillaTabarriniLugFixOnce(); /* correzione post-sync: se GitHub aveva ancora agosto, ripusha subito luglio */
 }
@@ -5658,7 +5707,7 @@ function renderTable(rows){
   });
   const desktopRowHtml=({r,i,ini,prog,finTxt,detailInner})=>{
     const main=`<tr class="main" onclick="toggleExp(${i})">
-      <td data-label="Cliente">${r['CLIENTE']}</td><td data-label="Stato">${statoBadge(r['STATO CLIENTE'])}</td><td data-label="Percorso">${percBadge(r['PERCORSO'])}</td>
+      <td data-label="Cliente"><a class="nome-link" onclick="event.stopPropagation();apriProfiloCliente('${jsEsc(r[\'CLIENTE\'])}')">${esc(r['CLIENTE'])}</a></td><td data-label="Stato">${statoBadge(r['STATO CLIENTE'])}</td><td data-label="Percorso">${percBadge(r['PERCORSO'])}</td>
       <td data-label="Inizio">${fdate(ini)}</td><td data-label="Fine">${finTxt}</td><td data-label="Avanzamento">${prog}</td>
       <td data-label="Venditore">${vendBadge(r['VENDITORE'])}</td>
       <td data-label="Tutor">${tutBadge(r['TUTOR'])}</td><td data-label="Trainer">${trainBadge(r['TRAINER'])}</td><td data-label="Nutri">${nutriBadge(r['NUTRI'])}</td></tr>`;
@@ -5671,7 +5720,7 @@ function renderTable(rows){
       <div class="cc-row" onclick="toggleExp(${i})">
         <div class="cc-avatar" style="background:#000;color:#fff">${esc(initials(r['CLIENTE']))}</div>
         <div class="cc-main">
-          <div class="cc-name">${esc(r['CLIENTE'])}</div>
+          <div class="cc-name"><a class="nome-link" onclick="event.stopPropagation();apriProfiloCliente('${jsEsc(r[\'CLIENTE\'])}')">${esc(r['CLIENTE'])}</a></div>
           <div class="cc-badges">${statoBadge(r['STATO CLIENTE'])}${pctVal!==null?`<span class="cc-pill ${pctCls}">${ic('sync')}${pctVal}%</span>`:''}</div>
           <div class="cc-subrow">
             <span class="cc-info" title="Tutor">${DI.user}${esc(r['TUTOR']||'—')}</span>
@@ -5902,6 +5951,147 @@ function salvaEditStorico(){
   chiudiEditStorico();
   buildFilters();render();
 }
+/* ── Popup profilo cliente ──────────────────────────────────────────────── */
+const TIPI_PAG=['Primo pagamento','Rinnovo','Rata 1/3','Rata 2/3','Rata 3/3','Altro'];
+const METODI_PAG=['Bonifico','Scalapay','Heylight','PayPal','Qomodo','Pagodil','Contanti'];
+let _profiloNome=null;
+let _profiloTab='pinfo';
+let _pagEditEntries=[];
+
+function initials(n){return (n||'').split(' ').map(p=>p[0]||'').join('').slice(0,2).toUpperCase();}
+
+function apriProfiloCliente(nome){
+  const r=DATA.find(x=>x['CLIENTE']===nome);
+  if(!r) return;
+  _profiloNome=nome;
+  _profiloTab='pinfo';
+  /* header */
+  document.getElementById('profilo-avatar').textContent=initials(nome);
+  document.getElementById('profilo-nome').textContent=nome;
+  const fin=pdate(r['FINE PERCORSO']);
+  const now=new Date(); now.setHours(0,0,0,0);
+  const gg=fin?Math.ceil((fin-now)/864e5):null;
+  const scad=gg!==null&&gg>=0&&gg<=30;
+  const badges=[
+    statoBadge(r['STATO CLIENTE']),
+    r['PERCORSO']?`<span class="badge b-blue">${esc(r['PERCORSO'])}</span>`:'',
+    fin?`<span class="badge ${scad?'b-red':'b-amber'}">Fine: ${fdate(fin)}</span>`:''
+  ].filter(Boolean).join('');
+  document.getElementById('profilo-badges').innerHTML=badges;
+  document.getElementById('profilo-footer-info').textContent='';
+  /* tab */
+  switchProfiloTab('pinfo');
+  document.getElementById('profilo-cliente-modal').style.display='flex';
+}
+function chiudiProfiloCliente(){
+  document.getElementById('profilo-cliente-modal').style.display='none';
+  _profiloNome=null;
+  _pagEditEntries=[];
+}
+function switchProfiloTab(tab){
+  _profiloTab=tab;
+  document.querySelectorAll('.profilo-tab').forEach(t=>t.classList.toggle('on',t.dataset.ptab===tab));
+  document.querySelectorAll('.ppanel').forEach(p=>p.style.display='none');
+  document.getElementById('ppanel-'+tab).style.display='block';
+  if(tab==='pinfo') _renderProfiloInfo();
+  if(tab==='ppag') _renderProfiloPagamenti();
+  if(tab==='pstorico') _renderProfiloStorico();
+}
+function _renderProfiloInfo(){
+  const r=DATA.find(x=>x['CLIENTE']===_profiloNome);
+  if(!r) return;
+  const rows=[
+    ['Fonte', esc(r['FONTE']||'—')],
+    ['Contratto', r['CONTRATTO']?`<span class="badge b-green">${esc(r['CONTRATTO'])}</span>`:'—']
+  ];
+  document.getElementById('ppanel-pinfo').innerHTML=rows.map(([l,v])=>`<div class="profilo-row"><span class="pr-label">${l}</span><span class="pr-val">${v}</span></div>`).join('');
+}
+function _renderProfiloPagamenti(){
+  const nome=_profiloNome;
+  _pagEditEntries=getPayLog().filter(e=>e['CLIENTE']===nome).slice().sort((a,b)=>(pdate(a['DATA'])||0)-(pdate(b['DATA'])||0)).map(e=>({...e}));
+  const tot=_pagEditEntries.reduce((s,e)=>s+(parseFloat(e['IMPORTO'])||0),0);
+  const container=document.getElementById('ppanel-ppag');
+  const listHtml=_pagEditEntries.length?_pagEditEntries.map((e,i)=>`
+    <div class="pag-item">
+      <span style="color:var(--accent);font-weight:600;min-width:80px">${esc(e['N_FATTURA']||'—')}</span>
+      <span style="color:var(--muted2);min-width:76px">${esc(e['DATA']||'')}</span>
+      <span class="badge b-blue" style="font-size:10px">${esc(e['TIPO']||'')}</span>
+      <span style="color:var(--muted2);flex:1;text-align:right;padding-right:4px">${esc(e['METODO']||'')}</span>
+      <span style="font-weight:600;min-width:50px;text-align:right">€ ${(parseFloat(e['IMPORTO'])||0).toLocaleString('it-IT')}</span>
+      <button class="icon-btn" onclick="apriEditPagamento(${i})" title="Modifica"><span class="ico"><i class="fa-solid fa-pen" style="font-size:10px"></i></span></button>
+      <button class="icon-btn danger" onclick="eliminaPagamento(${i})" title="Elimina"><span class="ico"><i class="fa-solid fa-trash" style="font-size:10px"></i></span></button>
+    </div>`).join(''):`<p style="color:var(--muted2);font-size:13px;margin:8px 0">Nessun pagamento registrato.</p>`;
+  container.innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <span style="font-size:11px;color:var(--muted2)">${_pagEditEntries.length} pagamenti · totale <strong style="color:var(--text)">€ ${tot.toLocaleString('it-IT')}</strong></span>
+      <button class="btn ghost" style="padding:3px 10px;font-size:12px" onclick="apriNuovoPagamento()"><span class="ico"><i class="fa-solid fa-plus"></i></span>Aggiungi</button>
+    </div>
+    ${listHtml}
+    ${_pagEditEntries.length?`<div style="display:flex;justify-content:flex-end;align-items:center;gap:8px;padding-top:10px;border-top:1px solid var(--border);margin-top:4px"><span style="font-size:11px;color:var(--muted2)">Totale incassato</span><span style="font-size:15px;font-weight:600">€ ${tot.toLocaleString('it-IT')}</span></div>`:''}`;
+}
+function _renderProfiloStorico(){
+  const nome=_profiloNome;
+  const r=DATA.find(x=>x['CLIENTE']===nome);
+  const html=buildTimelineStatiHtml(r);
+  document.getElementById('ppanel-pstorico').innerHTML=html||'<p style="color:var(--muted2);font-size:13px;margin:8px 0">Nessuno storico disponibile.</p>';
+}
+
+/* Form aggiunta/modifica pagamento (inline nel panel) */
+let _pagFormIdx=null; /* null = nuovo, int = modifica */
+function apriNuovoPagamento(){ _pagFormIdx=null; _mostraFormPagamento({CLIENTE:_profiloNome,N_FATTURA:'',DATA:todayIt(),IMPORTO:'',TIPO:'Primo pagamento',METODO:'Bonifico'}); }
+function apriEditPagamento(i){ _pagFormIdx=i; _mostraFormPagamento(_pagEditEntries[i]); }
+function _mostraFormPagamento(e){
+  const container=document.getElementById('ppanel-ppag');
+  container.innerHTML=`
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label style="font-size:11px;color:var(--muted2);font-weight:600;display:block;margin-bottom:4px">N. Fattura</label>
+          <input id="pf-fattura" class="edit-field" value="${esc(e['N_FATTURA']||'')}" placeholder="es. 2026-091" style="width:100%"></div>
+        <div><label style="font-size:11px;color:var(--muted2);font-weight:600;display:block;margin-bottom:4px">Data</label>
+          <input id="pf-data" type="date" class="edit-field" value="${esc(itToInputDate(e['DATA']))}" style="width:100%"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label style="font-size:11px;color:var(--muted2);font-weight:600;display:block;margin-bottom:4px">Importo (€)</label>
+          <input id="pf-importo" type="number" class="edit-field" value="${esc(String(e['IMPORTO']||''))}" placeholder="0" style="width:100%"></div>
+        <div><label style="font-size:11px;color:var(--muted2);font-weight:600;display:block;margin-bottom:4px">Tipo</label>
+          <select id="pf-tipo" class="edit-field" style="width:100%">${TIPI_PAG.map(t=>`<option value="${esc(t)}"${e['TIPO']===t?' selected':''}>${esc(t)}</option>`).join('')}</select></div>
+      </div>
+      <div><label style="font-size:11px;color:var(--muted2);font-weight:600;display:block;margin-bottom:4px">Metodo di pagamento</label>
+        <select id="pf-metodo" class="edit-field" style="width:100%">${METODI_PAG.map(m=>`<option value="${esc(m)}"${e['METODO']===m?' selected':''}>${esc(m)}</option>`).join('')}</select></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:4px">
+        <button class="btn ghost" onclick="_renderProfiloPagamenti()">Annulla</button>
+        <button class="btn" onclick="salvaPagamento()"><span class="ico"><i class="fa-solid fa-floppy-disk"></i></span>Salva</button>
+      </div>
+    </div>`;
+}
+function salvaPagamento(){
+  const entry={
+    CLIENTE:_profiloNome,
+    N_FATTURA:document.getElementById('pf-fattura').value.trim(),
+    DATA:inputDateToIt(document.getElementById('pf-data').value)||todayIt(),
+    IMPORTO:parseFloat(document.getElementById('pf-importo').value)||0,
+    TIPO:document.getElementById('pf-tipo').value,
+    METODO:document.getElementById('pf-metodo').value
+  };
+  const altriLog=getPayLog().filter(e=>e['CLIENTE']!==_profiloNome);
+  if(_pagFormIdx===null){
+    _pagEditEntries.push(entry);
+  } else {
+    _pagEditEntries[_pagFormIdx]=entry;
+  }
+  savePayLog([...altriLog,..._pagEditEntries]);
+  scheduleGithubSync();
+  _renderProfiloPagamenti();
+}
+function eliminaPagamento(i){
+  if(!confirm('Eliminare questo pagamento?')) return;
+  _pagEditEntries.splice(i,1);
+  const altriLog=getPayLog().filter(e=>e['CLIENTE']!==_profiloNome);
+  savePayLog([...altriLog,..._pagEditEntries]);
+  scheduleGithubSync();
+  _renderProfiloPagamenti();
+}
+
 function salvaClienteModal(){
   const r=DATA.find(x=>x['CLIENTE']===editingClienteName);
   if(!r) return;
