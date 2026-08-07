@@ -495,6 +495,10 @@ h3 .ico,.sub .ico{color:var(--muted)}
 .rate-tr:last-child{border-bottom:none}
 .rate-tr.tot{border-top:1px solid var(--border-strong)}
 .row-icon-actions{display:flex;align-items:center;gap:8px;margin-left:auto}
+/* Nella riga espansa dei clienti i comandi sono rimasti l'unico contenuto:
+   senza questo, margin-left:auto li spingerebbe a destra lasciando una
+   fascia vuota al centro. */
+.detail-row .row-icon-actions:only-child{margin-left:0}
 .row-icon-actions .icon-btn:not(.danger){color:var(--muted)}
 .row-icon-actions select.pill-btn{font-weight:300;height:32px}
 .row-icon-actions .icon-btn{width:32px;height:32px;border-radius:50%;border-color:var(--border)}
@@ -792,6 +796,9 @@ select.pill-btn:focus{outline:none;border-color:var(--border-strong)}
   .cc-exp{margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
   .cc-exp .detail-row{gap:8px 18px;background:none;border:none;padding:0}
   .cc-exp .row-icon-actions{width:100%;justify-content:flex-start;margin-top:6px;padding-top:8px;border-top:1px solid var(--border)}
+  /* su mobile il bordo separava i comandi dalle informazioni sopra: ora che
+     non c'e' piu' nulla sopra, sarebbe un separatore orfano. */
+  .cc-exp .row-icon-actions:only-child{margin-top:0;padding-top:0;border-top:none}
 }
 </style>
 </head>
@@ -5767,23 +5774,17 @@ function renderTable(rows){
     const renBadge=(rr&&rr.st&&gg!==null&&gg>=0&&gg<=90)?` <span class="ren-mini ${REN_STATI[rr.st][1]}">${REN_STATI[rr.st][0]}</span>`:'';
     const finTxt=fin?`${fdate(fin)}${scad?' <span class="danger">'+ic('warn')+'</span>':''}${renBadge}`:'—';
     const finLabel=fin?fdate(fin):'MAI';
+    /* Riga espansa: solo i comandi. Le informazioni di contorno (fattura, fonte,
+       importo, metodo e stato pagamento, contratto, check, risultato) e la
+       timeline degli stati sono state tolte da qui su richiesta: restano tutte
+       consultabili nella scheda cliente, che si apre dal nome. */
     const detailInner=`
-        <span class="detail-item" title="N° Fattura">${DI.invoice}${esc(r['N FATTURA']||'—')}</span>
-        <span class="detail-item" title="Fonte">${DI.fonte}${esc(r['FONTE']||'—')}</span>
-        <span class="detail-item" title="Importo">${DI.coin}${esc(r['IMPORTO']||'—')}</span>
-        <span class="detail-item" title="Metodo di pagamento">${DI.card}${esc(r['METODO PAGAMENTO']||'—')}</span>
-        <span class="detail-item" title="Stato pagamento">${DI.check}${esc(r['STATO PAGAMENTO']||'—')}</span>
-        <span class="detail-item" title="Contratto">${DI.contract}${esc(r['CONTRATTO']||'—')}</span>
-        <span class="detail-item" title="Check">${DI.checkbox}${esc(r['CHECK']||'—')}</span>
-        <span class="detail-item" title="Risultato">${DI.star}${esc(r['RISULTATO']||'—')}</span>
         <span class="row-icon-actions" onclick="event.stopPropagation()">
           <select class="pill-btn" title="Cambia stato cliente" onchange="cambiaStatoCliente('${jsEsc(r['CLIENTE'])}',this.value)">${statoOpts.map(o=>`<option value="${esc(o)}"${(r['STATO CLIENTE']||'')===o?' selected':''}>${esc(statoLabel(o))}</option>`).join('')}</select>
           <button class="icon-btn" title="Modifica" onclick="apriModificaCliente('${jsEsc(r['CLIENTE'])}')"><span class="ico"><i class="fa-solid fa-pen"></i></span></button>
           <button class="icon-btn" title="Rinnova abbonamento / imposta pagamento a rate" onclick="apriRinnovaAbbonamento('${jsEsc(r['CLIENTE'])}')"><span class="ico"><i class="fa-solid fa-rotate-right"></i></span></button>
-          ${catFilter==='storico'?`<button class="icon-btn" title="Rimborsa" onclick="apriRimborsaCliente('${jsEsc(r['CLIENTE'])}')"><span class="ico"><i class="fa-solid fa-rotate-left"></i></span></button>`:''}
           <button class="icon-btn danger" title="Elimina cliente" onclick="eliminaCliente('${jsEsc(r['CLIENTE'])}')"><span class="ico"><i class="fa-solid fa-trash"></i></span></button>
-        </span>
-        ${expanded.has(r['CLIENTE'])?buildTimelineStatiHtml(r):''}`;
+        </span>`;
     const arch=pdate(r['DATA ARCHIVIAZIONE']);
     return {r,i,ini,fin,arch,prog,pctVal,pctCls,finTxt,finLabel,scad,renBadge,detailInner};
   });
