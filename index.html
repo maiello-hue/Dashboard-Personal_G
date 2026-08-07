@@ -1923,7 +1923,7 @@ function getStatoLog(){
   try{ _statoLogCache=JSON.parse(localStorage.getItem(LS_STATO_LOG))||[]; }catch(e){ _statoLogCache=[]; }
   return _statoLogCache;
 }
-function saveStatoLog(log){ _statoLogCache=log; try{ localStorage.setItem(LS_STATO_LOG,JSON.stringify(log)); if(!_applyingGhData) localStorage.setItem(LS_LOCAL_UPDATED_AT,new Date().toISOString()); }catch(e){ alert('Impossibile salvare: memoria del browser piena o non disponibile.'); } }
+function saveStatoLog(log){ _statoLogCache=log; try{ localStorage.setItem(LS_STATO_LOG,JSON.stringify(log)); if(!_applyingGhData){ localStorage.setItem(LS_LOCAL_UPDATED_AT,new Date().toISOString()); sbSaveStatoLogNow(log).catch(e=>console.warn('Supabase stato_log:',e)); } }catch(e){ alert('Impossibile salvare: memoria del browser piena o non disponibile.'); } }
 function registraStatoLog(cliente,stato,dataIt){
   if(!cliente||!stato||!dataIt) return;
   const log=getStatoLog();
@@ -2011,6 +2011,7 @@ async function sbRestoreSession(){
   if(!sbClient) return;
   try{ const {data}=await sbClient.auth.getSession(); SB_USER=(data&&data.session)?data.session.user:null; }catch(e){}
   setSbStatus();
+  if(SB_USER) sbMergeStatoLogFromSupabase().catch(e=>console.warn('sbMerge:',e));
 }
 function setSbStatus(msg,isErr){
   const el=document.getElementById('sb-status');
@@ -2086,6 +2087,45 @@ async function sbReplaceTable(table,rows){
     const {error}=await sbClient.from(table).insert(batch);
     if(error) throw error;
   }
+}
+async function sbSaveStatoLogNow(log){
+  if(!sbClient||!SB_USER) return;
+  try{
+    const {data:ex}=await sbClient.from('clienti').select('id,cliente');
+    const nToId={};
+    (ex||[]).forEach(r=>{nToId[sbNorm(r.cliente)]=r.id;});
+    const rows=log.map(x=>({
+      cliente_id:nToId[sbNorm(x['CLIENTE'])]||null,
+      cliente_nome:x['CLIENTE']||null,
+      stato:x['STATO']||null,
+      data:sbParseDate(x['DATA'])
+    }));
+    await sbReplaceTable('stato_log',rows);
+  }catch(e){console.warn('sbSaveStatoLogNow:',e);}
+}
+async function sbMergeStatoLogFromSupabase(){
+  if(!sbClient||!SB_USER) return;
+  try{
+    const {data,error}=await sbClient.from('stato_log').select('cliente_nome,stato,data').order('data',{ascending:true});
+    if(error||!data||!data.length) return;
+    const sbLog=data.map(r=>({
+      CLIENTE:r.cliente_nome||'',
+      STATO:r.stato||'',
+      DATA:r.data?r.data.split('-').reverse().join('/'):'',
+    })).filter(r=>r.CLIENTE&&r.STATO&&r.DATA);
+    const localLog=getStatoLog();
+    const key=r=>r.CLIENTE+'|'+r.STATO+'|'+r.DATA;
+    const base=sbLog.length>=localLog.length?sbLog:localLog;
+    const other=sbLog.length>=localLog.length?localLog:sbLog;
+    const keys=new Set(base.map(key));
+    const merged=[...base,...other.filter(r=>!keys.has(key(r)))];
+    const changed=merged.length!==localLog.length||merged.some((r,i)=>!localLog[i]||key(r)!==key(localLog[i]));
+    if(changed){
+      _statoLogCache=merged;
+      try{localStorage.setItem(LS_STATO_LOG,JSON.stringify(merged));}catch(e){}
+      buildFilters();render();
+    }
+  }catch(e){console.warn('sbMergeStatoLogFromSupabase:',e);}
 }
 async function syncToSupabase(auto){
   /* auto=true: chiamata automatica dopo ogni salvataggio su GitHub (vedi
