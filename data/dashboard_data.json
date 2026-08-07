@@ -26810,6 +26810,11 @@
    "CLIENTE": "Patrycja Bogdan",
    "STATO": "CONGELATO",
    "DATA": "25/11/2025"
+  },
+  {
+   "CLIENTE": "Angelica Villirillo",
+   "STATO": "CONGELATO",
+   "DATA": "03/02/2026"
   }
  ],
  "collabPhones": {
@@ -26820,5 +26825,5 @@
   "Margherita": "3515862081"
  },
  "waTemplate": "Ciao {nome} 🌸 ecco i rinnovi da gestire questo mese:\n\n{lista}\n\nGrazie! 🫶🏻",
- "updatedAt": "2026-08-07T14:22:54.555Z"
+ "updatedAt": "2026-08-07T14:23:22.901Z"
 }
