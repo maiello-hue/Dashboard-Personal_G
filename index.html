@@ -2243,6 +2243,7 @@ function applyAllData(d){
   if(Array.isArray(d.statoLog)) saveStatoLog(d.statoLog);
   if(d.collabPhones&&typeof d.collabPhones==='object') try{localStorage.setItem(COLLAB_PHONES_KEY,JSON.stringify(d.collabPhones));}catch(e){}
   if(typeof d.waTemplate==='string'&&d.waTemplate.trim()) try{localStorage.setItem(WA_TEMPLATE_KEY,d.waTemplate);}catch(e){}
+  applyCamillaTabarriniLugFixOnce(); /* correzione post-sync: se GitHub aveva ancora agosto, ripusha subito luglio */
 }
 async function pushPendingNow(force){
   /* invia subito (senza debounce) i dati locali correnti a GitHub. Usata sia dal
@@ -2865,14 +2866,12 @@ function applyGnoccaSheetImport(){
    La DATA ARCHIVIAZIONE era stata registrata in agosto ma l'abbandono era avvenuto
    a luglio. Viene eseguita una sola volta per dispositivo. */
 function applyCamillaTabarriniLugFixOnce(){
-  const KEY='fix_camilla_tabarrini_lug2026';
-  if(localStorage.getItem(KEY)) return;
+  /* Idempotente: non fa nulla se la data è già in luglio o non esiste. */
   const r=DATA.find(c=>c['CLIENTE']==='Camilla Tabarrini');
   if(r&&(r['DATA ARCHIVIAZIONE']||'').slice(3,5)==='08'&&(r['DATA ARCHIVIAZIONE']||'').slice(6,10)==='2026'){
     r['DATA ARCHIVIAZIONE']=r['DATA ARCHIVIAZIONE'].replace('/08/2026','/07/2026');
     saveClienti();
   }
-  try{localStorage.setItem(KEY,'1');}catch(e){}
 }
 function applyMeseFlussoMigrationOnce(){
   let changed=false;
