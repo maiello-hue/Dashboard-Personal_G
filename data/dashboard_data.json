@@ -16120,7 +16120,7 @@
   },
   {
    "CLIENTE": "Camilla Tabarrini",
-   "STATO CLIENTE": "SPARITA",
+   "STATO CLIENTE": "ABBANDONATO",
    "PERCORSO": "6 mesi",
    "INIZIO PERCORSO": "13/04/2026",
    "FINE PERCORSO": "13/10/2026",
@@ -16142,7 +16142,8 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "ADV",
-   "_PRIMO_INIZIO": "13/04/2026"
+   "_PRIMO_INIZIO": "13/04/2026",
+   "DATA ARCHIVIAZIONE": "07/08/2026"
   },
   {
    "CLIENTE": "Federica Zeni",
@@ -26531,6 +26532,11 @@
    "CLIENTE": "Ainara Moreno San Miguel",
    "STATO": "NON RINNOVATO",
    "DATA": "25/07/2026"
+  },
+  {
+   "CLIENTE": "Camilla Tabarrini",
+   "STATO": "ABBANDONATO",
+   "DATA": "07/08/2026"
   }
  ],
  "statoLog": [
@@ -26588,6 +26594,11 @@
    "CLIENTE": "Vangjola Naco",
    "STATO": "CONGELATO",
    "DATA": "07/08/2026"
+  },
+  {
+   "CLIENTE": "Camilla Tabarrini",
+   "STATO": "ABBANDONATO",
+   "DATA": "07/08/2026"
   }
  ],
  "collabPhones": {
@@ -26598,5 +26609,5 @@
   "Margherita": "3515862081"
  },
  "waTemplate": "Ciao {nome} 🌸 ecco i rinnovi da gestire questo mese:\n\n{lista}\n\nGrazie! 🫶🏻",
- "updatedAt": "2026-08-07T09:47:06.083Z"
+ "updatedAt": "2026-08-07T09:50:55.207Z"
 }
