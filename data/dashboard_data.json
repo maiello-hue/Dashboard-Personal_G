@@ -26558,20 +26558,10 @@
    "CLIENTE": "Federica Codetti",
    "STATO": "MAI INIZIATO",
    "DATA": "06/08/2026"
-  },
-  {
-   "CLIENTE": "Sara Shuster",
-   "STATO": "CONGELATO",
-   "DATA": "07/08/2026"
-  },
-  {
-   "CLIENTE": "Sara Shuster",
-   "STATO": "IN PERCORSO",
-   "DATA": "07/08/2026"
   }
  ],
  "payLog": [],
  "collabPhones": {},
  "waTemplate": "Ciao {nome}, ecco i rinnovi da gestire:\n\n{lista}\n\nGrazie!",
- "updatedAt": "2026-08-07T20:54:14.063Z"
+ "updatedAt": "2026-08-07T20:54:30.865Z"
 }
