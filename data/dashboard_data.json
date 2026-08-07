@@ -16953,7 +16953,7 @@
   },
   {
    "CLIENTE": "Valentina Pinzauti",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "SPARITA",
    "PERCORSO": "12 mesi",
    "INIZIO PERCORSO": "24/04/2026",
    "FINE PERCORSO": "24/04/2027",
@@ -26593,19 +26593,14 @@
  ],
  "statoLog": [
   {
-   "CLIENTE": "Elena Bardi",
-   "STATO": "ABBANDONATO",
-   "DATA": "05/08/2026"
+   "CLIENTE": "Ainara Moreno San Miguel",
+   "STATO": "NON RINNOVATO",
+   "DATA": "25/07/2026"
   },
   {
    "CLIENTE": "Camilla Tabarrini",
    "STATO": "SPARITA",
    "DATA": "05/08/2026"
-  },
-  {
-   "CLIENTE": "Ainara Moreno San Miguel",
-   "STATO": "NON RINNOVATO",
-   "DATA": "25/07/2026"
   },
   {
    "CLIENTE": "Martina Scaccialupi",
@@ -26628,6 +26623,11 @@
    "DATA": "05/08/2026"
   },
   {
+   "CLIENTE": "Elena Bardi",
+   "STATO": "ABBANDONATO",
+   "DATA": "05/08/2026"
+  },
+  {
    "CLIENTE": "Francesca Tognarelli",
    "STATO": "MAI INIZIATO",
    "DATA": "06/08/2026"
@@ -26636,10 +26636,15 @@
    "CLIENTE": "Federica Codetti",
    "STATO": "MAI INIZIATO",
    "DATA": "06/08/2026"
+  },
+  {
+   "CLIENTE": "Valentina Pinzauti",
+   "STATO": "SPARITA",
+   "DATA": "07/08/2026"
   }
  ],
  "payLog": [],
  "collabPhones": {},
  "waTemplate": "Ciao {nome}, ecco i rinnovi da gestire:\n\n{lista}\n\nGrazie!",
- "updatedAt": "2026-08-07T21:18:06.202Z"
+ "updatedAt": "2026-08-07T21:33:47.335Z"
 }
