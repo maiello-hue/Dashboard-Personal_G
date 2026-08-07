@@ -1328,6 +1328,18 @@ select.pill-btn:focus{outline:none;border-color:var(--border-strong)}
       </div>
 
       <div class="card" style="max-width:640px;margin-top:16px">
+        <h3><span class="ico" style="color:var(--accent)"><i class="fa-brands fa-whatsapp"></i></span>Testo messaggio WhatsApp</h3>
+        <div class="sub" style="margin-bottom:10px">
+          Personalizza il testo del messaggio inviato ai tutor. Usa <code style="background:var(--card2);padding:1px 5px;border-radius:4px">{nome}</code> per il nome del tutor e <code style="background:var(--card2);padding:1px 5px;border-radius:4px">{lista}</code> per l'elenco dei rinnovi.
+        </div>
+        <textarea id="wa-template-text" rows="6" style="width:100%;box-sizing:border-box;font-family:monospace;font-size:13px;background:var(--card2);border:1px solid var(--border-strong);color:var(--text);border-radius:8px;padding:8px;resize:vertical;line-height:1.5"></textarea>
+        <div class="editbar-actions" style="margin-top:10px">
+          <button class="btn" onclick="salvaWaTemplate()"><span class="ico"><svg viewBox="0 0 16 16"><path d="M3 3h7.5l2.5 2.5V13H3z"/><path d="M5 3v3h5V3"/><path d="M5.3 9H10.7V13H5.3z"/></svg></span>Salva template</button>
+          <button class="btn ghost" onclick="ripristinaWaTemplate()">Ripristina default</button>
+        </div>
+      </div>
+
+      <div class="card" style="max-width:640px;margin-top:16px">
         <h3>Dati e filtri</h3>
         <div class="sub" style="margin-bottom:10px">Azzera i filtri attivi sulla dashboard oppure esporta/importa una copia manuale dei tuoi dati.</div>
         <div class="editbar-actions" style="flex-wrap:wrap">
@@ -1627,7 +1639,7 @@ function showPage(p){
   document.getElementById('page-compensi').style.display=(p==='compensi')?'block':'none';
   document.getElementById('page-check').style.display=(p==='check')?'block':'none';
   document.getElementById('page-impostazioni').style.display=(p==='impostazioni')?'block':'none';
-  if(p==='impostazioni'){ fillGhForm(); refreshBackupStatus(); fillSbForm(); buildSettingsCollabPhones(); }
+  if(p==='impostazioni'){ fillGhForm(); refreshBackupStatus(); fillSbForm(); buildSettingsCollabPhones(); buildSettingsWaTemplate(); }
   if(p==='rinnovi'){ renderRinnoviWhatsapp(); }
   const MOBILE_PRIMARY=['dashboard','clienti','analisi','compensi'];
   const MOBILE_MORE=['incassi','rinnovi','rimborsi','check','impostazioni'];
@@ -2210,7 +2222,7 @@ function setGhStatus(msg,isErr){
   el.style.color=isErr?'var(--red)':'var(--muted)';
 }
 function collectAllData(){
-  return {clienti:DATA,rimborsi:RIMB,ratePagate:ratePagate(),rinnovi:renAll(),incassiLog:getIncassiLog(),archivioLog:getArchivioLog(),statoLog:getStatoLog(),collabPhones:getCollabPhones(),updatedAt:new Date().toISOString()};
+  return {clienti:DATA,rimborsi:RIMB,ratePagate:ratePagate(),rinnovi:renAll(),incassiLog:getIncassiLog(),archivioLog:getArchivioLog(),statoLog:getStatoLog(),collabPhones:getCollabPhones(),waTemplate:getWaMsgTemplate(),updatedAt:new Date().toISOString()};
 }
 function applyAllData(d){
   if(Array.isArray(d.clienti)) DATA=d.clienti;
@@ -2230,6 +2242,7 @@ function applyAllData(d){
   if(Array.isArray(d.archivioLog)) saveArchivioLog(d.archivioLog);
   if(Array.isArray(d.statoLog)) saveStatoLog(d.statoLog);
   if(d.collabPhones&&typeof d.collabPhones==='object') try{localStorage.setItem(COLLAB_PHONES_KEY,JSON.stringify(d.collabPhones));}catch(e){}
+  if(typeof d.waTemplate==='string'&&d.waTemplate.trim()) try{localStorage.setItem(WA_TEMPLATE_KEY,d.waTemplate);}catch(e){}
 }
 async function pushPendingNow(force){
   /* invia subito (senza debounce) i dati locali correnti a GitHub. Usata sia dal
@@ -3516,6 +3529,10 @@ function removeManagedItem(key,val){
 const COLLAB_PHONES_KEY='global_collab_phones';
 function getCollabPhones(){ return safeJsonParse(localStorage.getItem(COLLAB_PHONES_KEY),COLLAB_PHONES_KEY,'i numeri WhatsApp dei collaboratori')||{}; }
 function saveCollabPhones(o){ try{localStorage.setItem(COLLAB_PHONES_KEY,JSON.stringify(o));}catch(e){alert('Impossibile salvare: memoria del browser piena o non disponibile.');} scheduleGithubSync(); }
+const WA_TEMPLATE_KEY='wa_msg_template';
+const WA_TEMPLATE_DEFAULT='Ciao {nome}, ecco i rinnovi da gestire:\n\n{lista}\n\nGrazie!';
+function getWaMsgTemplate(){ return localStorage.getItem(WA_TEMPLATE_KEY)||WA_TEMPLATE_DEFAULT; }
+function saveWaMsgTemplate(t){ try{localStorage.setItem(WA_TEMPLATE_KEY,t); scheduleGithubSync();}catch(e){alert('Impossibile salvare.');} }
 /* wa.me vuole solo cifre (prefisso internazionale incluso, senza + né 00). */
 function normPhoneForWa(p){
   let d=String(p||'').replace(/[^\d+]/g,'').replace(/^\+/,'');
@@ -3541,6 +3558,21 @@ function salvaCollabPhonesForm(){
   saveCollabPhones(phones);
   renderRinnoviWhatsapp();
   alert('Numeri salvati.');
+}
+function buildSettingsWaTemplate(){
+  const el=document.getElementById('wa-template-text');
+  if(el) el.value=getWaMsgTemplate();
+}
+function salvaWaTemplate(){
+  const el=document.getElementById('wa-template-text');
+  if(!el) return;
+  const t=el.value.trim()||WA_TEMPLATE_DEFAULT;
+  saveWaMsgTemplate(t);
+  alert('Template salvato.');
+}
+function ripristinaWaTemplate(){
+  const el=document.getElementById('wa-template-text');
+  if(el) el.value=WA_TEMPLATE_DEFAULT;
 }
 /* Per ogni tutor, le clienti con rinnovo "da contattare" entro la finestra
    scelta in Gestione scadenze (stessa logica di filtro usata lì, ma
@@ -3578,8 +3610,8 @@ function waLinkPerTutor(tutor,entries){
     const label=MESI_IT[e.date.getMonth()]+' '+e.date.getFullYear();
     (mesi[k]=mesi[k]||{label,items:[]}).items.push(e);
   });
-  const sezioni=Object.keys(mesi).sort().map(k=>mesi[k].label+':\n'+mesi[k].items.map(e=>`- ${e.r['CLIENTE']} (scade ${fdate(e.date)})`).join('\n')).join('\n\n');
-  const msg=`Ciao ${tutor}, ecco i rinnovi da gestire:\n\n${sezioni}\n\nGrazie!`;
+  const lista=Object.keys(mesi).sort().map(k=>mesi[k].label+':\n'+mesi[k].items.map(e=>`- ${e.r['CLIENTE']} (scade ${fdate(e.date)})`).join('\n')).join('\n\n');
+  const msg=getWaMsgTemplate().replace(/{nome}/g,tutor).replace(/{lista}/g,lista);
   return 'https://wa.me/'+phone+'?text='+encodeURIComponent(msg);
 }
 function renderRinnoviWhatsapp(){
