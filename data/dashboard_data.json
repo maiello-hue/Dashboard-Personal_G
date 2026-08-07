@@ -20525,7 +20525,7 @@
   },
   {
    "CLIENTE": "Ilaria Viti",
-   "STATO CLIENTE": "IN PERCORSO",
+   "STATO CLIENTE": "CONGELATO",
    "PERCORSO": "6 mesi + 6 Gnocca",
    "INIZIO PERCORSO": "11/06/2026",
    "FINE PERCORSO": "11/06/2027",
@@ -26610,6 +26610,11 @@
    "CLIENTE": "Annalisa Guarriello",
    "STATO": "MAI INIZIATO",
    "DATA": "07/08/2026"
+  },
+  {
+   "CLIENTE": "Ilaria Viti",
+   "STATO": "CONGELATO",
+   "DATA": "07/08/2026"
   }
  ],
  "collabPhones": {
@@ -26620,5 +26625,5 @@
   "Margherita": "3515862081"
  },
  "waTemplate": "Ciao {nome} 🌸 ecco i rinnovi da gestire questo mese:\n\n{lista}\n\nGrazie! 🫶🏻",
- "updatedAt": "2026-08-07T12:46:33.782Z"
+ "updatedAt": "2026-08-07T12:49:22.276Z"
 }
