@@ -26620,29 +26620,29 @@
  ],
  "statoLog": [
   {
+   "CLIENTE": "Letizia Giani",
+   "STATO": "CONGELATO",
+   "DATA": "13/03/2026"
+  },
+  {
+   "CLIENTE": "Naomi Tessitore",
+   "STATO": "CONGELATO",
+   "DATA": "07/05/2026"
+  },
+  {
+   "CLIENTE": "Elena Savi",
+   "STATO": "CONGELATO",
+   "DATA": "11/05/2026"
+  },
+  {
+   "CLIENTE": "Chiara Benin",
+   "STATO": "CONGELATO",
+   "DATA": "02/07/2026"
+  },
+  {
    "CLIENTE": "Ainara Moreno San Miguel",
    "STATO": "NON RINNOVATO",
    "DATA": "25/07/2026"
-  },
-  {
-   "CLIENTE": "Camilla Tabarrini",
-   "STATO": "SPARITA",
-   "DATA": "05/08/2026"
-  },
-  {
-   "CLIENTE": "Martina Scaccialupi",
-   "STATO": "CONGELATO",
-   "DATA": "05/08/2026"
-  },
-  {
-   "CLIENTE": "Denise Di Francesco",
-   "STATO": "IN PERCORSO",
-   "DATA": "05/08/2026"
-  },
-  {
-   "CLIENTE": "Maria Cristina Bosco",
-   "STATO": "CONGELATO",
-   "DATA": "05/08/2026"
   },
   {
    "CLIENTE": "Denise Cremone",
@@ -26652,6 +26652,26 @@
   {
    "CLIENTE": "Elena Bardi",
    "STATO": "ABBANDONATO",
+   "DATA": "05/08/2026"
+  },
+  {
+   "CLIENTE": "Denise Di Francesco",
+   "STATO": "IN PERCORSO",
+   "DATA": "05/08/2026"
+  },
+  {
+   "CLIENTE": "Martina Scaccialupi",
+   "STATO": "CONGELATO",
+   "DATA": "05/08/2026"
+  },
+  {
+   "CLIENTE": "Camilla Tabarrini",
+   "STATO": "SPARITA",
+   "DATA": "05/08/2026"
+  },
+  {
+   "CLIENTE": "Maria Cristina Bosco",
+   "STATO": "CONGELATO",
    "DATA": "05/08/2026"
   },
   {
@@ -26670,24 +26690,9 @@
    "DATA": "07/08/2026"
   },
   {
-   "CLIENTE": "Elena Savi",
+   "CLIENTE": "Francesca Maria Taurisano",
    "STATO": "CONGELATO",
-   "DATA": "11/05/2026"
-  },
-  {
-   "CLIENTE": "Letizia Giani",
-   "STATO": "CONGELATO",
-   "DATA": "13/03/2026"
-  },
-  {
-   "CLIENTE": "Naomi Tessitore",
-   "STATO": "CONGELATO",
-   "DATA": "07/05/2026"
-  },
-  {
-   "CLIENTE": "Chiara Benin",
-   "STATO": "CONGELATO",
-   "DATA": "02/07/2026"
+   "DATA": "13/06/2026"
   }
  ],
  "payLog": [],
@@ -26699,5 +26704,5 @@
   "Margherita": "3515862081"
  },
  "waTemplate": "Ciao {nome}, ecco i rinnovi da gestire:\n\n{lista}\n\nGrazie!",
- "updatedAt": "2026-08-08T12:58:22.711Z"
+ "updatedAt": "2026-08-08T12:59:28.955Z"
 }
