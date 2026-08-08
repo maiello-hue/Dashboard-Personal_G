@@ -26673,6 +26673,11 @@
    "CLIENTE": "Elena Savi",
    "STATO": "CONGELATO",
    "DATA": "11/05/2026"
+  },
+  {
+   "CLIENTE": "Letizia Giani",
+   "STATO": "CONGELATO",
+   "DATA": "13/03/2026"
   }
  ],
  "payLog": [],
@@ -26684,5 +26689,5 @@
   "Margherita": "3515862081"
  },
  "waTemplate": "Ciao {nome}, ecco i rinnovi da gestire:\n\n{lista}\n\nGrazie!",
- "updatedAt": "2026-08-08T12:56:48.746Z"
+ "updatedAt": "2026-08-08T12:57:19.758Z"
 }
