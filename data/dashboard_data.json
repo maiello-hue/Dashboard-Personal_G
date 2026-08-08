@@ -26635,6 +26635,16 @@
    "DATA": "11/05/2026"
   },
   {
+   "CLIENTE": "Kimberly Bassanello",
+   "STATO": "CONGELATO",
+   "DATA": "27/05/2026"
+  },
+  {
+   "CLIENTE": "Francesca Maria Taurisano",
+   "STATO": "CONGELATO",
+   "DATA": "13/06/2026"
+  },
+  {
    "CLIENTE": "Chiara Benin",
    "STATO": "CONGELATO",
    "DATA": "02/07/2026"
@@ -26643,16 +26653,6 @@
    "CLIENTE": "Ainara Moreno San Miguel",
    "STATO": "NON RINNOVATO",
    "DATA": "25/07/2026"
-  },
-  {
-   "CLIENTE": "Denise Cremone",
-   "STATO": "CONGELATO",
-   "DATA": "05/08/2026"
-  },
-  {
-   "CLIENTE": "Elena Bardi",
-   "STATO": "ABBANDONATO",
-   "DATA": "05/08/2026"
   },
   {
    "CLIENTE": "Denise Di Francesco",
@@ -26675,6 +26675,16 @@
    "DATA": "05/08/2026"
   },
   {
+   "CLIENTE": "Elena Bardi",
+   "STATO": "ABBANDONATO",
+   "DATA": "05/08/2026"
+  },
+  {
+   "CLIENTE": "Denise Cremone",
+   "STATO": "CONGELATO",
+   "DATA": "05/08/2026"
+  },
+  {
    "CLIENTE": "Francesca Tognarelli",
    "STATO": "MAI INIZIATO",
    "DATA": "06/08/2026"
@@ -26690,14 +26700,9 @@
    "DATA": "07/08/2026"
   },
   {
-   "CLIENTE": "Francesca Maria Taurisano",
+   "CLIENTE": "Martina Crocetta",
    "STATO": "CONGELATO",
-   "DATA": "13/06/2026"
-  },
-  {
-   "CLIENTE": "Kimberly Bassanello",
-   "STATO": "CONGELATO",
-   "DATA": "27/05/2026"
+   "DATA": "08/12/2025"
   }
  ],
  "payLog": [],
@@ -26709,5 +26714,5 @@
   "Margherita": "3515862081"
  },
  "waTemplate": "Ciao {nome}, ecco i rinnovi da gestire:\n\n{lista}\n\nGrazie!",
- "updatedAt": "2026-08-08T12:59:53.113Z"
+ "updatedAt": "2026-08-08T13:01:31.114Z"
 }
