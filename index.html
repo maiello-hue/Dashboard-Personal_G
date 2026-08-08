@@ -19,6 +19,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1328,6 +1329,16 @@ select.pill-btn:focus{outline:none;border-color:var(--border-strong)}
 
     <div id="page-impostazioni" style="display:none">
       <div class="card" style="max-width:640px">
+        <h3><span class="ico" style="color:var(--accent)"><i class="fa-solid fa-file-powerpoint"></i></span>Report mensile</h3>
+        <div class="sub" style="margin-bottom:10px">
+          Genera una presentazione PPTX con le statistiche del mese selezionato in Dashboard/Analisi (panoramica generale, confronto col mese precedente, top performer, tassi di abbandono per collaboratore) da mostrare al team — pronta da scaricare, coi dati sempre allineati a quelli in dashboard.
+        </div>
+        <div class="editbar-actions">
+          <button class="btn" id="btn-report-mensile" onclick="generaReportMensile()"><span class="ico"><i class="fa-solid fa-file-powerpoint"></i></span>Esporta report mensile (PPTX)</button>
+        </div>
+      </div>
+
+      <div class="card" style="max-width:640px;margin-top:16px">
         <h3><span class="ico" style="color:var(--accent)"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.1"/><path d="M13.3 9.2a5 5 0 0 0 0-2.4l1.3-1-1.2-2.1-1.6.5a5 5 0 0 0-2-1.2L9.5 1.5H6.5l-.3 1.5a5 5 0 0 0-2 1.2l-1.6-.5-1.2 2.1 1.3 1a5 5 0 0 0 0 2.4l-1.3 1 1.2 2.1 1.6-.5a5 5 0 0 0 2 1.2l.3 1.5h3l.3-1.5a5 5 0 0 0 2-1.2l1.6.5 1.2-2.1z"/></svg></span>Sincronizzazione con GitHub</h3>
         <div class="sub" style="margin-bottom:10px">
           Collega questo dispositivo a una repository GitHub privata per avere gli stessi dati (clienti e rimborsi) su tutti i dispositivi. Il token resta salvato solo nel browser di questo dispositivo.
@@ -4564,6 +4575,9 @@ function buildPerfCollabTable(){
       allRows.push({field,name,tot:assigned.length,checkInserito,checkRate,miglioramenti,migRate,hidePct,excludeTop3});
     });
   });
+  /* Esposta come globale così il generatore di report mensile (Impostazioni)
+     può leggerla da fuori buildPerfCollabTable(), senza duplicare questa logica. */
+  window.REPORT_COLLAB_PERF=allRows;
   const perfCollabEl=document.getElementById('perf-collab-table-body');
   if(perfCollabEl){
     let perfCollabHtml='';
@@ -5287,6 +5301,9 @@ function render(){
       });
     });
   });
+  /* Esposta come globale così il generatore di report mensile (Impostazioni)
+     può leggerla da fuori render(), senza duplicare questa logica. */
+  window.REPORT_COLLAB_ABB=collabRateRows;
   const numCell=(n,key)=>`<td style="text-align:center;cursor:pointer" onclick="apriListaClienti('${key}')">${n}</td>`;
   const rowHtml=r=>`<tr class="rate-tr">
       <td><div class="rate-row-label">${collabAvatarRow(r.field,r.name)}</div></td>
@@ -6853,6 +6870,330 @@ document.querySelectorAll('.filters select').forEach(el=>{
   el.addEventListener('change',()=>flashFilterEl(el));
   el.addEventListener('blur',()=>flashFilterEl(el));
 });
+
+/* ==========================================================================
+   REPORT MENSILE (PPTX) — replica delle slide "Team Personal_G" mostrate ai
+   collaboratori, generate leggendo gli stessi dati già calcolati altrove
+   nella dashboard (KPI_LISTS, la tabella "Tasso di abbandono per
+   collaboratore" e la tabella "Performance Collaboratori" della pagina
+   Check), così i numeri restano sempre coerenti con quello che si vede a
+   schermo, senza ricalcolare la logica di business una seconda volta.
+   ========================================================================== */
+const REPORT_ROLES=[{field:'TUTOR',label:'Tutor',labelSing:'Tutor'},{field:'NUTRI',label:'Nutrizioniste',labelSing:'Nutrizionista'},{field:'TRAINER',label:'Personal Trainer',labelSing:'Trainer'}];
+const REPORT_BG='14141C', REPORT_CARD='1E1E29', REPORT_CARD2='24242F', REPORT_ACCENT='E0245E', REPORT_WHITE='FFFFFF', REPORT_MUTED='9A99A2', REPORT_BORDER='2E2E3A';
+function reportPct(n,d){ return d?(n/d*100):0; }
+function reportFmtPct1(n){ return n.toLocaleString('it-IT',{minimumFractionDigits:1,maximumFractionDigits:1})+'%'; }
+function reportFmtPct0(n){ return Math.round(n)+'%'; }
+/* Carica pptxgenjs "al bisogno" solo se per qualche motivo non fosse già
+   presente (script in head): evita di bloccare il resto della dashboard se
+   il CDN fosse temporaneamente irraggiungibile al caricamento della pagina. */
+function loadPptxGenJS(){
+  if(typeof PptxGenJS!=='undefined') return Promise.resolve();
+  return new Promise((resolve,reject)=>{
+    const s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js';
+    s.onload=()=>resolve();
+    s.onerror=()=>reject(new Error('Impossibile caricare la libreria PPTX (pptxgenjs) dal CDN.'));
+    document.head.appendChild(s);
+  });
+}
+/* Istantanea di tutti i dati necessari al report per UN mese specifico
+   ("YYYY-MM"): imposta temporaneamente dashMese/currentPage='analisi' per
+   far girare gli stessi calcoli già usati da render() e buildCheckPage()
+   (comprese le liste per collaboratore esposte come REPORT_COLLAB_ABB /
+   REPORT_COLLAB_PERF), poi ripristina lo stato originale della dashboard. */
+function computeReportMese(mese){
+  const savedMese=dashMese, savedPage=currentPage;
+  dashMese=mese; currentPage='analisi';
+  render();
+  buildCheckPage();
+  const tot=(KPI_LISTS.tot||[]).length, att=(KPI_LISTS.att||[]).length, cong=(KPI_LISTS.cong||[]).length,
+        spar=(KPI_LISTS.spar||[]).length, mai=(KPI_LISTS.mai||[]).length,
+        abb=(KPI_LISTS.abb||[]).length, nonrin=(KPI_LISTS.nonrin||[]).length,
+        abbPremium=(KPI_LISTS.abbPremium||[]).length, abbGnocca=(KPI_LISTS.abbGnocca||[]).length,
+        nonrinPremium=(KPI_LISTS.nonrinPremium||[]).length, nonrinGnocca=(KPI_LISTS.nonrinGnocca||[]).length,
+        totGnocca=(KPI_LISTS.tot||[]).filter(isGnocca).length, totPremium=tot-totGnocca;
+  const buyerRemorse=RIMB.filter(r=>{ const d=pdate(r.recesso); return d&&mesekey(d)===mese&&(r.stato||'').toUpperCase().startsWith('BUYER'); }).length;
+  const snap={
+    mese, meseLabel:mesekeyLabel(mese),
+    tot,att,cong,spar,mai,totPremium,totGnocca,
+    abb,abbPremium,abbGnocca,nonrin,nonrinPremium,nonrinGnocca,
+    buyerRemorse,
+    tassoAbbandono:reportPct(abb+nonrin,tot),
+    collabAbb:(window.REPORT_COLLAB_ABB||[]).map(r=>({...r})),
+    collabPerf:(window.REPORT_COLLAB_PERF||[]).map(r=>({...r}))
+  };
+  dashMese=savedMese; currentPage=savedPage;
+  render();
+  return snap;
+}
+/* Top 3 performance/abbandono per ruolo: stessi criteri già usati dai
+   pannelli "Top 3" della pagina Analisi (perf-top3 / abbandono-top3) —
+   performance ordinata per % miglioramento decrescente, abbandono per %
+   abbandono crescente (il migliore, cioè il più basso, per primo). */
+function reportTop3Perf(collabPerf,field){
+  return collabPerf.filter(r=>r.field===field&&!r.hidePct&&!r.excludeTop3).sort((a,b)=>b.migRate-a.migRate||b.tot-a.tot).slice(0,3);
+}
+function reportTop3Abb(collabAbb,field){
+  return collabAbb.filter(r=>r.field===field&&!r.hidePct).sort((a,b)=>a.totRate-b.totRate).slice(0,3);
+}
+/* "Vincitore del mese" per ruolo: il collaboratore posizionato più in alto
+   che compare in ENTRAMBE le classifiche (Top 3 performance e Top 3
+   abbandono) — somma delle due posizioni più bassa vince. Se nessuno compare
+   in entrambe, ripiega sul primo della classifica performance. */
+function reportVincitore(top3Perf,top3Abb){
+  const abbIdx={}; top3Abb.forEach((r,i)=>{ abbIdx[r.name]=i; });
+  let best=null,bestScore=Infinity;
+  top3Perf.forEach((r,i)=>{
+    if(abbIdx[r.name]!==undefined){
+      const score=i+abbIdx[r.name];
+      if(score<bestScore){ bestScore=score; best=r.name; }
+    }
+  });
+  if(!best&&top3Perf.length) best=top3Perf[0].name;
+  return best;
+}
+/* Aggiunge alla slide un titolo con quadratino rosa, nello stile del report
+   (icona colorata + testo grande a sinistra), usato in cima a quasi tutte le
+   slide dati. */
+function reportSlideTitle(slide,title){
+  slide.addShape('roundRect',{x:0.5,y:0.4,w:0.5,h:0.5,rectRadius:0.1,fill:{color:REPORT_ACCENT},line:{type:'none'}});
+  slide.addText(title,{x:1.15,y:0.35,w:8.5,h:0.6,fontSize:24,bold:true,color:REPORT_WHITE,fontFace:'Arial'});
+}
+function reportKpiCard(slide,x,y,w,h,value,label,sub){
+  slide.addShape('roundRect',{x,y,w,h,rectRadius:0.08,fill:{color:REPORT_CARD},line:{color:REPORT_BORDER,width:1}});
+  slide.addText(String(value),{x:x+0.18,y:y+0.12,w:w-0.36,h:h*0.5,fontSize:26,bold:true,color:REPORT_WHITE,fontFace:'Arial'});
+  slide.addText(label,{x:x+0.18,y:y+h*0.58,w:w-0.36,h:0.3,fontSize:12,bold:true,color:REPORT_WHITE,fontFace:'Arial'});
+  if(sub) slide.addText(sub,{x:x+0.18,y:y+h*0.58+0.28,w:w-0.36,h:0.35,fontSize:9.5,color:REPORT_MUTED,fontFace:'Arial'});
+}
+/* Slide "Panoramica Generale" per un mese: identica nella struttura sia per
+   il mese corrente sia per il precedente (slide 2 e 3 del report). */
+function reportPanoramicaSlide(pptx,snap){
+  const slide=pptx.addSlide(); slide.background={color:REPORT_BG};
+  reportSlideTitle(slide,'Panoramica Generale — '+snap.meseLabel.split(' ')[0]);
+  const cardW=2.9,cardH=1.35,gapX=0.15,gapY=0.15,x0=0.5,y0=1.15;
+  reportKpiCard(slide,x0,y0,cardW,cardH,snap.tot,'Ragazze in Percorso',snap.totPremium+' Premium · '+snap.totGnocca+' Gnocca');
+  reportKpiCard(slide,x0+cardW+gapX,y0,cardW,cardH,snap.abb,'Abbandoni',snap.abbPremium+' Premium · '+snap.abbGnocca+' Gnocca');
+  reportKpiCard(slide,x0+2*(cardW+gapX),y0,cardW,cardH,snap.nonrin,'Non Rinnovi',snap.nonrinPremium+' Premium · '+snap.nonrinGnocca+' Gnocca');
+  const y1=y0+cardH+gapY;
+  reportKpiCard(slide,x0,y1,cardW,cardH,snap.cong,'Sospese',reportFmtPct1(reportPct(snap.cong,snap.tot))+' del totale ragazze');
+  reportKpiCard(slide,x0+cardW+gapX,y1,cardW,cardH,snap.spar,'Sparite',reportFmtPct1(reportPct(snap.spar,snap.tot))+' del totale ragazze');
+  reportKpiCard(slide,x0+2*(cardW+gapX),y1,cardW,cardH,snap.buyerRemorse,'Buyer Remorse',reportFmtPct1(reportPct(snap.buyerRemorse,snap.tot))+' del totale');
+  slide.addShape('roundRect',{x:x0,y:y1+cardH+0.25,w:3.4,h:0.55,rectRadius:0.28,fill:{color:REPORT_ACCENT},line:{type:'none'}});
+  slide.addText([{text:'TASSO ABBANDONO   ',options:{fontSize:13,bold:true,color:REPORT_WHITE}},{text:reportFmtPct1(snap.tassoAbbandono),options:{fontSize:18,bold:true,color:REPORT_WHITE}}],
+    {x:x0+0.2,y:y1+cardH+0.25,w:3.0,h:0.55,valign:'middle',fontFace:'Arial'});
+}
+/* Slide 4: confronto sintetico tra mese corrente e precedente. */
+function reportConfrontoSlide(pptx,curr,prev){
+  const slide=pptx.addSlide(); slide.background={color:REPORT_BG};
+  reportSlideTitle(slide,'Confronto Mese Precedente');
+  const verbo=curr.tassoAbbandono>prev.tassoAbbandono+0.05?'peggiorato':curr.tassoAbbandono<prev.tassoAbbandono-0.05?'migliorato':'rimasto stabile';
+  slide.addShape('roundRect',{x:0.5,y:1.2,w:9,h:0.8,rectRadius:0.08,fill:{color:REPORT_CARD},line:{type:'none'}});
+  slide.addText([
+    {text:'Il tasso di abbandono è ',options:{color:REPORT_MUTED}},
+    {text:verbo+' ',options:{bold:true,color:REPORT_WHITE}},
+    {text:'dal ',options:{color:REPORT_MUTED}},
+    {text:reportFmtPct1(prev.tassoAbbandono)+' ',options:{bold:true,color:REPORT_ACCENT}},
+    {text:'di '+prev.meseLabel.split(' ')[0]+' al ',options:{color:REPORT_MUTED}},
+    {text:reportFmtPct1(curr.tassoAbbandono)+' ',options:{bold:true,color:REPORT_ACCENT}},
+    {text:'di '+curr.meseLabel.split(' ')[0]+'.',options:{color:REPORT_MUTED}}
+  ],{x:0.75,y:1.2,w:8.5,h:0.8,valign:'middle',fontSize:14,fontFace:'Arial'});
+  const rows=[
+    ['Abbandoni',prev.abb,curr.abb],
+    ['Non Rinnovi',prev.nonrin,curr.nonrin],
+    ['Sospese',prev.cong,curr.cong],
+    ['Sparite',prev.spar,curr.spar],
+    ['Buyer Remorse',prev.buyerRemorse,curr.buyerRemorse]
+  ];
+  let y=2.25;
+  rows.forEach(([label,p,c])=>{
+    const delta=c-p;
+    const col=delta>0?'E0245E':delta<0?'2FBF71':REPORT_MUTED;
+    const arrow=delta>0?'▲':delta<0?'▼':'—';
+    slide.addShape('roundRect',{x:0.5,y,w:9,h:0.52,rectRadius:0.06,fill:{color:REPORT_CARD},line:{type:'none'}});
+    slide.addText(label,{x:0.75,y,w:3,h:0.52,valign:'middle',fontSize:13,bold:true,color:REPORT_WHITE,fontFace:'Arial'});
+    slide.addText(p+'  →  '+c,{x:4,y,w:2.8,h:0.52,valign:'middle',align:'center',fontSize:13,color:REPORT_MUTED,fontFace:'Arial'});
+    slide.addText(arrow+' '+(delta>0?'+':'')+delta,{x:7.2,y,w:2,h:0.52,valign:'middle',align:'center',fontSize:13,bold:true,color:col,fontFace:'Arial'});
+    y+=0.62;
+  });
+}
+/* Slide 5 e 6: Top 3 performance / Top 3 abbandono, tre colonne (una per
+   ruolo), stesso ordine dei pannelli già presenti nella pagina Analisi. */
+function reportTop3Slide(pptx,title,perRuolo){
+  const slide=pptx.addSlide(); slide.background={color:REPORT_BG};
+  reportSlideTitle(slide,title+' — '+perRuolo.meseLabel.split(' ')[0]);
+  const colW=2.9,gap=0.15,x0=0.5,y0=1.25;
+  REPORT_ROLES.forEach((role,ci)=>{
+    const x=x0+ci*(colW+gap);
+    slide.addText(role.label,{x,y:y0,w:colW,h:0.4,fontSize:14,bold:true,color:REPORT_WHITE,fontFace:'Arial'});
+    const list=perRuolo.get(role.field);
+    let y=y0+0.5;
+    if(!list.length){
+      slide.addText('Nessun dato',{x,y,w:colW,h:0.4,fontSize:11,color:REPORT_MUTED,fontFace:'Arial'});
+    }
+    list.forEach((r,i)=>{
+      slide.addShape('roundRect',{x,y,w:colW,h:0.55,rectRadius:0.06,fill:{color:REPORT_CARD},line:{type:'none'}});
+      const rankCol=i===0?'C99A2E':i===1?'9AA0A6':'B5720F';
+      slide.addShape('ellipse',{x:x+0.1,y:y+0.13,w:0.3,h:0.3,fill:{color:rankCol},line:{type:'none'}});
+      slide.addText(String(i+1),{x:x+0.1,y:y+0.13,w:0.3,h:0.3,align:'center',valign:'middle',fontSize:11,bold:true,color:REPORT_WHITE,fontFace:'Arial'});
+      slide.addText(r.name,{x:x+0.5,y,w:colW-1.1,h:0.55,valign:'middle',fontSize:12,color:REPORT_WHITE,fontFace:'Arial'});
+      y+=0.63;
+    });
+  });
+}
+/* Slide 7: Vincitori del mese (uno per ruolo). */
+function reportVincitoriSlide(pptx,snap,vincitori){
+  const slide=pptx.addSlide(); slide.background={color:REPORT_BG};
+  reportSlideTitle(slide,'Vincitori del Mese — '+snap.meseLabel.split(' ')[0]);
+  const colW=2.9,gap=0.15,x0=0.5,y0=1.4;
+  REPORT_ROLES.forEach((role,ci)=>{
+    const x=x0+ci*(colW+gap);
+    slide.addShape('roundRect',{x,y:y0,w:colW,h:2.6,rectRadius:0.1,fill:{color:REPORT_CARD},line:{color:REPORT_ACCENT,width:1.5}});
+    slide.addShape('roundRect',{x:x+colW/2-0.5,y:y0+0.3,w:1,h:1,rectRadius:0.5,fill:{color:REPORT_ACCENT},line:{type:'none'}});
+    slide.addText('🏆',{x:x+colW/2-0.5,y:y0+0.3,w:1,h:1,align:'center',valign:'middle',fontSize:28,fontFace:'Arial'});
+    slide.addText('MIGLIOR '+role.labelSing.toUpperCase(),{x,y:y0+1.45,w:colW,h:0.35,align:'center',fontSize:10,bold:true,color:REPORT_MUTED,fontFace:'Arial'});
+    slide.addText(vincitori.get(role.field)||'—',{x,y:y0+1.8,w:colW,h:0.6,align:'center',fontSize:20,bold:true,color:REPORT_WHITE,fontFace:'Arial'});
+  });
+}
+/* Slide 8: tabella Performance Collaboratori (stessi dati della tabella
+   "Performance per collaboratore" nella pagina Check). */
+function reportPerfTableSlide(pptx,snap){
+  const slide=pptx.addSlide(); slide.background={color:REPORT_BG};
+  reportSlideTitle(slide,'Performance Collaboratori');
+  const rows=[['Nome','Clienti','Check','Miglioramento','% Check','% Migl./Tot.','% Migl./Check'].map(h=>({text:h,options:{bold:true,color:REPORT_WHITE,fill:{color:REPORT_CARD2},fontSize:10}}))];
+  let sTot=0,sCheck=0,sMig=0;
+  const sorted=REPORT_ROLES.flatMap(role=>snap.collabPerf.filter(r=>r.field===role.field).sort((a,b)=>a.name.localeCompare(b.name,'it')));
+  sorted.forEach(r=>{
+    sTot+=r.tot; sCheck+=r.checkInserito; sMig+=r.miglioramenti;
+    const migPerCheck=r.checkInserito?reportPct(r.miglioramenti,r.checkInserito):null;
+    rows.push([
+      {text:r.name,options:{color:REPORT_WHITE,fontSize:10}},
+      {text:String(r.tot),options:{color:REPORT_MUTED,fontSize:10,align:'center'}},
+      {text:String(r.checkInserito),options:{color:REPORT_MUTED,fontSize:10,align:'center'}},
+      {text:String(r.miglioramenti),options:{color:REPORT_MUTED,fontSize:10,align:'center'}},
+      {text:r.hidePct?'—':reportFmtPct0(r.checkRate),options:{color:REPORT_MUTED,fontSize:10,align:'center'}},
+      {text:r.hidePct?'—':reportFmtPct0(r.migRate),options:{color:REPORT_MUTED,fontSize:10,align:'center'}},
+      {text:r.hidePct||migPerCheck===null?'—':reportFmtPct0(migPerCheck),options:{color:REPORT_MUTED,fontSize:10,align:'center'}}
+    ]);
+  });
+  rows.push([
+    {text:'TOTALE',options:{bold:true,color:REPORT_WHITE,fill:{color:'1F3A2C'},fontSize:10}},
+    {text:String(sTot),options:{bold:true,color:REPORT_WHITE,fill:{color:'1F3A2C'},fontSize:10,align:'center'}},
+    {text:String(sCheck),options:{bold:true,color:REPORT_WHITE,fill:{color:'1F3A2C'},fontSize:10,align:'center'}},
+    {text:String(sMig),options:{bold:true,color:REPORT_WHITE,fill:{color:'1F3A2C'},fontSize:10,align:'center'}},
+    {text:reportFmtPct0(reportPct(sCheck,sTot)),options:{bold:true,color:REPORT_WHITE,fill:{color:'1F3A2C'},fontSize:10,align:'center'}},
+    {text:reportFmtPct0(reportPct(sMig,sTot)),options:{bold:true,color:REPORT_WHITE,fill:{color:'1F3A2C'},fontSize:10,align:'center'}},
+    {text:reportFmtPct0(reportPct(sMig,sCheck)),options:{bold:true,color:REPORT_WHITE,fill:{color:'1F3A2C'},fontSize:10,align:'center'}}
+  ]);
+  slide.addTable(rows,{x:0.4,y:1.15,w:9.2,colW:[2.4,1.1,1.1,1.5,1.1,1.5,1.5],border:{type:'solid',color:REPORT_BORDER,pts:0.5},fill:{color:REPORT_BG},autoPage:true,autoPageLineWeight:0.5,fontFace:'Arial'});
+}
+/* Slide 9: grafico a barre % Check / % Miglioramento per collaboratore. */
+function reportCheckChartSlide(pptx,snap){
+  const slide=pptx.addSlide(); slide.background={color:REPORT_BG};
+  reportSlideTitle(slide,'Check & Miglioramento');
+  const sorted=REPORT_ROLES.flatMap(role=>snap.collabPerf.filter(r=>r.field===role.field).sort((a,b)=>a.name.localeCompare(b.name,'it')));
+  const labels=sorted.map(r=>r.name);
+  slide.addChart([
+    {name:'% Check',labels,values:sorted.map(r=>+r.checkRate.toFixed(1))},
+    {name:'% Miglioramento',labels,values:sorted.map(r=>+r.migRate.toFixed(1))}
+  ],{type:'bar',x:0.3,y:1.15,w:9.4,h:4.1,barDir:'col',barGapWidthPct:30,chartColors:['9AA0A6',REPORT_ACCENT],
+    catAxisLabelColor:REPORT_MUTED,catAxisLabelFontSize:8,valAxisLabelColor:REPORT_MUTED,valAxisLabelFontSize:9,
+    showLegend:true,legendColor:REPORT_MUTED,legendFontSize:10,showValue:false,
+    catAxisLineColor:REPORT_BORDER,valAxisLineColor:REPORT_BORDER,valGridLine:{color:REPORT_BORDER}});
+}
+/* Slide 10: tabella Tassi di Abbandono per collaboratore (stessa tabella già
+   pubblicata oggi nella pagina Analisi), più riga TOTALE e avviso soglia. */
+function reportAbbTableSlide(pptx,snap,soglia){
+  const slide=pptx.addSlide(); slide.background={color:REPORT_BG};
+  reportSlideTitle(slide,'Tassi di Abbandono');
+  const rows=[['Nome','Clienti','Abb.','Non Rinn.','% Abb.'].map(h=>({text:h,options:{bold:true,color:REPORT_WHITE,fill:{color:REPORT_CARD2},fontSize:10}}))];
+  const sorted=REPORT_ROLES.flatMap(role=>snap.collabAbb.filter(r=>r.field===role.field).sort((a,b)=>a.name.localeCompare(b.name,'it')));
+  const oltreSoglia=[];
+  sorted.forEach(r=>{
+    if(!r.hidePct&&r.totRate>soglia) oltreSoglia.push(r.name+' ('+reportFmtPct1(r.totRate)+')');
+    rows.push([
+      {text:r.name,options:{color:REPORT_WHITE,fontSize:10}},
+      {text:String(r.tot),options:{color:REPORT_MUTED,fontSize:10,align:'center'}},
+      {text:String(r.abbN),options:{color:REPORT_MUTED,fontSize:10,align:'center'}},
+      {text:String(r.nonrinN),options:{color:REPORT_MUTED,fontSize:10,align:'center'}},
+      {text:r.hidePct?'—':reportFmtPct1(r.totRate),options:{color:r.hidePct?REPORT_MUTED:(r.totRate>soglia?REPORT_ACCENT:REPORT_MUTED),bold:!r.hidePct&&r.totRate>soglia,fontSize:10,align:'center'}}
+    ]);
+  });
+  rows.push([
+    {text:'TOTALE',options:{bold:true,color:REPORT_WHITE,fill:{color:'1F3A2C'},fontSize:10}},
+    {text:String(snap.tot),options:{bold:true,color:REPORT_WHITE,fill:{color:'1F3A2C'},fontSize:10,align:'center'}},
+    {text:String(snap.abb),options:{bold:true,color:REPORT_WHITE,fill:{color:'1F3A2C'},fontSize:10,align:'center'}},
+    {text:String(snap.nonrin),options:{bold:true,color:REPORT_WHITE,fill:{color:'1F3A2C'},fontSize:10,align:'center'}},
+    {text:reportFmtPct1(snap.tassoAbbandono),options:{bold:true,color:REPORT_WHITE,fill:{color:'1F3A2C'},fontSize:10,align:'center'}}
+  ]);
+  slide.addTable(rows,{x:0.4,y:1.15,w:9.2,colW:[3.2,1.5,1.5,1.7,1.3],border:{type:'solid',color:REPORT_BORDER,pts:0.5},fill:{color:REPORT_BG},autoPage:true,autoPageLineWeight:0.5,fontFace:'Arial'});
+  if(oltreSoglia.length){
+    const y=1.15+0.35*(rows.length+1)>4.9?4.9:1.15+0.35*(rows.length+1);
+    slide.addShape('roundRect',{x:0.4,y,w:9.2,h:0.6,rectRadius:0.08,fill:{color:'3A2E10'},line:{color:'C99A2E',width:1}});
+    slide.addText('⚠ '+oltreSoglia.join(', ')+' — superano la soglia critica del '+soglia+'%.',{x:0.6,y,w:8.8,h:0.6,valign:'middle',fontSize:10.5,color:'F0C24B',fontFace:'Arial'});
+  }
+}
+/* Slide 11: grafico orizzontale di confronto abbandono tra collaboratori,
+   ordinato dal peggiore al migliore, con riga soglia. */
+function reportAbbChartSlide(pptx,snap,soglia){
+  const slide=pptx.addSlide(); slide.background={color:REPORT_BG};
+  reportSlideTitle(slide,'Abbandono — Confronto Collaboratori');
+  const sorted=snap.collabAbb.filter(r=>!r.hidePct).slice().sort((a,b)=>a.totRate-b.totRate);
+  slide.addChart([{name:'% Abbandono',labels:sorted.map(r=>r.name),values:sorted.map(r=>+r.totRate.toFixed(1))}],
+    {type:'bar',x:0.3,y:1.15,w:9.4,h:4.1,barDir:'bar',chartColors:[REPORT_ACCENT],
+    catAxisLabelColor:REPORT_MUTED,catAxisLabelFontSize:9,valAxisLabelColor:REPORT_MUTED,valAxisLabelFontSize:9,
+    showLegend:false,showValue:true,dataLabelColor:REPORT_WHITE,dataLabelFontSize:8,
+    catAxisLineColor:REPORT_BORDER,valAxisLineColor:REPORT_BORDER,valGridLine:{color:REPORT_BORDER}});
+  slide.addText('Soglia obiettivo ≤ '+soglia+'%',{x:6.8,y:0.42,w:2.7,h:0.4,align:'right',fontSize:11,bold:true,color:REPORT_ACCENT,fontFace:'Arial'});
+}
+/* Slide finale di chiusura. */
+function reportThankYouSlide(pptx){
+  const slide=pptx.addSlide(); slide.background={color:REPORT_BG};
+  slide.addText('Grazie per il vostro impegno',{x:0.7,y:2.3,w:8,h:1,fontSize:32,bold:true,color:REPORT_WHITE,fontFace:'Arial'});
+}
+/* Punto d'ingresso: genera e scarica il report del mese selezionato nella
+   dashboard (quello mostrato in cima alla pagina Analisi), confrontandolo
+   col mese precedente. Richiamato dal pulsante in Impostazioni. */
+async function generaReportMensile(){
+  const btn=document.getElementById('btn-report-mensile');
+  const originalHtml=btn?btn.innerHTML:null;
+  if(btn){ btn.disabled=true; btn.innerHTML='Generazione in corso…'; }
+  try{
+    await loadPptxGenJS();
+    const meseCorr=effectiveMese();
+    const mesePrec=prevMeseKey(meseCorr);
+    const curr=computeReportMese(meseCorr);
+    const prev=computeReportMese(mesePrec);
+    const top3PerfMap=new Map(REPORT_ROLES.map(r=>[r.field,reportTop3Perf(curr.collabPerf,r.field)]));
+    const top3AbbMap=new Map(REPORT_ROLES.map(r=>[r.field,reportTop3Abb(curr.collabAbb,r.field)]));
+    const vincitoriMap=new Map(REPORT_ROLES.map(r=>[r.field,reportVincitore(top3PerfMap.get(r.field),top3AbbMap.get(r.field))]));
+    const pptx=new PptxGenJS();
+    pptx.defineLayout({name:'REPORT_16x9',width:10,height:5.63});
+    pptx.layout='REPORT_16x9';
+    const title=pptx.addSlide(); title.background={color:REPORT_BG};
+    title.addShape('roundRect',{x:0.6,y:1.55,w:2.5,h:0.45,rectRadius:0.22,fill:{type:'none'},line:{color:REPORT_ACCENT,width:1.5}});
+    title.addText('REPORT MENSILE',{x:0.6,y:1.55,w:2.5,h:0.45,align:'center',valign:'middle',fontSize:11,bold:true,color:REPORT_ACCENT,fontFace:'Arial'});
+    title.addText('Team Personal_G',{x:0.55,y:2.2,w:8,h:1,fontSize:40,bold:true,color:REPORT_WHITE,fontFace:'Arial'});
+    title.addText(curr.meseLabel,{x:0.6,y:3.15,w:5,h:0.5,italic:true,fontSize:16,color:REPORT_MUTED,fontFace:'Arial'});
+    reportPanoramicaSlide(pptx,curr);
+    reportPanoramicaSlide(pptx,prev);
+    reportConfrontoSlide(pptx,curr,prev);
+    reportTop3Slide(pptx,'Top 3 Performance',{meseLabel:curr.meseLabel,get:f=>top3PerfMap.get(f)});
+    reportTop3Slide(pptx,'Top 3 Abbandono',{meseLabel:curr.meseLabel,get:f=>top3AbbMap.get(f)});
+    reportVincitoriSlide(pptx,curr,vincitoriMap);
+    reportPerfTableSlide(pptx,curr);
+    reportCheckChartSlide(pptx,curr);
+    reportAbbTableSlide(pptx,curr,8);
+    reportAbbChartSlide(pptx,curr,8);
+    reportThankYouSlide(pptx);
+    await pptx.writeFile({fileName:'Report_Personal_G_'+curr.meseLabel.replace(' ','_')+'.pptx'});
+  }catch(err){
+    console.error(err);
+    alert('Errore nella generazione del report: '+(err&&err.message?err.message:err));
+  }finally{
+    if(btn){ btn.disabled=false; btn.innerHTML=originalHtml; }
+  }
+}
 </script>
 </body>
 </html>
