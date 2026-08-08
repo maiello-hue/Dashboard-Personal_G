@@ -1758,7 +1758,7 @@
    "€ NUTRI": "€ 12,00",
    "CONTRATTO": "",
    "CHECK": "SI",
-   "RISULTATO": "",
+   "RISULTATO": "SI",
    "FONTE": "ADV",
    "DATA INCASSO": "29/07/2026",
    "_PRIMO_INIZIO": "13/09/2025",
@@ -26748,5 +26748,5 @@
   "Margherita": "3515862081"
  },
  "waTemplate": "Ciao {nome}, ecco i rinnovi da gestire:\n\n{lista}\n\nGrazie!",
- "updatedAt": "2026-08-08T13:45:37.990Z"
+ "updatedAt": "2026-08-08T13:45:41.156Z"
 }
