@@ -11484,8 +11484,9 @@
    "RISULTATO": "",
    "FONTE": "ORGANICO",
    "EMAIL": "",
-   "VENDITORE": "",
-   "_PRIMO_INIZIO": "10/07/2026"
+   "VENDITORE": "Salvatore",
+   "_PRIMO_INIZIO": "10/07/2026",
+   "N FATTURA": ""
   },
   {
    "CLIENTE": "Giorgia Frizzerin",
@@ -26646,5 +26647,5 @@
  "payLog": [],
  "collabPhones": {},
  "waTemplate": "Ciao {nome}, ecco i rinnovi da gestire:\n\n{lista}\n\nGrazie!",
- "updatedAt": "2026-08-07T21:33:47.335Z"
+ "updatedAt": "2026-08-08T11:05:50.331Z"
 }
