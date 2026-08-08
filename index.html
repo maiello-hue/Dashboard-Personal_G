@@ -3340,12 +3340,12 @@ function buildTimelineStatiHtml(r){
   const dIngresso=pdate(rawIngresso);
   const eventi=getStatoLog().filter(e=>e['CLIENTE']===nome).slice().sort((a,b)=>(pdate(a['DATA'])||0)-(pdate(b['DATA'])||0));
   const items=[];
-  if(dIngresso) items.push({stato:'IN PERCORSO',data:rawIngresso,label:'In percorso · primo ingresso'});
+  if(dIngresso) items.push({stato:'IN PERCORSO',data:rawIngresso,label:'IN PERCORSO · primo ingresso'});
   let prevStato=dIngresso?'IN PERCORSO':null;
   eventi.forEach(e=>{
     const nuovoStato=(e['STATO']||'').toUpperCase();
     const isReattivata=nuovoStato.startsWith('IN PERCORSO')&&prevStato&&!prevStato.toUpperCase().startsWith('IN PERCORSO');
-    items.push({stato:e['STATO'],data:e['DATA'],label:isReattivata?'Riattivata, in percorso':statoLabel(e['STATO'])});
+    items.push({stato:e['STATO'],data:e['DATA'],label:isReattivata?'Riattivata, IN PERCORSO':statoLabel(e['STATO'])});
     prevStato=e['STATO'];
   });
   if(!items.length) return '';
