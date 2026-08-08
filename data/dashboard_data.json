@@ -711,9 +711,9 @@
    "€ NUTRI": "€ 12,00",
    "CONTRATTO": "SI",
    "CHECK": "SI",
-   "RISULTATO": "NO",
+   "RISULTATO": "SI",
    "FONTE": "INSTAGRAM",
-   "DATA CHECK": "31/07/2026",
+   "DATA CHECK": "08/08/2026",
    "_CHECK_JULY_FIX": "1",
    "_PRIMO_INIZIO": "04/07/2025"
   },
@@ -26747,5 +26747,5 @@
   "Margherita": "3515862081"
  },
  "waTemplate": "Ciao {nome}, ecco i rinnovi da gestire:\n\n{lista}\n\nGrazie!",
- "updatedAt": "2026-08-08T13:45:04.563Z"
+ "updatedAt": "2026-08-08T13:45:21.924Z"
 }
