@@ -1211,6 +1211,11 @@ select.pill-btn:focus{outline:none;border-color:var(--border-strong)}
     <div id="page-pagamenti" style="display:none">
       <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px">
         <input type="text" id="pg-search" placeholder="Cerca cliente…" oninput="debouncedBuildPagamentiPage()" style="flex:1;height:36px;border-radius:8px;border:1px solid var(--border-strong);background:var(--card);padding:0 12px;font-size:13px;color:var(--text)">
+        <select id="pg-filter" onchange="buildPagamentiPage()" style="height:36px;border-radius:8px;border:1px solid var(--border-strong);background:var(--card);padding:0 10px;font-size:13px;color:var(--text)">
+          <option value="tutte">Tutte</option>
+          <option value="premium">Premium</option>
+          <option value="gnocca">Gnocca</option>
+        </select>
         <span id="pg-summary" style="font-size:12px;color:var(--muted2);white-space:nowrap"></span>
       </div>
       <div id="pg-list"></div>
@@ -6262,16 +6267,24 @@ function pgRowHtml(nome,payE,rimbE){
       ${open?pgMovimentiHtml(nome,payE,rimbE):''}
     </div>`;
 }
+/* Percorsi che contano come "Gnocca" per la pagina Pagamenti: tutti gli altri
+   percorsi (incluso il misto "6 mesi + 6 Gnocca") contano come "Premium". */
+const PG_PERCORSI_GNOCCA=['GNOCCA 12','GNOCCA 6','GNOCCA 4 LIFE','FIGO 12','FIGO 6','PROMO ESTATE'];
 function buildPagamentiPage(){
   const q=(document.getElementById('pg-search').value||'').trim().toLowerCase();
+  const filtro=document.getElementById('pg-filter').value;
   const payByClient={};
   getPayLog().forEach(e=>{ const n=e['CLIENTE']; if(!n) return; (payByClient[n]=payByClient[n]||[]).push(e); });
   const rimbByClient={};
   RIMB.forEach(r=>{ if(!r.cliente) return; (rimbByClient[r.cliente]=rimbByClient[r.cliente]||[]).push(r); });
-  /* Solo clienti ancora nell'elenco attivo (DATA): i rimborsi di clienti non
-     più attive restano visibili e modificabili dalla pagina Rimborsi, come
-     già oggi. */
-  const nomi=DATA.map(r=>r['CLIENTE']).filter(Boolean).sort((a,b)=>a.localeCompare(b,'it'));
+  /* Clienti ancora attive: escluse chi ha stato Abbandonato o Non rinnovato (i
+     loro rimborsi restano comunque visibili/modificabili dalla pagina
+     Rimborsi, come già oggi). L'elenco si aggiorna da solo man mano che si
+     aggiungono nuove clienti, perché legge sempre DATA in tempo reale. */
+  let attivi=DATA.filter(r=>r['STATO CLIENTE']!=='ABBANDONATO'&&r['STATO CLIENTE']!=='NON RINNOVATO');
+  if(filtro==='premium') attivi=attivi.filter(r=>!PG_PERCORSI_GNOCCA.includes(r['PERCORSO']));
+  if(filtro==='gnocca') attivi=attivi.filter(r=>PG_PERCORSI_GNOCCA.includes(r['PERCORSO']));
+  const nomi=attivi.map(r=>r['CLIENTE']).filter(Boolean).sort((a,b)=>a.localeCompare(b,'it'));
   const filtrati=q?nomi.filter(n=>n.toLowerCase().includes(q)):nomi;
   const conMovimenti=nomi.filter(n=>(payByClient[n]||[]).length||(rimbByClient[n]||[]).length).length;
   document.getElementById('pg-summary').textContent=conMovimenti+' clienti con movimenti su '+nomi.length;
