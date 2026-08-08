@@ -26723,6 +26723,11 @@
    "CLIENTE": "Cristina Corsini",
    "STATO": "CONGELATO",
    "DATA": "30/05/2026"
+  },
+  {
+   "CLIENTE": "Patrycja Bogdan",
+   "STATO": "CONGELATO",
+   "DATA": "25/11/2025"
   }
  ],
  "payLog": [],
@@ -26734,5 +26739,5 @@
   "Margherita": "3515862081"
  },
  "waTemplate": "Ciao {nome}, ecco i rinnovi da gestire:\n\n{lista}\n\nGrazie!",
- "updatedAt": "2026-08-08T13:03:50.668Z"
+ "updatedAt": "2026-08-08T13:04:22.106Z"
 }
