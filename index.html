@@ -1700,7 +1700,7 @@ let currentPage='dashboard';
    cambio pagina rilanciamo quindi render() così, se nel frattempo i dati
    erano cambiati mentre l'utente era altrove, la pagina che si sta per
    mostrare risulta comunque sempre aggiornata. */
-const RENDER_ON_ENTER=new Set(['clienti','analisi','incassi','rinnovi','compensi','check']);
+const RENDER_ON_ENTER=new Set(['clienti','analisi','incassi','rinnovi','compensi','check','pagamenti']);
 const LAST_PAGE_KEY='last_page_v1';
 function showPage(p){
   currentPage=p;
@@ -6267,9 +6267,6 @@ function pgRowHtml(nome,payE,rimbE){
       ${open?pgMovimentiHtml(nome,payE,rimbE):''}
     </div>`;
 }
-/* Percorsi che contano come "Gnocca" per la pagina Pagamenti: tutti gli altri
-   percorsi (incluso il misto "6 mesi + 6 Gnocca") contano come "Premium". */
-const PG_PERCORSI_GNOCCA=['GNOCCA 12','GNOCCA 6','GNOCCA 4 LIFE','FIGO 12','FIGO 6','PROMO ESTATE'];
 function buildPagamentiPage(){
   const q=(document.getElementById('pg-search').value||'').trim().toLowerCase();
   const filtro=document.getElementById('pg-filter').value;
@@ -6277,13 +6274,17 @@ function buildPagamentiPage(){
   getPayLog().forEach(e=>{ const n=e['CLIENTE']; if(!n) return; (payByClient[n]=payByClient[n]||[]).push(e); });
   const rimbByClient={};
   RIMB.forEach(r=>{ if(!r.cliente) return; (rimbByClient[r.cliente]=rimbByClient[r.cliente]||[]).push(r); });
-  /* Clienti ancora attive: escluse chi ha stato Abbandonato o Non rinnovato (i
-     loro rimborsi restano comunque visibili/modificabili dalla pagina
-     Rimborsi, come già oggi). L'elenco si aggiorna da solo man mano che si
-     aggiungono nuove clienti, perché legge sempre DATA in tempo reale. */
-  let attivi=DATA.filter(r=>r['STATO CLIENTE']!=='ABBANDONATO'&&r['STATO CLIENTE']!=='NON RINNOVATO');
-  if(filtro==='premium') attivi=attivi.filter(r=>!PG_PERCORSI_GNOCCA.includes(r['PERCORSO']));
-  if(filtro==='gnocca') attivi=attivi.filter(r=>PG_PERCORSI_GNOCCA.includes(r['PERCORSO']));
+  /* Stessa identica lista "Clienti totali" della Dashboard (KPI_LISTS.tot,
+     calcolata da render(): esclude Abbandonate/Non rinnovate con la stessa
+     logica usata lì, vedi contavaAlMese), così il numero qui coincide sempre
+     con quello mostrato in Dashboard. Premium/Gnocca usa isGnocca(), la
+     stessa funzione già usata per quella suddivisione altrove nell'app
+     (percorsi con "Gnocca" nel nome, PROMO ESTATE/FIGO 6/FIGO 12, e le
+     clienti del foglio Gnocca). L'elenco si aggiorna da solo man mano che si
+     aggiungono nuove clienti, perché legge sempre i dati in tempo reale. */
+  let attivi=KPI_LISTS.tot||[];
+  if(filtro==='premium') attivi=attivi.filter(r=>!isGnocca(r));
+  if(filtro==='gnocca') attivi=attivi.filter(isGnocca);
   const nomi=attivi.map(r=>r['CLIENTE']).filter(Boolean).sort((a,b)=>a.localeCompare(b,'it'));
   const filtrati=q?nomi.filter(n=>n.toLowerCase().includes(q)):nomi;
   const conMovimenti=nomi.filter(n=>(payByClient[n]||[]).length||(rimbByClient[n]||[]).length).length;
