@@ -7093,10 +7093,13 @@ function reportCheckChartSlide(pptx,snap){
   reportSlideTitle(slide,'Check & Miglioramento');
   const sorted=REPORT_ROLES.flatMap(role=>snap.collabPerf.filter(r=>r.field===role.field).sort((a,b)=>a.name.localeCompare(b.name,'it')));
   const labels=sorted.map(r=>r.name);
-  slide.addChart([
+  /* addChart(type,data,opts): il "type" va passato come primo argomento
+     separato, non dentro alle opzioni — altrimenti pptxgenjs lancia un
+     TypeError interno (_dataIndex su undefined). */
+  slide.addChart('bar',[
     {name:'% Check',labels,values:sorted.map(r=>+r.checkRate.toFixed(1))},
     {name:'% Miglioramento',labels,values:sorted.map(r=>+r.migRate.toFixed(1))}
-  ],{type:'bar',x:0.3,y:1.15,w:9.4,h:4.1,barDir:'col',barGapWidthPct:30,chartColors:['9AA0A6',REPORT_ACCENT],
+  ],{x:0.3,y:1.15,w:9.4,h:4.1,barDir:'col',barGapWidthPct:30,chartColors:['9AA0A6',REPORT_ACCENT],
     catAxisLabelColor:REPORT_MUTED,catAxisLabelFontSize:8,valAxisLabelColor:REPORT_MUTED,valAxisLabelFontSize:9,
     showLegend:true,legendColor:REPORT_MUTED,legendFontSize:10,showValue:false,
     catAxisLineColor:REPORT_BORDER,valAxisLineColor:REPORT_BORDER,valGridLine:{color:REPORT_BORDER}});
@@ -7139,8 +7142,8 @@ function reportAbbChartSlide(pptx,snap,soglia){
   const slide=pptx.addSlide(); slide.background={color:REPORT_BG};
   reportSlideTitle(slide,'Abbandono — Confronto Collaboratori');
   const sorted=snap.collabAbb.filter(r=>!r.hidePct).slice().sort((a,b)=>a.totRate-b.totRate);
-  slide.addChart([{name:'% Abbandono',labels:sorted.map(r=>r.name),values:sorted.map(r=>+r.totRate.toFixed(1))}],
-    {type:'bar',x:0.3,y:1.15,w:9.4,h:4.1,barDir:'bar',chartColors:[REPORT_ACCENT],
+  slide.addChart('bar',[{name:'% Abbandono',labels:sorted.map(r=>r.name),values:sorted.map(r=>+r.totRate.toFixed(1))}],
+    {x:0.3,y:1.15,w:9.4,h:4.1,barDir:'bar',chartColors:[REPORT_ACCENT],
     catAxisLabelColor:REPORT_MUTED,catAxisLabelFontSize:9,valAxisLabelColor:REPORT_MUTED,valAxisLabelFontSize:9,
     showLegend:false,showValue:true,dataLabelColor:REPORT_WHITE,dataLabelFontSize:8,
     catAxisLineColor:REPORT_BORDER,valAxisLineColor:REPORT_BORDER,valGridLine:{color:REPORT_BORDER}});
@@ -7158,6 +7161,7 @@ async function generaReportMensile(){
   const btn=document.getElementById('btn-report-mensile');
   const originalHtml=btn?btn.innerHTML:null;
   if(btn){ btn.disabled=true; btn.innerHTML='Generazione in corso…'; }
+  let errMsg=null;
   try{
     await loadPptxGenJS();
     const meseCorr=effectiveMese();
@@ -7188,10 +7192,17 @@ async function generaReportMensile(){
     reportThankYouSlide(pptx);
     await pptx.writeFile({fileName:'Report_Personal_G_'+curr.meseLabel.replace(' ','_')+'.pptx'});
   }catch(err){
+    /* Niente alert(): è un dialogo modale bloccante e congelerebbe la pagina
+       finché qualcuno non lo chiude manualmente. Mostriamo l'errore in modo
+       non bloccante direttamente sul pulsante. */
     console.error(err);
-    alert('Errore nella generazione del report: '+(err&&err.message?err.message:err));
+    errMsg=(err&&err.message)?err.message:String(err);
   }finally{
-    if(btn){ btn.disabled=false; btn.innerHTML=originalHtml; }
+    if(btn){
+      btn.disabled=false;
+      if(errMsg){ btn.innerHTML='Errore nella generazione — vedi console'; setTimeout(()=>{ if(btn) btn.innerHTML=originalHtml; },5000); }
+      else btn.innerHTML=originalHtml;
+    }
   }
 }
 </script>
