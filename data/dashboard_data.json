@@ -2770,7 +2770,9 @@
    "CHECK": "",
    "RISULTATO": "",
    "FONTE": "REFERRAL",
-   "_PRIMO_INIZIO": "06/10/2025"
+   "_PRIMO_INIZIO": "06/10/2025",
+   "CHECK_ESCLUSA": "SI",
+   "CHECK_ESCLUSA_MESE": "2026-08"
   },
   {
    "CLIENTE": "Clarissa Birindelli",
@@ -26620,9 +26622,29 @@
  ],
  "statoLog": [
   {
+   "CLIENTE": "Patrycja Bogdan",
+   "STATO": "CONGELATO",
+   "DATA": "25/11/2025"
+  },
+  {
+   "CLIENTE": "Martina Crocetta",
+   "STATO": "CONGELATO",
+   "DATA": "08/12/2025"
+  },
+  {
+   "CLIENTE": "Angelica Villirillo",
+   "STATO": "CONGELATO",
+   "DATA": "03/02/2026"
+  },
+  {
    "CLIENTE": "Letizia Giani",
    "STATO": "CONGELATO",
    "DATA": "13/03/2026"
+  },
+  {
+   "CLIENTE": "Valentina Pellegrini",
+   "STATO": "CONGELATO",
+   "DATA": "01/04/2026"
   },
   {
    "CLIENTE": "Naomi Tessitore",
@@ -26640,6 +26662,11 @@
    "DATA": "27/05/2026"
   },
   {
+   "CLIENTE": "Cristina Corsini",
+   "STATO": "CONGELATO",
+   "DATA": "30/05/2026"
+  },
+  {
    "CLIENTE": "Francesca Maria Taurisano",
    "STATO": "CONGELATO",
    "DATA": "13/06/2026"
@@ -26650,14 +26677,19 @@
    "DATA": "02/07/2026"
   },
   {
+   "CLIENTE": "Alessandra Franceschini",
+   "STATO": "CONGELATO",
+   "DATA": "16/07/2026"
+  },
+  {
+   "CLIENTE": "Elisa Pugliese",
+   "STATO": "CONGELATO",
+   "DATA": "17/07/2026"
+  },
+  {
    "CLIENTE": "Ainara Moreno San Miguel",
    "STATO": "NON RINNOVATO",
    "DATA": "25/07/2026"
-  },
-  {
-   "CLIENTE": "Denise Di Francesco",
-   "STATO": "IN PERCORSO",
-   "DATA": "05/08/2026"
   },
   {
    "CLIENTE": "Martina Scaccialupi",
@@ -26670,11 +26702,6 @@
    "DATA": "05/08/2026"
   },
   {
-   "CLIENTE": "Maria Cristina Bosco",
-   "STATO": "CONGELATO",
-   "DATA": "05/08/2026"
-  },
-  {
    "CLIENTE": "Elena Bardi",
    "STATO": "ABBANDONATO",
    "DATA": "05/08/2026"
@@ -26682,6 +26709,16 @@
   {
    "CLIENTE": "Denise Cremone",
    "STATO": "CONGELATO",
+   "DATA": "05/08/2026"
+  },
+  {
+   "CLIENTE": "Maria Cristina Bosco",
+   "STATO": "CONGELATO",
+   "DATA": "05/08/2026"
+  },
+  {
+   "CLIENTE": "Denise Di Francesco",
+   "STATO": "IN PERCORSO",
    "DATA": "05/08/2026"
   },
   {
@@ -26698,41 +26735,6 @@
    "CLIENTE": "Valentina Pinzauti",
    "STATO": "SPARITA",
    "DATA": "07/08/2026"
-  },
-  {
-   "CLIENTE": "Martina Crocetta",
-   "STATO": "CONGELATO",
-   "DATA": "08/12/2025"
-  },
-  {
-   "CLIENTE": "Valentina Pellegrini",
-   "STATO": "CONGELATO",
-   "DATA": "01/04/2026"
-  },
-  {
-   "CLIENTE": "Elisa Pugliese",
-   "STATO": "CONGELATO",
-   "DATA": "17/07/2026"
-  },
-  {
-   "CLIENTE": "Alessandra Franceschini",
-   "STATO": "CONGELATO",
-   "DATA": "16/07/2026"
-  },
-  {
-   "CLIENTE": "Cristina Corsini",
-   "STATO": "CONGELATO",
-   "DATA": "30/05/2026"
-  },
-  {
-   "CLIENTE": "Patrycja Bogdan",
-   "STATO": "CONGELATO",
-   "DATA": "25/11/2025"
-  },
-  {
-   "CLIENTE": "Angelica Villirillo",
-   "STATO": "CONGELATO",
-   "DATA": "03/02/2026"
   }
  ],
  "payLog": [],
@@ -26744,5 +26746,5 @@
   "Margherita": "3515862081"
  },
  "waTemplate": "Ciao {nome}, ecco i rinnovi da gestire:\n\n{lista}\n\nGrazie!",
- "updatedAt": "2026-08-08T13:06:26.058Z"
+ "updatedAt": "2026-08-08T13:43:42.838Z"
 }
