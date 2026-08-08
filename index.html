@@ -6207,7 +6207,7 @@ function pgToggle(nome){
   if(PG_EXPANDED.has(nome)) PG_EXPANDED.delete(nome); else PG_EXPANDED.add(nome);
   buildPagamentiPage();
 }
-function pgApriPagamenti(nome){ apriProfiloCliente(nome,'ppag'); }
+function pgApriPagamenti(nome){ apriProfiloCliente(nome,'ppag'); apriNuovoPagamento(); }
 function pgPagItemHtml(e){
   return `
     <div class="pag-item">
