@@ -5205,15 +5205,18 @@ function render(){
     ['nonrinnovo','Tasso non rinnovo','#8b8a83',nonrinPremiumA,nonrinGnoccaA,'nonrinPremium','nonrinGnocca',nonrinA,'nonrin'],
     ['totale','Totale','#e0245e',totPremiumA,totGnoccaA,'abbTotPremium','abbTotGnocca',abbA.concat(nonrinA),'abbTotAll']
   ];
-  /* Colonna "Totale" della tabella: stessa percentuale ma calcolata su Premium
-     e Gnocca insieme (non la somma delle due percentuali, che non avrebbe
-     senso se le due categorie hanno numeri di clienti diversi). */
-  const computed=abbandonoRows.map(([key,label,dot,pRows,gRows,pKey,gKey,allRows2,allKey])=>({
-    key,label,dot,pKey,gKey,allKey,
-    pRate:pct(pRows.length,premiumRows.length),pN:pRows.length,pTot:premiumRows.length,
-    gRate:pct(gRows.length,gnoccaRows.length),gN:gRows.length,gTot:gnoccaRows.length,
-    allRate:pct(allRows2.length,premiumRows.length+gnoccaRows.length),allN:allRows2.length,allTot:premiumRows.length+gnoccaRows.length
-  }));
+  /* Colonna "Totale" della tabella: somma diretta del tasso Premium + tasso
+     Gnocca (richiesto esplicitamente), non una media ponderata sui numeri
+     grezzi combinati. */
+  const computed=abbandonoRows.map(([key,label,dot,pRows,gRows,pKey,gKey,allRows2,allKey])=>{
+    const pRate=pct(pRows.length,premiumRows.length), gRate=pct(gRows.length,gnoccaRows.length);
+    return {
+      key,label,dot,pKey,gKey,allKey,
+      pRate,pN:pRows.length,pTot:premiumRows.length,
+      gRate,gN:gRows.length,gTot:gnoccaRows.length,
+      allRate:pRate+gRate,allN:allRows2.length,allTot:premiumRows.length+gnoccaRows.length
+    };
+  });
   const maxRate=Math.max(1,...computed.flatMap(r=>[r.pRate,r.gRate,r.allRate]));
   const barWidth=p=>Math.max(6,Math.round(p/maxRate*100));
   const cell=(rate,n,tot,key)=>{
