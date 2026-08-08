@@ -1757,11 +1757,12 @@
    "€ TRAINER": "€ 17,00",
    "€ NUTRI": "€ 12,00",
    "CONTRATTO": "",
-   "CHECK": "",
+   "CHECK": "SI",
    "RISULTATO": "",
    "FONTE": "ADV",
    "DATA INCASSO": "29/07/2026",
-   "_PRIMO_INIZIO": "13/09/2025"
+   "_PRIMO_INIZIO": "13/09/2025",
+   "DATA CHECK": "08/08/2026"
   },
   {
    "CLIENTE": "Annamaria Montemurro (Berardo Di Mattia)",
@@ -26747,5 +26748,5 @@
   "Margherita": "3515862081"
  },
  "waTemplate": "Ciao {nome}, ecco i rinnovi da gestire:\n\n{lista}\n\nGrazie!",
- "updatedAt": "2026-08-08T13:45:21.924Z"
+ "updatedAt": "2026-08-08T13:45:37.990Z"
 }
