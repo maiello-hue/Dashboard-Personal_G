@@ -3740,9 +3740,10 @@
    "€ TRAINER": "€ 17,00",
    "€ NUTRI": "€ 12,00",
    "CONTRATTO": "SI",
-   "CHECK": "",
-   "RISULTATO": "",
-   "_PRIMO_INIZIO": "25/10/2025"
+   "CHECK": "SI",
+   "RISULTATO": "SI",
+   "_PRIMO_INIZIO": "25/10/2025",
+   "DATA CHECK": "08/08/2026"
   },
   {
    "CLIENTE": "Francesca Maiorana",
@@ -26746,5 +26747,5 @@
   "Margherita": "3515862081"
  },
  "waTemplate": "Ciao {nome}, ecco i rinnovi da gestire:\n\n{lista}\n\nGrazie!",
- "updatedAt": "2026-08-08T13:43:42.838Z"
+ "updatedAt": "2026-08-08T13:44:29.989Z"
 }
