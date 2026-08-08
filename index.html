@@ -3204,20 +3204,14 @@ const VENDITORE_LUG26_MAP={
   "Irene Tucci":"Personal_G",
   "Cristina Castagna":"Personal_G"
 };
-const VENDITORE_LUG26_UNMATCHED_FLAG='venditore_lug26_unmatched_alert_v1_shown';
 function applyVenditoreLug26Import(){
   let changed=0;
-  const unmatched=[];
   Object.entries(VENDITORE_LUG26_MAP).forEach(([cliente,vend])=>{
     const r=DATA.find(x=>x['CLIENTE'].trim().toLowerCase()===cliente.trim().toLowerCase());
-    if(!r){ unmatched.push(cliente); return; }
+    if(!r) return;
     if(!r['VENDITORE']){ r['VENDITORE']=vend; changed++; }
   });
   if(changed>0){ saveClienti(); buildFilters(); render(); }
-  if(unmatched.length&&!localStorage.getItem(VENDITORE_LUG26_UNMATCHED_FLAG)){
-    try{ localStorage.setItem(VENDITORE_LUG26_UNMATCHED_FLAG,'1'); }catch(e){}
-    alert('Import venditori (foglio LUG 26): '+unmatched.length+' clienti del foglio non trovate nella dashboard con questo nome esatto:'+String.fromCharCode(10)+String.fromCharCode(10)+unmatched.join(String.fromCharCode(10))+String.fromCharCode(10)+String.fromCharCode(10)+'Controllale a mano (nome scritto diverso o cliente non ancora inserita).');
-  }
 }
 /* Fonte cliente: valorizzata a incrocio con la colonna FONTE del foglio Google (luglio 2026).
    Compila SOLO r['FONTE'] quando è vuota — non sovrascrive mai un valore già presente,
