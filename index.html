@@ -317,6 +317,12 @@ h1{font-size:22px;font-weight:500}
 #clienti-table td[data-label="Avanzamento"]{padding-left:4px}
 #clienti-table th[onclick*="FINE PERCORSO"]{padding-right:4px}
 #clienti-table th[onclick*="_PROG"]{padding-left:4px}
+/* I tag Venditore/Tutor/Trainer/Nutri sono <span class="badge"> (inline-block):
+   centrarli nella colonna, coerentemente con l'intestazione già centrata. */
+#clienti-table td[data-label="Venditore"],
+#clienti-table td[data-label="Tutor"],
+#clienti-table td[data-label="Trainer"],
+#clienti-table td[data-label="Nutri"]{text-align:center}
 #page-analisi .card h3{font-weight:300;font-size:17px}
 #page-analisi .rate-table td{font-weight:300}
 #page-analisi .rate-group-row td{font-weight:600}
