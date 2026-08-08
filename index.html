@@ -833,6 +833,10 @@ select.pill-btn:focus{outline:none;border-color:var(--border-strong)}
       <span class="ic"><i class="fa-solid fa-clock"></i></span>
       Gestione scadenze
     </button>
+    <button class="nav-item" id="nav-pagamenti" onclick="showPage('pagamenti')">
+      <span class="ic"><i class="fa-solid fa-receipt"></i></span>
+      Pagamenti
+    </button>
     <button class="nav-item" id="nav-rimborsi" onclick="showPage('rimborsi')">
       <span class="ic"><i class="fa-solid fa-rotate-left"></i></span>
       Rimborsi
@@ -885,6 +889,10 @@ select.pill-btn:focus{outline:none;border-color:var(--border-strong)}
       <button id="msheet-rinnovi" onclick="showPage('rinnovi')">
         <span class="ic"><i class="fa-solid fa-clock"></i></span>
         Gestione scadenze
+      </button>
+      <button id="msheet-pagamenti" onclick="showPage('pagamenti')">
+        <span class="ic"><i class="fa-solid fa-receipt"></i></span>
+        Pagamenti
       </button>
       <button id="msheet-rimborsi" onclick="showPage('rimborsi')">
         <span class="ic"><i class="fa-solid fa-rotate-left"></i></span>
@@ -1198,6 +1206,14 @@ select.pill-btn:focus{outline:none;border-color:var(--border-strong)}
           <div id="ren-whatsapp"></div>
         </div>
       </div>
+    </div>
+
+    <div id="page-pagamenti" style="display:none">
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px">
+        <input type="text" id="pg-search" placeholder="Cerca cliente…" oninput="debouncedBuildPagamentiPage()" style="flex:1;height:36px;border-radius:8px;border:1px solid var(--border-strong);background:var(--card);padding:0 12px;font-size:13px;color:var(--text)">
+        <span id="pg-summary" style="font-size:12px;color:var(--muted2);white-space:nowrap"></span>
+      </div>
+      <div id="pg-list"></div>
     </div>
 
     <div id="page-rimborsi" style="display:none">
@@ -1685,7 +1701,7 @@ function showPage(p){
   currentPage=p;
   try{localStorage.setItem(LAST_PAGE_KEY,p);}catch(e){}
   if(RENDER_ON_ENTER.has(p)) render();
-  ['dashboard','clienti','incassi','analisi','rinnovi','rimborsi','compensi','check','impostazioni'].forEach(x=>document.getElementById('nav-'+x).classList.toggle('on',x===p));
+  ['dashboard','clienti','incassi','analisi','rinnovi','pagamenti','rimborsi','compensi','check','impostazioni'].forEach(x=>document.getElementById('nav-'+x).classList.toggle('on',x===p));
   const navEl=document.getElementById('nav-'+p);
   if(navEl){navEl.classList.remove('flash'); void navEl.offsetWidth; navEl.classList.add('flash'); setTimeout(()=>navEl.classList.remove('flash'),450);}
   document.getElementById('page-dashboard').style.display=(p==='dashboard')?'block':'none';
@@ -1693,14 +1709,16 @@ function showPage(p){
   document.getElementById('page-incassi').style.display=(p==='incassi')?'block':'none';
   document.getElementById('page-analisi').style.display=(p==='analisi')?'block':'none';
   document.getElementById('page-rinnovi').style.display=(p==='rinnovi')?'block':'none';
+  document.getElementById('page-pagamenti').style.display=(p==='pagamenti')?'block':'none';
   document.getElementById('page-rimborsi').style.display=(p==='rimborsi')?'block':'none';
   document.getElementById('page-compensi').style.display=(p==='compensi')?'block':'none';
   document.getElementById('page-check').style.display=(p==='check')?'block':'none';
   document.getElementById('page-impostazioni').style.display=(p==='impostazioni')?'block':'none';
   if(p==='impostazioni'){ fillGhForm(); refreshBackupStatus(); fillSbForm(); buildSettingsCollabPhones(); buildSettingsWaTemplate(); }
   if(p==='rinnovi'){ renderRinnoviWhatsapp(); }
+  if(p==='pagamenti'){ buildPagamentiPage(); }
   const MOBILE_PRIMARY=['dashboard','clienti','analisi','compensi'];
-  const MOBILE_MORE=['incassi','rinnovi','rimborsi','check','impostazioni'];
+  const MOBILE_MORE=['incassi','rinnovi','pagamenti','rimborsi','check','impostazioni'];
   MOBILE_PRIMARY.forEach(x=>{ const el=document.getElementById('mnav-'+x); if(el) el.classList.toggle('on',x===p); });
   const moreBtn=document.getElementById('mnav-more');
   if(moreBtn) moreBtn.classList.toggle('on',MOBILE_MORE.includes(p));
@@ -6043,18 +6061,19 @@ let _pagEditEntries=[];
 
 function initials(n){return (n||'').split(' ').map(p=>p[0]||'').join('').slice(0,2).toUpperCase();}
 
-function apriProfiloCliente(nome){
+function apriProfiloCliente(nome,tab){
   const r=DATA.find(x=>x['CLIENTE']===nome);
   if(!r) return;
   _profiloNome=nome;
-  _profiloTab='pinfo';
+  _profiloTab=tab||'pinfo';
   /* header */
   document.getElementById('profilo-avatar').textContent=initials(nome);
   document.getElementById('profilo-nome').textContent=nome;
   document.getElementById('profilo-badges').innerHTML='';
   document.getElementById('profilo-footer-info').textContent='';
-  /* tab */
-  switchProfiloTab('pinfo');
+  /* tab: parametro opzionale, usato dalla pagina Pagamenti per aprire la
+     scheda cliente direttamente sullo storico pagamenti invece che su Info */
+  switchProfiloTab(tab||'pinfo');
   document.getElementById('profilo-cliente-modal').style.display='flex';
 }
 function chiudiProfiloCliente(){
@@ -6169,6 +6188,98 @@ function eliminaPagamento(i){
   scheduleGithubSync();
   _renderProfiloPagamenti();
 }
+
+/* ── Pagina "Pagamenti": storico incassi + rimborsi per cliente ──────────
+   Non introduce un modello dati nuovo: mostra, per ogni cliente ancora
+   attiva, lo storico pagamenti (getPayLog()) con la stessa identica
+   presentazione già usata nella scheda cliente — riga per fattura/data/
+   tipo/metodo/importo — e lo storico rimborsi (RIMB, lo stesso array della
+   pagina Rimborsi). L'aggiunta e la modifica dei pagamenti restano nel
+   modulo già esistente e testato (apriProfiloCliente + tab "Pagamenti"),
+   richiamato da qui con un pulsante: niente logica di salvataggio duplicata. */
+const PG_EXPANDED=new Set();
+function pgToggle(nome){
+  if(PG_EXPANDED.has(nome)) PG_EXPANDED.delete(nome); else PG_EXPANDED.add(nome);
+  buildPagamentiPage();
+}
+function pgApriPagamenti(nome){ apriProfiloCliente(nome,'ppag'); }
+function pgPagItemHtml(e){
+  return `
+    <div class="pag-item">
+      <span style="color:var(--accent);font-weight:600;min-width:80px">${esc(e['N_FATTURA']||'—')}</span>
+      <span style="color:var(--muted2);min-width:76px">${esc(e['DATA']||'')}</span>
+      <span class="badge b-blue" style="font-size:10px">${esc(e['TIPO']||'')}</span>
+      <span style="color:var(--muted2);flex:1;text-align:right;padding-right:4px">${esc(e['METODO']||'')}</span>
+      <span style="font-weight:600;min-width:50px;text-align:right">€ ${(parseFloat(e['IMPORTO'])||0).toLocaleString('it-IT')}</span>
+    </div>`;
+}
+function pgRimbItemHtml(r){
+  return `
+    <div class="pag-item" onclick="event.stopPropagation()">
+      <span style="color:var(--red);font-weight:600;flex:1">Rimborso${r.percorso?(' · '+esc(r.percorso)):''}${r.stato?(' · '+esc(r.stato)):''}</span>
+      <span style="color:var(--muted2);min-width:76px">${esc(r.recesso||r.acquisto||'')}</span>
+      <span style="font-weight:600;min-width:70px;text-align:right;color:var(--red)">-€ ${(sbParseMoney(r.stornoTot)||sbParseMoney(r.incasso)||0).toLocaleString('it-IT')}</span>
+      <button class="icon-btn" title="Modifica" onclick="apriModificaRimborso('${r.id}')"><span class="ico"><i class="fa-solid fa-pen" style="font-size:10px"></i></span></button>
+    </div>`;
+}
+function pgMovimentiHtml(nome,payE,rimbE){
+  const payOrdinati=payE.slice().sort((a,b)=>(pdate(a['DATA'])||0)-(pdate(b['DATA'])||0));
+  const totPay=payOrdinati.reduce((s,e)=>s+(parseFloat(e['IMPORTO'])||0),0);
+  return `
+    <div style="border-top:1px solid var(--border);padding:10px 14px;background:var(--card2)" onclick="event.stopPropagation()">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <span style="font-size:11px;color:var(--muted2)">${payOrdinati.length} pagament${payOrdinati.length===1?'o':'i'}${totPay?' · totale <strong style="color:var(--text)">€ '+totPay.toLocaleString('it-IT')+'</strong>':''}</span>
+        <button class="btn ghost" style="padding:3px 10px;font-size:12px" onclick="pgApriPagamenti('${jsEsc(nome)}')"><span class="ico"><i class="fa-solid fa-pen" style="font-size:11px"></i></span>Gestisci</button>
+      </div>
+      ${payOrdinati.length?payOrdinati.map(pgPagItemHtml).join(''):'<p style="color:var(--muted2);font-size:12px;margin:2px 0 8px">Nessun pagamento registrato.</p>'}
+      ${rimbE.length?`<div style="margin-top:10px;padding-top:8px;border-top:1px solid var(--border)">
+        <span style="font-size:11px;color:var(--muted2);display:block;margin-bottom:4px">Rimborsi</span>
+        ${rimbE.map(pgRimbItemHtml).join('')}
+      </div>`:''}
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn ghost" style="padding:3px 10px;font-size:12px" onclick="apriRimborsaCliente('${jsEsc(nome)}')"><span class="ico"><i class="fa-solid fa-plus"></i></span>Rimborso</button>
+      </div>
+    </div>`;
+}
+function pgRowHtml(nome,payE,rimbE){
+  const open=PG_EXPANDED.has(nome);
+  const totPay=payE.reduce((s,e)=>s+(sbParseMoney(e['IMPORTO'])||0),0);
+  const totRimb=rimbE.reduce((s,r)=>s+(sbParseMoney(r.stornoTot)||sbParseMoney(r.incasso)||0),0);
+  const nMov=payE.length+rimbE.length;
+  const bits=[];
+  if(totPay) bits.push(`<span style="font-size:12px;font-weight:600;color:var(--green)">+€ ${totPay.toLocaleString('it-IT')}</span>`);
+  if(totRimb) bits.push(`<span style="font-size:12px;font-weight:600;color:var(--red)">-€ ${totRimb.toLocaleString('it-IT')}</span>`);
+  const sommario=bits.length?bits.join(' '):'<span style="font-size:12px;color:var(--muted2)">Nessun movimento</span>';
+  return `
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:6px">
+      <div style="display:flex;align-items:center;gap:12px;padding:11px 14px;cursor:pointer" onclick="pgToggle('${jsEsc(nome)}')">
+        <div style="width:32px;height:32px;border-radius:50%;background:#000;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0">${esc(initials(nome))}</div>
+        <span class="nome-link" style="font-weight:500;font-size:14px;flex:1" onclick="event.stopPropagation();apriProfiloCliente('${jsEsc(nome)}')">${esc(nome)}</span>
+        <span style="font-size:12px;color:var(--muted2);white-space:nowrap">${nMov?nMov+' movimento'+(nMov>1?'i':''):''}</span>
+        ${sommario}
+        <i class="fa-solid fa-chevron-${open?'up':'down'}" style="font-size:11px;color:var(--muted2)"></i>
+      </div>
+      ${open?pgMovimentiHtml(nome,payE,rimbE):''}
+    </div>`;
+}
+function buildPagamentiPage(){
+  const q=(document.getElementById('pg-search').value||'').trim().toLowerCase();
+  const payByClient={};
+  getPayLog().forEach(e=>{ const n=e['CLIENTE']; if(!n) return; (payByClient[n]=payByClient[n]||[]).push(e); });
+  const rimbByClient={};
+  RIMB.forEach(r=>{ if(!r.cliente) return; (rimbByClient[r.cliente]=rimbByClient[r.cliente]||[]).push(r); });
+  /* Solo clienti ancora nell'elenco attivo (DATA): i rimborsi di clienti non
+     più attive restano visibili e modificabili dalla pagina Rimborsi, come
+     già oggi. */
+  const nomi=DATA.map(r=>r['CLIENTE']).filter(Boolean).sort((a,b)=>a.localeCompare(b,'it'));
+  const filtrati=q?nomi.filter(n=>n.toLowerCase().includes(q)):nomi;
+  const conMovimenti=nomi.filter(n=>(payByClient[n]||[]).length||(rimbByClient[n]||[]).length).length;
+  document.getElementById('pg-summary').textContent=conMovimenti+' clienti con movimenti su '+nomi.length;
+  document.getElementById('pg-list').innerHTML=filtrati.length
+    ?filtrati.map(nome=>pgRowHtml(nome,payByClient[nome]||[],rimbByClient[nome]||[])).join('')
+    :'<p style="color:var(--muted2);font-size:13px;margin:8px 0">Nessun cliente trovato.</p>';
+}
+const debouncedBuildPagamentiPage=debounce(()=>buildPagamentiPage(),220);
 
 function salvaClienteModal(){
   const r=DATA.find(x=>x['CLIENTE']===editingClienteName);
@@ -6589,7 +6700,7 @@ buildRimbFilters();
 render();
 renderRimborsi();
 buildSettingsPanel();
-const VALID_PAGES=['dashboard','clienti','incassi','analisi','rinnovi','rimborsi','compensi','check','impostazioni'];
+const VALID_PAGES=['dashboard','clienti','incassi','analisi','rinnovi','pagamenti','rimborsi','compensi','check','impostazioni'];
 let savedPage=null; try{savedPage=localStorage.getItem(LAST_PAGE_KEY);}catch(e){}
 showPage(VALID_PAGES.includes(savedPage)?savedPage:'dashboard');
 if(ghConfigured()){ setGhStatus(ic('sync')+'Connessione a GitHub…'); syncFromGithub(true).then(()=>maybeCreateAutoBackup()); }
