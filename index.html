@@ -1065,10 +1065,10 @@ select.pill-btn:focus{outline:none;border-color:var(--border-strong)}
         </div>
         <div class="card span12">
           <h3><span><i class="fa-solid fa-table-list" style="color:#e0245e"></i>Tasso di abbandono</span></h3>
-          <div class="sub" style="margin-bottom:10px">Percentuali sul totale di ciascuna categoria, calcolate separatamente per Premium e Gnocca.</div>
+          <div class="sub" style="margin-bottom:10px">Percentuali calcolate separatamente per Premium e Gnocca, più il totale complessivo su tutte le clienti.</div>
           <table class="rate-table">
             <thead>
-              <tr><th></th><th>Premium</th><th>Gnocca</th></tr>
+              <tr><th></th><th>Premium</th><th>Gnocca</th><th>Totale</th></tr>
             </thead>
             <tbody id="abbandono-table-body"></tbody>
           </table>
@@ -5192,21 +5192,25 @@ function render(){
   const totPremiumA=abbPremiumA.concat(nonrinPremiumA), totGnoccaA=abbGnoccaA.concat(nonrinGnoccaA);
   KPI_LISTS={tot:totA,att:attA,cong:congA,abb:abbA,spar:sparA,nonrin:nonrinA,mai:maiA,scad:scadA,nuove:nuoveA,rischio:rischioA,
     abbPremium:abbPremiumA,abbGnocca:abbGnoccaA,nonrinPremium:nonrinPremiumA,nonrinGnocca:nonrinGnoccaA,
-    abbTotPremium:totPremiumA,abbTotGnocca:totGnoccaA};
+    abbTotPremium:totPremiumA,abbTotGnocca:totGnoccaA,abbTotAll:abbA.concat(nonrinA)};
   const pct=(n,d)=>d?(n/d*100):0;
   const fmtPct=n=>n.toLocaleString('it-IT',{minimumFractionDigits:1,maximumFractionDigits:1})+'%';
   const rateColor=p=>p<3?{bg:'#eaf7ef',fg:'#1f9d63'}:p<6?{bg:'#faf1e2',fg:'#b5720f'}:{bg:'#fbebeb',fg:'#d23f3f'};
   const abbandonoRows=[
-    ['abbandono','Tasso abbandono','#18181a',abbPremiumA,abbGnoccaA,'abbPremium','abbGnocca'],
-    ['nonrinnovo','Tasso non rinnovo','#8b8a83',nonrinPremiumA,nonrinGnoccaA,'nonrinPremium','nonrinGnocca'],
-    ['totale','Totale','#e0245e',totPremiumA,totGnoccaA,'abbTotPremium','abbTotGnocca']
+    ['abbandono','Tasso abbandono','#18181a',abbPremiumA,abbGnoccaA,'abbPremium','abbGnocca',abbA,'abb'],
+    ['nonrinnovo','Tasso non rinnovo','#8b8a83',nonrinPremiumA,nonrinGnoccaA,'nonrinPremium','nonrinGnocca',nonrinA,'nonrin'],
+    ['totale','Totale','#e0245e',totPremiumA,totGnoccaA,'abbTotPremium','abbTotGnocca',abbA.concat(nonrinA),'abbTotAll']
   ];
-  const computed=abbandonoRows.map(([key,label,dot,pRows,gRows,pKey,gKey])=>({
-    key,label,dot,pKey,gKey,
+  /* Colonna "Totale" della tabella: stessa percentuale ma calcolata su Premium
+     e Gnocca insieme (non la somma delle due percentuali, che non avrebbe
+     senso se le due categorie hanno numeri di clienti diversi). */
+  const computed=abbandonoRows.map(([key,label,dot,pRows,gRows,pKey,gKey,allRows2,allKey])=>({
+    key,label,dot,pKey,gKey,allKey,
     pRate:pct(pRows.length,premiumRows.length),pN:pRows.length,pTot:premiumRows.length,
-    gRate:pct(gRows.length,gnoccaRows.length),gN:gRows.length,gTot:gnoccaRows.length
+    gRate:pct(gRows.length,gnoccaRows.length),gN:gRows.length,gTot:gnoccaRows.length,
+    allRate:pct(allRows2.length,premiumRows.length+gnoccaRows.length),allN:allRows2.length,allTot:premiumRows.length+gnoccaRows.length
   }));
-  const maxRate=Math.max(1,...computed.flatMap(r=>[r.pRate,r.gRate]));
+  const maxRate=Math.max(1,...computed.flatMap(r=>[r.pRate,r.gRate,r.allRate]));
   const barWidth=p=>Math.max(6,Math.round(p/maxRate*100));
   const cell=(rate,n,tot,key)=>{
     const c=rateColor(rate);
@@ -5220,6 +5224,7 @@ function render(){
       <td><div class="rate-row-label ${r.key==='totale'?'tot':''}"><span class="fonte-dot" style="background:${r.dot}"></span>${r.label}</div></td>
       ${cell(r.pRate,r.pN,r.pTot,r.pKey)}
       ${cell(r.gRate,r.gN,r.gTot,r.gKey)}
+      ${cell(r.allRate,r.allN,r.allTot,r.allKey)}
     </tr>`).join('');
 
   const collabBadgeFn={TUTOR:tutBadge,TRAINER:trainBadge,NUTRI:nutriBadge};
