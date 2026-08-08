@@ -1065,7 +1065,7 @@ select.pill-btn:focus{outline:none;border-color:var(--border-strong)}
         </div>
         <div class="card span12">
           <h3><span><i class="fa-solid fa-table-list" style="color:#e0245e"></i>Tasso di abbandono</span></h3>
-          <div class="sub" style="margin-bottom:10px">Percentuali sulle clienti in percorso in quel mese (Premium e Gnocca separate, più il totale complessivo).</div>
+          <div class="sub" style="margin-bottom:10px">Percentuali sul parco clienti del mese — In percorso, Congelate, Sparite, Mai iniziato (Premium e Gnocca separate, più il totale complessivo).</div>
           <table class="rate-table">
             <thead>
               <tr><th></th><th>Premium</th><th>Gnocca</th><th>Totale</th></tr>
@@ -1075,7 +1075,7 @@ select.pill-btn:focus{outline:none;border-color:var(--border-strong)}
         </div>
         <div class="card span12">
           <h3><span><i class="fa-solid fa-users-gear" style="color:#e0245e"></i>Tasso di abbandono per collaboratore</span></h3>
-          <div class="sub" style="margin-bottom:10px">Percentuali sulle clienti in percorso in quel mese assegnate a ciascun collaboratore (Tutor, Trainer, Nutrizionista).</div>
+          <div class="sub" style="margin-bottom:10px">Percentuali sul parco clienti del mese (In percorso, Congelate, Sparite, Mai iniziato) assegnate a ciascun collaboratore (Tutor, Trainer, Nutrizionista).</div>
           <table class="rate-table">
             <thead>
               <tr><th>Collaboratore</th><th>Clienti</th><th>Abbandono</th><th>Non rinnovo</th><th>Totale</th><th>% Abbandono totale</th></tr>
@@ -5186,11 +5186,11 @@ function render(){
   const scadA=allRows.filter(r=>{const d=pdate(r['FINE PERCORSO']);return d&&d>=now&&d<=in30&&r['STATO CLIENTE']==='IN PERCORSO';});
   const rischioA=allRows.filter(isARischio);
   const scad30=scadA.length, brkScad=brk(scadA);
-  /* Base "Tasso di abbandono": SOLO le clienti In percorso in quel mese (attA),
-     non tutte le clienti mai avute in quella categoria — stessa logica del
-     foglio storico di riferimento (colonna "Clienti in percorso"), dove ad
-     es. (abbandoni+non rinnovi)/clienti in percorso dà il tasso del mese. */
-  const premiumRows=attA.filter(r=>!isGnocca(r)), gnoccaRows=attA.filter(isGnocca);
+  /* Base "Tasso di abbandono": tutte le clienti ancora nel parco clienti in
+     quel mese — In percorso + Congelate + Sparite + Mai iniziato (totA), non
+     tutte le clienti mai avute in quella categoria (che includerebbe anche le
+     già abbandonate/non rinnovate di mesi passati). */
+  const premiumRows=totA.filter(r=>!isGnocca(r)), gnoccaRows=totA.filter(isGnocca);
   const abbPremiumA=abbA.filter(r=>!isGnocca(r)), abbGnoccaA=abbA.filter(isGnocca);
   const nonrinPremiumA=nonrinA.filter(r=>!isGnocca(r)), nonrinGnoccaA=nonrinA.filter(isGnocca);
   const totPremiumA=abbPremiumA.concat(nonrinPremiumA), totGnoccaA=abbGnoccaA.concat(nonrinGnoccaA);
@@ -5259,9 +5259,10 @@ function render(){
   const ABB_PCT_HIDE_ALWAYS=new Set(['elisa','personalg']);
   ['TUTOR','TRAINER','NUTRI'].forEach(field=>{
     distinct(field).forEach(name=>{
-      /* Stessa base della tabella sopra: solo clienti In percorso in quel mese
-         (attA), non tutte le clienti mai assegnate a questo collaboratore. */
-      const assigned=attA.filter(r=>r[field]===name);
+      /* Stessa base della tabella sopra: In percorso + Congelate + Sparite +
+         Mai iniziato (totA), non tutte le clienti mai assegnate a questo
+         collaboratore. */
+      const assigned=totA.filter(r=>r[field]===name);
       if(!assigned.length) return;
       const abbRows=assigned.filter(isAbb), nonrinRows=assigned.filter(isNonrin);
       const totRows=abbRows.concat(nonrinRows);
