@@ -24977,6 +24977,26 @@
    "VENDITORE": "Personal_G",
    "FONTE": "",
    "_PRIMO_INIZIO": "08/08/2026"
+  },
+  {
+   "CLIENTE": "Daniela Boccarossa",
+   "N FATTURA": "",
+   "STATO CLIENTE": "IN PERCORSO",
+   "PERCORSO": "6 mesi + 6 Gnocca",
+   "INIZIO PERCORSO": "08/08/2026",
+   "FINE PERCORSO": "08/08/2027",
+   "IMPORTO": "1850,82",
+   "METODO PAGAMENTO": "HeyLight",
+   "STATO PAGAMENTO": "SALDATO",
+   "TIPO INCASSO": "Nuovo Cliente",
+   "INCASSO": "1850,82",
+   "DATA INCASSO": "08/08/2026",
+   "TUTOR": "Andrea",
+   "TRAINER": "Niccolò",
+   "NUTRI": "Alessia",
+   "VENDITORE": "Personal_G",
+   "FONTE": "",
+   "_PRIMO_INIZIO": "08/08/2026"
   }
  ],
  "rimborsi": [
@@ -26378,6 +26398,12 @@
    "INCASSO": "1668",
    "DATA INCASSO": "08/08/2026",
    "TIPO INCASSO": "Nuovo Cliente"
+  },
+  {
+   "CLIENTE": "Daniela Boccarossa",
+   "INCASSO": "1850,82",
+   "DATA INCASSO": "08/08/2026",
+   "TIPO INCASSO": "Nuovo Cliente"
   }
  ],
  "archivioLog": [
@@ -26748,5 +26774,5 @@
   "Margherita": "3515862081"
  },
  "waTemplate": "Ciao {nome}, ecco i rinnovi da gestire:\n\n{lista}\n\nGrazie!",
- "updatedAt": "2026-08-08T13:45:41.156Z"
+ "updatedAt": "2026-08-08T18:25:12.175Z"
 }
