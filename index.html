@@ -5263,9 +5263,13 @@ function render(){
          Mai iniziato (totA), non tutte le clienti mai assegnate a questo
          collaboratore. */
       const assigned=totA.filter(r=>r[field]===name);
-      if(!assigned.length) return;
-      const abbRows=assigned.filter(isAbb), nonrinRows=assigned.filter(isNonrin);
+      /* Abbandoni/non rinnovi vanno presi da abbA/nonrinA (chi è uscito nel
+         mese), NON filtrando "assigned": chi abbandona esce da totA (che
+         esclude Abbandonate/Non rinnovate) quindi l'intersezione sarebbe
+         sempre vuota e mostrerebbe 0% anche quando ci sono uscite reali. */
+      const abbRows=abbA.filter(r=>r[field]===name), nonrinRows=nonrinA.filter(r=>r[field]===name);
       const totRows=abbRows.concat(nonrinRows);
+      if(!assigned.length && !totRows.length) return;
       const keyAbb='collabAbb|'+field+'|'+name, keyNonrin='collabNonrin|'+field+'|'+name, keyTot='collabTot|'+field+'|'+name;
       KPI_LISTS[keyAbb]=abbRows; KPI_LISTS[keyNonrin]=nonrinRows; KPI_LISTS[keyTot]=totRows;
       KPI_LABELS[keyAbb]=name+' · Abbandono ('+collabRoleLabel[field]+')';
