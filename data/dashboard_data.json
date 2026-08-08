@@ -26645,7 +26645,13 @@
   }
  ],
  "payLog": [],
- "collabPhones": {},
+ "collabPhones": {
+  "Andrea": "3514328488",
+  "Giulia": "3312755910",
+  "Manuela": "3447236178",
+  "Mara": "3791996530",
+  "Margherita": "3515862081"
+ },
  "waTemplate": "Ciao {nome}, ecco i rinnovi da gestire:\n\n{lista}\n\nGrazie!",
- "updatedAt": "2026-08-08T11:05:50.331Z"
+ "updatedAt": "2026-08-08T12:07:40.281Z"
 }
