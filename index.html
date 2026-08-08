@@ -6254,7 +6254,7 @@ function pgRowHtml(nome,payE,rimbE){
     <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:6px">
       <div style="display:flex;align-items:center;gap:12px;padding:11px 14px;cursor:pointer" onclick="pgToggle('${jsEsc(nome)}')">
         <div style="width:32px;height:32px;border-radius:50%;background:#000;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0">${esc(initials(nome))}</div>
-        <span class="nome-link" style="font-weight:500;font-size:14px;flex:1" onclick="event.stopPropagation();apriProfiloCliente('${jsEsc(nome)}')">${esc(nome)}</span>
+        <span style="font-weight:500;font-size:14px;flex:1">${esc(nome)}</span>
         <span style="font-size:12px;color:var(--muted2);white-space:nowrap">${nMov?nMov+' movimento'+(nMov>1?'i':''):''}</span>
         ${sommario}
         <i class="fa-solid fa-chevron-${open?'up':'down'}" style="font-size:11px;color:var(--muted2)"></i>
